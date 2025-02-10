@@ -1,0 +1,31 @@
+@startuml Диаграмма контекста
+title "C4. Контекст для Такси Сервиса"
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!$ICONURL = "https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/v3.0.0/icons"
+!include $ICONURL/common.puml
+!include $ICONURL/devicons/go.puml
+
+Person(client, "Клиент", "Делает заказ такси, отслеживает движение и оценивает водителя.")
+Person(driver, "Водитель", "Принимает заказы, использует навигацию для маршрута.")
+Person(admin, "Администратор", "Управляет системой, мониторит данные о поездках и аккаунтах.")
+Person(support, "Тех поддержка", "Помогает пользователям в решении вопросов, проблем")
+
+System(taxiService, "Система Такси", "")
+Rel(client, taxiService, "Использует приложение для заказа")
+Rel(driver, taxiService, "Использует приложение для приема заказов")
+Rel(admin, taxiService, "Управляет и мониторит систему")
+Rel(support, taxiService, "Помогает в решении вопросов, проблем")
+
+System_Ext(paymentSystem, "Платежная система", "Обработка платежей клиентов и зачисление средств водителям.")
+Rel(taxiService, paymentSystem, "Интеграция для обработки платежей", "HTTPS/REST")
+
+System_Ext(mapService, "Сервисы карт (например, Яндекс.Карты)", "Навигация и маршруты для водителей.")
+Rel(taxiService, mapService, "Получает данные о маршрутах и геолокации", "API")
+
+System_Ext(email, "Email сервис", "отправка уведомлений")
+Rel(taxiService, email, "Отправляет сообщения на почту", "API")
+
+System_Ext(geocoder, "Геокодер", "Предоставление адреса по координатам, и наоборот")
+Rel(taxiService, geocoder, "Получает данные о местоположении", "API")
+@enduml
