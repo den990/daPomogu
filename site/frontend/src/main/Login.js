@@ -5,7 +5,7 @@ function Login() {
     return (
         <div className="container d-flex justify-content-center">
             <div className="col-6 mt-5">
-                <div className="fw-bold fs-4 text-black">Welcome to Volunteer</div>
+                <div className="fw-bold fs-4 text-black">Вход</div>
                 <form>
                     <div className="mb-3 text-start">
                         <label htmlFor="exampleInputEmail1" className="form-label fw-semibold">Email</label>
