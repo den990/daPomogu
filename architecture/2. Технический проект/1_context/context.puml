@@ -1,0 +1,23 @@
+@startuml C4. Контекст
+
+title C4. Контекст
+
+!include <C4/C4_Container>
+
+Person(admin, "Администратор", "Модерирует учётные записи и задания")
+Person(organizer, "Организация", "Размещает и редактирует задания, назначает координатора")
+Person(user, "Волонтер", "Откликается на задания")
+Person(coordinator, "Координатор", "Контролирует выполнение заданий, оставляет оценки волонтерам")
+
+System(volunteer_system, "Система для координации волонтеров")
+Rel(admin, volunteer_system, "Контролирует контент")
+Rel(organizer, volunteer_system, "Размещает задания")
+Rel(user, volunteer_system, "Откликается на задания")
+Rel(coordinator, volunteer_system, "Контролирует выполнение заданий")
+
+System_Ext(map_system, "Система картографии(Yandex Map)", "Предоставление адреса по координатам")
+System_Ext(email_system, "Email сервис", "Отправка уведомлений")
+
+Rel(volunteer_system, map_system, "Запрашивает координаты местоположений заданий")
+Rel(volunteer_system, email_system, "Передает информацию о заданиях")
+@enduml
