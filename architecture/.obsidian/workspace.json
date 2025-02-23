@@ -20,8 +20,23 @@
               "icon": "lucide-file",
               "title": "Введение"
             }
+          },
+          {
+            "id": "e1d047da064bb9f3",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "1. Исходные сведения/Требования.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Требования"
+            }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -163,16 +178,22 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "20ffc080f66cf702",
+  "active": "e1d047da064bb9f3",
   "lastOpenFiles": [
-    "1. Исходные сведения/Требования.md",
     "1. Исходные сведения/Введение.md",
-    "Use Cases/Use Case.Организация.puml",
-    "Use Cases/Use Case.Координатор.puml",
-    "Use Cases/Use Case.Зритель.puml",
-    "Use Cases/Use Case.Волонтёр.puml",
-    "Use Cases/Use Case.Администратор.puml",
-    "Use Cases",
+    "out/2. Технический проект/2_container/container/C4. Контейнер.png",
+    "out/2. Технический проект/1_context/context/C4. Контекст.png",
+    "out/2. Технический проект/2_container/container",
+    "out/2. Технический проект/1_context/context",
+    "out/2. Технический проект/2_container",
+    "out/2. Технический проект/1_context",
+    "out/2. Технический проект",
+    "out",
+    "Use Cases/new/Use Case. Организация.puml",
+    "Use Cases/new/Use Case. Волонтер.puml",
+    "Use Cases/new/Use Case. Администратор.puml",
+    "Use Cases/new",
+    "1. Исходные сведения/Требования.md",
     "3. Технические процессы/Документирование.md",
     "3. Технические процессы/Ведение репозитория кода.md",
     "2. Технический проект/Контекст.md",
@@ -197,11 +218,7 @@
     "3. Технические процессы/Управление задачами.md",
     "3. Технические процессы/Соглашение о кодировании.md",
     "out/2. Технический проект/sample-component/Recipe Service. Диаграмма компонентов.png",
-    "out/2. Технический проект/sample-component",
     "out/2. Технический проект/sample-container/Recipe Web App. Диаграмма контейнеров.png",
-    "out/2. Технический проект/sample-container",
-    "out/2. Технический проект",
-    "out",
     "README.md",
     "3. Технические процессы/CI CD.md"
   ]
