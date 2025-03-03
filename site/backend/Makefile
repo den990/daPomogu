@@ -2,15 +2,15 @@ postgres:
 	docker compose up -d
 
 createdb:
-	docker exec -it api_gateway_db_postgres createdb --username=postgres --owner=postgres api_gateway_db
+	docker exec -it db_dapomogu createdb --username=postgres --owner=postgres dapomogu
 
 dropdb:
-	docker exec -it api_gateway_db_postgres dropdb --username=postgres api_gateway_db
+	docker exec -it db_dapomogu dropdb --username=postgres dapomogu
 
 migrateup:
-	migrate -path internal/migration -database "postgresql://postgres:changeme@localhost:5436/api_gateway_db?sslmode=disable" -verbose up
+	migrate -path internal/migration -database "postgresql://postgres:dapomogu_password@localhost:5436/dapomogu?sslmode=disable" -verbose up
 
 migratedown:
-	migrate -path internal/migration -database "postgresql://postgres:changeme@localhost:5436/api_gateway_db?sslmode=disable" -verbose down
+	migrate -path internal/migration -database "postgresql://postgres:dapomogu_password@localhost:5436/dapomogu?sslmode=disable" -verbose down
 
-.PHONY: postgres createdb dropdb migrateup migratedown
+.PHONY: postgres createdb dropdb migrateup mexigratedown
