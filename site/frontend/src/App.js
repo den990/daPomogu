@@ -1,6 +1,4 @@
 import './App.css';
-import Header from './layouts/Header';
-import Footer from './layouts/Footer';
 import AboutUs from './screens/AboutUs.';
 import Task from './screens/Task';
 import AccountVolunteer from './screens/AccountVolunteer';
@@ -18,7 +16,6 @@ function App() {
     return (
         <Router>
             <div className="h-100 d-flex flex-column">
-                <Header/>
                 <div className="App flex-grow-1">
                     <Routes>
                         <Route path="/" element={<Main />} />
@@ -32,10 +29,8 @@ function App() {
                         <Route path="/registration-volunteer" element={<VolunteerRegistration />} />
                         <Route path="/create-task" element={<CreateTask />} />
                         <Route path="/registration-organization" element={<OrganizationRegistration />} />
-                        <Route path="/login" element={<Login />} />
                     </Routes>
                 </div>
-                <Footer/>
             </div>
         </Router>
     );

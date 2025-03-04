@@ -3,14 +3,14 @@ import RegistrationForm from "../components/volunteerRegistration/registrationFo
 
 function VolunteerRegistration() {
     return (
-        <body class="h-full text-base-content">
-            <div id="registration-page" class="min-h-screen bg-gray-50">
-                <div class="flex min-h-[800px]">
+        <div className="h-full text-base-content">
+            <div id="registration-page" className="min-h-screen bg-gray-50">
+                <div className="flex min-h-[800px]">
                     <LeftPanel />
                     <RegistrationForm />
                 </div>
             </div>
-        </body>
+        </div>
     );
 }
 
