@@ -18,15 +18,12 @@ Person(coordinator, "Координатор", "Контролирует выпо
 System_Boundary(taxiService, "Volunteer сервис") {
     System_Boundary(services, "Сервисы") {
     
-        Container(auth_service, "Шлюз авторизации и аутентификации", "Go", "", $sprite="go")
-        Container(users_service, "Сервис управления пользователей", "Go", $sprite="go")
+        Container(users_service, "Сервис управления пользователей и авторизации с регистрацией", "Go", $sprite="go")
         Container(logging_service, "Сервис логирования", "Go", $sprite="go")
-        Container(session_service, "Сервис сессий", "Go", $sprite="go")
         Container(notification_service, "Сервис уведомлений", "Go", $sprite="go")
         Container(rating_service, "Сервис рейтинга", "Go", $sprite="go")
-        Container(task_service, "Сервис заданий", "Go", $sprite="go")
+        Container(task_service, "Сервис заданий и поиска заданий", "Go", $sprite="go")
         Container(chat_service, "Сервис чата", "Go", $sprite="go")
-        Container(search_task_service, "Сервис поиска заданий", "Go", $sprite="go")
     }
     Container(application_react, "Клиентское приложение", "React", $sprite="react")
     Container(database, "База данных", "PostgreSQL", "", $sprite="postgresql")
@@ -38,14 +35,11 @@ Rel(organizer, application_react, "Посещает", "HTTPS")
 Rel(user, application_react, "Посещает", "HTTPS")
 Rel(coordinator, application_react, "Посещает", "HTTPS")
 
-
-
 System_Ext(email, "Email сервис", "Отправка уведомлений")
 System_Ext(map_service, "Система картографии(Yandex Map)", "Предоставление адреса по координатам")
 
 Rel(notification_service, email, "API вызовы", "REST API")
 Rel(task_service, map_service, "API вызовы", "REST API")
-Rel(search_task_service, map_service, "API вызовы", "REST API")
 
 Rel(services, database, "API вызовы", "REST API")
 Rel(application_react, services, "API вызовы", "REST API")
