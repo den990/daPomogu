@@ -11,6 +11,9 @@ import CreateTask from './screens/CreateTask';
 import  { BrowserRouter as Router, Routes, Route } from 'react-router';
 import AccountOrganization from './screens/AccountOrganization';
 import Login from './screens/Login';
+import Chat from './screens/Chat';
+import AttachmentsToOrganization from './screens/AttachmentsToOrganization';
+import PhotoReport from './screens/PhotoReport';
 
 function App() {
     return (
@@ -29,6 +32,9 @@ function App() {
                         <Route path="/registration-volunteer" element={<VolunteerRegistration />} />
                         <Route path="/create-task" element={<CreateTask />} />
                         <Route path="/registration-organization" element={<OrganizationRegistration />} />
+                        <Route path="/chat" element={<Chat/>} />
+                        <Route path="/attachmentsToOrganization" element={<AttachmentsToOrganization />} />
+                        <Route path="/photo-report" element={<PhotoReport />} />
                     </Routes>
                 </div>
             </div>
