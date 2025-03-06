@@ -19,9 +19,8 @@ System_Boundary(taxiService, "Volunteer сервис") {
     System_Boundary(services, "Сервисы") {
     
         Container(users_service, "Сервис управления пользователей и авторизации с регистрацией", "Go", $sprite="go")
-        Container(logging_service, "Сервис логирования", "Go", $sprite="go")
         Container(notification_service, "Сервис уведомлений", "Go", $sprite="go")
-        Container(rating_service, "Сервис рейтинга", "Go", $sprite="go")
+        Container(rating_service, "Сервис мониторинга активности", "Go", $sprite="go")
         Container(task_service, "Сервис заданий и поиска заданий", "Go", $sprite="go")
         Container(chat_service, "Сервис чата", "Go", $sprite="go")
     }
