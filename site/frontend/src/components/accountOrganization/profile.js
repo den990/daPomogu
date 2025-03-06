@@ -16,6 +16,9 @@ function profile() {
                             <img style={{width: 16, height: 16}} src={require("../../images/add_white.svg").default} alt="add" />
                             <span style={{ paddingLeft: 10}}>Добавить задание</span>
                         </button>
+                        <button className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 flex items-center">
+                            <span>Редактировать профиль</span>
+                        </button>
                     </div>
                 </div>
             </div>

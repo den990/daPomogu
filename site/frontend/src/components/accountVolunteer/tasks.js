@@ -64,7 +64,7 @@ function tasks() {
               </label>
             </div>
             <button className="w-full mt-4 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700">
-              Сменить пароль
+              Редактировать профиль
             </button>
           </div>
         </div>
