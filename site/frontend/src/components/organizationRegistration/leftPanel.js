@@ -1,7 +1,6 @@
 function leftPanel() {
     return (
         <div id="auth-left-panel" className="hidden lg:flex lg:w-1/2 bg-red-600 relative">
-            <div className="absolute inset-0 bg-black bg-opacity-20"></div>
             <div className="relative z-10 p-12 flex flex-col justify-between h-full text-white">
                 <div>
                     <h1 className="text-4xl font-bold mb-6">Платформа для волонтерских организаций</h1>

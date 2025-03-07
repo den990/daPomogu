@@ -2,12 +2,12 @@ import Profile from '../components/accountOrganization/profile.js';
 import ActiveTasks from '../components/accountOrganization/activeTasks.js';
 import Volunteers from '../components/accountOrganization/volunteers.js';
 import Stats from '../components/accountOrganization/stats.js';
-import Header from '../layouts/Header.js';
+import HeaderGuest from '../layouts/HeaderGuest.js';
 
 function AccountOrganization() {
     return (
         <div>
-            <Header />
+            <HeaderGuest />
             <main className="max-w-7x1 mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <Profile />
                 <ActiveTasks />
