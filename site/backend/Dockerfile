@@ -1,22 +1,23 @@
-# Используем официальный образ Go
 FROM golang:1.23-alpine as builder
 
 # Устанавливаем рабочую директорию
 WORKDIR /app
 
-# Копируем go.mod и go.sum, чтобы установить зависимости
+# Копируем go.mod и go.sum для установки зависимостей
 COPY go.mod go.sum ./
+
+# Копируем .env файл
+COPY .env .env
+
+# Копируем остальные файлы проекта
+COPY . .
 
 # Устанавливаем зависимости
 RUN go mod tidy
 
-# Копируем все файлы приложения в контейнер
-COPY . .
-
 # Собираем приложение
 RUN CGO_ENABLED=0 GOOS=linux go build -o main .
 
-# Финальный образ
 FROM alpine:latest
 
 # Устанавливаем необходимые библиотеки для работы с PostgreSQL
@@ -27,6 +28,9 @@ WORKDIR /root/
 
 # Копируем скомпилированный бинарник из стадии сборки
 COPY --from=builder /app/main .
+
+# Копируем .env файл в финальный образ
+COPY --from=builder /app/.env .env
 
 # Открываем порт
 EXPOSE 8080

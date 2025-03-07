@@ -13,9 +13,11 @@ func InitDB() error {
 	postgresUser := os.Getenv("POSTGRES_USER")
 	postgresPassword := os.Getenv("POSTGRES_PASSWORD")
 	dbName := os.Getenv("DB_NAME")
+	postgresHost := "db_dapomogu"
 
-	dsn := fmt.Sprintf("user=%s password=%s dbname=%s host=localhost sslmode=disable port=5432", postgresUser, postgresPassword, dbName)
+	dsn := fmt.Sprintf("user=%s password=%s dbname=%s host=%s sslmode=disable port=5432", postgresUser, postgresPassword, dbName, postgresHost)
 
+	// Открываем подключение к базе данных
 	var err error
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
