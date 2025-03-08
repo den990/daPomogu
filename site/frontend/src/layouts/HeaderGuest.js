@@ -5,13 +5,11 @@ function HeaderGuest() {
                 <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                         <img style={{ width: 24, height: 24 }} src={ require("../images/heart_red.svg").default } alt="icon" />
-                        <span className="text-xl font-bold text-red-600">VolunteerHub</span>
+                        <span className="text-xl font-bold text-red-600">ДаПомогу</span>
                     </div>
                     <nav className="hidden md:flex space-x-6">
+                        <span className="text-gray-600 hover:text-red-600 cursor-pointer">Задания</span>
                         <span className="text-gray-600 hover:text-red-600 cursor-pointer">О нас</span>
-                        <span className="text-gray-600 hover:text-red-600 cursor-pointer">Проекты</span>
-                        <span className="text-gray-600 hover:text-red-600 cursor-pointer">Организации</span>
-                        <span className="text-gray-600 hover:text-red-600 cursor-pointer">Контакты</span>
                     </nav>
                     <div className="flex items-center space-x-4">
                         <button className="px-4 py-2 text-red-600 hover:text-red-700">Войти</button>
