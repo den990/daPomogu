@@ -16,6 +16,10 @@ import AttachmentsToOrganization from './screens/AttachmentsToOrganization';
 import PhotoReport from './screens/PhotoReport';
 import AdminDashboard from './screens/AdminDashboard';
 import EditVolunteerProfile from './screens/EditVolunteerProfile';
+import AdminEditOrganizationProfile from './screens/AdminEditOrganizationProfile';
+import EditOrganizationProfile from './screens/EditOrganizationProfile';
+import ConfirmationsTasks from './screens/ConfirmationsTasks';
+import Error from './screens/Error';
 
 function App() {
     return (
@@ -39,6 +43,10 @@ function App() {
                         <Route path="/photo-report" element={<PhotoReport />} />
                         <Route path="/admin-dashboard" element={<AdminDashboard />} />
                         <Route path="/edit-volunteer-profile" element={<EditVolunteerProfile />} />
+                        <Route path="/admin-edit-organization" element={<AdminEditOrganizationProfile />} />
+                        <Route path="/edit-organization-profile" element={<EditOrganizationProfile />} />
+                        <Route path="/confirmations-tasks" element={<ConfirmationsTasks />} />
+                        <Route path="/error" element={<Error />} />
                     </Routes>
                 </div>
             </div>
