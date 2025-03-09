@@ -19,11 +19,9 @@ function searchFilters() {
                         </div>
                         <div className="relative">
                             <select className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg appearance-none">
-                                <option>Тип участия</option>
-                                <option>Онлайн</option>
-                                <option>Оффлайн</option>
+                                <option>Дата</option>
                             </select>
-                            <img className="absolute left-3 top-1/2 -translate-y-1/2" style={{width: 12, height: 16}} src={require("../../images/placemark_grey.svg").default} alt="placemark" />
+                            <img className="absolute left-3 top-1/2 -translate-y-1/2" style={{width: 16, height: 16}} src={require("../../images/calendar_grey.svg").default} alt="placemark" />
                         </div>
                         <div className="relative">
                             <select className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg appearance-none">

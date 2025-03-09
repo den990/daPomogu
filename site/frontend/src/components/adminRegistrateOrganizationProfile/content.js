@@ -40,38 +40,38 @@ function content() {
                             <button className="rounded-lg border px-4 py-2 text-neutral-700 hover:bg-neutral-50">Отклонить</button>
                         </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-6">
+                    <div className="full-w">
                         <div className="rounded-lg border p-4">
-                            <h3 className="mb-3">Текущие данные</h3>
+                            <h3 className="mb-3">Данные организации</h3>
                             <div className="grid grid-cols-1 gap-4">
                                 <div>
-                                    <p className="text-sm text-neutral-600">Название организации</p>
-                                    <p>Волонтерская организация #1</p>
+                                    <p className="text-sm text-neutral-600">Юридическое название</p>
+                                    <p>Юридическое название</p>
                                 </div>
                                 <div>
-                                    <p className="text-sm text-neutral-600">Контактный телефон</p>
+                                    <p className="text-sm text-neutral-600">Email</p>
+                                    <p>ivan.petrov@email.com</p>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-neutral-600">Телефон</p>
                                     <p>+7 (999) 123-45-67</p>
                                 </div>
                                 <div>
-                                    <p className="text-sm text-neutral-600">Адрес</p>
-                                    <p>ул. Ленина, 123</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="rounded-lg border p-4">
-                            <h3 className="mb-3">Предлагаемые изменения</h3>
-                            <div className="grid grid-cols-1 gap-4">
-                                <div>
-                                    <p className="text-sm text-neutral-600">Название организации</p>
-                                    <p>Волонтерская организация #1</p>
+                                    <p className="text-sm text-neutral-600">ИНН</p>
+                                    <p>18231273183712371</p>
                                 </div>
                                 <div>
-                                    <p className="text-sm text-neutral-600">Контактный телефон</p>
-                                    <p>+7 (999) 123-45-67</p>
+                                    <p className="text-sm text-neutral-600">Юридический адрес</p>
+                                    
+                                    <p>Юридический адрес</p>
                                 </div>
                                 <div>
-                                    <p className="text-sm text-neutral-600">Адрес</p>
-                                    <p>ул. Ленина, 123</p>
+                                    <p className="text-sm text-neutral-600">Фактический адрес</p>
+                                    <p>Фактический адрес</p>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-neutral-600">Руководитель организации</p>
+                                    <p>Руководитель организации</p>
                                 </div>
                             </div>
                         </div>

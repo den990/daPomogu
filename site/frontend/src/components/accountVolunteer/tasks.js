@@ -40,34 +40,6 @@ function tasks() {
             </div>
           </div>
         </div>
-        <div id="settings-section" className="bg-white rounded-lg shadow p-6 mt-8">
-          <h3 className="text-xl font-semibold mb-6">Настройки</h3>
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="font-medium">Уведомления</h4>
-                <p className="text-sm text-gray-600">Получать уведомления о новых заданиях</p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" className="sr-only peer" />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
-              </label>
-            </div>
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="font-medium">Email-рассылка</h4>
-                <p className="text-sm text-gray-600">Получать еженедельный дайджест</p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" className="sr-only peer" />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
-              </label>
-            </div>
-            <button className="w-full mt-4 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700">
-              Редактировать профиль
-            </button>
-          </div>
-        </div>
       </div>
     );
 }

@@ -20,6 +20,7 @@ import AdminEditOrganizationProfile from './screens/AdminEditOrganizationProfile
 import EditOrganizationProfile from './screens/EditOrganizationProfile';
 import ConfirmationsTasks from './screens/ConfirmationsTasks';
 import Error from './screens/Error';
+import AdminRegistrateOrganizationProfile from './screens/AdminRegistrateOrganizationProfile';
 
 function App() {
     return (
@@ -47,6 +48,7 @@ function App() {
                         <Route path="/edit-organization-profile" element={<EditOrganizationProfile />} />
                         <Route path="/confirmations-tasks" element={<ConfirmationsTasks />} />
                         <Route path="/error" element={<Error />} />
+                        <Route path="/admin-registrate-organization" element={<AdminRegistrateOrganizationProfile/>} />
                     </Routes>
                 </div>
             </div>

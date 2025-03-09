@@ -1,5 +1,4 @@
 import Hero from '../components/main/hero.js';
-import Stats from '../components/main/stats.js';
 import FeaturedProjects from '../components/main/featuredProjects.js';
 import HowItWorks from '../components/main/howItWorks.js';
 import HeaderGuest from '../layouts/HeaderGuest.js';
@@ -16,7 +15,6 @@ function Main() {
             <HeaderOrganization />
             <HeaderAdmin />
             <Hero />
-            <Stats />
             <FeaturedProjects />
             <HowItWorks />
             <Footer />

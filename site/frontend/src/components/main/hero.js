@@ -1,7 +1,7 @@
 
 function hero() {
     return (
-        <section id="hero" className="pt-20 h-[600px] bg-gradient-to-br from-red-50 to-white">
+        <section id="hero" className="pt-20 h-[600px] bg-gradient-to-br from-red-50 to-white" style={{ position: 'relative', zIndex: 10 }}>
             <div className="container mx-auto px-4 h-full flex items-center">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                     <div>
