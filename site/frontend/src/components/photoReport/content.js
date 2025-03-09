@@ -25,7 +25,7 @@ function content() {
             </section>
             <section id="photo-upload" className="bg-white rounded-lg shadow-sm p-6 mb-6">
                 <h3 className="text-lg mb-4">Добавление фотографий</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div className="grid grid-cols-1">
                     <div className="border-2 border-dashed border-neutral-300 rounded-lg p-4 flex flex-col items-center justify-center min-h-[200px]">
                        <img style={{width: 30, height: 30}} src={require("../../images/camera_red.svg").default} alt="camera" />
                         <span className="text-sm text-neutral-500">Сделать фото</span>
@@ -41,9 +41,6 @@ function content() {
             <section id="action-buttons" className="flex flex-col md:flex-row gap-4 justify-end">
                 <button className="px-4 py-2 bg-neutral-200 rounded-lg hover:bg-neutral-300">
                     Очистить форму
-                </button>
-                <button className="px-4 py-2 bg-neutral-200 rounded-lg hover:bg-neutral-300">
-                    Сохранить черновик
                 </button>
                 <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
                     Отправить отчет
