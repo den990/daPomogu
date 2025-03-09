@@ -5,11 +5,6 @@ function content() {
                 <div id="applications-list" className="col-span-4 rounded-lg border bg-white p-4">
                     <div className="mb-4 flex items-center justify-between">
                         <h2 className="text-lg">Заявки</h2>
-                        <div className="flex gap-2">
-                            <button className="rounded-md bg-neutral-100 px-3 py-1 text-sm">Новые</button>
-                            <button className="rounded-md px-3 py-1 text-sm text-neutral-600 hover:bg-neutral-100">В процессе</button>
-                            <button className="rounded-md px-3 py-1 text-sm text-neutral-600 hover:bg-neutral-100">Завершенные</button>
-                        </div>
                     </div>
                     <div className="space-y-3">
                         <div className="cursor-pointer rounded-lg border p-3 hover:bg-neutral-50">
