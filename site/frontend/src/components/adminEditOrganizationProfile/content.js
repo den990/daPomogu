@@ -1,6 +1,6 @@
 function content() {
     return (
-        <main id="main-content" className="container mx-auto px-4 py-6">
+        <main id="main-content" className="container ml-64 px-4 py-6">
             <div className="grid grid-cols-12 gap-6">
                 <div id="applications-list" className="col-span-4 rounded-lg border bg-white p-4">
                     <div className="mb-4 flex items-center justify-between">
