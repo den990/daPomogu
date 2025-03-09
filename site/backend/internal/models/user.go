@@ -7,6 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgconn"
 	"log"
+	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -20,19 +22,27 @@ type User struct {
 	DateOfBirthday time.Time `gorm:"type:date"`
 	Address        string
 	PasswordHash   string `gorm:"not null"`
+	IsAdmin        bool   `gorm:"default:false"`
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 }
 
 type UserRegistration struct {
-	Email               string `json:"email"`
-	Phone               string `json:"phone"`
-	Name                string `json:"name"`
-	Surname             string `json:"surname"`
-	Patronymic          string `json:"patronymic"`
-	DateOfBirthday      string `json:"date_of_birthday"`
-	RegistrationAddress string `json:"registration_address"`
-	Password            string `json:"password"`
+	Email          string `json:"email" binding:"required,email"`
+	Phone          string `json:"phone" binding:"required"`
+	Name           string `json:"name"  binding:"required"`
+	Surname        string `json:"surname"`
+	Patronymic     string `json:"patronymic"`
+	DateOfBirthday string `json:"date_of_birthday"`
+	Adress         string `json:"registration_address"`
+	Password       string `json:"password" binding:"required"`
+}
+
+type UserProfileResponse struct {
+	Name           string `json:"name"`
+	Surname        string `json:"surname"`
+	Patronymic     string `json:"patronymic,omitempty"`
+	DateOfBirthday string `json:"date_of_birthday,omitempty"`
 }
 
 func RegisterUser(c *gin.Context) {
@@ -62,7 +72,7 @@ func RegisterUser(c *gin.Context) {
 		Surname:        volunteer.Surname,
 		Patronymic:     volunteer.Patronymic,
 		DateOfBirthday: dateOfBirthday,
-		Address:        volunteer.RegistrationAddress,
+		Address:        volunteer.Adress,
 		PasswordHash:   hashedPassword,
 		CreatedAt:      time.Now(),
 		UpdatedAt:      time.Now(),
@@ -84,4 +94,55 @@ func RegisterUser(c *gin.Context) {
 	}
 
 	c.JSON(200, gin.H{"message": "User registered successfully"})
+}
+
+func GetProfileInfo(c *gin.Context) {
+	userIDParam := c.Param("id")
+	var userID uint
+
+	if userIDParam != "" {
+		parsedID, err := strconv.ParseUint(userIDParam, 10, 32)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid user ID"})
+			return
+		}
+		userID = uint(parsedID)
+	} else {
+		jwtUserID, exists := c.Get("user_id")
+		if !exists {
+			c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
+			return
+		}
+		userID = jwtUserID.(uint)
+	}
+
+	var user User
+	if err := db.DB.First(&user, userID).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"message": "User not found"})
+		return
+	}
+
+	response := UserProfileResponse{
+		Name:           user.Name,
+		Surname:        user.Surname,
+		Patronymic:     user.Patronymic,
+		DateOfBirthday: user.DateOfBirthday.Format(time.DateOnly),
+	}
+
+	c.JSON(http.StatusOK, response)
+}
+
+func IsAdmin(c *gin.Context) (bool, error) {
+	userID, err := utils.GetUserIDFromToken(c)
+	if err != nil {
+		return false, err
+	}
+
+	var user User
+	if err := db.DB.Select("is_admin").Where("id = ?", userID).First(&user).Error; err != nil {
+		log.Println("Error fetching user role:", err)
+		return false, errors.New("user not found")
+	}
+
+	return user.IsAdmin, nil
 }

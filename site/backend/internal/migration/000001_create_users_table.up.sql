@@ -8,6 +8,7 @@ CREATE TABLE users (
         date_of_birthday DATE NULL,
         address VARCHAR(255) NULL,
         password_hash TEXT NOT NULL,
+        is_admin BOOLEAN DEFAULT FALSE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
