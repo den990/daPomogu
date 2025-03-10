@@ -8,7 +8,6 @@ function Chat() {
         <div className="h-screen flex flex-col">
             <HeaderVolunteer />
             <div id="chat-page" className="flex flex-1 bg-neutral-50 p-4 gap-4">
-                {/* Боковая панель (Список заявок) */}
                 <div id="applications-list" className="w-1/4 rounded-lg border bg-white p-4 h-auto overflow-auto">
                     <h2 className="text-lg mb-4">Заявки</h2>
                     <div className="space-y-3">
@@ -32,11 +31,8 @@ function Chat() {
                         </div>
                     </div>
                 </div>
-
-                {/* Окно чата */}
                 <div className="flex-1 bg-white rounded-lg shadow-md flex flex-col">
                     <Header />
-                    {/* Контейнер с сообщениями */}
                     <div className="flex-1 flex flex-col-reverse overflow-auto p-4">
                         <ChatContainer />
                     </div>
