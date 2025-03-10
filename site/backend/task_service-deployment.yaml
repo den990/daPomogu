@@ -19,7 +19,8 @@ spec:
             - containerPort: 8085
           env:
             - name: DATABASE_URL
-              value: "postgresql://postgres:dapomogu_password@postgres-service:5439/dapomogu_task_db"
+
+              value: "postgresql://postgres:dapomogu_password@postgres-service:5432/dapomogu_task_db"
 ---
 apiVersion: v1
 kind: Service

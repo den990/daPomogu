@@ -16,10 +16,10 @@ spec:
         - name: user-service
           image: den990/user_service:latest
           ports:
-            - containerPort: 8086
+            - containerPort: 8080
           env:
             - name: DATABASE_URL
-              value: "postgresql://postgres:dapomogu_password@postgres-service:5439/dapomogu_user_db"
+              value: "postgresql://postgres:dapomogu_password@postgres-service:5432/dapomogu_user_db"
 ---
 apiVersion: v1
 kind: Service
@@ -31,5 +31,6 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 8086
-  type: ClusterIP
+      targetPort: 8080
+      nodePort: 30080
+  type: NodePort

@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM golang:latest AS build
+FROM golang:latest AS builder
 
 WORKDIR /app
 
@@ -11,7 +11,12 @@ RUN go mod tidy
 COPY . .
 
 # Собираем приложение
-RUN CGO_ENABLED=0 GOOS=linux go build -o /myapp ./cmd
+RUN CGO_ENABLED=0 GOOS=linux go build -o main ./cmd
+
+RUN wget -O migrate.tar.gz https://github.com/golang-migrate/migrate/releases/download/v4.14.1/migrate.linux-amd64.tar.gz && \
+    tar -xzf migrate.tar.gz && \
+    mv migrate.linux-amd64 migrate && \
+    chmod +x migrate
 
 # Stage 2: Run
 FROM alpine:latest AS run
@@ -20,15 +25,19 @@ FROM alpine:latest AS run
 WORKDIR /app
 
 # Копируем бинарник
-COPY --from=build /myapp /myapp
+COPY --from=builder /app/main .
+COPY --from=builder /app/migrate .
+COPY --from=builder /app/.env .env
+COPY /migrations /app/migrations
+
 
 COPY config.yaml ./config.yaml
 
 # Разрешаем выполнение файла (на всякий случай)
-RUN chmod +x /myapp
+RUN chmod +x ./main ./migrate
 
 # Открываем порт
 EXPOSE 8080
 
 # Запускаем приложение
-CMD ["/myapp", "--config=./app/config.yaml"]
+CMD ./migrate -path /app/migrations -database "postgresql://postgres:dapomogu_password@postgres-service:5432/dapomogu_task_db?sslmode=disable" up && ./main
