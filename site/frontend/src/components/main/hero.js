@@ -1,3 +1,5 @@
+import { Link } from "react-router";
+import ROUTES from "../../constants/routes";
 
 function hero() {
     return (
@@ -8,8 +10,8 @@ function hero() {
                         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Объединяем неравнодушных людей</h1>
                         <p className="text-xl text-gray-600 mb-8">Найдите волонтерские проекты или добровольцев для ваших инициатив</p>
                         <div className="flex space-x-4">
-                            <button className="px-8 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700">Стать волонтером</button>
-                            <button className="px-8 py-3 text-red-600 border border-red-600 rounded-lg hover:bg-red-50">Создать проект</button>
+                            <Link to={ROUTES.REGISTER_VOLUNTEER} className="px-8 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700">Стать волонтером</Link>
+                            <Link to={ROUTES.REGISTER_ORGANIZATION} className="px-8 py-3 text-red-600 border border-red-600 rounded-lg hover:bg-red-50">Создать проект</Link>
                         </div>
                     </div>
                     <div className="hidden md:block">

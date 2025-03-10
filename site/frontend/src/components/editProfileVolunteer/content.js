@@ -1,3 +1,6 @@
+import { Link } from "react-router";
+import ROUTES from "../../constants/routes";
+
 function content() {
     return (
         <main class="container mx-auto px-4 py-8">
@@ -51,10 +54,11 @@ function content() {
                             <label class="block text-sm font-medium text-gray-700">Подтверждение пароля</label>
                             <input type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" />
                         </div>
-                        <div class="pt-4">
-                            <button class="w-full bg-red-600 text-white py-3 px-4 rounded-md hover:bg-red-700 transition font-medium">
+                        <div className="pt-4">
+                            <Link to={ROUTES.ACCOUNT_VOLUNTEER} 
+                                className="block w-full text-center bg-red-600 text-white py-3 px-4 rounded-md hover:bg-red-700 transition font-medium">
                                 Сохранить изменения
-                            </button>
+                            </Link>
                         </div>
                     </div>
                 </div>

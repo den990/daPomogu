@@ -1,3 +1,6 @@
+import { Link } from "react-router";
+import ROUTES from "../../constants/routes";
+
 function form() {
     return (
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
@@ -50,9 +53,9 @@ function form() {
                         </div>
                     </div>
                     <div className="mt-6">
-                        <a href="#" className="w-full flex justify-center py-2 px-4 border border-red-600 rounded-md shadow-sm text-sm font-medium text-red-600 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                        <Link to={ROUTES.REGISTER_VOLUNTEER} className="w-full flex justify-center py-2 px-4 border border-red-600 rounded-md shadow-sm text-sm font-medium text-red-600 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                             Зарегистрироваться
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </div>

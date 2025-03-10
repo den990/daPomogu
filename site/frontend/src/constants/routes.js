@@ -1,0 +1,25 @@
+const ROUTES = {
+    HOME: "/",
+    ABOUT: "/about",
+    LOGIN: "/login",
+    TASK: "/task",
+    ACCOUNT_VOLUNTEER: "/account-volunteer",
+    ACCOUNT_ORGANIZATION: "/account-organization",
+    TASKS_CATALOG: "/tasks-catalog",
+    ADMIN_PANEL: "/admin-panel",
+    REGISTER_VOLUNTEER: "/registration-volunteer",
+    CREATE_TASK: "/create-task",
+    REGISTER_ORGANIZATION: "/registration-organization",
+    CHAT: "/chat",
+    ATTACHMENTS_ORGANIZATION: "/attachments-to-organization",
+    PHOTO_REPORT: "/photo-report",
+    ADMIN_DASHBOARD: "/admin-dashboard",
+    EDIT_VOLUNTEER_PROFILE: "/edit-volunteer-profile",
+    ADMIN_EDIT_ORGANIZATION: "/admin-edit-organization",
+    EDIT_ORGANIZATION_PROFILE: "/edit-organization-profile",
+    CONFIRMATIONS_TASKS: "/confirmations-tasks",
+    ERROR: "/error",
+    ADMIN_REGISTER_ORGANIZATION: "/admin-registrate-organization"
+};
+
+export default ROUTES;

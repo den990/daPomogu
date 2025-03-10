@@ -1,3 +1,5 @@
+import { Link } from "react-router";
+import ROUTES from "../../constants/routes";
 
 function profile() {
     return (
@@ -10,14 +12,14 @@ function profile() {
                     <div className="flex space-x-4">
                         <button className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 flex items-center">
                             <img style={{width: 20, height: 16}} src={require("../../images/registration_white.svg").default} alt="registration" />
-                            <span style={{ paddingLeft: 10}}>Заявки на вступление</span>
+                            <Link to={ROUTES.ATTACHMENTS_ORGANIZATION} style={{ paddingLeft: 10}}>Заявки на вступление</Link>
                         </button>
                         <button className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 flex items-center">
                             <img style={{width: 16, height: 16}} src={require("../../images/add_white.svg").default} alt="add" />
-                            <span style={{ paddingLeft: 10}}>Добавить задание</span>
+                            <Link to={ROUTES.CREATE_TASK} style={{ paddingLeft: 10}}>Добавить задание</Link>
                         </button>
                         <button className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 flex items-center">
-                            <span>Редактировать профиль</span>
+                            <Link to={ROUTES.EDIT_ORGANIZATION_PROFILE}>Редактировать профиль</Link>
                         </button>
                     </div>
                 </div>

@@ -1,3 +1,6 @@
+import { Link } from "react-router";
+import ROUTES from "../../constants/routes";
+
 function buttonsPanel() {
     // убрать верхний div
     return (
@@ -9,7 +12,7 @@ function buttonsPanel() {
                     </button>
                     <button className="w-full border border-neutral-300 px-6 py-3 rounded-lg hover:bg-red-50 flex items-center justify-center">
                         <img style={{ width: 16, height: 16 }} src={ require("../../images/camera_red.svg").default } alt="icon" />
-                        <span style={{ paddingLeft: 10 }}>Сделать фотоотчет</span>
+                        <Link to={ROUTES.PHOTO_REPORT} style={{ paddingLeft: 10 }}>Сделать фотоотчет</Link>
                     </button>
                     <div className="mt-6 pt-6 border-t">
                         <div className="flex items-center gap-2 mb-4">
@@ -63,7 +66,7 @@ function buttonsPanel() {
                     </button>
                     <button className="w-full border border-neutral-300 px-6 py-3 rounded-lg hover:bg-red-50 flex items-center justify-center">
                         <img style={{ width: 16, height: 16 }} src={ require("../../images/camera_red.svg").default } alt="icon" />
-                        <span style={{ paddingLeft: 10 }}>Сделать фотоотчет</span>
+                        <Link to={ROUTES.PHOTO_REPORT} style={{ paddingLeft: 10 }}>Сделать фотоотчет</Link>
                     </button>
                     <div className="mt-6 pt-6 border-t">
                         <div className="flex items-center gap-2 mb-4">
@@ -143,7 +146,7 @@ function buttonsPanel() {
                     </button>
                     <button className="w-full border border-neutral-300 px-6 py-3 rounded-lg hover:bg-red-50 flex items-center justify-center">
                         <img style={{ width: 16, height: 16 }} src={ require("../../images/person_red.svg").default } alt="icon" />
-                        <span style={{ paddingLeft: 10 }}>Проверить выполнение</span>
+                        <Link to={ROUTES.CONFIRMATIONS_TASKS} style={{ paddingLeft: 10 }}>Проверить выполнение</Link>
                     </button>
                     <div className="mt-6 pt-6 border-t">
                         <div className="flex items-center gap-2 mb-4">

@@ -1,3 +1,6 @@
+import { Link } from "react-router";
+import ROUTES from "../../constants/routes";
+
 function taskForm() {
     return (
         <form id="task-form" className="bg-white rounded-lg shadow-md p-6">
@@ -73,9 +76,9 @@ function taskForm() {
                     <input type="number" min="0" className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500" />
                 </div>
                 <div id="form-actions" className="flex items-center justify-end space-x-4 pt-6">
-                    <button type="button" className="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                    <Link to={ROUTES.ACCOUNT_ORGANIZATION} type="button" className="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
                         Отмена
-                    </button>
+                    </Link>
                     <button type="submit" className="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
                         Создать задание
                     </button>

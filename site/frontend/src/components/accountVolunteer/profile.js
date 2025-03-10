@@ -1,3 +1,6 @@
+import { Link } from "react-router";
+import ROUTES from "../../constants/routes";
+
 function profile() {
     return (
         <div id="profile-section" className="md:col-span-1">
@@ -15,9 +18,9 @@ function profile() {
                     <div className="text-2xl font-bold text-red-600">47</div>
                     <div className="text-sm text-gray-600">Выполнено заданий</div>
                 </div>
-                <button className="w-full mt-4 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700">
+                <Link to={ROUTES.EDIT_VOLUNTEER_PROFILE} className="w-full mt-4 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700">
                     Редактировать профиль
-                </button>
+                </Link>
             </div>
             </div>
         </div>
