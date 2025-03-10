@@ -1,3 +1,6 @@
+import { Link } from "react-router";
+import ROUTES from "../../constants/routes";
+
 function registrationForm() {
     return (
         <div id="auth-right-panel" className="w-full lg:w-1/2 px-6 py-12 lg:px-12">
@@ -46,7 +49,7 @@ function registrationForm() {
                 <div className="mt-6 text-center">
                     <p className="text-sm text-gray-600">
                         Уже есть аккаунт? 
-                        <span className="font-medium text-red-600 hover:text-red-500 cursor-pointer" style={{ paddingLeft: 4 }}>Войти</span>
+                        <Link to={ROUTES.LOGIN} className="font-medium text-red-600 hover:text-red-500 cursor-pointer" style={{ paddingLeft: 4 }}>Войти</Link>
                     </p>
                 </div>
             </div>

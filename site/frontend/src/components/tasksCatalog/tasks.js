@@ -1,3 +1,6 @@
+import { Link } from "react-router";
+import ROUTES from "../../constants/routes";
+
 function tasks() {
     return (
         <section id="tasks-grid" className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
@@ -24,7 +27,10 @@ function tasks() {
                             <span style={{paddingLeft: 10}}>12/20</span>
                         </div>
                     </div>
-                    <button className="w-full py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">Принять участие</button>
+                    <Link to={ROUTES.TASK} 
+                        className="block w-full py-2 bg-red-600 text-white rounded-lg text-center hover:bg-red-700">
+                        Принять участие
+                    </Link>
                 </div>
             </div>
             <div id="task-2" className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
@@ -54,7 +60,10 @@ function tasks() {
                             <span style={{paddingLeft: 10}}>5/20</span>
                         </div>
                     </div>
-                    <button className="w-full py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">Принять участие</button>
+                    <Link to={ROUTES.TASK} 
+                        className="block w-full py-2 bg-red-600 text-white rounded-lg text-center hover:bg-red-700">
+                        Принять участие
+                    </Link>
                 </div>
             </div>
             <div id="task-3" className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
@@ -80,7 +89,10 @@ function tasks() {
                             <span style={{paddingLeft: 10}}>8/15</span>
                         </div>
                     </div>
-                    <button className="w-full py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">Принять участие</button>
+                    <Link to={ROUTES.TASK} 
+                        className="block w-full py-2 bg-red-600 text-white rounded-lg text-center hover:bg-red-700">
+                        Принять участие
+                    </Link>
                 </div>
             </div>
         </section>

@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Link } from "react-router";
+import ROUTES from "../../constants/routes";
 
 function RegistrationForm() {
 
@@ -144,7 +146,7 @@ function RegistrationForm() {
                 </form>
                 <p className="mt-6 text-center text-sm text-gray-600">
                     Уже есть аккаунт? 
-                    <span className="font-medium text-red-600 hover:text-red-500 cursor-pointer" style={{ paddingLeft: 4 }}>Войти</span>
+                    <Link to={ROUTES.LOGIN} className="font-medium text-red-600 hover:text-red-500 cursor-pointer" style={{ paddingLeft: 4 }}>Войти</Link>
                 </p>
             </div>
         </div>

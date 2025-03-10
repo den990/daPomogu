@@ -1,3 +1,6 @@
+import { Link } from 'react-router';
+import ROUTES from '../constants/routes';
+
 function Footer() {
     return (
         <footer id="footer" className="bg-gray-900 text-white py-12">
@@ -10,7 +13,9 @@ function Footer() {
                     <div>
                         <h4 className="text-lg font-bold mb-4">Платформа</h4>
                         <ul className="space-y-2">
-                            <li><span className="text-gray-400 hover:text-white cursor-pointer">О нас</span></li>
+                            <li>
+                                <Link to={ROUTES.ABOUT} className="text-gray-400 hover:text-white cursor-pointer">О нас</Link>
+                            </li>
                         </ul>
                     </div>
                 </div>

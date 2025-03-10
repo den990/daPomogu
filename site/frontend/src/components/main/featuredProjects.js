@@ -1,3 +1,6 @@
+import { Link } from "react-router";
+import ROUTES from "../../constants/routes";
+
 function featuredProjects() {
     return (
         <section id="featured-projects" className="py-16 bg-gray-50" style={{ position: 'relative', zIndex: 20 }}>
@@ -11,7 +14,7 @@ function featuredProjects() {
                             <p className="text-gray-600 mb-4">Требуются волонтеры для помощи пожилым людям с покупками и бытовыми задачами</p>
                             <div className="flex justify-between items-center">
                                 <span className="text-red-600">Требуется: 5 человек</span>
-                                <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">Участвовать</button>
+                                <Link to={ROUTES.LOGIN} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">Участвовать</Link>
                             </div>
                         </div>
                     </div>
@@ -22,7 +25,7 @@ function featuredProjects() {
                             <p className="text-gray-600 mb-4">Организация субботника в городском парке. Присоединяйтесь к нашей команде!</p>
                             <div className="flex justify-between items-center">
                                 <span className="text-red-600">Требуется: 15 человек</span>
-                                <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">Участвовать</button>
+                                <Link to={ROUTES.LOGIN} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">Участвовать</Link>
                             </div>
                         </div>
                     </div>
@@ -33,7 +36,7 @@ function featuredProjects() {
                             <p className="text-gray-600 mb-4">Нужны волонтеры для проведения развивающих занятий с детьми</p>
                             <div className="flex justify-between items-center">
                                 <span className="text-red-600">Требуется: 3 человека</span>
-                                <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">Участвовать</button>
+                                <Link to={ROUTES.LOGIN} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">Участвовать</Link>
                             </div>
                         </div>
                     </div>
