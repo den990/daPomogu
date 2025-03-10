@@ -1,4 +1,3 @@
-import Header from "../components/photoReport/header";
 import Footer from "../components/photoReport/footer";
 import Content from "../components/photoReport/content";
 import HeaderVolunteer from "../layouts/HeaderVolunteer";
