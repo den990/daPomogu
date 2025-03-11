@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router";
 import ROUTES from "../../constants/routes";
+import useRegistration from "../../hooks/useRegistration";
 
 function RegistrationForm() {
-
+    const { register, error } = useRegistration();
     const [formData, setFormData] = useState({
         surname: "",
         name: "",
@@ -43,48 +44,13 @@ function RegistrationForm() {
             return;
         }
 
-        try {
-            const response = await fetch("http://localhost:8080/register", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    email: formData.email,
-                    phone: formData.phone,
-                    name: formData.name,
-                    surname: formData.surname,
-                    patronymic: formData.patronymic,
-                    date_of_birthday: formData.date_of_birthday,
-                    registration_address: formData.registration_address,
-                    password: formData.password
-                })
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                setSuccessMessage("Регистрация прошла успешно!");
-                setFormData({
-                    surname: "",
-                    name: "",
-                    patronymic: "",
-                    email: "",
-                    phone: "",
-                    date_of_birthday: "",
-                    registration_address: "",
-                    password: "",
-                    password_confirmation: "",
-                    terms: false,
-                });
-            } else {
-                setErrorMessage(data.message || "Ошибка регистрации");
-            }
-        } catch (error) {
-            setErrorMessage("Ошибка сети. Попробуйте позже.");
+        const result = await register(formData);
+        if(result) {
+            setSuccessMessage("Регистрация прошла успешно!");
+        } else {
+            setErrorMessage(error || "Ошибка регистрации!");
         }
     };
-
     return (
         <div id="registration-form" className="w-full lg:w-1/2 px-6 lg:px-12 py-12">
             <div className="max-w-md mx-auto">
