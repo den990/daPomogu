@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-function useRegistration() {
+function useRegistrationVolunteer() {
     const [error, setError] = useState(null);
 
     const register = async (formData) => {
@@ -27,4 +27,4 @@ function useRegistration() {
     return { register, error };
 }
 
-export default useRegistration;
+export default useRegistrationVolunteer;
