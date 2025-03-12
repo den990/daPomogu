@@ -2,7 +2,10 @@ package models
 
 import (
 	"backend/internal/db"
+	"errors"
 	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgx/v5/pgconn"
+	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
 	"strconv"
@@ -24,6 +27,7 @@ type Organization struct {
 	LegalAddress  string `gorm:"not null"`
 	ActualAddress string `gorm:"not null"`
 	StatusID      uint   `gorm:"not null;default:1"`
+	FullNameOwner string `gorm:"not null"`
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 }
@@ -39,6 +43,7 @@ type OrganizationRegistration struct {
 	Name          string `json:"name" binding:"required"`
 	LegalAddress  string `json:"legal_address" binding:"required"`
 	ActualAddress string `json:"actual_address" binding:"required"`
+	FullNameOwner string `json:"full_name_owner" binding:"required"`
 }
 
 func RegisterOrganization(c *gin.Context) {
@@ -57,6 +62,7 @@ func RegisterOrganization(c *gin.Context) {
 		LegalAddress:  orgData.LegalAddress,
 		ActualAddress: orgData.ActualAddress,
 		StatusID:      1,
+		FullNameOwner: orgData.FullNameOwner,
 	}
 
 	if err := db.DB.Create(&organization).Error; err != nil {
@@ -100,6 +106,45 @@ func updateOrganizationStatus(c *gin.Context, newStatus uint, successMessage str
 		log.Println("Error updating organization status:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to update organization status"})
 		return
+	}
+
+	hash, err := bcrypt.GenerateFromPassword([]byte("organization"), bcrypt.DefaultCost) //пока временно
+	if newStatus == StatusAccepted {
+		user := User{
+			Email:        organization.Email,
+			Phone:        organization.Phone,
+			Name:         organization.Name,
+			Address:      organization.ActualAddress,
+			PasswordHash: string(hash),
+			CreatedAt:    time.Now(),
+			UpdatedAt:    time.Now(),
+		}
+
+		if err := db.DB.Create(&user).Error; err != nil {
+			var pgErr *pgconn.PgError
+			if errors.As(err, &pgErr) {
+				log.Println("PostgreSQL error:", pgErr.Message, "Code:", pgErr.Code)
+				if pgErr.Code == "23505" {
+					c.JSON(400, gin.H{"message": "Email is already taken"})
+					return
+				}
+			}
+
+			log.Println("Unexpected error:", err)
+			c.JSON(500, gin.H{"message": "Failed to register user"})
+			return
+		} // вынести потом в одну функцию
+
+		userOrganization := UserOrganization{
+			UserID:         user.ID,
+			OrganizationID: uint(orgID),
+		}
+
+		if err := db.DB.Create(&userOrganization).Error; err != nil {
+			log.Println("Error registering user_organization:", err)
+			c.JSON(500, gin.H{"message": "Failed to register organization"})
+			return
+		}
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": successMessage})
