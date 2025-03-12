@@ -24,6 +24,7 @@ import TestAuth from './screens/TestAuth';
 import ROUTES from './constants/routes';
 import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from './components/PrivateRoute';
+import EditPassword from './screens/EditPassword';
 
 function App() {
     return (
@@ -37,6 +38,7 @@ function App() {
                             <Route path={ROUTES.LOGIN} element={<Login />} />
                             <Route element={<PrivateRoute />}>
                                 <Route path={ROUTES.ACCOUNT_VOLUNTEER} element={<AccountVolunteer />} />
+                                <Route path={ROUTES.EDIT_PASSWORD} element={<EditPassword />} />
                             </Route>
                             <Route path={ROUTES.ACCOUNT_ORGANIZATION} element={<AccountOrganization />} />
                             <Route path={ROUTES.TASKS_CATALOG} element={<TasksCatalog />} />
