@@ -13,6 +13,12 @@ type LoginRequest struct {
 	Password string `json:"password" binding:"required"`
 }
 
+const (
+	RoleAdmin        = "admin"
+	RoleOrganization = "organization"
+	RoleVolunteer    = "volunteer"
+)
+
 func Login(c *gin.Context) {
 	var req LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -21,7 +27,7 @@ func Login(c *gin.Context) {
 	}
 
 	var user User
-	if err := db.DB.Where("email = ?", req.Email).First(&user).Error; err != nil {
+	if err := db.DB.Table("user").Where("email = ?", req.Email).First(&user).Error; err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid email or password"})
 		return
 	}
@@ -31,7 +37,17 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	token, err := utils.GenerateToken(user.ID)
+	role := RoleVolunteer
+	if user.IsAdmin {
+		role = RoleAdmin
+	} else {
+		var userOrg UserOrganization
+		if err := db.DB.Table("user_organization").Where("user_id = ? AND is_owner = true", user.ID).First(&userOrg).Error; err == nil {
+			role = RoleOrganization
+		}
+	}
+
+	token, err := utils.GenerateToken(user.ID, role)
 	if err != nil {
 		log.Println("Error generating token:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to generate token"})

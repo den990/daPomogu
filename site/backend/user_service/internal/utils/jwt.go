@@ -2,8 +2,6 @@ package utils
 
 import (
 	"backend/config"
-	"backend/internal/db"
-	"backend/internal/models"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -19,33 +17,11 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-const (
-	RoleAdmin        = "admin"
-	RoleOrganization = "organization"
-	RoleVolunteer    = "volunteer"
-)
-
-func GenerateToken(userID uint) (string, error) {
-	var user models.User
-	if err := db.DB.Where("id = ?", userID).First(&user).Error; err != nil {
-		return "", errors.New("user not found")
-	}
-
-	role := RoleVolunteer
-
-	if user.IsAdmin {
-		role = RoleAdmin
-	} else {
-		var userOrg models.UserOrganization
-		if err := db.DB.Where("user_id = ? AND is_owner = true", user.ID).First(&userOrg).Error; err == nil {
-			role = RoleOrganization
-		}
-	}
-
+func GenerateToken(userID uint, role string) (string, error) {
 	expirationTime := time.Now().Add(24 * time.Hour)
 
 	claims := &Claims{
-		UserID: user.ID,
+		UserID: userID,
 		Role:   role,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
