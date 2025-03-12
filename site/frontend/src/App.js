@@ -4,6 +4,7 @@ import AccountVolunteer from './screens/AccountVolunteer';
 import TasksCatalog from './screens/TasksCatalog';
 import Main from './screens/Main';
 import AdminPanel from './screens/AdminPanel';
+import Task from './screens/Task';
 import VolunteerRegistration from './screens/VolunteerRegistration';
 import OrganizationRegistration from './screens/OrganizationRegistration';
 import CreateTask from './screens/CreateTask';
