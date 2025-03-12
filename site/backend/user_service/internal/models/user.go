@@ -34,7 +34,7 @@ type UserRegistration struct {
 	Surname        string `json:"surname"`
 	Patronymic     string `json:"patronymic"`
 	DateOfBirthday string `json:"date_of_birthday"`
-	Adress         string `json:"registration_address"`
+	Address        string `json:"registration_address"`
 	Password       string `json:"password" binding:"required"`
 }
 
@@ -43,6 +43,7 @@ type UserProfileResponse struct {
 	Surname        string `json:"surname"`
 	Patronymic     string `json:"patronymic,omitempty"`
 	DateOfBirthday string `json:"date_of_birthday,omitempty"`
+	Address        string `json:"address"`
 }
 
 func RegisterUser(c *gin.Context) {
@@ -72,7 +73,7 @@ func RegisterUser(c *gin.Context) {
 		Surname:        volunteer.Surname,
 		Patronymic:     volunteer.Patronymic,
 		DateOfBirthday: dateOfBirthday,
-		Address:        volunteer.Adress,
+		Address:        volunteer.Address,
 		PasswordHash:   hashedPassword,
 		CreatedAt:      time.Now(),
 		UpdatedAt:      time.Now(),
@@ -127,6 +128,7 @@ func GetProfileInfo(c *gin.Context) {
 		Surname:        user.Surname,
 		Patronymic:     user.Patronymic,
 		DateOfBirthday: user.DateOfBirthday.Format(time.DateOnly),
+		Address:        user.Address,
 	}
 
 	c.JSON(http.StatusOK, response)
