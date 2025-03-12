@@ -1,12 +1,12 @@
 import Footer from "../components/photoReport/footer";
 import Content from "../components/photoReport/content";
-import HeaderVolunteer from "../layouts/HeaderVolunteer";
+import RoleHeader from "../components/RoleHeader";
 
 function PhotoReport() {
     return (
         <div className="h-full text-base-content">
             <div className="min-h-screen bg-neutral-50">
-                <HeaderVolunteer />
+                <RoleHeader />
                 <Content />
                 <Footer />
             </div>
