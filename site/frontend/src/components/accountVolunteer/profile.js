@@ -1,24 +1,20 @@
 import { Link } from "react-router";
 import React, { useEffect, useState } from "react";
 import ROUTES from "../../constants/routes";
+import RequestToServerWithAuth from "../../utils/RequestToServerWithAuth";
 import { useAuthContext } from "../../context/AuthContext";
 
 function Profile() {
-    const { token } = useAuthContext();
     const [profileData, setProfileData] = useState(null);
+    const { token } = useAuthContext();
 
     useEffect(() => {
-        const fetchProfile = async () => {
         if (!token) return;
+
+        const fetchProfile = async () => {
     
         try {
-            const response = await fetch("http://localhost:8080/api/profile", {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const response = await RequestToServerWithAuth("http://localhost:8080/api/profile", "GET", token);
     
             if (!response.ok) {
                 throw new Error("Не удалось получить данные профиля");
@@ -56,6 +52,9 @@ function Profile() {
                 </div>
                 <Link to={ROUTES.EDIT_VOLUNTEER_PROFILE} className="w-full mt-4 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700">
                     Редактировать профиль
+                </Link>
+                <Link to={ROUTES.EDIT_VOLUNTEER_PROFILE} className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700">
+                    Сменить пароль
                 </Link>
             </div>
             </div>

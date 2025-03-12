@@ -1,6 +1,5 @@
 import './App.css';
 import AboutUs from './screens/AboutUs.';
-import Task from './screens/Task';
 import AccountVolunteer from './screens/AccountVolunteer';
 import TasksCatalog from './screens/TasksCatalog';
 import Main from './screens/Main';
@@ -25,6 +24,7 @@ import ROUTES from './constants/routes';
 import { AuthProvider } from "./context/AuthContext";
 import { BrowserRouter as Router, Routes, Route } from 'react-router';
 import PrivateRoute from './components/PrivateRoute';
+import EditPassword from './screens/EditPassword';
 
 function App() {
     return (
@@ -42,6 +42,7 @@ function App() {
                             <Route path={ROUTES.ERROR} element={<Error />} />
                             <Route path="/test-auth" element={<TestAuth />} />
                             <Route element={<PrivateRoute />}>
+                                <Route path={ROUTES.EDIT_PASSWORD} element={<EditPassword />} />
                                 <Route path={ROUTES.ACCOUNT_VOLUNTEER} element={<AccountVolunteer />} />
                                 <Route path={ROUTES.TASK} element={<Task />}/>
                                 <Route path={ROUTES.ACCOUNT_ORGANIZATION} element={<AccountOrganization />} />

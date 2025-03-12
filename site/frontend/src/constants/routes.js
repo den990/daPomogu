@@ -19,7 +19,8 @@ const ROUTES = {
     EDIT_ORGANIZATION_PROFILE: "/edit-organization-profile",
     CONFIRMATIONS_TASKS: "/confirmations-tasks",
     ERROR: "/error",
-    ADMIN_REGISTER_ORGANIZATION: "/admin-registrate-organization"
+    ADMIN_REGISTER_ORGANIZATION: "/admin-registrate-organization",
+    EDIT_PASSWORD: "/edit-password",
 };
 
 export default ROUTES;
