@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import ROUTES from "../../constants/routes";
 import useAuth from "../../hooks/useAuth";
 
@@ -8,14 +8,18 @@ function LoginForm() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const token = await login(email, password);
         if (token) {
-        setMessage("Логин успешен!");
+            setMessage("Логин успешен!");
+            setTimeout(() => {
+                navigate(ROUTES.ACCOUNT_VOLUNTEER);
+            }, 2000);
         } else {
-        setMessage(error || "Ошибка аутентификации");
+            setMessage(error || "Ошибка аутентификации");
         }
     };
 

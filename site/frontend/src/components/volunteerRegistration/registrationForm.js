@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import ROUTES from "../../constants/routes";
 import useRegistration from "../../hooks/useRegistration";
 
 function RegistrationForm() {
     const { register, error } = useRegistration();
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         surname: "",
         name: "",
@@ -47,6 +48,9 @@ function RegistrationForm() {
         const result = await register(formData);
         if(result) {
             setSuccessMessage("Регистрация прошла успешно!");
+            setTimeout(() => {
+                navigate(ROUTES.LOGIN);
+            }, 2000);
         } else {
             setErrorMessage(error || "Ошибка регистрации!");
         }

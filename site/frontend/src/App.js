@@ -1,6 +1,5 @@
 import './App.css';
 import AboutUs from './screens/AboutUs.';
-import Task from './screens/Task';
 import AccountVolunteer from './screens/AccountVolunteer';
 import TasksCatalog from './screens/TasksCatalog';
 import Main from './screens/Main';
