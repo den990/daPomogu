@@ -27,6 +27,10 @@ type User struct {
 	UpdatedAt      time.Time
 }
 
+func (User) TableName() string {
+	return "user"
+}
+
 type UserRegistration struct {
 	Email          string `json:"email" binding:"required,email"`
 	Phone          string `json:"phone" binding:"required"`

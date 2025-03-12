@@ -6,3 +6,7 @@ type UserOrganization struct {
 	OrganizationID uint `gorm:"not null;index"`
 	IsOwner        bool `gorm:"default:false"`
 }
+
+func (UserOrganization) TableName() string {
+	return "user_organization"
+}

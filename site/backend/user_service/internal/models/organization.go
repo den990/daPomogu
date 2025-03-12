@@ -28,6 +28,10 @@ type Organization struct {
 	UpdatedAt     time.Time
 }
 
+func (Organization) TableName() string {
+	return "organization"
+}
+
 type OrganizationRegistration struct {
 	Email         string `json:"email" binding:"required,email"`
 	Phone         string `json:"phone" binding:"required"`
