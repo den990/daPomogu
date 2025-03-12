@@ -1,12 +1,12 @@
 import Header from '../components/chat/header';
 import ChatContainer from '../components/chat/chat-container';
 import Footer from '../components/chat/footer';
-import HeaderVolunteer from '../layouts/HeaderVolunteer';
+import RoleHeader from '../components/RoleHeader';
 
 function Chat() {
     return (
         <div className="h-screen flex flex-col">
-            <HeaderVolunteer />
+            <RoleHeader />
             <div id="chat-page" className="flex flex-1 bg-neutral-50 p-4 gap-4">
                 <div id="applications-list" className="w-1/4 rounded-lg border bg-white p-4 h-auto overflow-auto">
                     <h2 className="text-lg mb-4">Заявки</h2>
