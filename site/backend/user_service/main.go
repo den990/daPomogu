@@ -42,6 +42,7 @@ func main() {
 		protected.POST("/profile-organization/:id", controllers.UpdateOrganization)
 		protected.POST("/profile", controllers.UpdateUser)
 		protected.POST("/profile/:id", controllers.UpdateUser)
+		protected.GET("/organization-requests", controllers.GetPendingOrganizations)
 	}
 
 	if err := r.Run(":8080"); err != nil {

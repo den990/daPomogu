@@ -188,3 +188,32 @@ func UpdateOrganization(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"message": "Organization updated successfully"})
 	}
 }
+
+func GetPendingOrganizations(c *gin.Context) {
+	isAdmin, err := models.IsAdmin(c)
+	if err != nil || !isAdmin {
+		c.JSON(http.StatusForbidden, gin.H{"message": "Access denied"})
+		return
+	}
+
+	organizations, err := models.FindOrganizationsPending()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to fetch organizations"})
+		return
+	}
+
+	var response []models.GetProfilesOrganizationResponse
+	for _, org := range organizations {
+		response = append(response, models.GetProfilesOrganizationResponse{
+			Id:            strconv.Itoa(int(org.ID)),
+			Email:         org.Email,
+			Phone:         org.Phone,
+			Name:          org.Name,
+			INN:           org.INN,
+			Address:       org.ActualAddress,
+			FullNameOwner: org.FullNameOwner,
+		})
+	}
+
+	c.JSON(http.StatusOK, response)
+}
