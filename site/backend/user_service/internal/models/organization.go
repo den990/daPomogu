@@ -92,3 +92,12 @@ func FindOrganizationByUserId(id string) (*Organization, error) {
 
 	return &organization, nil
 }
+
+func FindOrganizationsPending() ([]Organization, error) {
+	var organizations []Organization
+	err := db.DB.Where("status_id = ?", 1).Find(&organizations).Error
+	if err != nil {
+		return nil, err
+	}
+	return organizations, nil
+}
