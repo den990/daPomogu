@@ -40,6 +40,16 @@ type UserRegistration struct {
 	Password       string `json:"password" binding:"required"`
 }
 
+type UserUpdate struct {
+	Email          string `json:"email" binding:"required,email"`
+	Phone          string `json:"phone" binding:"required"`
+	Name           string `json:"name"  binding:"required"`
+	Surname        string `json:"surname"`
+	Patronymic     string `json:"patronymic"`
+	DateOfBirthday string `json:"date_of_birthday"`
+	Address        string `json:"registration_address"`
+}
+
 type UserProfileResponse struct {
 	Name           string `json:"name"`
 	Surname        string `json:"surname"`
@@ -94,4 +104,33 @@ func FindUserById(id string) (*User, error) {
 	}
 
 	return &user, nil
+}
+
+func UpdateUser(id string, userForm UserUpdate) error {
+	var user User
+
+	if err := db.DB.First(&user, id).Error; err != nil {
+		return errors.New("User not found")
+	}
+
+	birthday, err := time.Parse(time.DateOnly, userForm.DateOfBirthday)
+
+	if err != nil {
+		return errors.New("Failed to update organization")
+	}
+
+	user.Email = userForm.Email
+	user.Phone = userForm.Phone
+	user.Surname = userForm.Surname
+	user.Name = userForm.Name
+	user.Patronymic = userForm.Patronymic
+	user.DateOfBirthday = birthday
+	user.Address = userForm.Address
+	user.UpdatedAt = time.Now()
+
+	if err := db.DB.Save(&user).Error; err != nil {
+		return errors.New("Failed to update organization")
+	}
+
+	return nil
 }

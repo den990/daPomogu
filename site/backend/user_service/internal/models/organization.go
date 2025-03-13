@@ -2,6 +2,7 @@ package models
 
 import (
 	"backend/internal/db"
+	"errors"
 	"time"
 )
 
@@ -52,6 +53,38 @@ func FindActualOrganizationById(id string) (*Organization, error) {
 }
 
 func FindOrganizationById(id string) (*Organization, error) {
+	var organization Organization
+	if err := db.DB.First(&organization, id).Error; err != nil {
+		return nil, err
+	}
+
+	return &organization, nil
+}
+
+func UpdateOrganization(id string, registration OrganizationRegistration) error {
+	var organization Organization
+
+	if err := db.DB.First(&organization, id).Error; err != nil {
+		return errors.New("Organization not found")
+	}
+
+	organization.Email = registration.Email
+	organization.Phone = registration.Phone
+	organization.INN = registration.INN
+	organization.Name = registration.Name
+	organization.LegalAddress = registration.LegalAddress
+	organization.ActualAddress = registration.ActualAddress
+	organization.FullNameOwner = registration.FullNameOwner
+	organization.UpdatedAt = time.Now()
+
+	if err := db.DB.Save(&organization).Error; err != nil {
+		return errors.New("Failed to update organization")
+	}
+
+	return nil
+}
+
+func FindOrganizationByUserId(id string) (*Organization, error) {
 	var organization Organization
 	if err := db.DB.First(&organization, id).Error; err != nil {
 		return nil, err
