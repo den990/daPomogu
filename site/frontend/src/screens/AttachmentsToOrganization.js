@@ -1,4 +1,3 @@
-import Header from "../components/attachmentsToOrganization/header";
 import Content from "../components/attachmentsToOrganization/content";
 import RoleHeader from "../components/RoleHeader";
 
