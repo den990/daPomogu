@@ -1,6 +1,6 @@
 import Footer from "../components/photoReport/footer";
 import Content from "../components/photoReport/content";
-import RoleHeader from "../components/RoleHeader";
+import RoleHeader from "../components/RoleHeader/RoleHeader";
 
 function PhotoReport() {
     return (

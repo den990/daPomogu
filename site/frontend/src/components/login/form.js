@@ -1,41 +1,31 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import ROUTES from "../../constants/routes";
-import useAuth from "../../hooks/useAuth";
-import GetRole from "../../utils/GetRole";
+import { authorizeUser } from "../../utils/auth";
+import useFormWithValidation from "../../hooks/useFormWithValidation";
+import { AuthContext } from "../../context/AuthProvider";
 
 function LoginForm() {
-    const { login, error } = useAuth();
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [message, setMessage] = useState("");
+    const { values, errors, isValid, handleChange } = useFormWithValidation();
+    const { login } = useContext(AuthContext);
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        const token = await login(email, password);
-        if (token) {
-            setMessage("Логин успешен!");
-           
-            let role = GetRole(token);
-            switch (role) {
-                case 'admin':
-                    navigate(ROUTES.ADMIN_PANEL);
-                    break;
-                case 'organization':
-                    navigate(ROUTES.ACCOUNT_ORGANIZATION);
-                    break;
-                case 'volunteer':
-                    navigate(ROUTES.ACCOUNT_VOLUNTEER);
-                    break;
-                default:
-                    navigate(ROUTES.HOME);
-                    break;
-                }
-        } else {
-            setMessage(error || "Ошибка аутентификации");
-        }
-    };
+        setError("");
+
+        const { email, password } = values;
+
+        authorizeUser(email, password)
+          .then(token => {
+            if (token) {
+                login(token);
+                navigate(ROUTES.HOME);
+            }
+          })
+          .catch(err => setError("Неверный логин или пароль"));
+      };
 
     return (
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
@@ -47,15 +37,15 @@ function LoginForm() {
                         </label>
                         <div className="mt-1">
                             <input 
-                                id="email" 
                                 name="email" 
                                 type="email" 
-                                autoComplete="email" 
+                                autoComplete="email"
                                 required
-                                value={email} 
-                                onChange={(e) => setEmail(e.target.value)} 
+                                value={values?.email || ''} 
+                                onChange={handleChange} 
                                 className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm" 
                             />
+                            {errors.email && <span className="text-red-600 text-xs">{errors.email}</span>}
                         </div>
                     </div>
                     <div>
@@ -64,20 +54,24 @@ function LoginForm() {
                         </label>
                         <div className="mt-1">
                             <input 
-                                id="password" 
                                 name="password" 
                                 type="password" 
                                 autoComplete="current-password" 
-                                required=""
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                value={values?.password || ''} 
+                                onChange={handleChange} 
                                 className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm" 
                             />
+                            {errors.password && <span className="text-red-600 text-xs">{errors.password}</span>}
                         </div>
                     </div>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center">
-                            <input id="remember-me" name="remember-me" type="checkbox" className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded" />
+                            <input 
+                                name="remember-me" 
+                                type="checkbox" 
+                                className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded" 
+                            />
                             <label htmlFor ="remember-me" className="ml-2 block text-sm text-gray-900">
                                 Запомнить меня
                             </label>
@@ -88,13 +82,17 @@ function LoginForm() {
                             </a>
                         </div>
                     </div>
+                    {error && <p className="mt-4 text-center text-sm text-red-600">{error}</p>}
                     <div>
-                        <button type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                        <button 
+                        type="submit" 
+                        className={`w-full flex justify-center py-3 px-4 border rounded-md shadow-sm text-sm font-medium ${isValid ? 'text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500' : 'text-gray-400 bg-gray-200'}`}
+                        disabled={!isValid}
+                        >
                             Войти
                         </button>
                     </div>
                 </form>
-                {message && <p className="mt-4 text-center text-sm">{message}</p>}
                 <div className="mt-6">
                     <div className="relative">
                         <div className="absolute inset-0 flex items-center">

@@ -1,9 +1,9 @@
-import React from "react";
-import { useAuthContext } from "../context/AuthContext";
+import React, { useContext } from "react";
+import { AuthContext } from "../context/AuthProvider";
 import { jwtDecode } from "jwt-decode";
 
 function TestAuth() {
-    const { token, logout } = useAuthContext();
+    const { token, logout } = useContext(AuthContext);
     let decodedToken = null;
 
     if (token) {

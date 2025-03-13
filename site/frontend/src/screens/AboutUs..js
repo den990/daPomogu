@@ -1,7 +1,7 @@
 import Mission from '../components/aboutUs/mission.js';
 import Faq from '../components/aboutUs/faq.js';
 import Footer from '../layouts/Footer.js';
-import RoleHeader from '../components/RoleHeader.js';
+import RoleHeader from '../components/RoleHeader/RoleHeader.js';
 
 
 function AboutUs() {
