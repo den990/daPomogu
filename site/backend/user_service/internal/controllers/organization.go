@@ -202,9 +202,10 @@ func GetPendingOrganizations(c *gin.Context) {
 		return
 	}
 
-	var response []models.OrganizationProfileResponse
+	var response []models.GetProfilesOrganizationResponse
 	for _, org := range organizations {
-		response = append(response, models.OrganizationProfileResponse{
+		response = append(response, models.GetProfilesOrganizationResponse{
+			Id:            strconv.Itoa(int(org.ID)),
 			Email:         org.Email,
 			Phone:         org.Phone,
 			Name:          org.Name,
