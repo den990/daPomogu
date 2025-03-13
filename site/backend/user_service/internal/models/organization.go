@@ -43,6 +43,16 @@ type OrganizationProfileResponse struct {
 	FullNameOwner string `json:"full_name_owner"`
 }
 
+type GetProfilesOrganizationResponse struct {
+	Id            string `json:"id"`
+	Email         string `json:"email"`
+	Phone         string `json:"phone"`
+	INN           string `json:"inn"`
+	Name          string `json:"name"`
+	Address       string `json:"address"`
+	FullNameOwner string `json:"full_name_owner"`
+}
+
 func FindActualOrganizationById(id string) (*Organization, error) {
 	var organization Organization
 	if err := db.DB.Where("id = ? AND status_id = ?", id, 2).First(&organization).Error; err != nil {
