@@ -53,7 +53,7 @@ function Profile() {
                 <Link to={ROUTES.EDIT_VOLUNTEER_PROFILE} className="w-full mt-4 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700">
                     Редактировать профиль
                 </Link>
-                <Link to={ROUTES.EDIT_VOLUNTEER_PROFILE} className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700">
+                <Link to={ROUTES.EDIT_PASSWORD} className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700">
                     Сменить пароль
                 </Link>
             </div>
