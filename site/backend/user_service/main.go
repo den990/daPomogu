@@ -2,9 +2,9 @@ package main
 
 import (
 	"backend/config"
+	"backend/internal/controllers"
 	"backend/internal/db"
 	"backend/internal/middleware"
-	"backend/internal/models"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -25,17 +25,19 @@ func main() {
 		ExposeHeaders:    []string{"Authorization"},
 		AllowCredentials: true,
 	}))
-	r.POST("/register", models.RegisterUser)
-	r.POST("/register-organization", models.RegisterOrganization)
-	r.POST("/login", models.Login)
+	r.POST("/register", controllers.RegisterUser)
+	r.POST("/register-organization", controllers.RegisterOrganization)
+	r.POST("/login", controllers.Login)
 
 	protected := r.Group("/api")
 	protected.Use(middleware.AuthMiddleware())
 	{
-		protected.GET("/profile", models.GetProfileInfo)
-		protected.GET("/profile/:id", models.GetProfileInfo)
-		protected.PUT("/organizations/:id/apply", models.ApplyOrganization)
-		protected.PUT("/organizations/:id/reject", models.RejectOrganization)
+		protected.GET("/profile", controllers.GetUserProfileInfo)
+		protected.GET("/profile/:id", controllers.GetUserProfileInfo)
+		protected.GET("/profile-organization", controllers.GetOrganizationProfileInfo)
+		protected.GET("/profile-organization/:id", controllers.GetOrganizationProfileInfo)
+		protected.PUT("/organizations/:id/apply", controllers.ApplyOrganization)
+		protected.PUT("/organizations/:id/reject", controllers.RejectOrganization)
 	}
 
 	if err := r.Run(":8080"); err != nil {
