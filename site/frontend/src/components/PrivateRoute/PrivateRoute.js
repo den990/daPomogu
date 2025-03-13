@@ -4,8 +4,12 @@ import ROUTES from "../../constants/routes";
 import { AuthContext } from "../../context/AuthProvider";
 
 function PrivateRoute() {
-    const { isAuthenticated } = useContext(AuthContext);
+    const { isAuthenticated, loading } = useContext(AuthContext);
     const location = useLocation();
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     return isAuthenticated ? (
         <Outlet />

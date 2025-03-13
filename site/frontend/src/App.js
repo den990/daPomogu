@@ -22,13 +22,18 @@ import Error from './screens/Error';
 import AdminRegistrateOrganizationProfile from './screens/AdminRegistrateOrganizationProfile';
 import TestAuth from './screens/TestAuth';
 import ROUTES from './constants/routes';
-import { AuthProvider } from "./context/AuthProvider";
+import { AuthContext, AuthProvider } from "./context/AuthProvider";
 import { BrowserRouter as Router, Routes, Route } from 'react-router';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import EditPassword from './screens/EditPassword';
 import Tasks from './screens/Tasks';
+import { useContext } from 'react';
 
 function App() {
+    const { loading } = useContext(AuthContext);
+    if (loading) {
+        return <div>Application Loading...</div>;
+    }
     return (
         <AuthProvider>
             <Router>

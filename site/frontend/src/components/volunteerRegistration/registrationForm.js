@@ -23,7 +23,7 @@ function RegistrationForm() {
             return;
         }
 
-        const {surname, name, patronymic, email, phone, date_of_birthday, registration_address, password, password_confirmation, terms} = values;
+        const {surname, name, patronymic, email, phone, date_of_birthday, registration_address, password} = values;
         
         try {
             await registerVolunteer(email, phone, name, surname, patronymic, date_of_birthday, registration_address, password)
