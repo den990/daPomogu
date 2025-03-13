@@ -38,6 +38,10 @@ func main() {
 		protected.GET("/profile-organization/:id", controllers.GetOrganizationProfileInfo)
 		protected.PUT("/organizations/:id/apply", controllers.ApplyOrganization)
 		protected.PUT("/organizations/:id/reject", controllers.RejectOrganization)
+		protected.POST("/profile-organization", controllers.UpdateOrganization)
+		protected.POST("/profile-organization/:id", controllers.UpdateOrganization)
+		protected.POST("/profile", controllers.UpdateUser)
+		protected.POST("/profile/:id", controllers.UpdateUser)
 	}
 
 	if err := r.Run(":8080"); err != nil {
