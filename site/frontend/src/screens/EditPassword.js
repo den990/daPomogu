@@ -1,5 +1,5 @@
 import Content from "../components/editPassword/content";
-import RoleHeader from "../components/RoleHeader";
+import RoleHeader from "../components/RoleHeader/RoleHeader";
 
 function EditPassword() {
     return (

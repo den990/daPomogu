@@ -1,6 +1,6 @@
 import Profile from '../components/accountVolunteer/profile.js';
 import Tasks from '../components/accountVolunteer/tasks.js';
-import RoleHeader from '../components/RoleHeader.js';
+import RoleHeader from '../components/RoleHeader/RoleHeader.js';
 
 function AccountVolunteer() {
     return (

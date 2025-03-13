@@ -1,12 +1,12 @@
 import { Link } from "react-router";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ROUTES from "../../constants/routes";
 import RequestToServerWithAuth from "../../utils/RequestToServerWithAuth";
-import { useAuthContext } from "../../context/AuthContext";
+import { AuthContext } from "../../context/AuthProvider";
 
 function Profile() {
     const [profileData, setProfileData] = useState(null);
-    const { token, logout } = useAuthContext();
+    const { token, logout } = useContext(AuthContext);
 
     useEffect(() => {
         if (!token) return;

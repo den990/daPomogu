@@ -1,6 +1,6 @@
 import Content from "../components/adminEditOrganizationProfile/content";
 import SideBar from "../components/adminPanel/sidebar";
-import RoleHeader from "../components/RoleHeader";
+import RoleHeader from "../components/RoleHeader/RoleHeader";
 
 function AdminEditOrganizationProfile() {
     return (

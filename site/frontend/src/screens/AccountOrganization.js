@@ -2,7 +2,7 @@ import Profile from '../components/accountOrganization/profile.js';
 import ActiveTasks from '../components/accountOrganization/activeTasks.js';
 import Volunteers from '../components/accountOrganization/volunteers.js';
 import Stats from '../components/accountOrganization/stats.js';
-import RoleHeader from '../components/RoleHeader.js';
+import RoleHeader from '../components/RoleHeader/RoleHeader.js';
 
 function AccountOrganization() {
     return (

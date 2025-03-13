@@ -2,7 +2,7 @@ import SearchFilters from '../components/tasksCatalog/searchFilters.js';
 import Tasks from '../components/tasksCatalog/tasks.js';
 import Pagination from '../components/tasksCatalog/pagination.js';
 import Footer from '../layouts/Footer.js';
-import RoleHeader from '../components/RoleHeader.js';
+import RoleHeader from '../components/RoleHeader/RoleHeader.js';
 
 function TasksCatalog() {
     return (

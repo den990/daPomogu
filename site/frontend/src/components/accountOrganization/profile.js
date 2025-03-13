@@ -1,9 +1,10 @@
 import { Link } from "react-router";
 import ROUTES from "../../constants/routes";
-import { useAuthContext } from "../../context/AuthContext";
+import { AuthContext } from "../../context/AuthProvider";
+import { useContext } from "react";
 
 function Profile() {
-    const { logout } = useAuthContext();
+    const { logout } = useContext(AuthContext);
 
     return (
         <section id="org-profile" className="bg-white rounded-lg shadow-sm p-6 mb-8">

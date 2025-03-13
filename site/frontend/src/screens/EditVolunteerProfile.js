@@ -1,5 +1,5 @@
 import Content from "../components/editProfileVolunteer/content";
-import RoleHeader from "../components/RoleHeader";
+import RoleHeader from "../components/RoleHeader/RoleHeader";
 
 function EditVolunteerProfile() {
     return (

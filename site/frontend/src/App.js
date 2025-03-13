@@ -22,9 +22,9 @@ import Error from './screens/Error';
 import AdminRegistrateOrganizationProfile from './screens/AdminRegistrateOrganizationProfile';
 import TestAuth from './screens/TestAuth';
 import ROUTES from './constants/routes';
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthProvider";
 import { BrowserRouter as Router, Routes, Route } from 'react-router';
-import PrivateRoute from './components/PrivateRoute';
+import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import EditPassword from './screens/EditPassword';
 import Tasks from './screens/Tasks';
 
