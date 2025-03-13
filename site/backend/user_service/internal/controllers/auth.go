@@ -102,9 +102,14 @@ func RegisterUser(c *gin.Context) {
 
 func RegisterOrganization(c *gin.Context) {
 	var orgData models.OrganizationRegistration
-
+	var user models.User
 	if err := c.ShouldBindJSON(&orgData); err != nil {
 		c.JSON(400, gin.H{"message": "Invalid input", "error": err.Error()})
+		return
+	}
+
+	if err := db.DB.Where("email = ?", orgData.Email).First(&user).Error; err == nil {
+		c.JSON(400, gin.H{"message": "Email is taken"})
 		return
 	}
 

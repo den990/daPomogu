@@ -4,6 +4,7 @@ import (
 	"backend/internal/models"
 	"backend/internal/utils"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"strconv"
 	"time"
@@ -100,4 +101,42 @@ func UpdateUser(c *gin.Context) {
 		}
 		c.JSON(http.StatusOK, gin.H{"message": "Organization updated successfully"})
 	}
+}
+
+func ChangePassword(c *gin.Context) {
+	userID, err := utils.GetUserIDFromToken(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
+		return
+	}
+
+	var userPassword models.UserPasswordUpdate
+	if err := c.ShouldBindJSON(&userPassword); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid input", "error": err.Error()})
+		return
+	}
+
+	user, err := models.FindUserById(strconv.Itoa(int(userID)))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "User not found"})
+		return
+	}
+
+	if !utils.CheckPassword(userPassword.OldPassword, user.PasswordHash) {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Old password is incorrect"})
+		return
+	}
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(userPassword.NewPassword), bcrypt.DefaultCost)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to hash new password"})
+		return
+	}
+
+	if err := models.UpdateUserPassword(strconv.Itoa(int(user.ID)), string(hashedPassword)); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to update password"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Password updated successfully"})
 }

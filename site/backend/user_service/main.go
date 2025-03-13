@@ -43,6 +43,7 @@ func main() {
 		protected.POST("/profile", controllers.UpdateUser)
 		protected.POST("/profile/:id", controllers.UpdateUser)
 		protected.GET("/organization-requests", controllers.GetPendingOrganizations)
+		protected.PUT("/change-password", controllers.ChangePassword)
 	}
 
 	if err := r.Run(":8080"); err != nil {
