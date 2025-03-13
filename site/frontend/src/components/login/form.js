@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import ROUTES from "../../constants/routes";
 import useAuth from "../../hooks/useAuth";
+import GetRole from "../../utils/GetRole";
 
 function LoginForm() {
     const { login, error } = useAuth();
@@ -15,9 +16,22 @@ function LoginForm() {
         const token = await login(email, password);
         if (token) {
             setMessage("Логин успешен!");
-            setTimeout(() => {
-                navigate(ROUTES.ACCOUNT_VOLUNTEER);
-            }, 2000);
+           
+            let role = GetRole(token);
+            switch (role) {
+                case 'admin':
+                    navigate(ROUTES.ADMIN_PANEL);
+                    break;
+                case 'organization':
+                    navigate(ROUTES.ACCOUNT_ORGANIZATION);
+                    break;
+                case 'volunteer':
+                    navigate(ROUTES.ACCOUNT_VOLUNTEER);
+                    break;
+                default:
+                    navigate(ROUTES.HOME);
+                    break;
+                }
         } else {
             setMessage(error || "Ошибка аутентификации");
         }

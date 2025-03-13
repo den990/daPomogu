@@ -1,7 +1,10 @@
 import { Link } from "react-router";
 import ROUTES from "../../constants/routes";
+import { useAuthContext } from "../../context/AuthContext";
 
-function profile() {
+function Profile() {
+    const { logout } = useAuthContext();
+
     return (
         <section id="org-profile" className="bg-white rounded-lg shadow-sm p-6 mb-8">
             <div className="flex items-start space-x-6">
@@ -21,6 +24,11 @@ function profile() {
                         <button className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 flex items-center">
                             <Link to={ROUTES.EDIT_ORGANIZATION_PROFILE}>Редактировать профиль</Link>
                         </button>
+                        <button className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700">
+                            <Link to={ROUTES.HOME} onClick={logout}>
+                                Выйти
+                            </Link>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -28,4 +36,4 @@ function profile() {
     );
 }
 
-export default profile;
+export default Profile;

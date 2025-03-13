@@ -1,7 +1,7 @@
-function tasks() {
+function Content() {
     return (
         <div id="tasks-section" className="md:col-span-2">
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white rounded-lg p-6">
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="text-xl font-semibold">Мои задания</h3>
                     <div className="flex space-x-2">
@@ -44,4 +44,4 @@ function tasks() {
     );
 }
 
-export default tasks;
+export default Content;

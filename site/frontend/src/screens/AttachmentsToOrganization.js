@@ -7,7 +7,6 @@ function AttachmentsToOrganization() {
         <div className="h-full text-base-content">
             <div className="min-h-screen bg-neutral-50">
                 <RoleHeader />
-                <Header />
                 <Content />
             </div>
         </div>
