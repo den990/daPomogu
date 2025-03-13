@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import ROUTES from "../../constants/routes";
-import useRegistration from "../../hooks/useRegistration";
+import useRegistrationVolunteer from "../../hooks/useRegistrationVolunteer";
 
 function RegistrationForm() {
-    const { register, error } = useRegistration();
+    const { register, error } = useRegistrationVolunteer();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         surname: "",

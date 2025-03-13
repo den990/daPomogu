@@ -1,11 +1,11 @@
 import SideBar from '../components/adminPanel/sidebar.js';
 import Dashboard from '../components/adminPanel/dashboard.js';
-import HeaderAdmin from '../layouts/HeaderAdmin.js';
+import RoleHeader from '../components/RoleHeader.js';
 
 function AdminPanel() {
     return (
         <div className="bg-gray-50 min-h-screen">
-            <HeaderAdmin />
+            <RoleHeader />
             <SideBar />
             <Dashboard />
         </div>

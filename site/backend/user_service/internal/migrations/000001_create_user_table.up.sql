@@ -12,3 +12,6 @@ CREATE TABLE "user" (
     "created_at" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
     "updated_at" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP)
 );
+
+INSERT INTO "user" ("email", "phone", "surname", "name", "patronymic", "date_of_birthday", "address", "password_hash", "is_admin", "created_at", "updated_at")
+VALUES ('admin@example.com', '+1234567890', 'Admin', 'Admin', 'Admin', NULL, NULL, '$2a$10$G525BjR1Af0GV0yve/1jOu8LTZvCEQS/5p1K48Bv7MpUdBPdqLXl2', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
