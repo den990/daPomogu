@@ -6,7 +6,7 @@ import { useAuthContext } from "../../context/AuthContext";
 
 function Profile() {
     const [profileData, setProfileData] = useState(null);
-    const { token } = useAuthContext();
+    const { token, logout } = useAuthContext();
 
     useEffect(() => {
         if (!token) return;
@@ -55,6 +55,9 @@ function Profile() {
                 </Link>
                 <Link to={ROUTES.EDIT_PASSWORD} className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700">
                     Сменить пароль
+                </Link>
+                <Link to={ROUTES.HOME} onClick={logout} className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700">
+                    Выйти
                 </Link>
             </div>
             </div>

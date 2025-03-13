@@ -21,6 +21,7 @@ const ROUTES = {
     ERROR: "/error",
     ADMIN_REGISTER_ORGANIZATION: "/admin-registrate-organization",
     EDIT_PASSWORD: "/edit-password",
+    MY_TASKS: "/my-tasks",
 };
 
 export default ROUTES;

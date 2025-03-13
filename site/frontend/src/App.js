@@ -26,6 +26,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { BrowserRouter as Router, Routes, Route } from 'react-router';
 import PrivateRoute from './components/PrivateRoute';
 import EditPassword from './screens/EditPassword';
+import Tasks from './screens/Tasks';
 
 function App() {
     return (
@@ -58,6 +59,7 @@ function App() {
                                 <Route path={ROUTES.EDIT_ORGANIZATION_PROFILE} element={<EditOrganizationProfile />} />
                                 <Route path={ROUTES.CONFIRMATIONS_TASKS} element={<ConfirmationsTasks />} />
                                 <Route path={ROUTES.ADMIN_REGISTER_ORGANIZATION} element={<AdminRegistrateOrganizationProfile />} />
+                                <Route path={ROUTES.MY_TASKS} element={<Tasks />} />
                             </Route>
                         </Routes>
                     </div>
