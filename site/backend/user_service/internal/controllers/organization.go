@@ -107,12 +107,12 @@ func GetOrganizationProfileInfo(c *gin.Context) {
 		}
 		organizationId = uint(parsedID)
 	} else {
-		jwtUserID, exists := c.Get("user_id")
-		if !exists {
+		userID, err := utils.GetUserIDFromToken(c)
+		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
 			return
 		}
-		orgData, err := models.FindOrganizationByUserIdOwner(jwtUserID.(string))
+		orgData, err := models.FindOrganizationByUserIdOwner(strconv.Itoa(int(userID)))
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"message": "Organization not found"})
 			return
@@ -122,7 +122,7 @@ func GetOrganizationProfileInfo(c *gin.Context) {
 	}
 
 	isAdmin, _ := models.IsAdmin(c)
-	if isAdmin {
+	if !isAdmin {
 		organization, err := models.FindActualOrganizationById(strconv.Itoa(int(organizationId)))
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"message": "Organization not found"})
