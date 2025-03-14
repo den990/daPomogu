@@ -129,6 +129,7 @@ func GetOrganizationProfileInfo(c *gin.Context) {
 			return
 		} else {
 			response := models.OrganizationProfileResponse{
+				Id:            strconv.Itoa(int(organization.ID)),
 				Email:         organization.Email,
 				Phone:         organization.Phone,
 				Name:          organization.Name,

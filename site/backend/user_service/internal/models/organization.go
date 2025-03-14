@@ -35,6 +35,7 @@ type OrganizationRegistration struct {
 }
 
 type OrganizationProfileResponse struct {
+	Id            string `json:"id"`
 	Email         string `json:"email"`
 	Phone         string `json:"phone"`
 	INN           string `json:"inn"`
