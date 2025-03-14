@@ -6,7 +6,7 @@ import { AuthContext } from "../context/AuthProvider";
 function HeaderAdmin() {
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef(null);
-    const { logout } = useContext(AuthContext);
+    const { logout, profile, loading } = useContext(AuthContext);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -31,7 +31,7 @@ function HeaderAdmin() {
                             <div className="relative" ref={menuRef}>
                                 <button onClick={() => setIsOpen(!isOpen)} className="px-4 py-2 hover:bg-gray-50 rounded-md">
                                     <div className="flex items-center">
-                                        <span style={{paddingRight: 10}}>Админ</span>
+                                        <span style={{paddingRight: 10}}>{loading ? "Загрузка..." : (profile ? profile.name : "Неизвестно")}</span>
                                         <img style={{ width: 14, height: 14 }} src={ require("../images/arrow-down_grey.svg").default } alt="icon" />
                                     </div>
                                 </button>
