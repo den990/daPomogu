@@ -50,6 +50,11 @@ type UserUpdate struct {
 	Address        string `json:"registration_address"`
 }
 
+type UserPasswordUpdate struct {
+	OldPassword string `json:"old_password" binding:"required"`
+	NewPassword string `json:"new_password" binding:"required"`
+}
+
 type UserProfileResponse struct {
 	Name           string `json:"name"`
 	Surname        string `json:"surname"`
@@ -133,4 +138,8 @@ func UpdateUser(id string, userForm UserUpdate) error {
 	}
 
 	return nil
+}
+
+func UpdateUserPassword(userID string, newPassword string) error {
+	return db.DB.Model(&User{}).Where("id = ?", userID).Update("password_hash", newPassword).Error
 }

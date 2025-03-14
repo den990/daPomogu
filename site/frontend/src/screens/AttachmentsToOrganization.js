@@ -1,5 +1,5 @@
 import Content from "../components/attachmentsToOrganization/content";
-import RoleHeader from "../components/RoleHeader";
+import RoleHeader from "../components/RoleHeader/RoleHeader";
 
 function AttachmentsToOrganization() {
     return (

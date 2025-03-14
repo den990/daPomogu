@@ -1,5 +1,5 @@
 import Content from "../components/editProfileOrganization/content";
-import RoleHeader from "../components/RoleHeader";
+import RoleHeader from "../components/RoleHeader/RoleHeader";
 
 function EditOrganizationProfile() {
     return (

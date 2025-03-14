@@ -2,7 +2,7 @@ import Hero from '../components/main/hero.js';
 import FeaturedProjects from '../components/main/featuredProjects.js';
 import HowItWorks from '../components/main/howItWorks.js';
 import Footer from '../layouts/Footer.js';
-import RoleHeader from '../components/RoleHeader.js';
+import RoleHeader from '../components/RoleHeader/RoleHeader.js';
 
 function Main() {
     return (

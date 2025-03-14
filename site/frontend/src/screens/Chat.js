@@ -1,7 +1,7 @@
 import Header from '../components/chat/header';
 import ChatContainer from '../components/chat/chat-container';
 import Footer from '../components/chat/footer';
-import RoleHeader from '../components/RoleHeader';
+import RoleHeader from '../components/RoleHeader/RoleHeader';
 
 function Chat() {
     return (
