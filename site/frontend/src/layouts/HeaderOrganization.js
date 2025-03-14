@@ -30,7 +30,7 @@ function HeaderOrganization() {
                     </div>
                     <nav className="hidden md:flex space-x-6">
                         <Link to={ROUTES.TASKS_CATALOG} className="text-gray-600 hover:text-red-600 cursor-pointer">Задания</Link>
-                        <Link to={ROUTES.HOME} className="text-gray-600 hover:text-red-600 cursor-pointer">Мои задания</Link>
+                        <Link to={ROUTES.MY_TASKS} className="text-gray-600 hover:text-red-600 cursor-pointer">Мои задания</Link>
                         <Link to={ROUTES.ABOUT} className="text-gray-600 hover:text-red-600 cursor-pointer">О нас</Link>
                     </nav>
                     <div className="flex items-center space-x-4">

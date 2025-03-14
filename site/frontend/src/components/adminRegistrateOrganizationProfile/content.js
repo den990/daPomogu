@@ -8,16 +8,21 @@ function Content() {
     const [selectedOrganization, setSelectedOrganization] = useState(null);
     const [organizationDetails, setOrganizationDetails] = useState(null);
 
-    useEffect(() => {
+    const fetchOrganizations = () => {
         if (token) {
             userServiceApi.getOrganizationRequests(token)
-            .then(data => {
-                setOrganizations(data);
-            })
-            .catch(error => {
-                console.error('Ошибка при загрузке организаций:', error);
-            });
+                .then(data => {
+                    setOrganizations(data || []);
+                })
+                .catch(error => {
+                    console.error('Ошибка при загрузке организаций:', error);
+                    setOrganizations([]);
+                });
         }
+    };
+
+    useEffect(() => {
+        fetchOrganizations();
     }, [token]);
 
     const handleOrganizationSelect = (id) => {
@@ -37,9 +42,12 @@ function Content() {
     const handleApplyOrganization = (id) => {
         if (token) {
             userServiceApi.putApplyOrganization(token, id)
-            .then(data => {
-              return;
-            })
+            .then(()=> {
+                fetchOrganizations();
+                setOrganizationDetails(null);
+                setSelectedOrganization(null);
+            }
+            )
             .catch(error => {
               console.error('Ошибка при регистрации организации:', error);
             });
@@ -49,8 +57,10 @@ function Content() {
     const handleRejectOrganization = (id) => {
         if (token) {
             userServiceApi.putRejectOrganization(token, id)
-            .then(data => {
-              return;
+            .then(()=> {
+                fetchOrganizations();
+                setOrganizationDetails(null);
+                setSelectedOrganization(null);
             })
             .catch(error => {
               console.error('Ошибка при регистрации организации:', error);
@@ -96,12 +106,12 @@ function Content() {
                         <div className="flex gap-3">
                             <button 
                             className="rounded-lg border bg-red-600 px-4 py-2 text-white hover:bg-red-800"
-                            onClick={() => handleApplyOrganization(organizationDetails.id)}
+                            onClick={() => handleApplyOrganization(selectedOrganization)}
                             >Принять
                             </button>
                             <button 
                             className="rounded-lg border px-4 py-2 text-neutral-700 hover:bg-neutral-50"
-                            onClick={() => handleRejectOrganization(organizationDetails.id)}
+                            onClick={() => handleRejectOrganization(selectedOrganization)}
                             >Отклонить
                             </button>
                         </div>
