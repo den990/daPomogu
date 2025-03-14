@@ -121,21 +121,40 @@ func GetOrganizationProfileInfo(c *gin.Context) {
 		organizationId = orgData.ID
 	}
 
-	organization, err := models.FindActualOrganizationById(strconv.Itoa(int(organizationId)))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "Organization not found"})
-	} else {
-		response := models.OrganizationProfileResponse{
-			Email:         organization.Email,
-			Phone:         organization.Phone,
-			Name:          organization.Name,
-			INN:           organization.INN,
-			Address:       organization.ActualAddress,
-			FullNameOwner: organization.FullNameOwner,
+	isAdmin, _ := models.IsAdmin(c)
+	if isAdmin {
+		organization, err := models.FindActualOrganizationById(strconv.Itoa(int(organizationId)))
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"message": "Organization not found"})
+			return
+		} else {
+			response := models.OrganizationProfileResponse{
+				Email:         organization.Email,
+				Phone:         organization.Phone,
+				Name:          organization.Name,
+				INN:           organization.INN,
+				ActualAddress: organization.ActualAddress,
+				FullNameOwner: organization.FullNameOwner,
+			}
+			c.JSON(http.StatusOK, response)
 		}
-		c.JSON(http.StatusOK, response)
+	} else {
+		organization, err := models.FindOrganizationById(strconv.Itoa(int(organizationId)))
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"message": "Organization not found"})
+			return
+		} else {
+			response := models.OrganizationProfileResponse{
+				Email:         organization.Email,
+				Phone:         organization.Phone,
+				Name:          organization.Name,
+				INN:           organization.INN,
+				ActualAddress: organization.ActualAddress,
+				FullNameOwner: organization.FullNameOwner,
+			}
+			c.JSON(http.StatusOK, response)
+		}
 	}
-
 }
 
 func UpdateOrganization(c *gin.Context) {
@@ -216,7 +235,8 @@ func GetPendingOrganizations(c *gin.Context) {
 			Phone:         org.Phone,
 			Name:          org.Name,
 			INN:           org.INN,
-			Address:       org.ActualAddress,
+			ActualAddress: org.ActualAddress,
+			LegalAddress:  org.LegalAddress,
 			FullNameOwner: org.FullNameOwner,
 		})
 	}
