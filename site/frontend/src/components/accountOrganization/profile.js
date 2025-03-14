@@ -1,17 +1,31 @@
 import { Link } from "react-router";
 import ROUTES from "../../constants/routes";
 import { AuthContext } from "../../context/AuthProvider";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
+import { userServiceApi } from "../../utils/api/user_service";
 
 function Profile() {
-    const { logout } = useContext(AuthContext);
+    const [profileData, setProfileData] = useState(null);
+    const { token, logout } = useContext(AuthContext);
+
+    useEffect(() => {
+        if (token) {
+            userServiceApi.getMyOrganizationProfile(token)
+            .then(data => {
+                setProfileData(data);
+            })
+            .catch(error => {
+                console.error('Ошибка при загрузке профиля:', error);
+            });
+        }
+    }, [token]);
 
     return (
         <section id="org-profile" className="bg-white rounded-lg shadow-sm p-6 mb-8">
             <div className="flex items-start space-x-6">
                 <img className="w-48 h-48 rounded-lg object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/cb61e8f45a-5ee863536d744c529bb2.png" alt="humanitarian organization logo with volunteers in red and white colors" />
                 <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Название Организации</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">{profileData ? profileData.name : "Загрузка..."}</h2>
                     <p className="text-gray-600 mb-4">Описание организации и её миссии. Мы помогаем людям и делаем мир лучше через волонтерскую деятельность.</p>
                     <div className="flex space-x-4">
                         <button className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 flex items-center">
