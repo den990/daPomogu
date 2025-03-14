@@ -1,4 +1,39 @@
-function content() {
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../context/AuthProvider";
+import { userServiceApi } from "../../utils/api/user_service";
+
+function Content() {
+    const { token } = useContext(AuthContext);
+    const [organizations, setOrganizations] = useState([]);
+    const [selectedOrganization, setSelectedOrganization] = useState(null);
+    const [organizationDetails, setOrganizationDetails] = useState(null);
+
+    useEffect(() => {
+        if (token) {
+            userServiceApi.getOrganizationRequests(token)
+            .then(data => {
+                setOrganizations(data);
+            })
+            .catch(error => {
+                console.error('Ошибка при загрузке организаций:', error);
+            });
+        }
+    }, [token]);
+
+    const handleOrganizationSelect = (id) => {
+        setSelectedOrganization(id);
+
+        if (token) {
+            userServiceApi.getOrganizationProfileInfo(token, id)
+            .then(data => {
+              setOrganizationDetails(data);
+            })
+            .catch(error => {
+              console.error('Ошибка при загрузке данных организации:', error);
+            });
+        }
+      };
+
     return (
         <main id="main-content" className="container ml-64 px-4 py-6">
             <div className="grid grid-cols-12 gap-6">
@@ -7,32 +42,31 @@ function content() {
                         <h2 className="text-lg">Заявки</h2>
                     </div>
                     <div className="space-y-3">
-                        <div className="cursor-pointer rounded-lg border p-3 hover:bg-neutral-50">
+                        {organizations.map((organization) => (
+                        <div 
+                        key={organization.id} 
+                        className="cursor-pointer rounded-lg border p-3 hover:bg-neutral-50"
+                        onClick={() => handleOrganizationSelect(organization.id)}
+                        >
                             <div className="flex items-center gap-3">
-                                <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&amp;seed=1" className="h-10 w-10 rounded-full" alt="user-photo" />
+                            <img src={`https://api.dicebear.com/7.x/notionists/svg?scale=200&amp;seed=2`} className="h-10 w-10 rounded-full" alt="user-photo" />
                                 <div>
-                                    <p>Волонтерская организация #1</p>
-                                    <p className="text-sm text-neutral-600">20.02.2025</p>
+                                    <p>{organization.name}</p>
+                                    <p className="text-sm text-neutral-600">{organization.date || "Не указано"}</p>
                                 </div>
                             </div>
                         </div>
-                        <div className="cursor-pointer rounded-lg border bg-neutral-50 p-3">
-                            <div className="flex items-center gap-3">
-                                <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&amp;seed=2" className="h-10 w-10 rounded-full" alt="user-photo" />
-                                <div>
-                                    <p>Волонтерская организация #2</p>
-                                    <p className="text-sm text-neutral-600">19.02.2025</p>
-                                </div>
-                            </div>
-                        </div>
+                        ))}
                     </div>
                 </div>
                 <div id="application-details" className="col-span-8 rounded-lg border bg-white p-6">
+                {organizationDetails ? (
+                    <>
                     <div className="mb-6 flex items-start justify-between">
                         <div className="flex items-center gap-4">
                             <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&amp;seed=2" className="h-16 w-16 rounded-full" alt="user-photo" />
                             <div>
-                                <h2 className="text-xl">Волонтерская организация #2</h2>
+                                <h2 className="text-xl">{organizationDetails.name}</h2>
                             </div>
                         </div>
                         <div className="flex gap-3">
@@ -46,40 +80,43 @@ function content() {
                             <div className="grid grid-cols-1 gap-4">
                                 <div>
                                     <p className="text-sm text-neutral-600">Юридическое название</p>
-                                    <p>Юридическое название</p>
+                                    <p>{organizationDetails.name || "Не указано"}</p>
                                 </div>
                                 <div>
                                     <p className="text-sm text-neutral-600">Email</p>
-                                    <p>ivan.petrov@email.com</p>
+                                    <p>{organizationDetails.email || "Не указано"}</p>
                                 </div>
                                 <div>
                                     <p className="text-sm text-neutral-600">Телефон</p>
-                                    <p>+7 (999) 123-45-67</p>
+                                    <p>{organizationDetails.phone || "Не указано"}</p>
                                 </div>
                                 <div>
                                     <p className="text-sm text-neutral-600">ИНН</p>
-                                    <p>18231273183712371</p>
+                                    <p>{organizationDetails.inn || "Не указано"}</p>
                                 </div>
                                 <div>
                                     <p className="text-sm text-neutral-600">Юридический адрес</p>
-                                    
                                     <p>Юридический адрес</p>
                                 </div>
                                 <div>
                                     <p className="text-sm text-neutral-600">Фактический адрес</p>
-                                    <p>Фактический адрес</p>
+                                    <p>{organizationDetails.address || "Не указано"}</p>
                                 </div>
                                 <div>
                                     <p className="text-sm text-neutral-600">Руководитель организации</p>
-                                    <p>Руководитель организации</p>
+                                    <p>{organizationDetails.full_name_owner || "Не указано"}</p>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </>
+                ) : (
+                    <p>Выберите организацию, чтобы увидеть подробности.</p>
+                )}
                 </div>
             </div>
         </main>
     );
 }
 
-export default content;
+export default Content;
