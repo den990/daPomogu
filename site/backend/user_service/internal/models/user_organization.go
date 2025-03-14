@@ -1,12 +1,19 @@
 package models
 
-import "backend/internal/db"
+import (
+	"backend/internal/db"
+	"strconv"
+)
 
 type UserOrganization struct {
 	ID             uint `gorm:"primaryKey"`
 	UserID         uint `gorm:"not null;index"`
 	OrganizationID uint `gorm:"not null;index"`
 	IsOwner        bool `gorm:"default:false"`
+}
+
+type AttachOrganization struct {
+	OrganizationID string `json:"organization_id" binding:"required"`
 }
 
 func (UserOrganization) TableName() string {
@@ -63,4 +70,43 @@ func FindOrganizationByUserIdOwner(userId string) (*Organization, error) {
 	}
 
 	return &organization, nil
+}
+
+func AddAttachmentOrganization(userID, orgID string) error {
+	userIDUint, err := strconv.ParseUint(userID, 10, 32)
+	if err != nil {
+		return err
+	}
+	orgIDUint, err := strconv.ParseUint(orgID, 10, 32)
+	if err != nil {
+		return err
+	}
+
+	userOrg := UserOrganization{
+		UserID:         uint(userIDUint),
+		OrganizationID: uint(orgIDUint),
+		IsOwner:        false,
+	}
+
+	if err := db.DB.Create(&userOrg).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func RemoveAttachmentOrganization(userID, orgID string) error {
+	userIDUint, err := strconv.ParseUint(userID, 10, 32)
+	if err != nil {
+		return err
+	}
+	orgIDUint, err := strconv.ParseUint(orgID, 10, 32)
+	if err != nil {
+		return err
+	}
+
+	if err := db.DB.Where("user_id = ? AND organization_id = ?", uint(userIDUint), uint(orgIDUint)).Delete(&UserOrganization{}).Error; err != nil {
+		return err
+	}
+
+	return nil
 }
