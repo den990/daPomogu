@@ -66,6 +66,15 @@ class UserServiceApi {
       headers: this._headers
     });
   }
+
+  putChangePassword(token, old_password, new_password) {
+    this._updateToken(token);
+    return this._request(`${this._baseUrl}/change-password`, {
+        method: 'PUT',
+        headers: this._headers,
+        body: JSON.stringify({ old_password, new_password })
+    });
+  }
 };
 
 export const userServiceApi = new UserServiceApi(apiSettings);
