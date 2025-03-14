@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import ROUTES from "../../constants/routes";
 import { AuthContext } from "../../context/AuthProvider";
 import { useContext, useEffect, useState } from "react";
@@ -6,39 +6,58 @@ import { userServiceApi } from "../../utils/api/user_service";
 
 function Profile() {
     const [profileData, setProfileData] = useState(null);
-    const { token, logout } = useContext(AuthContext);
+    const { token } = useContext(AuthContext); // Убрали неиспользуемый logout
 
     useEffect(() => {
         if (token) {
             userServiceApi.getMyOrganizationProfile(token)
-            .then(data => {
-                setProfileData(data);
-            })
-            .catch(error => {
-                console.error('Ошибка при загрузке профиля:', error);
-            });
+                .then(data => setProfileData(data))
+                .catch(error => console.error('Ошибка при загрузке профиля:', error));
         }
     }, [token]);
 
     return (
-        <section id="org-profile" className="bg-white rounded-lg shadow-sm p-6 mb-8">
-            <div className="flex items-start space-x-6">
-                <img className="w-48 h-48 rounded-lg object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/cb61e8f45a-5ee863536d744c529bb2.png" alt="humanitarian organization logo with volunteers in red and white colors" />
-                <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">{profileData ? profileData.name : "Загрузка..."}</h2>
-                    <p className="text-gray-600 mb-4">Описание организации и её миссии. Мы помогаем людям и делаем мир лучше через волонтерскую деятельность.</p>
-                    <div className="flex space-x-4">
-                        <button className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 flex items-center">
-                            <img style={{width: 20, height: 16}} src={require("../../images/registration_white.svg").default} alt="registration" />
-                            <Link to={ROUTES.ATTACHMENTS_ORGANIZATION} style={{ paddingLeft: 10}}>Заявки на вступление</Link>
-                        </button>
-                        <button className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 flex items-center">
-                            <img style={{width: 16, height: 16}} src={require("../../images/add_white.svg").default} alt="add" />
-                            <Link to={ROUTES.CREATE_TASK} style={{ paddingLeft: 10}}>Добавить задание</Link>
-                        </button>
-                        <button className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 flex items-center">
-                            <Link to={ROUTES.EDIT_ORGANIZATION_PROFILE}>Редактировать профиль</Link>
-                        </button>
+        <section className="bg-white rounded-lg shadow-sm p-4 md:p-6 mb-6 md:mb-8">
+            <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-6">
+                <img 
+                    className="w-full md:w-48 h-48 rounded-lg object-cover self-center"
+                    src="https://storage.googleapis.com/uxpilot-auth.appspot.com/cb61e8f45a-5ee863536d744c529bb2.png" 
+                    alt="Логотип организации" 
+                />
+                
+                <div className="flex-1 space-y-4">
+                    <h2 className="text-xl md:text-2xl font-bold text-gray-900">
+                        {profileData?.name || "Загрузка..."}
+                    </h2>
+                    
+                    <p className="text-gray-600 text-sm md:text-base">
+                        Описание организации и её миссии. Мы помогаем людям и делаем мир лучше через волонтерскую деятельность.
+                    </p>
+
+                    <div className="flex flex-col md:flex-row gap-3 md:gap-4">
+                        <Link 
+                            to={ROUTES.ATTACHMENTS_ORGANIZATION}
+                            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 flex items-center justify-center gap-2 text-sm md:text-base"
+                        >
+                            <img 
+                                className="w-5 h-4" 
+                                src={require("../../images/registration_white.svg").default} 
+                                alt="Иконка регистрации" 
+                            />
+                            Заявки на вступление
+                        </Link>
+                        
+                        <Link 
+                            to={ROUTES.CREATE_TASK}
+                            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 flex items-center justify-center gap-2 text-sm md:text-base"
+                        >
+                            <img 
+                                className="w-4 h-4" 
+                                src={require("../../images/add_white.svg").default} 
+                                alt="Иконка добавления" 
+                            />
+                            Добавить задание
+                        </Link>
                     </div>
                 </div>
             </div>
