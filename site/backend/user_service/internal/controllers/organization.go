@@ -96,11 +96,11 @@ func updateOrganizationStatus(c *gin.Context, newStatus uint, successMessage str
 }
 
 func GetOrganizationProfileInfo(c *gin.Context) {
-	userIDParam := c.Param("id")
+	orgIDParam := c.Param("id")
 	var organizationId uint
 
-	if userIDParam != "" {
-		parsedID, err := strconv.ParseUint(userIDParam, 10, 32)
+	if orgIDParam != "" {
+		parsedID, err := strconv.ParseUint(orgIDParam, 10, 32)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid user ID"})
 			return
@@ -112,12 +112,18 @@ func GetOrganizationProfileInfo(c *gin.Context) {
 			c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
 			return
 		}
-		organizationId = jwtUserID.(uint)
+		orgData, err := models.FindOrganizationByUserIdOwner(jwtUserID.(string))
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"message": "Organization not found"})
+			return
+		}
+
+		organizationId = orgData.ID
 	}
 
 	organization, err := models.FindActualOrganizationById(strconv.Itoa(int(organizationId)))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "User not found"})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Organization not found"})
 	} else {
 		response := models.OrganizationProfileResponse{
 			Email:         organization.Email,
@@ -218,7 +224,7 @@ func GetPendingOrganizations(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-func GetOrganizationList(c *gin.Context) {
+func GetOrganizationAcceptedList(c *gin.Context) {
 	_, err := utils.GetUserIDFromToken(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
@@ -226,6 +232,31 @@ func GetOrganizationList(c *gin.Context) {
 	}
 
 	organizations, err := models.FindOrganizationsAccepted()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to fetch organizations"})
+		return
+	}
+
+	var response []models.OrganizationList
+	for _, org := range organizations {
+		response = append(response, models.OrganizationList{
+			Id:        strconv.Itoa(int(org.ID)),
+			Name:      org.Name,
+			CreatedAt: org.CreatedAt.Format(time.DateOnly),
+		})
+	}
+
+	c.JSON(http.StatusOK, response)
+}
+
+func GetAllOrganizationList(c *gin.Context) {
+	_, err := utils.GetUserIDFromToken(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
+		return
+	}
+
+	organizations, err := models.FindOrganizationsAll()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to fetch organizations"})
 		return

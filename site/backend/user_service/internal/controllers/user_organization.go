@@ -65,3 +65,64 @@ func DetachUserToOrganization(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "User successfully attached to organization"})
 }
+
+func GetRequestsToOrganization(c *gin.Context) {
+	userID, err := utils.GetUserIDFromToken(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
+		return
+	}
+
+	org, err := models.FindOrganizationByUserIdOwner(strconv.Itoa(int(userID)))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Not found organization"})
+		return
+	}
+
+	requestsJoin, err := models.FindRequestsToJoin(strconv.Itoa(int(org.ID)))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to get join requests"})
+		return
+	}
+
+	var userIDs []uint
+	for _, request := range requestsJoin {
+		userIDs = append(userIDs, request.UserID)
+	}
+
+	users, err := models.FindUsersByIDs(userIDs)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to fetch users"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"requests": users})
+}
+
+func AcceptUserAttachment(c *gin.Context) {
+	userID, err := utils.GetUserIDFromToken(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
+		return
+	}
+
+	org, err := models.FindOrganizationByUserIdOwner(strconv.Itoa(int(userID)))
+	if err != nil {
+		c.JSON(http.StatusForbidden, gin.H{"message": "You are not the owner of any organization"})
+		return
+	}
+
+	userIDParam := c.Param("user_id")
+	if userIDParam == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "User ID is required"})
+		return
+	}
+
+	err = models.AcceptAttachment(userIDParam, strconv.Itoa(int(org.ID)))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to accept user attachment", "error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "User successfully accepted into organization"})
+}

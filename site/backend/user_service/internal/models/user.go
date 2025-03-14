@@ -143,3 +143,11 @@ func UpdateUser(id string, userForm UserUpdate) error {
 func UpdateUserPassword(userID string, newPassword string) error {
 	return db.DB.Model(&User{}).Where("id = ?", userID).Update("password_hash", newPassword).Error
 }
+
+func FindUsersByIDs(userIDs []uint) ([]User, error) {
+	var users []User
+	if err := db.DB.Where("id IN (?)", userIDs).Find(&users).Error; err != nil {
+		return nil, err
+	}
+	return users, nil
+}

@@ -126,3 +126,12 @@ func FindOrganizationsAccepted() ([]Organization, error) {
 	}
 	return organizations, nil
 }
+
+func FindOrganizationsAll() ([]Organization, error) {
+	var organizations []Organization
+	err := db.DB.Find(&organizations).Error
+	if err != nil {
+		return nil, err
+	}
+	return organizations, nil
+}
