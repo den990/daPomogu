@@ -1,8 +1,8 @@
 import { Link } from "react-router";
 import React, { useContext, useEffect, useState } from "react";
 import ROUTES from "../../constants/routes";
+import RequestToServerWithAuth from "../../utils/RequestToServerWithAuth";
 import { AuthContext } from "../../context/AuthProvider";
-import { userServiceApi } from "../../utils/api/user_service";
 
 function Profile() {
     const [profileData, setProfileData] = useState(null);
