@@ -29,16 +29,40 @@ class UserServiceApi {
 
   getOrganizationRequests(token) {
     this._updateToken(token);
-
     return this._request(`${this._baseUrl}/organization-requests`, {
+      method: 'GET',
       headers: this._headers
     });
   };
 
-  getOrganizationProfileInfo(token, id) {
+  getMyOrganizationProfile(token) {
     this._updateToken(token);
+    return this._request(`${this._baseUrl}/profile-organization`, {
+      method: 'GET',
+      headers: this._headers
+    });
+  }
 
+  getOrganizationProfileById(token, id) {
+    this._updateToken(token);
     return this._request(`${this._baseUrl}/profile-organization/${id}`, {
+      method: 'GET',
+      headers: this._headers
+    });
+  }
+
+  getMyVolonteerProfile(token) {
+    this._updateToken(token);
+    return this._request(`${this._baseUrl}/profile`, {
+      method: 'GET',
+      headers: this._headers
+    });
+  }
+
+  getVolonteerProfileById(token, id) {
+    this._updateToken(token);
+    return this._request(`${this._baseUrl}/profile/${id}`, {
+      method: 'GET',
       headers: this._headers
     });
   }
