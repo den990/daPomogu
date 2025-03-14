@@ -22,12 +22,14 @@ func GetUserProfileInfo(c *gin.Context) {
 		}
 		userID = uint(parsedID)
 	} else {
-		jwtUserID, exists := c.Get("user_id")
-		if !exists {
+		var err error
+		userID, err = utils.GetUserIDFromToken(c)
+
+		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
 			return
 		}
-		userID = jwtUserID.(uint)
+
 	}
 
 	user, err := models.FindUserById(strconv.Itoa(int(userID)))
