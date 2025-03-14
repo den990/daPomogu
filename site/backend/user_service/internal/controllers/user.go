@@ -36,7 +36,7 @@ func GetUserProfileInfo(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "User not found"})
 	} else {
-		if userIDParam != "" {
+		if userIDParam == "" {
 			response := models.UserProfileResponse{
 				Name:           user.Name,
 				Surname:        user.Surname,
