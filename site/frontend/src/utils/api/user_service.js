@@ -94,6 +94,15 @@ class UserServiceApi {
         headers: this._headers,
     });
   }
+
+  putEditVolonteer(token, name, surname, patronymic, date_of_birthday, address, email, phone) {
+    this._updateToken(token);
+    return this._request(`${this._baseUrl}/profile`, {
+        method: 'PUT',
+        headers: this._headers,
+        body: JSON.stringify({ name, surname, patronymic, date_of_birthday, address, email, phone })
+    });
+  }
 };
 
 export const userServiceApi = new UserServiceApi(apiSettings);

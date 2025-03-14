@@ -1,42 +1,20 @@
 import { Link } from "react-router";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext} from "react";
 import ROUTES from "../../constants/routes";
 import { AuthContext } from "../../context/AuthProvider";
-import { userServiceApi } from "../../utils/api/user_service";
 
 function Profile() {
-    const [profileData, setProfileData] = useState(null);
-    const { token } = useContext(AuthContext);
-
-    useEffect(() => {
-        if (token) {
-            userServiceApi.getMyVolonteerProfile(token)
-            .then(data => {
-                setProfileData(data);
-            })
-            .catch(error => {
-                console.error('Ошибка при загрузке профиля:', error);
-            });
-        }
-    }, [token]);
-
-    // const userName = profileData
-    // ? `${profileData.name} ${profileData.surname}`
-    // : "Загрузка...";
-
-    // const userAddress = profileData
-    // ? `${profileData.address}`
-    // : "Загрузка...";
+    const { profile, loading } = useContext(AuthContext);
     
     return (
         <div id="profile-section" className="md:col-span-1">
             <div className="bg-white rounded-lg shadow p-6">
             <div className="flex flex-col items-center">
                 <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg" className="w-32 h-32 rounded-full" alt="Profile" />
-                <h2 className="mt-4 text-xl font-semibold">{profileData ? `${profileData.name} ${profileData.surname}` : "Загрузка..."}</h2>
+                <h2 className="mt-4 text-xl font-semibold">{loading ? "Загрузка..." : (profile ? `${profile.name} ${profile.surname}` : "Нет данных")}</h2>
                 <p className="text-gray-600" style={{display: "flex", alignItems: "center"}}>
                     <img style={{ width: 12, height: 16 }} src={require("../../images/placemark_grey.svg").default} alt="placemark" />
-                    <span style={{paddingLeft: 10}}>{profileData ? profileData.address : "Загрузка..."}</span>
+                    <span style={{paddingLeft: 10}}>{loading ? "Загрузка..." : (profile ? profile.address : "Нет данных")}</span>
                 </p>
             </div>
             <div className="mt-6 gap-4 text-center flex flex-col justify-center">
