@@ -40,8 +40,8 @@ func main() {
 		protected.PUT("/organizations/:id/reject", controllers.RejectOrganization)             // отказать регистрацию организации
 		protected.POST("/profile-organization", controllers.UpdateOrganization)                // обновить собственные данные организации
 		protected.POST("/profile-organization/:id", controllers.UpdateOrganization)            // обновить данные другой организации
-		protected.POST("/profile", controllers.UpdateUser)                                     // обновить собственные данные профиля
-		protected.POST("/profile/:id", controllers.UpdateUser)                                 // обновить данные другого профиля
+		protected.PUT("/profile", controllers.UpdateUser)                                      // обновить собственные данные профиля
+		protected.PUT("/profile/:id", controllers.UpdateUser)                                  // обновить данные другого профиля
 		protected.GET("/organization-requests", controllers.GetPendingOrganizations)           // список организация на регистрацию
 		protected.PUT("/change-password", controllers.ChangePassword)                          // смена пароля от лк
 		protected.GET("/organizations-accepted-list", controllers.GetOrganizationAcceptedList) // список принятых организаций с укороченными данными
