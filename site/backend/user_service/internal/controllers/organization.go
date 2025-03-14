@@ -217,3 +217,28 @@ func GetPendingOrganizations(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response)
 }
+
+func GetOrganizationList(c *gin.Context) {
+	_, err := utils.GetUserIDFromToken(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
+		return
+	}
+
+	organizations, err := models.FindOrganizationsAccepted()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to fetch organizations"})
+		return
+	}
+
+	var response []models.OrganizationList
+	for _, org := range organizations {
+		response = append(response, models.OrganizationList{
+			Id:        strconv.Itoa(int(org.ID)),
+			Name:      org.Name,
+			CreatedAt: org.CreatedAt.Format(time.DateOnly),
+		})
+	}
+
+	c.JSON(http.StatusOK, response)
+}

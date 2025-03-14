@@ -53,6 +53,12 @@ type GetProfilesOrganizationResponse struct {
 	FullNameOwner string `json:"full_name_owner"`
 }
 
+type OrganizationList struct {
+	Id        string `json:"id"`
+	Name      string `json:"name"`
+	CreatedAt string `json:"created_at"`
+}
+
 func FindActualOrganizationById(id string) (*Organization, error) {
 	var organization Organization
 	if err := db.DB.Where("id = ? AND status_id = ?", id, 2).First(&organization).Error; err != nil {
@@ -106,6 +112,15 @@ func FindOrganizationByUserId(id string) (*Organization, error) {
 func FindOrganizationsPending() ([]Organization, error) {
 	var organizations []Organization
 	err := db.DB.Where("status_id = ?", 1).Find(&organizations).Error
+	if err != nil {
+		return nil, err
+	}
+	return organizations, nil
+}
+
+func FindOrganizationsAccepted() ([]Organization, error) {
+	var organizations []Organization
+	err := db.DB.Where("status_id = ?", 2).Find(&organizations).Error
 	if err != nil {
 		return nil, err
 	}
