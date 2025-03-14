@@ -12,7 +12,7 @@ function VolunteerRegistration() {
             className="h-full text-base-content"
         >
             <div className="min-h-screen bg-gray-50">
-                <div className="flex min-h-[800px]">
+                <div className="flex min-h-screen">
                     <LeftPanel />
                     <RegistrationForm />
                 </div>

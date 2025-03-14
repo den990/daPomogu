@@ -1,18 +1,10 @@
-import { useAuthContext } from "../../context/AuthProvider";
-
-const { token } = useAuthContext();
 const apiSettings = {
     baseUrl: 'http://localhost:8080/api',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-type': 'application/json'
-    }
   };
 
 class UserServiceApi {
-  constructor({ baseUrl, headers }) {
+  constructor({ baseUrl }) {
     this._baseUrl = baseUrl;
-    this._headers = headers;
   };
 
   _request(url, options) {
@@ -24,16 +16,56 @@ class UserServiceApi {
     if (response.ok) {
       return response.json();
     } else {
-      Promise.reject(`Ошибка: ${response.status}/${response.statusText}`);
+      return Promise.reject(`Ошибка: ${response.status}/${response.statusText}`);
     };
   };
 
-  getUserInfo() {
-    return this._request(`${this._baseUrl}/`, {
+  _updateToken(token) {
+    this._headers = {
+      Authorization: `Bearer ${token}`,
+      'Content-type': 'application/json'
+    };
+  }
+
+  getOrganizationRequests(token) {
+    this._updateToken(token);
+    return this._request(`${this._baseUrl}/organization-requests`, {
+      method: 'GET',
       headers: this._headers
     });
   };
+
+  getMyOrganizationProfile(token) {
+    this._updateToken(token);
+    return this._request(`${this._baseUrl}/profile-organization`, {
+      method: 'GET',
+      headers: this._headers
+    });
+  }
+
+  getOrganizationProfileById(token, id) {
+    this._updateToken(token);
+    return this._request(`${this._baseUrl}/profile-organization/${id}`, {
+      method: 'GET',
+      headers: this._headers
+    });
+  }
+
+  getMyVolonteerProfile(token) {
+    this._updateToken(token);
+    return this._request(`${this._baseUrl}/profile`, {
+      method: 'GET',
+      headers: this._headers
+    });
+  }
+
+  getVolonteerProfileById(token, id) {
+    this._updateToken(token);
+    return this._request(`${this._baseUrl}/profile/${id}`, {
+      method: 'GET',
+      headers: this._headers
+    });
+  }
 };
 
-export const api = new Api(apiSettings);
-  
+export const userServiceApi = new UserServiceApi(apiSettings);
