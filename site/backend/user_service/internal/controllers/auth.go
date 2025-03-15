@@ -34,6 +34,11 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	if user.IsBlocked == true {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "You are blocked"})
+		return
+	}
+
 	if !utils.CheckPassword(req.Password, user.PasswordHash) {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid email or password"})
 		return
