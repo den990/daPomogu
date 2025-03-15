@@ -21,6 +21,7 @@ type User struct {
 	Address        string
 	PasswordHash   string `gorm:"not null"`
 	IsAdmin        bool   `gorm:"default:false"`
+	IsBlocked      bool   `gorm:"default:false"`
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 }
@@ -160,4 +161,45 @@ func FindUsersByIDs(userIDs []uint) ([]User, error) {
 		return nil, err
 	}
 	return users, nil
+}
+
+func FindUsersAllWithoutOwner() ([]User, error) {
+	var users []User
+	err := db.DB.
+		Where("id NOT IN (SELECT user_id FROM user_organization WHERE is_owner = true)").
+		Find(&users).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
+func BlockUser(userID string) error {
+	var user User
+	if err := db.DB.Where("id = ?", userID).First(&user).Error; err != nil {
+		return errors.New("user not found")
+	}
+
+	user.IsBlocked = true
+	if err := db.DB.Save(&user).Error; err != nil {
+		return errors.New("failed to block user")
+	}
+
+	return nil
+}
+
+func UnblockUser(userID string) error {
+	var user User
+	if err := db.DB.Where("id = ?", userID).First(&user).Error; err != nil {
+		return errors.New("user not found")
+	}
+
+	user.IsBlocked = false
+	if err := db.DB.Save(&user).Error; err != nil {
+		return errors.New("failed to unblock user")
+	}
+
+	return nil
 }

@@ -99,24 +99,14 @@ func UpdateUser(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"message": "Organization updated successfully"})
+		c.JSON(http.StatusOK, gin.H{"message": "User updated successfully"})
 	} else {
-		org, err := models.FindOrganizationByUserIdOwner(strconv.Itoa(int(userID)))
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to find organization"})
-			return
-		}
-
-		if org == nil {
-			c.JSON(http.StatusForbidden, gin.H{"message": "No organization found"})
-			return
-		}
-
-		if err := models.UpdateUser(strconv.Itoa(int(org.ID)), userData); err != nil {
+		if err := models.UpdateUser(strconv.Itoa(int(userID)), userData); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"message": "Organization updated successfully"})
+
+		c.JSON(http.StatusOK, gin.H{"message": "User updated successfully"})
 	}
 }
 
@@ -156,4 +146,154 @@ func ChangePassword(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Password updated successfully"})
+}
+
+func GetAllUsersAndOrganizations(c *gin.Context) {
+	_, err := models.IsAdmin(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unable to determine user role"})
+		return
+	}
+
+	organizations, err := models.FindOrganizationsAll()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to fetch organizations"})
+		return
+	}
+
+	users, err := models.FindUsersAllWithoutOwner()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to fetch users"})
+		return
+	}
+
+	var result []map[string]interface{}
+
+	for _, user := range users {
+		result = append(result, map[string]interface{}{
+			"type":          "user",
+			"id":            user.ID,
+			"email":         user.Email,
+			"phone":         user.Phone,
+			"surname":       user.Surname,
+			"name":          user.Name,
+			"patronymic":    user.Patronymic,
+			"date_of_birth": user.DateOfBirthday,
+			"address":       user.Address,
+			"is_admin":      user.IsAdmin,
+			"created_at":    user.CreatedAt,
+			"updated_at":    user.UpdatedAt,
+			"is_blocked":    user.IsBlocked,
+		})
+	}
+
+	for _, org := range organizations {
+		user, err := models.FindUserOwnerOrganizationByOrganizationId(strconv.Itoa(int(org.ID)))
+		if err != nil {
+			continue
+		}
+		result = append(result, map[string]interface{}{
+			"type":            "organization",
+			"id":              org.ID,
+			"email":           org.Email,
+			"phone":           org.Phone,
+			"inn":             org.INN,
+			"name":            org.Name,
+			"legal_address":   org.LegalAddress,
+			"actual_address":  org.ActualAddress,
+			"status_id":       org.StatusID,
+			"full_name_owner": org.FullNameOwner,
+			"created_at":      org.CreatedAt,
+			"updated_at":      org.UpdatedAt,
+			"is_blocked":      org.IsBlocked,
+			"user_id_owner":   user.ID,
+		})
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": result})
+}
+
+func BlockUser(c *gin.Context) {
+	_, err := models.IsAdmin(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unable to determine user role"})
+		return
+	}
+
+	userIDParam := c.Param("id")
+	isOwner, err := models.IsUserOwner(userIDParam)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed request"})
+		return
+	}
+
+	if isOwner {
+		org, err := models.FindOrganizationByUserIdOwner(userIDParam)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed request"})
+			return
+		}
+
+		err = models.BlockOrganization(strconv.Itoa(int(org.ID)))
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+			return
+		}
+
+		err = models.BlockUser(userIDParam)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+			return
+		}
+	} else {
+		err = models.BlockUser(userIDParam)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+			return
+		}
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Block successful"})
+}
+
+func UnblockUser(c *gin.Context) {
+	_, err := models.IsAdmin(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unable to determine user role"})
+		return
+	}
+
+	userIDParam := c.Param("id")
+	isOwner, err := models.IsUserOwner(userIDParam)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed request"})
+		return
+	}
+
+	if isOwner {
+		org, err := models.FindOrganizationByUserIdOwner(userIDParam)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed request"})
+			return
+		}
+
+		err = models.UnblockOrganization(strconv.Itoa(int(org.ID)))
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+			return
+		}
+
+		err = models.UnblockUser(userIDParam)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+			return
+		}
+	} else {
+		err = models.UnblockUser(userIDParam)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+			return
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Unblock successful"})
 }

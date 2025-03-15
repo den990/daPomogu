@@ -142,3 +142,31 @@ func AcceptAttachment(userID, orgID string) error {
 
 	return nil
 }
+
+func IsUserOwner(userID string) (bool, error) {
+	var count int64
+	err := db.DB.Model(&UserOrganization{}).
+		Where("user_id = ? AND is_owner = ?", userID, true).
+		Count(&count).Error
+
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
+}
+
+func FindUserOwnerOrganizationByOrganizationId(orgId string) (*User, error) {
+	var userOrganization UserOrganization
+	if err := db.DB.Where("organization_id = ? AND is_owner = ?", orgId, true).First(&userOrganization).Error; err != nil {
+		return nil, err
+	}
+
+	var user User
+
+	if err := db.DB.Where("id = ?", orgId).First(&user).Error; err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
