@@ -15,10 +15,10 @@ function sidebar() {
                     <img style={{ width: 16, height: 16 }} src={require("../../images/graphic_red.svg").default} alt="graphic" />
                     <span>Главная</span>
                 </Link>
-                <a href="/#" className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg mb-1">
+                <Link to={ROUTES.ADMIN_DASHBOARD} className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg mb-1">
                     <img style={{width: 20, height: 16}} src={require("../../images/people_grey.svg").default} alt="people" />
                     <span>Пользователи</span>
-                </a>
+                </Link>
                 <a href="/#" className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg mb-1">
                     <img style={{width: 16, height: 16}} src={require("../../images/stats_grey.svg").default} alt="stats" />
                     <span>Задания</span>

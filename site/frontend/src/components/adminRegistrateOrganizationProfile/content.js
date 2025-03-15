@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useCallback } from "react";
 import { AuthContext } from "../../context/AuthProvider";
 import { userServiceApi } from "../../utils/api/user_service";
 
@@ -8,7 +8,7 @@ function Content() {
     const [selectedOrganization, setSelectedOrganization] = useState(null);
     const [organizationDetails, setOrganizationDetails] = useState(null);
 
-    const fetchOrganizations = () => {
+    const fetchOrganizations = useCallback(() => {
         if (token) {
             userServiceApi.getOrganizationRequests(token)
                 .then(data => {
@@ -19,11 +19,11 @@ function Content() {
                     setOrganizations([]);
                 });
         }
-    };
+    }, [token]);
 
     useEffect(() => {
         fetchOrganizations();
-    }, [token]);
+    }, [fetchOrganizations]); 
 
     const handleOrganizationSelect = (id) => {
         setSelectedOrganization(id);
