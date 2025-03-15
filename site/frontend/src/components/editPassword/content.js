@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import ROUTES from "../../constants/routes";
 import { useState, useContext } from "react";
 import { userServiceApi } from "../../utils/api/user_service";

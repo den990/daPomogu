@@ -6,7 +6,7 @@ import { userServiceApi } from "../../utils/api/user_service";
 
 function Profile() {
     const [profileData, setProfileData] = useState(null);
-    const { token, logout } = useContext(AuthContext);
+    const { token } = useContext(AuthContext);
 
     useEffect(() => {
         if (token) {
