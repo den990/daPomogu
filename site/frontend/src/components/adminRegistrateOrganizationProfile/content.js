@@ -5,7 +5,7 @@ import { userServiceApi } from "../../utils/api/user_service";
 function Content() {
     const { token } = useContext(AuthContext);
     const [organizations, setOrganizations] = useState([]);
-    const [, setSelectedOrganization] = useState(null);
+    const [selectedOrganization, setSelectedOrganization] = useState(null);
     const [organizationDetails, setOrganizationDetails] = useState(null);
 
     const fetchOrganizations = () => {
