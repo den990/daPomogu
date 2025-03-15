@@ -35,11 +35,13 @@ type OrganizationRegistration struct {
 }
 
 type OrganizationProfileResponse struct {
+	Id            string `json:"id"`
 	Email         string `json:"email"`
 	Phone         string `json:"phone"`
 	INN           string `json:"inn"`
 	Name          string `json:"name"`
-	Address       string `json:"address"`
+	ActualAddress string `json:"actual_address"`
+	LegalAddress  string `json:"legal_address"`
 	FullNameOwner string `json:"full_name_owner"`
 }
 
@@ -49,7 +51,8 @@ type GetProfilesOrganizationResponse struct {
 	Phone         string `json:"phone"`
 	INN           string `json:"inn"`
 	Name          string `json:"name"`
-	Address       string `json:"address"`
+	ActualAddress string `json:"actual_address"`
+	LegalAddress  string `json:"legal_address"`
 	FullNameOwner string `json:"full_name_owner"`
 }
 

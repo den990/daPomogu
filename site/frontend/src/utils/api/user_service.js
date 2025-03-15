@@ -75,6 +75,34 @@ class UserServiceApi {
         body: JSON.stringify({ old_password, new_password })
     });
   }
+
+  // protected.PUT("/organizations/:id/apply", controllers.ApplyOrganization)               // принять регистрацию организации
+	// protected.PUT("/organizations/:id/reject", controllers.RejectOrganization)             // отказать регистрацию организации
+
+  putApplyOrganization(token, id) {
+    this._updateToken(token);
+    return this._request(`${this._baseUrl}/organizations/${id}/apply`, {
+        method: 'PUT',
+        headers: this._headers,
+    });
+  }
+
+  putRejectOrganization(token, id) {
+    this._updateToken(token);
+    return this._request(`${this._baseUrl}/organizations/${id}/reject`, {
+        method: 'PUT',
+        headers: this._headers,
+    });
+  }
+
+  putEditVolonteer(token, name, surname, patronymic, date_of_birthday, address, email, phone) {
+    this._updateToken(token);
+    return this._request(`${this._baseUrl}/profile`, {
+        method: 'PUT',
+        headers: this._headers,
+        body: JSON.stringify({ name, surname, patronymic, date_of_birthday, address, email, phone })
+    });
+  }
 };
 
 export const userServiceApi = new UserServiceApi(apiSettings);

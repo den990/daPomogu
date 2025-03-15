@@ -8,23 +8,28 @@ function Content() {
     const [, setSelectedOrganization] = useState(null);
     const [organizationDetails, setOrganizationDetails] = useState(null);
 
-    useEffect(() => {
+    const fetchOrganizations = () => {
         if (token) {
             userServiceApi.getOrganizationRequests(token)
-            .then(data => {
-                setOrganizations(data);
-            })
-            .catch(error => {
-                console.error('Ошибка при загрузке организаций:', error);
-            });
+                .then(data => {
+                    setOrganizations(data || []);
+                })
+                .catch(error => {
+                    console.error('Ошибка при загрузке организаций:', error);
+                    setOrganizations([]);
+                });
         }
+    };
+
+    useEffect(() => {
+        fetchOrganizations();
     }, [token]);
 
     const handleOrganizationSelect = (id) => {
         setSelectedOrganization(id);
 
         if (token) {
-            userServiceApi.getOrganizationProfileInfo(token, id)
+            userServiceApi.getOrganizationProfileById(token, id)
             .then(data => {
               setOrganizationDetails(data);
             })
@@ -33,6 +38,35 @@ function Content() {
             });
         }
       };
+
+    const handleApplyOrganization = (id) => {
+        if (token) {
+            userServiceApi.putApplyOrganization(token, id)
+            .then(()=> {
+                fetchOrganizations();
+                setOrganizationDetails(null);
+                setSelectedOrganization(null);
+            }
+            )
+            .catch(error => {
+              console.error('Ошибка при регистрации организации:', error);
+            });
+        }
+    }
+
+    const handleRejectOrganization = (id) => {
+        if (token) {
+            userServiceApi.putRejectOrganization(token, id)
+            .then(()=> {
+                fetchOrganizations();
+                setOrganizationDetails(null);
+                setSelectedOrganization(null);
+            })
+            .catch(error => {
+              console.error('Ошибка при регистрации организации:', error);
+            });
+        }
+    }
 
     return (
         <main id="main-content" className="container ml-64 px-4 py-6">
@@ -70,8 +104,16 @@ function Content() {
                             </div>
                         </div>
                         <div className="flex gap-3">
-                            <button className="rounded-lg border bg-red-600 px-4 py-2 text-white hover:bg-red-800">Принять</button>
-                            <button className="rounded-lg border px-4 py-2 text-neutral-700 hover:bg-neutral-50">Отклонить</button>
+                            <button 
+                            className="rounded-lg border bg-red-600 px-4 py-2 text-white hover:bg-red-800"
+                            onClick={() => handleApplyOrganization(selectedOrganization)}
+                            >Принять
+                            </button>
+                            <button 
+                            className="rounded-lg border px-4 py-2 text-neutral-700 hover:bg-neutral-50"
+                            onClick={() => handleRejectOrganization(selectedOrganization)}
+                            >Отклонить
+                            </button>
                         </div>
                     </div>
                     <div className="full-w">

@@ -55,12 +55,22 @@ type UserPasswordUpdate struct {
 	NewPassword string `json:"new_password" binding:"required"`
 }
 
+type UserProfileOtherResponse struct {
+	Name           string `json:"name"`
+	Surname        string `json:"surname"`
+	Patronymic     string `json:"patronymic,omitempty"`
+	DateOfBirthday string `json:"date_of_birthday,omitempty"`
+	Address        string `json:"address"`
+}
+
 type UserProfileResponse struct {
 	Name           string `json:"name"`
 	Surname        string `json:"surname"`
 	Patronymic     string `json:"patronymic,omitempty"`
 	DateOfBirthday string `json:"date_of_birthday,omitempty"`
 	Address        string `json:"address"`
+	Email          string `json:"email"`
+	Phone          string `json:"phone"`
 }
 
 func IsAdmin(c *gin.Context) (bool, error) {
