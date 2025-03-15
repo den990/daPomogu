@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import ROUTES from "../../constants/routes";
 import { AuthContext } from "../../context/AuthProvider";
 import { useContext, useEffect, useState } from "react";
@@ -6,7 +6,7 @@ import { userServiceApi } from "../../utils/api/user_service";
 
 function Profile() {
     const [profileData, setProfileData] = useState(null);
-    const { token } = useContext(AuthContext); // Убрали неиспользуемый logout
+    const { token } = useContext(AuthContext);
 
     useEffect(() => {
         if (token) {
@@ -57,6 +57,14 @@ function Profile() {
                                 alt="Иконка добавления" 
                             />
                             Добавить задание
+                        </Link>
+
+                        <Link 
+                            to={ROUTES.EDIT_ORGANIZATION_PROFILE}
+                            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 flex items-center justify-center gap-2 text-sm md:text-base"
+                        >
+                            <span className="text-white"></span>
+                            Редактировать профиль
                         </Link>
                     </div>
                 </div>

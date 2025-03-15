@@ -3,41 +3,45 @@ import ROUTES from '../constants/routes';
 
 function HeaderGuest() {
     return (
-        <header id="header-guest" className="bg-white shadow-sm py-4">
-            <div className="container mx-auto px-4">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3 md:space-x-4">
+        <header id="header-guest" className="bg-white shadow-sm py-3 sm:py-4">
+            <div className="container mx-auto px-2 sm:px-4">
+                <div className="flex items-center justify-between gap-2">
+                    {/* Логотип */}
+                    <div className="flex items-center gap-2 min-w-0">
                         <img 
-                            style={{ width: 24, height: 24 }} 
+                            className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" 
                             src={require("../images/heart_red.svg").default} 
-                            alt="icon" 
-                            className="shrink-0"
+                            alt="Логотип" 
                         />
                         <Link 
                             to={ROUTES.HOME} 
-                            className="text-xl font-bold text-red-600 whitespace-nowrap"
+                            className="text-lg sm:text-xl font-bold text-red-600 truncate"
                         >
                             ДаПомогу
                         </Link>
                     </div>
-                    <nav className="hidden md:flex flex-1 justify-center space-x-6 mx-4">
-                        <Link to={ROUTES.TASKS_CATALOG} className="text-gray-600 hover:text-red-600 cursor-pointer">
+
+                    {/* Навигация (только для десктопа) */}
+                    <nav className="hidden md:flex flex-1 justify-center gap-4 mx-4">
+                        <Link to={ROUTES.TASKS_CATALOG} className="text-gray-600 hover:text-red-600 text-sm sm:text-base">
                             Задания
                         </Link>
-                        <Link to={ROUTES.ABOUT} className="text-gray-600 hover:text-red-600 cursor-pointer">
+                        <Link to={ROUTES.ABOUT} className="text-gray-600 hover:text-red-600 text-sm sm:text-base">
                             О нас
                         </Link>
                     </nav>
-                    <div className="flex items-center space-x-2 md:space-x-4">
+
+                    {/* Кнопки авторизации */}
+                    <div className="flex items-center gap-1 sm:gap-3 min-w-max">
                         <Link 
                             to={ROUTES.LOGIN} 
-                            className="px-3 py-2 md:px-4 text-red-600 hover:text-red-700 text-sm md:text-base"
+                            className="px-2 py-1 sm:px-3 sm:py-2 text-red-600 hover:text-red-700 text-xs sm:text-sm md:text-base"
                         >
                             Войти
                         </Link>
                         <Link 
                             to={ROUTES.REGISTER_VOLUNTEER} 
-                            className="px-3 py-2 md:px-4 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm md:text-base"
+                            className="px-2 py-1 sm:px-3 sm:py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-xs sm:text-sm md:text-base"
                         >
                             Регистрация
                         </Link>

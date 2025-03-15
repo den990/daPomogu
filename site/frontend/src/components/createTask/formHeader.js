@@ -1,10 +1,14 @@
-function formHeader() {
+function FormHeader() {
     return (
-        <div id="form-header" className="mb-8">
-            <h1 className="text-2xl font-bold text-gray-800">Создать новое задание</h1>
-            <p className="text-gray-600 mt-2">Заполните все необходимые поля для создания волонтерского задания</p>
+        <div id="form-header" className="mb-6 md:mb-8">
+            <h1 className="text-xl md:text-2xl font-bold text-gray-800 leading-tight">
+                Создать новое задание
+            </h1>
+            <p className="text-gray-600 mt-2 text-sm md:text-base">
+                Заполните все необходимые поля для создания волонтерского задания
+            </p>
         </div>
     );
 }
 
-export default formHeader;
+export default FormHeader;
