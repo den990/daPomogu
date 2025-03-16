@@ -46,10 +46,13 @@ func main() {
 		protected.PUT("/change-password", controllers.ChangePassword)                          // смена пароля от лк
 		protected.GET("/organizations-accepted-list", controllers.GetOrganizationAcceptedList) // список принятых организаций с укороченными данными
 		protected.GET("/organizations-list", controllers.GetAllOrganizationList)               // список всех организаций с укороченными данными
+		protected.POST("/attach-organization", controllers.AttachUserToOrganization)           // волонтер создает заявку на прикрепление к организации
+		protected.POST("/detach-organization", controllers.DetachUserToOrganization)           // волонтер удаляет заявку на прикрепление к организации
+		protected.PUT("/organization/accept/:user_id", controllers.AcceptUserAttachment)       // организация принимает заявку на прикрепление
 
-		protected.POST("/attach-organization", controllers.AttachUserToOrganization)     // волонтер создает заявку на прикрепление к организации
-		protected.POST("/detach-organization", controllers.DetachUserToOrganization)     // волонтер удаляет заявку на прикрепление к организации
-		protected.PUT("/organization/accept/:user_id", controllers.AcceptUserAttachment) // организация принимает заявку на прикрепление
+		protected.GET("/organizations-users-list", controllers.GetAllUsersAndOrganizations) // список все пользователей
+		protected.PUT("/block-user/:id", controllers.BlockUser)
+		protected.PUT("/unblock-user/:id", controllers.UnblockUser)
 	}
 	//нужно расширить таблицу user_organization для is_accepted
 

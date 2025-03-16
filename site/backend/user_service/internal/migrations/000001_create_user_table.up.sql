@@ -9,6 +9,7 @@ CREATE TABLE "user" (
     "address" VARCHAR(255),
     "password_hash" TEXT NOT NULL,
     "is_admin" BOOLEAN DEFAULT false,
+    "is_blocked" BOOLEAN DEFAULT false,
     "created_at" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
     "updated_at" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP)
 );
