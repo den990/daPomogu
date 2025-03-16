@@ -95,12 +95,12 @@ class UserServiceApi {
     });
   }
 
-  putEditVolonteer(token, name, surname, patronymic, date_of_birthday, address, email, phone) {
+  putEditVolonteer(token, name, surname, patronymic, date_of_birthday, registration_address, email, phone) {
     this._updateToken(token);
     return this._request(`${this._baseUrl}/profile`, {
         method: 'PUT',
         headers: this._headers,
-        body: JSON.stringify({ name, surname, patronymic, date_of_birthday, address, email, phone })
+        body: JSON.stringify({ name, surname, patronymic, date_of_birthday, registration_address, email, phone })
     });
   }
 };
