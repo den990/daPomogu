@@ -5,20 +5,20 @@ import { AuthContext } from "../context/AuthProvider";
 
 function HeaderOrganization() {
     const [isOpen, setIsOpen] = useState(false);
-        const menuRef = useRef(null);
-        const { logout } = useContext(AuthContext);
-    
-        useEffect(() => {
-            const handleClickOutside = (event) => {
-                if (menuRef.current && !menuRef.current.contains(event.target)) {
-                    setIsOpen(false);
-                }
-            };
-            document.addEventListener("mousedown", handleClickOutside);
-            return () => {
-                document.removeEventListener("mousedown", handleClickOutside);
-            };
-        }, []);
+    const menuRef = useRef(null);
+    const { logout, profile, loading } = useContext(AuthContext);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setIsOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
     return (
         <header id="header-organization" className="bg-white shadow-sm py-4">
@@ -30,7 +30,7 @@ function HeaderOrganization() {
                     </div>
                     <nav className="hidden md:flex space-x-6">
                         <Link to={ROUTES.TASKS_CATALOG} className="text-gray-600 hover:text-red-600 cursor-pointer">Задания</Link>
-                        <Link to={ROUTES.HOME} className="text-gray-600 hover:text-red-600 cursor-pointer">Мои задания</Link>
+                        <Link to={ROUTES.MY_TASKS} className="text-gray-600 hover:text-red-600 cursor-pointer">Мои задания</Link>
                         <Link to={ROUTES.ABOUT} className="text-gray-600 hover:text-red-600 cursor-pointer">О нас</Link>
                     </nav>
                     <div className="flex items-center space-x-4">
@@ -42,7 +42,7 @@ function HeaderOrganization() {
                             <div className="relative" ref={menuRef}>
                                 <button onClick={() => setIsOpen(!isOpen)} className="px-4 py-2 hover:bg-gray-50 rounded-md">
                                     <div className="flex items-center">
-                                        <span style={{paddingRight: 10}}>Организация</span>
+                                        <span style={{paddingRight: 10}}>{loading ? "Загрузка..." : (profile ? profile.name : "Неизвестно")}</span>
                                         <img style={{ width: 14, height: 14 }} src={ require("../images/arrow-down_grey.svg").default } alt="icon" />
                                     </div>
                                 </button>
