@@ -7,7 +7,8 @@ export const AuthContext = createContext({
   token: null,
   profile: null,
   login: () => {},
-  logout: () => {}
+  logout: () => {},
+  updateProfile: () => {}
 });
 
 export const AuthProvider = ({ children }) => {
@@ -35,6 +36,10 @@ export const AuthProvider = ({ children }) => {
     setProfile(null);
     setRole(null);
     localStorage.removeItem('token');
+  };
+
+  const updateProfile = (newProfile) => {
+    setProfile(newProfile);
   };
 
   useEffect(() => {
@@ -77,7 +82,7 @@ export const AuthProvider = ({ children }) => {
   }, [token, role]);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, token, profile, role, login, logout, loading }}>
+    <AuthContext.Provider value={{ isAuthenticated, token, profile, role, login, logout, updateProfile, loading }}>
       {children}
     </AuthContext.Provider>
   );

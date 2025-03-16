@@ -155,12 +155,6 @@ func GetAllUsersAndOrganizations(c *gin.Context) {
 		return
 	}
 
-	organizations, err := models.FindOrganizationsAll()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to fetch organizations"})
-		return
-	}
-
 	users, err := models.FindUsersAllWithoutOwner()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to fetch users"})
@@ -170,44 +164,33 @@ func GetAllUsersAndOrganizations(c *gin.Context) {
 	var result []map[string]interface{}
 
 	for _, user := range users {
-		result = append(result, map[string]interface{}{
-			"type":          "user",
-			"id":            user.ID,
-			"email":         user.Email,
-			"phone":         user.Phone,
-			"surname":       user.Surname,
-			"name":          user.Name,
-			"patronymic":    user.Patronymic,
-			"date_of_birth": user.DateOfBirthday,
-			"address":       user.Address,
-			"is_admin":      user.IsAdmin,
-			"created_at":    user.CreatedAt,
-			"updated_at":    user.UpdatedAt,
-			"is_blocked":    user.IsBlocked,
-		})
-	}
-
-	for _, org := range organizations {
-		user, err := models.FindUserOwnerOrganizationByOrganizationId(strconv.Itoa(int(org.ID)))
+		isOwner, err := models.IsUserOwner(strconv.Itoa(int(user.ID)))
 		if err != nil {
 			continue
 		}
-		result = append(result, map[string]interface{}{
-			"type":            "organization",
-			"id":              org.ID,
-			"email":           org.Email,
-			"phone":           org.Phone,
-			"inn":             org.INN,
-			"name":            org.Name,
-			"legal_address":   org.LegalAddress,
-			"actual_address":  org.ActualAddress,
-			"status_id":       org.StatusID,
-			"full_name_owner": org.FullNameOwner,
-			"created_at":      org.CreatedAt,
-			"updated_at":      org.UpdatedAt,
-			"is_blocked":      org.IsBlocked,
-			"user_id_owner":   user.ID,
-		})
+		if isOwner {
+			organization, err := models.FindOrganizationByUserIdOwner(strconv.Itoa(int(user.ID)))
+			if err != nil {
+				continue
+			}
+			result = append(result, map[string]interface{}{
+				"type":       "organization",
+				"id":         organization.ID,
+				"email":      organization.Email,
+				"name":       organization.Name,
+				"is_blocked": organization.IsBlocked,
+			})
+		} else {
+			result = append(result, map[string]interface{}{
+				"type":       "user",
+				"id":         user.ID,
+				"email":      user.Email,
+				"surname":    user.Surname,
+				"is_admin":   user.IsAdmin,
+				"name":       user.Name,
+				"is_blocked": user.IsBlocked,
+			})
+		}
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": result})

@@ -14,12 +14,11 @@ spec:
     spec:
       containers:
         - name: task-service
-          image: den990/task_service:latest
+          image: den990/task_service:1.0.12
           ports:
-            - containerPort: 8085
+            - containerPort: 8080
           env:
             - name: DATABASE_URL
-
               value: "postgresql://postgres:dapomogu_password@postgres-service:5432/dapomogu_task_db"
 ---
 apiVersion: v1
@@ -32,5 +31,6 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 8085
-  type: ClusterIP
+      targetPort: 8080
+      nodePort: 30081
+  type: NodePort

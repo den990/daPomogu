@@ -7,7 +7,7 @@ import { AuthContext } from "../../context/AuthProvider";
 
 function Content() {
     const { values, errors, isValid, handleChange, resetForm } = useFormWithValidation();
-    const { token } = useContext(AuthContext);
+    const { token, updateProfile } = useContext(AuthContext);
     const [profileData, setProfileData] = useState(null);
     const [error, setError] = useState("");
     const navigate = useNavigate();
@@ -16,8 +16,12 @@ function Content() {
         if (token) {
             userServiceApi.getMyVolonteerProfile(token)
             .then(data => {
-                setProfileData(data);
-                resetForm(data, {}, true);
+                const transformedData = { 
+                    ...data, 
+                    registration_address: data.address 
+                };
+                setProfileData(transformedData);
+                resetForm(transformedData, {}, true);
             })
             .catch(error => {
                 console.error('Ошибка при загрузке профиля:', error);
@@ -29,10 +33,11 @@ function Content() {
         e.preventDefault();
         setError("");
 
-        const {name, surname, patronymic, date_of_birthday, address, email, phone} = values;
+        const {name, surname, patronymic, date_of_birthday, registration_address, email, phone} = values;
         
         try {
-            await userServiceApi.putEditVolonteer(token, name, surname, patronymic, date_of_birthday, address, email, phone)
+            await userServiceApi.putEditVolonteer(token, name, surname, patronymic, date_of_birthday, registration_address, email, phone)
+            updateProfile({ ...values, address: registration_address });
             navigate(ROUTES.ACCOUNT_VOLUNTEER);
         } catch (error) {
             console.error('Ошибка при загрузке профиля:', error);
@@ -124,8 +129,8 @@ function Content() {
                             <input 
                                 type="text" 
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                                name="address"
-                                value={values.address || ""}
+                                name="registration_address"
+                                value={values.registration_address || ""}
                                 onChange={handleChange} 
                             />
                         </div>
