@@ -2,14 +2,7 @@ function mainContent() {
     return (
         <main id="main-content" className="ml-64 p-8">
             <header id="header" className="flex justify-between items-center mb-8">
-                <h1 className="text-2xl font-bold text-gray-800">Users &amp; Organizations</h1>
-                <div className="flex items-center gap-4">
-                    <div className="relative">
-                        <img style={{ width: 14, height: 16}} src={ require("../../images/bell_dark.svg").default } alt="icon"/>
-                        <span className="absolute -top-2 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
-                    </div>
-                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg" alt="Admin" className="w-10 h-10 rounded-full" />
-                </div>
+                <h1 className="text-2xl font-bold text-gray-800">Пользователи &amp; Организации</h1>
             </header>
             <section id="search-section" className="mb-8">
                 <div className="flex gap-4">
@@ -24,10 +17,10 @@ function mainContent() {
                     <table className="w-full">
                         <thead>
                             <tr className="border-b border-gray-200">
-                                <th className="text-left pb-4">User/Organization</th>
-                                <th className="text-left pb-4">Type</th>
-                                <th className="text-left pb-4">Status</th>
-                                <th className="text-left pb-4">Actions</th>
+                                <th className="text-left pb-4">Пользователь/Организация</th>
+                                <th className="text-left pb-4">Тип</th>
+                                <th className="text-left pb-4">Статус</th>
+                                <th className="text-left pb-4">Действия</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -42,18 +35,18 @@ function mainContent() {
                                     </div>
                                 </td>
                                 <td className="py-4">
-                                    <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">Volunteer</span>
+                                    <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">Волонтер</span>
                                 </td>
                                 <td className="py-4">
                                     <span className="text-green-600 flex items-center">
                                         <img style={{ width: 16, height: 16 }} src={ require("../../images/check_green.svg").default } alt="icon" />
-                                        <span style={{paddingLeft: 10}}>Active</span>
+                                        <span style={{paddingLeft: 10}}>Активный</span>
                                     </span>
                                 </td>
                                 <td className="py-4">
                                     <button className="px-3 py-1 text-red-600 hover:bg-red-50 rounded-md flex items-center">
                                         <img style={{ width: 16, height: 16 }} src={ require("../../images/ban_red.svg").default } alt="icon" />
-                                        <span style={{paddingLeft: 10}}>Block</span>
+                                        <span style={{paddingLeft: 10}}>Заблокировать</span>
                                     </button>
                                 </td>
                             </tr>
@@ -70,18 +63,18 @@ function mainContent() {
                                     </div>
                                 </td>
                                 <td className="py-4">
-                                    <span className="px-3 py-1 bg-purple-100 text-purple-600 rounded-full text-sm">Organization</span>
+                                    <span className="px-3 py-1 bg-purple-100 text-purple-600 rounded-full text-sm">Организация</span>
                                 </td>
                                 <td className="py-4">
                                     <span className="text-red-600 flex items-center">
                                         <img style={{ width: 16, height: 16 }} src={ require("../../images/ban_red.svg").default } alt="icon" />
-                                        <span style={{paddingLeft: 10}}>Blocked</span>
+                                        <span style={{paddingLeft: 10}}>Заблокированный</span>
                                     </span>
                                 </td>
                                 <td className="py-4">
                                     <button className="px-3 py-1 text-green-600 hover:bg-green-50 rounded-md flex items-center">
                                     <img style={{ width: 14, height: 16 }} src={ require("../../images/unlock_green.svg").default } alt="icon" />
-                                        <span style={{paddingLeft: 10}}>Unblock</span>
+                                        <span style={{paddingLeft: 10}}>Разблокировать</span>
                                     </button>
                                 </td>
                             </tr>
@@ -89,14 +82,17 @@ function mainContent() {
                     </table>
                 </div>
                 <div id="pagination" className="p-6 border-t border-gray-200">
-                    <div className="flex items-center justify-between">
-                        <p className="text-gray-600">Showing 1-10 of 56 entries</p>
+                    <div className="flex items-center justify-center">
                         <div className="flex gap-2">
-                            <button className="px-3 py-1 border border-gray-200 rounded-md hover:bg-gray-50">Previous</button>
+                            <button className="px-3 py-1 border border-gray-200 rounded-md bg-gray-200">
+                                <img style={{width: 10, height: 16}} src={require("../../images/left_arrow_grey.svg").default} alt="left_arrow" />
+                            </button>
                             <button className="px-3 py-1 bg-red-600 text-white rounded-md">1</button>
                             <button className="px-3 py-1 border border-gray-200 rounded-md hover:bg-gray-50">2</button>
                             <button className="px-3 py-1 border border-gray-200 rounded-md hover:bg-gray-50">3</button>
-                            <button className="px-3 py-1 border border-gray-200 rounded-md hover:bg-gray-50">Next</button>
+                            <button className="px-3 py-1 border border-gray-200 rounded-md hover:bg-gray-50">
+                                <img style={{width: 10, height: 16}} src={require("../../images/right_arrow_grey.svg").default} alt="right_arrow" />
+                            </button>
                         </div>
                     </div>
                 </div>

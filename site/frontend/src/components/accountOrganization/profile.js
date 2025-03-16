@@ -25,6 +25,9 @@ function Profile() {
                         <button className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 flex items-center">
                             <Link to={ROUTES.EDIT_ORGANIZATION_PROFILE}>Редактировать профиль</Link>
                         </button>
+                        <button className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 flex items-center">
+                            <Link to={ROUTES.EDIT_PASSWORD}>Сменить пароль</Link>
+                        </button>
                     </div>
                 </div>
             </div>

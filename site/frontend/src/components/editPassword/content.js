@@ -1,9 +1,10 @@
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import ROUTES from "../../constants/routes";
 import { useState, useContext } from "react";
 import { userServiceApi } from "../../utils/api/user_service";
 import { AuthContext } from "../../context/AuthProvider";
 import useFormWithValidation from "../../hooks/useFormWithValidation";
+import GetRole from "../../utils/GetRole";
 
 function Content() {
     const [error, setError] = useState("");
@@ -25,7 +26,12 @@ function Content() {
         try {
             await userServiceApi.putChangePassword(token, oldPassword, newPassword);
             alert("Пароль успешно изменен!"); 
-            navigate(ROUTES.ACCOUNT_VOLUNTEER);
+            let role = GetRole(token);
+            if (role === "organization") {
+                navigate(ROUTES.ACCOUNT_ORGANIZATION);
+            } else {
+                navigate(ROUTES.ACCOUNT_VOLUNTEER);
+            }
         } catch (err) {
             setError("Произошла ошибка при смене пароля");
         }

@@ -11,8 +11,8 @@ function sidebar() {
                 </h1>
             </div>
             <nav className="px-4">
-                <Link to={ROUTES.ADMIN_PANEL} className="flex items-center gap-3 px-4 py-3 text-red-600 bg-red-50 rounded-lg mb-1">
-                    <img style={{ width: 16, height: 16 }} src={require("../../images/graphic_red.svg").default} alt="graphic" />
+                <Link to={ROUTES.ADMIN_PANEL} className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg mb-1">
+                    <img style={{ width: 16, height: 16 }} src={require("../../images/graphic_dark.svg").default} alt="graphic" />
                     <span>Главная</span>
                 </Link>
                 <Link to={ROUTES.ADMIN_DASHBOARD} className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg mb-1">
@@ -23,8 +23,8 @@ function sidebar() {
                     <img style={{width: 16, height: 16}} src={require("../../images/stats_grey.svg").default} alt="stats" />
                     <span>Задания</span>
                 </a>
-                <Link to={ROUTES.ADMIN_REGISTER_ORGANIZATION} className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
-                    <img style={{width: 18, height: 16}} src={require("../../images/application_grey.svg").default} alt="application" />
+                <Link to={ROUTES.ADMIN_REGISTER_ORGANIZATION} className="flex items-center gap-3 px-4 py-3 text-red-600  bg-red-50 rounded-lg">
+                    <img style={{width: 18, height: 16}} src={require("../../images/application_red.svg").default} alt="application" />
                     <span>Заявки</span>
                 </Link>
             </nav>

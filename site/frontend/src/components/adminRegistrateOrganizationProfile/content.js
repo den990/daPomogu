@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useCallback } from "react";
 import { AuthContext } from "../../context/AuthProvider";
 import { userServiceApi } from "../../utils/api/user_service";
 
@@ -8,7 +8,7 @@ function Content() {
     const [selectedOrganization, setSelectedOrganization] = useState(null);
     const [organizationDetails, setOrganizationDetails] = useState(null);
 
-    const fetchOrganizations = () => {
+    const fetchOrganizations = useCallback(() => {
         if (token) {
             userServiceApi.getOrganizationRequests(token)
                 .then(data => {
@@ -19,11 +19,11 @@ function Content() {
                     setOrganizations([]);
                 });
         }
-    };
+    }, [token]);
 
     useEffect(() => {
         fetchOrganizations();
-    }, [token]);
+    }, [fetchOrganizations]); 
 
     const handleOrganizationSelect = (id) => {
         setSelectedOrganization(id);
@@ -71,7 +71,7 @@ function Content() {
     return (
         <main id="main-content" className="container ml-64 px-4 py-6">
             <div className="grid grid-cols-12 gap-6">
-                <div id="applications-list" className="col-span-4 rounded-lg border bg-white p-4">
+                <div style={{ "height": "fit-content" }} id="applications-list" className="col-span-4 rounded-lg border bg-white p-4">
                     <div className="mb-4 flex items-center justify-between">
                         <h2 className="text-lg">Заявки</h2>
                     </div>
@@ -93,7 +93,7 @@ function Content() {
                         ))}
                     </div>
                 </div>
-                <div id="application-details" className="col-span-8 rounded-lg border bg-white p-6">
+                <div style={{ "height": "fit-content" }} id="application-details" className="col-span-8 rounded-lg border bg-white p-6">
                 {organizationDetails ? (
                     <>
                     <div className="mb-6 flex items-start justify-between">
