@@ -51,14 +51,7 @@ function Content() {
                                 <p className="text-sm md:text-base text-neutral-600">Новая заявка</p>
                             </div>
                         </div>
-                        <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
-                            <button className="rounded-lg border bg-red-600 px-3 py-2 md:px-4 md:py-2 text-white hover:bg-red-800 text-sm md:text-base">
-                                Принять
-                            </button>
-                            <button className="rounded-lg border px-3 py-2 md:px-4 md:py-2 text-neutral-700 hover:bg-neutral-50 text-sm md:text-base">
-                                Отклонить
-                            </button>
-                        </div>
+
                     </div>
 
                     <div className="space-y-4 md:space-y-6">
@@ -114,6 +107,14 @@ function Content() {
                                 </div>
                             </div>
                         </div>
+                        <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
+                            <button className="rounded-lg border bg-red-600 px-3 py-2 md:px-4 md:py-2 text-white hover:bg-red-800 text-sm md:text-base">
+                                Принять
+                            </button>
+                            <button className="rounded-lg border px-3 py-2 md:px-4 md:py-2 text-neutral-700 hover:bg-neutral-50 text-sm md:text-base">
+                                Отклонить
+                            </button>
+                        </div>    
                     </div>
                 </div>
             </div>
