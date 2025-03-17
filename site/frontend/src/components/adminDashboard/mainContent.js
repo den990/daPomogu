@@ -1,4 +1,48 @@
-function mainContent() {
+import { AuthContext } from "../../context/AuthProvider";
+import { useContext, useEffect, useState, useCallback } from "react";
+import { userServiceApi } from "../../utils/api/user_service";
+
+function MainContent() {
+    const { token } = useContext(AuthContext);
+    const [usersAndOrganizations, setUsersAndOrganizations] = useState([]);
+
+    const fetchUsersAndOrganizations = useCallback(() => {
+        if (token) {
+            userServiceApi.getAllUsersAndOrganizations(token)
+                .then(data => {
+                    setUsersAndOrganizations(data.data || []);
+                })
+                .catch(error => {
+                    console.error('Ошибка при загрузке всех пользователей и организаций: ', error);
+                    setUsersAndOrganizations([]);
+                })
+        }
+    }, [token]);
+
+    useEffect(() => {
+        fetchUsersAndOrganizations();
+    }, [fetchUsersAndOrganizations]);
+
+    const handleBlockUser = (id) => {
+        if (token) {
+            userServiceApi.putBlockUser(token, id)
+            .then(() => fetchUsersAndOrganizations())
+            .catch(error => {
+                console.error('Ошибка при блокировке пользователя', error);
+            });
+        }
+    };
+
+    const handleUnblockUser = (id) => {
+        if (token) {
+            userServiceApi.putUnblockUser(token, id)
+            .then(() => fetchUsersAndOrganizations())
+            .catch(error => {
+                console.error('Ошибка при блокировке пользователя', error);
+            });
+        }
+    };
+    
     return (
         <main id="main-content" className="ml-64 p-8">
             <header id="header" className="flex justify-between items-center mb-8">
@@ -24,60 +68,54 @@ function mainContent() {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr className="border-b border-gray-100">
-                                <td className="py-4">
-                                    <div className="flex items-center gap-3">
-                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="User" className="w-10 h-10 rounded-full" />
-                                        <div>
-                                            <p className="font-medium">John Smith</p>
-                                            <p className="text-sm text-gray-500">john@example.com</p>
+                            {usersAndOrganizations.map((user, i) => (
+                                <tr key={i} className="border-b border-gray-100">
+                                    <td className="py-4">
+                                        <div className="flex items-center gap-3">
+                                            <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="User" className="w-10 h-10 rounded-full" />
+                                            <div>
+                                                <p className="font-medium">{(user.surname !== undefined) ? user.name + ' ' + user.surname : user.name }</p>
+                                                <p className="text-sm text-gray-500">{user.email}</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                                <td className="py-4">
-                                    <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">Волонтер</span>
-                                </td>
-                                <td className="py-4">
-                                    <span className="text-green-600 flex items-center">
-                                        <img style={{ width: 16, height: 16 }} src={ require("../../images/check_green.svg").default } alt="icon" />
-                                        <span style={{paddingLeft: 10}}>Активный</span>
-                                    </span>
-                                </td>
-                                <td className="py-4">
-                                    <button className="px-3 py-1 text-red-600 hover:bg-red-50 rounded-md flex items-center">
-                                        <img style={{ width: 16, height: 16 }} src={ require("../../images/ban_red.svg").default } alt="icon" />
-                                        <span style={{paddingLeft: 10}}>Заблокировать</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr className="border-b border-gray-100">
-                                <td className="py-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                            <i className="text-gray-600" data-fa-i2svg=""><svg className="svg-inline--fa fa-building" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="building" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M48 0C21.5 0 0 21.5 0 48V464c0 26.5 21.5 48 48 48h96V432c0-26.5 21.5-48 48-48s48 21.5 48 48v80h96c26.5 0 48-21.5 48-48V48c0-26.5-21.5-48-48-48H48zM64 240c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V240zm112-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H176c-8.8 0-16-7.2-16-16V240c0-8.8 7.2-16 16-16zm80 16c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H272c-8.8 0-16-7.2-16-16V240zM80 96h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16zm80 16c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H176c-8.8 0-16-7.2-16-16V112zM272 96h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H272c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16z"></path></svg></i>
-                                        </div>
-                                        <div>
-                                            <p className="font-medium">Red Cross Local</p>
-                                            <p className="text-sm text-gray-500">contact@redcross.org</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td className="py-4">
-                                    <span className="px-3 py-1 bg-purple-100 text-purple-600 rounded-full text-sm">Организация</span>
-                                </td>
-                                <td className="py-4">
-                                    <span className="text-red-600 flex items-center">
-                                        <img style={{ width: 16, height: 16 }} src={ require("../../images/ban_red.svg").default } alt="icon" />
-                                        <span style={{paddingLeft: 10}}>Заблокированный</span>
-                                    </span>
-                                </td>
-                                <td className="py-4">
-                                    <button className="px-3 py-1 text-green-600 hover:bg-green-50 rounded-md flex items-center">
-                                    <img style={{ width: 14, height: 16 }} src={ require("../../images/unlock_green.svg").default } alt="icon" />
-                                        <span style={{paddingLeft: 10}}>Разблокировать</span>
-                                    </button>
-                                </td>
-                            </tr>
+                                    </td>
+                                    <td className="py-4">
+                                        {
+                                            (user.type === "user") 
+                                                ? (user.is_admin) 
+                                                    ? <span className="px-3 py-1 bg-red-100 text-red-600 rounded-full text-sm">Администратор</span>
+                                                    : <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">Волонтер</span>
+                                                : <span className="px-3 py-1 bg-purple-100 text-purple-600 rounded-full text-sm">Организация</span>
+                                        }
+                                    </td>
+                                    <td className="py-4">
+                                        {
+                                            (user.is_blocked === true) 
+                                                ?   <span className="text-red-600 flex items-center">
+                                                        <img style={{ width: 16, height: 16 }} src={ require("../../images/ban_red.svg").default } alt="icon" />
+                                                        <span style={{paddingLeft: 10}}>Заблокированный</span>
+                                                    </span>
+                                                :   <span className="text-green-600 flex items-center">
+                                                        <img style={{ width: 16, height: 16 }} src={ require("../../images/check_green.svg").default } alt="icon" />
+                                                        <span style={{paddingLeft: 10}}>Активный</span>
+                                                    </span>
+                                        }
+                                    </td>
+                                    <td className="py-4">
+                                        {
+                                            (user.is_blocked === true) 
+                                                ?   <button onClick={() => handleUnblockUser(user.id)} className="px-3 py-1 text-green-600 hover:bg-green-50 rounded-md flex items-center">
+                                                        <img style={{ width: 14, height: 16 }} src={ require("../../images/unlock_green.svg").default } alt="icon" />
+                                                        <span style={{paddingLeft: 10}}>Разблокировать</span>
+                                                    </button>
+                                                :   <button onClick={() => handleBlockUser(user.id)} className="px-3 py-1 text-red-600 hover:bg-red-50 rounded-md flex items-center">
+                                                        <img style={{ width: 16, height: 16 }} src={ require("../../images/ban_red.svg").default } alt="icon" />
+                                                        <span style={{paddingLeft: 10}}>Заблокировать</span>
+                                                    </button>
+                                        }
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </div>
@@ -101,4 +139,4 @@ function mainContent() {
     );
 }
 
-export default mainContent;
+export default MainContent;

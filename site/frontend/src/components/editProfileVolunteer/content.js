@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import ROUTES from "../../constants/routes";
 import { userServiceApi } from "../../utils/api/user_service"; 
 import { useContext, useEffect, useState } from "react";
@@ -6,7 +6,7 @@ import useFormWithValidation from "../../hooks/useFormWithValidation";
 import { AuthContext } from "../../context/AuthProvider";
 
 function Content() {
-    const { values, errors, isValid, handleChange, resetForm } = useFormWithValidation();
+    const { values, handleChange, resetForm } = useFormWithValidation();
     const { token, updateProfile } = useContext(AuthContext);
     const [profileData, setProfileData] = useState(null);
     const [error, setError] = useState("");
@@ -27,7 +27,7 @@ function Content() {
                 console.error('Ошибка при загрузке профиля:', error);
             });
         }
-    }, [token]);
+    }, [token, resetForm]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

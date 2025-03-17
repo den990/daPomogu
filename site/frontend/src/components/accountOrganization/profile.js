@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import ROUTES from "../../constants/routes";
 import { AuthContext } from "../../context/AuthProvider";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 
 function Profile() {
     const { profile, loading } = useContext(AuthContext);

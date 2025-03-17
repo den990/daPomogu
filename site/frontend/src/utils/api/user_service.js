@@ -103,6 +103,28 @@ class UserServiceApi {
         body: JSON.stringify({ name, surname, patronymic, date_of_birthday, registration_address, email, phone })
     });
   }
+
+  getAllUsersAndOrganizations(token) {
+    this._updateToken(token);
+    return this._request(`${this._baseUrl}/organizations-users-list`, {
+        method: 'GET',
+        headers: this._headers,
+    });
+  }
+  putBlockUser(token, id) {
+    this._updateToken(token);
+    return this._request(`${this._baseUrl}/block-user/${id}`, {
+        method: 'PUT',
+        headers: this._headers,
+    });
+  }
+  putUnblockUser(token, id) {
+    this._updateToken(token);
+    return this._request(`${this._baseUrl}/unblock-user/${id}`, {
+        method: 'PUT',
+        headers: this._headers,
+    });
+  }
 };
 
 export const userServiceApi = new UserServiceApi(apiSettings);
