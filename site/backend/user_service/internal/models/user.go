@@ -203,3 +203,15 @@ func UnblockUser(userID string) error {
 
 	return nil
 }
+
+func FindUsersAll() ([]User, error) {
+	var users []User
+	err := db.DB.
+		Find(&users).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}

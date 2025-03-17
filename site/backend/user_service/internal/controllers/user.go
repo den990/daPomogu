@@ -155,7 +155,7 @@ func GetAllUsersAndOrganizations(c *gin.Context) {
 		return
 	}
 
-	users, err := models.FindUsersAllWithoutOwner()
+	users, err := models.FindUsersAll()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to fetch users"})
 		return
@@ -164,13 +164,10 @@ func GetAllUsersAndOrganizations(c *gin.Context) {
 	var result []map[string]interface{}
 
 	for _, user := range users {
-		isOwner, err := models.IsUserOwner(strconv.Itoa(int(user.ID)))
-		if err != nil {
-			continue
-		}
+		isOwner, _ := models.IsUserOwner(strconv.Itoa(int(user.ID)))
 		if isOwner {
-			organization, err := models.FindOrganizationByUserIdOwner(strconv.Itoa(int(user.ID)))
-			if err != nil {
+			organization, _ := models.FindOrganizationByUserIdOwner(strconv.Itoa(int(user.ID)))
+			if organization == nil {
 				continue
 			}
 			result = append(result, map[string]interface{}{
