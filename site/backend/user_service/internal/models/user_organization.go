@@ -116,7 +116,7 @@ func RemoveAttachmentOrganization(userID, orgID string) error {
 func FindRequestsToJoin(orgId string) ([]UserOrganization, error) {
 	var requests []UserOrganization
 
-	if err := db.DB.Where("organization_id = ? AND is_accepted = ?", orgId, false).Find(&requests).Error; err != nil {
+	if err := db.DB.Where("organization_id = ? AND is_accepted = ? AND is_owner = ?", orgId, false, false).Find(&requests).Error; err != nil {
 		return nil, err
 	}
 
@@ -169,4 +169,13 @@ func FindUserOwnerOrganizationByOrganizationId(orgId string) (*User, error) {
 	}
 
 	return &user, nil
+}
+
+func FindOrganizationsByUserId(userId string) ([]UserOrganization, error) {
+	var userOrganization []UserOrganization
+	if err := db.DB.Where("user_id = ? AND is_owner = ? AND is_accepted", userId, false, true).Find(&userOrganization).Error; err != nil {
+		return nil, err
+	}
+
+	return userOrganization, nil
 }

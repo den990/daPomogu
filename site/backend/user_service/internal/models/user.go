@@ -215,3 +215,17 @@ func FindUsersAll() ([]User, error) {
 
 	return users, nil
 }
+
+func FindUsersAllWithPagination(offset, limit int) ([]User, error) {
+	var users []User
+	err := db.DB.
+		Limit(limit).
+		Offset(offset).
+		Find(&users).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}

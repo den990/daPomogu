@@ -56,7 +56,7 @@ func updateOrganizationStatus(c *gin.Context, newStatus uint, successMessage str
 	if newStatus == StatusAccepted {
 		userFound, err := models.FindUserByEmail(organization.Email)
 		if err == nil {
-			_, err := models.FindUserOrganizationByUserId(strconv.Itoa(int(userFound.ID)))
+			_, err := models.FindOrganizationByUserIdOwner(strconv.Itoa(int(userFound.ID)))
 			if err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"message": "Email is required"})
 				return
