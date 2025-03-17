@@ -138,11 +138,11 @@ function Content() {
                                 </div>
                                 <div>
                                     <p className="text-sm text-neutral-600">Юридический адрес</p>
-                                    <p>Юридический адрес</p>
+                                    <p>{organizationDetails.legal_address || "Не указано"}</p>
                                 </div>
                                 <div>
                                     <p className="text-sm text-neutral-600">Фактический адрес</p>
-                                    <p>{organizationDetails.address || "Не указано"}</p>
+                                    <p>{organizationDetails.actual_address || "Не указано"}</p>
                                 </div>
                                 <div>
                                     <p className="text-sm text-neutral-600">Руководитель организации</p>
