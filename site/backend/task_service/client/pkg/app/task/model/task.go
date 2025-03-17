@@ -91,3 +91,13 @@ type TaskRepositoryInterface interface {
 	Update(ctx context.Context, task *data.UpdateTask) error
 	Create(ctx context.Context, task *data.CreateTask) (uint, error)
 }
+
+type TaskUserReadRepositoryInterface interface {
+	GetUsers(ctx context.Context, taskID uint, pagination *paginate.Pagination, isCoordinators *bool) (*paginate.Pagination, error)
+}
+
+type TaskUserRepositoryInterface interface {
+	TaskUserReadRepositoryInterface
+	Add(ctx context.Context, userID, taskID uint, isCoordinator bool) error
+	Delete(ctx context.Context, userID, taskID uint) error
+}

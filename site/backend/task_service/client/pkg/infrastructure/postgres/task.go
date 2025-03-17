@@ -98,6 +98,7 @@ func (t *TaskRepository) GetAll(
 ) (*paginate.Pagination, error) {
 	var tasks []*model.TaskModel
 
+	// todo: вынести в сервис
 	var orgIDs []uint
 	for _, org := range organizations {
 		orgIDs = append(orgIDs, org.ID)

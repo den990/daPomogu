@@ -4,6 +4,7 @@ import (
 	responsemodel "backend/client/pkg/app/response/model"
 	responsequery "backend/client/pkg/app/response/query"
 	responseservice "backend/client/pkg/app/response/service"
+	"backend/client/pkg/infrastructure/transport/grpc"
 
 	taskmodel "backend/client/pkg/app/task/model"
 	taskquery "backend/client/pkg/app/task/query"
@@ -11,12 +12,10 @@ import (
 
 	organizationquery "backend/client/pkg/app/organization/query"
 
-	userquery "backend/client/pkg/app/user/query"
-	"backend/client/pkg/infrastructure/grpc"
-
 	commentmodel "backend/client/pkg/app/comment/model"
 	commentquery "backend/client/pkg/app/comment/query"
 	commentservice "backend/client/pkg/app/comment/service"
+	userquery "backend/client/pkg/app/user/query"
 
 	approvemodel "backend/client/pkg/app/approve/model"
 	approveservice "backend/client/pkg/app/approve/service"
@@ -44,13 +43,25 @@ type Container struct {
 	approveReadRepository approvemodel.ApproveRepositoryInterface
 	ApproveService        approveservice.ApproveServiceInterface
 
+	TaskUserReadRepository taskmodel.TaskUserReadRepositoryInterface
+	TaskUserRepository     taskmodel.TaskUserRepositoryInterface
+	TaskUserQuery          taskquery.TaskUserQueryInterface
+	TaskUserService        taskservice.TaskUserServiceInterface
+
 	Client            grpc.ClientInterface
 	UserQuery         userquery.UserQueryInterface
 	OrganizationQuery organizationquery.OrganizationQueryInterface
 }
 
 func NewContainer(config config.Config) *Container {
-	db, err := postgres.NewPostgresGormDB()
+	db, err := postgres.NewPostgresGormDB(postgres.Config{
+		Host:     config.DBConfig.Host,
+		Port:     config.DBConfig.Port,
+		Username: config.DBConfig.Username,
+		Password: config.DBConfig.Password,
+		DBName:   config.DBConfig.DBName,
+		SSLMode:  config.DBConfig.SSLMode,
+	})
 	if err != nil {
 		panic(err)
 	}
@@ -79,6 +90,10 @@ func NewContainer(config config.Config) *Container {
 
 	userQuery := userquery.NewUserQuery(grpcClient)
 
+	taskUserRepository := postgres.NewTaskUserPostgresRepository(db)
+	taskUserQuery := taskquery.NewTaskUserQuery(taskUserRepository)
+	taskUserService := taskservice.NewTaskUserService(taskUserRepository)
+
 	return &Container{
 		taskReadRepository: taskRepository,
 		taskRepository:     taskRepository,
@@ -97,6 +112,11 @@ func NewContainer(config config.Config) *Container {
 
 		approveReadRepository: approveRepository,
 		ApproveService:        approveService,
+
+		TaskUserReadRepository: taskUserRepository,
+		TaskUserRepository:     taskUserRepository,
+		TaskUserQuery:          taskUserQuery,
+		TaskUserService:        taskUserService,
 
 		Client:            grpcClient,
 		UserQuery:         userQuery,

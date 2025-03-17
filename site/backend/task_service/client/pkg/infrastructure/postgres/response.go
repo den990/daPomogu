@@ -21,7 +21,7 @@ func (r *ResponseRepository) Create(
 	ctx context.Context,
 	response model.ResponseModel,
 ) (uint, error) {
-	res := r.db.WithContext(ctx).Create(response)
+	res := r.db.WithContext(ctx).Create(&response)
 	if res.Error != nil {
 		return 0, res.Error
 	}

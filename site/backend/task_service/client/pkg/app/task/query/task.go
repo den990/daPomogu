@@ -50,7 +50,7 @@ func (t *TaskQuery) Show(
 	if pagination == nil {
 		return nil, errors.New("paginate is required")
 	}
-	// todo: получить через grpc по user_id
+
 	organizations, err := t.organizationQuery.GetOrganizationsByUserID(ctx, uint64(user))
 	if err != nil {
 		return nil, err
