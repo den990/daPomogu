@@ -155,7 +155,16 @@ func GetAllUsersAndOrganizations(c *gin.Context) {
 		return
 	}
 
-	users, err := models.FindUsersAll()
+	pageStr := c.Param("page")
+	page, err := strconv.Atoi(pageStr)
+	if err != nil || page <= 0 {
+		page = 1
+	}
+
+	limit := 7
+	offset := (page - 1) * limit
+
+	users, err := models.FindUsersAllWithPagination(offset, limit)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to fetch users"})
 		return
@@ -172,7 +181,7 @@ func GetAllUsersAndOrganizations(c *gin.Context) {
 			}
 			result = append(result, map[string]interface{}{
 				"type":       "organization",
-				"id":         organization.ID,
+				"id":         user.ID,
 				"email":      organization.Email,
 				"name":       organization.Name,
 				"is_blocked": organization.IsBlocked,
@@ -276,4 +285,50 @@ func UnblockUser(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Unblock successful"})
+}
+
+func GetRequestsToApply(c *gin.Context) {
+	userID, err := utils.GetUserIDFromToken(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
+		return
+	}
+
+	organization, err := models.FindOrganizationByUserIdOwner(strconv.Itoa(int(userID)))
+	if organization == nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Not found organization"})
+		return
+	}
+
+	requests, err := models.FindRequestsToJoin(strconv.Itoa(int(organization.ID)))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to find requests"})
+		return
+	}
+	var userIDs []uint
+	for _, request := range requests {
+		userIDs = append(userIDs, request.UserID)
+	}
+
+	users, err := models.FindUsersByIDs(userIDs)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to find users"})
+		return
+	}
+
+	var result []map[string]interface{}
+
+	for _, user := range users {
+		result = append(result, map[string]interface{}{
+			"id":      user.ID,
+			"email":   user.Email,
+			"phone":   user.Phone,
+			"name":    user.Name,
+			"surname": user.Surname,
+			"address": user.Address,
+		})
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": result})
 }

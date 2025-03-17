@@ -2,8 +2,10 @@ package Server
 
 import (
 	pb "backend/functions"
+	"backend/internal/models"
 	"context"
 	"log"
+	"strconv"
 )
 
 type Server struct {
@@ -13,11 +15,11 @@ type Server struct {
 // GetUser — метод для получения информации о пользователе
 func (s *Server) GetUser(ctx context.Context, req *pb.UserRequest) (*pb.UserResponse, error) {
 	log.Printf("Received GetUser request for user ID: %d", req.GetId())
-
+	user, _ := models.FindUserById(strconv.FormatUint(req.GetId(), 10))
 	userResponse := &pb.UserResponse{
-		Name:    "John",
-		Surname: "Doe",
-		IsAdmin: true,
+		Name:    user.Name,
+		Surname: user.Surname,
+		IsAdmin: user.IsAdmin,
 	}
 
 	return userResponse, nil
@@ -27,11 +29,10 @@ func (s *Server) GetUser(ctx context.Context, req *pb.UserRequest) (*pb.UserResp
 func (s *Server) GetOrganization(ctx context.Context, req *pb.OrganizationRequest) (*pb.OrganizationResponse, error) {
 	log.Printf("Received GetOrganization request for organization ID: %d", req.GetId())
 
-	// Логика получения информации об организации
-	// Примерный ответ
+	org, _ := models.FindOrganizationById(strconv.FormatUint(req.GetId(), 10))
 	organizationResponse := &pb.OrganizationResponse{
-		Email:    "contact@organization.com",
-		StatusId: 1, // Статус может быть, например, "активен"
+		Email:    org.Email,
+		StatusId: uint64(org.StatusID),
 	}
 
 	return organizationResponse, nil
@@ -43,18 +44,26 @@ func (s *Server) GetOrganizationsByUserID(ctx context.Context, req *pb.Organizat
 
 	// Логика получения всех организаций, в которых состоит пользователь
 	// Примерный ответ с несколькими организациями
-	organizations := []*pb.OrganizationUserResponse{
-		{
-			Id:      1,
-			IsOwner: true,
-		},
-		{
-			Id:      2,
-			IsOwner: false,
-		},
+	organization, _ := models.FindOrganizationByUserIdOwner(strconv.FormatUint(req.GetId(), 10))
+	var organizationUserResponse []*pb.OrganizationUserResponse
+	if organization != nil {
+		organizationUserResponse = []*pb.OrganizationUserResponse{
+			{
+				Id:      uint64(organization.ID),
+				IsOwner: true,
+			},
+		}
+	} else {
+		userOrgs, _ := models.FindOrganizationsByUserId(strconv.FormatUint(req.GetId(), 10))
+		for _, org := range userOrgs {
+			organizationUserResponse = append(organizationUserResponse, &pb.OrganizationUserResponse{
+				Id:      uint64(org.OrganizationID),
+				IsOwner: false,
+			})
+		}
 	}
 
 	return &pb.OrganizationUserListResponse{
-		Organizations: organizations,
+		Organizations: organizationUserResponse,
 	}, nil
 }
