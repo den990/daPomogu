@@ -4,6 +4,7 @@ type OrganizationModel struct {
 	ID       uint   `gorm:"column:id;type:SERIAL;primaryKey;autoIncrement" json:"id"`
 	Name     string `gorm:"column:name;type:VARCHAR(255);not null;type:varchar(255)" json:"name" binding:"required"`
 	StatusID uint   `gorm:"column:status_id;type:INTEGER;not null" json:"status_id" binding:"required"`
+	IsOwner  bool   `gorm:"default:false" json:"is_owner" binding:"required"`
 }
 
 /*func (OrganizationModel) TableName() string {

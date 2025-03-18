@@ -118,11 +118,13 @@ func (h *Handler) getTasks(c *gin.Context) {
 		return
 	}
 
-	tasks, err := h.taskQuery.Show(c.Request.Context(), authUser)
+	pag, err := h.taskQuery.Show(c.Request.Context(), &input.Pagination, authUser)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": tasks})
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"paginate": pag,
+	})
 }

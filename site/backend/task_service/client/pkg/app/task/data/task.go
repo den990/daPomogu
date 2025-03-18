@@ -13,11 +13,9 @@ type CreateTask struct {
 	ParticipantsCount *int      `json:"participants_count"`
 	MaxScore          *int      `json:"max_score"`
 
-	Users        []uint `json:"users"`
-	Categories   []uint `json:"categories"`
-	Organization uint   `json:"organization"`
-	TaskType     uint   `json:"task_type"`
-	TaskStatus   uint   `json:"task_status"`
+	Organization uint `json:"organization"`
+	TaskType     uint `json:"task_type"`
+	TaskStatus   uint `json:"task_status"`
 }
 
 type UpdateTask struct {
@@ -29,11 +27,9 @@ type UpdateTask struct {
 	ParticipantsCount *int      `json:"participants_count"`
 	MaxScore          *int      `json:"max_score"`
 
-	Users        []uint `json:"users"`
-	Categories   []uint `json:"categories"`
-	Organization uint   `json:"organization"`
-	TaskType     uint   `json:"task_type"`
-	TaskStatus   uint   `json:"task_status"`
+	Organization uint `json:"organization"`
+	TaskType     uint `json:"task_type"`
+	TaskStatus   uint `json:"task_status"`
 }
 
 type DeleteTask struct {

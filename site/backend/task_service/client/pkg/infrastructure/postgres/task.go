@@ -2,7 +2,6 @@ package postgres
 
 import (
 	organizationmodel "backend/client/pkg/app/organization/model"
-	"backend/client/pkg/app/paginate"
 	"backend/client/pkg/app/task/data"
 	"backend/client/pkg/app/task/model"
 	"context"
@@ -92,10 +91,9 @@ func (t *TaskRepository) Get(ctx context.Context, id uint) (*model.TaskModel, er
 
 func (t *TaskRepository) GetAll(
 	ctx context.Context,
-	pagination *paginate.Pagination,
 	user uint,
 	organizations []organizationmodel.OrganizationModel,
-) (*paginate.Pagination, error) {
+) ([]model.TaskModel, error) {
 	var tasks []*model.TaskModel
 
 	var orgIDs []uint
@@ -114,14 +112,15 @@ func (t *TaskRepository) GetAll(
 		query = query.Where("tt.name = 'Открытый'")
 	}
 
-	query = query.Scopes(paginate.Paginate(tasks, pagination, t.db))
-
 	res := query.Find(&tasks)
 	if res.Error != nil {
 		return nil, res.Error
 	}
 
-	pagination.Rows = tasks
+	result := make([]model.TaskModel, 0, len(tasks))
+	for _, task := range tasks {
+		result = append(result, *task)
+	}
 
-	return pagination, nil
+	return result, nil
 }

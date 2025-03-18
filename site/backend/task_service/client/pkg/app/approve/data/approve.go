@@ -1,9 +1,9 @@
 package data
 
 type CreateApprove struct {
-	TaskID   uint
-	UserID   uint
-	StatusID uint
-	Score    uint
-	Approved *uint
+	TaskID   uint  `json:"task_id"`
+	UserID   uint  `json:"user_id"`
+	StatusID uint  `json:"status_id"`
+	Score    uint  `json:"score"`
+	Approved *uint `json:"approved"`
 }

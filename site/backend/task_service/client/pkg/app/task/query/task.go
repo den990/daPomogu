@@ -2,20 +2,16 @@ package query
 
 import (
 	"backend/client/pkg/app/organization/query"
-	"backend/client/pkg/app/paginate"
-	"context"
-	"errors"
-
 	"backend/client/pkg/app/task/model"
+	"context"
 )
 
 type TaskQueryInterface interface {
 	Get(ctx context.Context, id uint) (*model.TaskModel, error)
 	Show(
 		ctx context.Context,
-		pagination *paginate.Pagination,
 		user uint,
-	) (*paginate.Pagination, error)
+	) ([]model.TaskModel, error)
 }
 
 type TaskQuery struct {
@@ -42,24 +38,17 @@ func (t *TaskQuery) Get(ctx context.Context, id uint) (*model.TaskModel, error) 
 	return task, nil
 }
 
-func (t *TaskQuery) Show(
-	ctx context.Context,
-	pagination *paginate.Pagination,
-	user uint,
-) (*paginate.Pagination, error) {
-	if pagination == nil {
-		return nil, errors.New("paginate is required")
-	}
-	// todo: получить через grpc по user_id
+func (t *TaskQuery) Show(ctx context.Context, user uint) ([]model.TaskModel, error) {
+
 	organizations, err := t.organizationQuery.GetOrganizationsByUserID(ctx, uint64(user))
 	if err != nil {
 		return nil, err
 	}
 
-	taskPagination, err := t.readRepository.GetAll(ctx, pagination, user, organizations)
+	tasks, err := t.readRepository.GetAll(ctx, user, organizations)
 	if err != nil {
 		return nil, err
 	}
 
-	return taskPagination, nil
+	return tasks, nil
 }

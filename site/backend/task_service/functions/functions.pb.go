@@ -319,7 +319,7 @@ func (x *OrganizationUserResponse) GetIsOwner() bool {
 
 type OrganizationUserListResponse struct {
 	state         protoimpl.MessageState      `protogen:"open.v1"`
-	Organizations []*OrganizationUserResponse `protobuf:"bytes,1,rep,name=organizations,proto3" json:"organizations,omitempty"`
+	OrganizationUserResponse []*OrganizationUserResponse `protobuf:"bytes,1,rep,name=organizations,proto3" json:"organizations,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -356,7 +356,7 @@ func (*OrganizationUserListResponse) Descriptor() ([]byte, []int) {
 
 func (x *OrganizationUserListResponse) GetOrganizations() []*OrganizationUserResponse {
 	if x != nil {
-		return x.Organizations
+		return x.OrganizationUserResponse
 	}
 	return nil
 }
