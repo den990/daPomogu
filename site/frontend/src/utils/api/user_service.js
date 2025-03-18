@@ -43,8 +43,7 @@ class UserServiceApi {
     });
   }
 
-  getOrganizationProfileById(token, id) {
-    this._updateToken(token);
+  getOrganizationProfileById(id) {
     return this._request(`${this._baseUrl}/profile-organization/${id}`, {
       method: 'GET',
       headers: this._headers
