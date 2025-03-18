@@ -53,7 +53,7 @@ function HeaderOrganization() {
                                             <Link to={ROUTES.ACCOUNT_ORGANIZATION} >Мой аккаунт</Link>
                                         </button>
                                         <button onClick={logout} className="block w-full px-4 py-2 text-left hover:bg-gray-50">
-                                           Выйти
+                                            <Link to={ROUTES.HOME} >Выйти</Link>
                                         </button>
                                     </div>
                                     
