@@ -2,8 +2,8 @@ function Content() {
     return (
         <main className="container mx-auto px-4 py-4 md:py-6">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6">
-                {/* Список заявок */}
-                <div className="md:col-span-4 order-2 md:order-1">
+                {/* Список заявок - теперь первый на мобильных */}
+                <div className="md:col-span-4 order-1">
                     <div className="rounded-lg border bg-white p-3 md:p-4">
                         <div className="mb-3 md:mb-4">
                             <h2 className="text-base md:text-lg">Заявки</h2>
@@ -32,11 +32,12 @@ function Content() {
                     </div>
                 </div>
 
-                {/* Детали заявки */}
-                <div className="md:col-span-8 order-1 md:order-2">
+                {/* Детали заявки - теперь второй на мобильных */}
+                <div className="md:col-span-8 order-2">
                     <div className="rounded-lg border bg-white p-4 md:p-6">
                         <div className="flex flex-col md:flex-row items-start justify-between gap-3 md:gap-4 mb-4 md:mb-6">
-                            <div className="flex items-center gap-3 md:gap-4">
+                            {/* Блок с пользователем */}
+                            <div className="flex items-center gap-3 md:gap-4 w-full">
                                 <img 
                                     src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=2" 
                                     className="h-12 w-12 md:h-16 md:w-16 rounded-full" 
@@ -44,11 +45,13 @@ function Content() {
                                 />
                                 <h2 className="text-lg md:text-xl">Иван Петров</h2>
                             </div>
-                            <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
-                                <button className="w-full md:w-auto rounded-lg border bg-red-600 px-3 py-1.5 md:px-4 md:py-2 text-white text-sm md:text-base hover:bg-red-800">
+                            
+                            {/* Кнопки для десктопа */}
+                            <div className="hidden md:flex gap-2">
+                                <button className="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-800">
                                     Принять
                                 </button>
-                                <button className="w-full md:w-auto rounded-lg border px-3 py-1.5 md:px-4 md:py-2 text-neutral-700 text-sm md:text-base hover:bg-neutral-50">
+                                <button className="rounded-lg border px-4 py-2 text-neutral-700 hover:bg-neutral-50">
                                     Отклонить
                                 </button>
                             </div>
@@ -65,6 +68,16 @@ function Content() {
                                             </p>
                                         </div>
                                     ))}
+                                </div>
+                                
+                                {/* Кнопки для мобильных */}
+                                <div className="md:hidden flex flex-col gap-2 mt-4">
+                                    <button className="w-full rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-800">
+                                        Принять
+                                    </button>
+                                    <button className="w-full rounded-lg border px-4 py-2 text-neutral-700 hover:bg-neutral-50">
+                                        Отклонить
+                                    </button>
                                 </div>
                             </div>
                         </div>
