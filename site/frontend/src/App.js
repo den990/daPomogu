@@ -28,6 +28,8 @@ import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import EditPassword from './screens/EditPassword';
 import Tasks from './screens/Tasks';
 import { useContext } from 'react';
+import PublicAccountOrganization from './screens/PublicAccountOrganization';
+import PublicAccountVolonteer from './screens/PublicAccountVolunteer';
 
 function App() {
     const { loading } = useContext(AuthContext);
@@ -48,7 +50,9 @@ function App() {
                             <Route path={ROUTES.REGISTER_ORGANIZATION} element={<OrganizationRegistration />} />
                             <Route path={ROUTES.ERROR} element={<Error />} />
                             <Route path="/test-auth" element={<TestAuth />} />
+                            <Route path={ROUTES.PUBLIC_ACCOUNT_ORGANIZATION} element={<PublicAccountOrganization />} />
                             <Route element={<PrivateRoute />}>
+                                <Route path={ROUTES.PUBLIC_ACCOUNT_VOLUNTEER} element={<PublicAccountVolonteer />} />
                                 <Route path={ROUTES.EDIT_PASSWORD} element={<EditPassword />} />
                                 <Route path={ROUTES.ACCOUNT_VOLUNTEER} element={<AccountVolunteer />} />
                                 <Route path={ROUTES.TASK} element={<Task />}/>
