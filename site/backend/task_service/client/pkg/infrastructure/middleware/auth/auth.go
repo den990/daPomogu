@@ -50,6 +50,7 @@ func GetUserId(c *gin.Context) (uint, error) {
 		return 0, errors.New("user id not found")
 	}
 
+	fmt.Println(id)
 	idInt, ok := id.(uint)
 	if !ok {
 		return 0, errors.New(fmt.Sprintf("user id is of invalid type: %s", id))

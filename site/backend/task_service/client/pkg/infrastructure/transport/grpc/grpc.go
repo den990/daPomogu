@@ -76,10 +76,11 @@ func (c *Client) GetOrganizationsByUserID(ctx context.Context, userID uint64) ([
 	}
 	orgs := []organizationmodel.OrganizationModel{}
 	log.Println("Организации пользователя:")
-	for _, org := range res.Organizations {
+	for _, org := range res.OrganizationUserResponse {
 		log.Printf("ID: %d, Владелец: %v", org.Id, org.IsOwner)
 		orgs = append(orgs, organizationmodel.OrganizationModel{
-			ID: uint(org.Id),
+			ID:      uint(org.Id),
+			IsOwner: org.IsOwner,
 		})
 	}
 

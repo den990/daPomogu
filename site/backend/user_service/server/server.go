@@ -42,8 +42,6 @@ func (s *Server) GetOrganization(ctx context.Context, req *pb.OrganizationReques
 func (s *Server) GetOrganizationsByUserID(ctx context.Context, req *pb.OrganizationUserRequest) (*pb.OrganizationUserListResponse, error) {
 	log.Printf("Received GetOrganizationsByUserID request for user ID: %d", req.GetId())
 
-	// Логика получения всех организаций, в которых состоит пользователь
-	// Примерный ответ с несколькими организациями
 	organization, _ := models.FindOrganizationByUserIdOwner(strconv.FormatUint(req.GetId(), 10))
 	var organizationUserResponse []*pb.OrganizationUserResponse
 	if organization != nil {
