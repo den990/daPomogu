@@ -79,10 +79,9 @@ type TaskReadRepositoryInterface interface {
 	Get(ctx context.Context, id uint) (*TaskModel, error)
 	GetAll(
 		ctx context.Context,
-		pagination *paginate.Pagination,
 		user uint,
 		organizations []model.OrganizationModel,
-	) (*paginate.Pagination, error)
+	) ([]TaskModel, error)
 }
 
 type TaskRepositoryInterface interface {
