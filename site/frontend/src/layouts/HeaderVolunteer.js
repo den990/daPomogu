@@ -48,9 +48,9 @@ function HeaderVolunteer() {
                                     <div className="absolute right-0 mt-2 w-40 bg-white text-black rounded-md shadow-lg overflow-hidden z-50">
                                         <button className="block w-full px-4 py-2 text-left hover:bg-gray-50">
                                             <Link to={ROUTES.ACCOUNT_VOLUNTEER} >Мой аккаунт</Link>
-                                        </button>
+                                        </button>   
                                         <button onClick={logout} className="block w-full px-4 py-2 text-left hover:bg-gray-50">
-                                           Выйти
+                                            <Link to={ROUTES.HOME} >Выйти</Link>
                                         </button>
                                     </div>
                                     
