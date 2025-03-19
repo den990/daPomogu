@@ -66,7 +66,7 @@ function TaskForm() {
         
         try {
             await taskServiceApi.postCreateTask(
-                payload.token,
+                token,
                 payload.name,
                 payload.task_type,
                 payload.description,
