@@ -229,3 +229,17 @@ func FindUsersAllWithPagination(offset, limit int) ([]User, error) {
 
 	return users, nil
 }
+
+func CountUsers() (int, error) {
+	var count int64
+	err := db.DB.
+		Model(&User{}). // Указываем модель, по которой нужно посчитать записи
+		Count(&count).  // Метод для подсчета количества записей
+		Error
+
+	if err != nil {
+		return 0, err
+	}
+
+	return int(count), nil
+}

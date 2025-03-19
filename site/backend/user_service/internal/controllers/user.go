@@ -5,6 +5,7 @@ import (
 	"backend/internal/utils"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
+	"math"
 	"net/http"
 	"strconv"
 	"time"
@@ -164,6 +165,7 @@ func GetAllUsersAndOrganizations(c *gin.Context) {
 	limit := 7
 	offset := (page - 1) * limit
 
+	countAllUsers, _ := models.CountUsers()
 	users, err := models.FindUsersAllWithPagination(offset, limit)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to fetch users"})
@@ -198,8 +200,8 @@ func GetAllUsersAndOrganizations(c *gin.Context) {
 			})
 		}
 	}
-
-	c.JSON(http.StatusOK, gin.H{"data": result})
+	totalPages := int(math.Ceil(float64(countAllUsers) / float64(limit)))
+	c.JSON(http.StatusOK, gin.H{"data": result, "total_pages": totalPages})
 }
 
 func BlockUser(c *gin.Context) {
