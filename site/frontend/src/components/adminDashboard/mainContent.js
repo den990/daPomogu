@@ -129,7 +129,7 @@ function MainContent() {
                 <div id="pagination" className="p-6 border-t border-gray-200">
                     <div className="flex items-center justify-center">
                         <div className="flex gap-2">
-                            <button className="px-3 py-1 border border-gray-200 rounded-md bg-gray-200">
+                            <button onClick={() => handlePageChange(numberOfPage - 1)} className={`px-3 py-1 border border-gray-200 rounded-md ${(numberOfPage - 1 == 0) ? "bg-gray-200" : "hover:bg-gray-50"}`} disabled={numberOfPage - 1 == 0}>
                                 <img style={{width: 10, height: 16}} src={require("../../images/left_arrow_grey.svg").default} alt="left_arrow" />
                             </button>
                             {Array.from({ length: countOfPages }, (_, i) => (
@@ -137,7 +137,7 @@ function MainContent() {
                                     {i + 1}
                                 </button>
                             ))}
-                            <button className="px-3 py-1 border border-gray-200 rounded-md hover:bg-gray-50">
+                            <button onClick={() => handlePageChange(numberOfPage + 1)} className={`px-3 py-1 border border-gray-200 rounded-md ${(numberOfPage == countOfPages) ? "bg-gray-200 disabled" : "hover:bg-gray-50"}`} disabled={numberOfPage == countOfPages}>
                                 <img style={{width: 10, height: 16}} src={require("../../images/right_arrow_grey.svg").default} alt="right_arrow" />
                             </button>
                         </div>
