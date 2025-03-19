@@ -84,7 +84,6 @@ func ServeWS(ctx *gin.Context, roomID, userID uint, h *hub.Hub) {
 func (h *Handler) Init(jwtSecret string) *gin.Engine {
 	router := gin.New()
 
-	router.Use(cors.Default())
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
