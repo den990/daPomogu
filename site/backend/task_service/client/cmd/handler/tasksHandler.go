@@ -5,16 +5,17 @@ import (
 	"backend/client/pkg/infrastructure/middleware/auth"
 	"backend/client/pkg/infrastructure/response"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 )
 
 func (h *Handler) createTask(c *gin.Context) {
-	_, err := auth.GetUserId(c)
+	userId, err := auth.GetUserId(c)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-
+	log.Printf("Получили id из токена %d", userId)
 	var input data.CreateTask
 
 	if err := c.BindJSON(&input); err != nil {
@@ -22,7 +23,7 @@ func (h *Handler) createTask(c *gin.Context) {
 		return
 	}
 
-	id, err := h.taskService.Create(c.Request.Context(), &input)
+	id, err := h.taskService.Create(c.Request.Context(), &input, userId)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -108,13 +109,6 @@ func (h *Handler) getTasks(c *gin.Context) {
 	authUser, err := auth.GetUserId(c)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	var input data.GetAllTasks
-
-	if err := c.BindJSON(&input); err != nil {
-		response.NewErrorResponse(c, http.StatusBadRequest, InvalidInputBodyErr)
 		return
 	}
 

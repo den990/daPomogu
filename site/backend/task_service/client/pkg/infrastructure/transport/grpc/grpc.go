@@ -7,6 +7,7 @@ import (
 	userquery "backend/client/pkg/app/user/query"
 	pb "backend/functions"
 	"context"
+	"errors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"log"
@@ -58,21 +59,25 @@ func (c *Client) GetUser(ctx context.Context, userID uint64) (usermodel.UserMode
 func (c *Client) GetOrganization(ctx context.Context, orgID uint64) (organizationmodel.OrganizationModel, error) {
 	res, err := c.Client.GetOrganization(ctx, &pb.OrganizationRequest{Id: orgID})
 	if err != nil {
-		log.Fatalf("Ошибка получения организации: %v", err)
+		return organizationmodel.OrganizationModel{}, err
+	}
+
+	if res.StatusId != 2 {
+		return organizationmodel.OrganizationModel{}, errors.New("organization not active")
 	}
 
 	log.Printf("Организация: Email - %s, StatusID - %d", res.Email, res.StatusId)
 	return organizationmodel.OrganizationModel{
 		StatusID: uint(res.StatusId),
 		ID:       uint(orgID),
-		Name:     res.Email,
+		Name:     res.Name,
 	}, nil
 }
 
 func (c *Client) GetOrganizationsByUserID(ctx context.Context, userID uint64) ([]organizationmodel.OrganizationModel, error) {
 	res, err := c.Client.GetOrganizationsByUserID(ctx, &pb.OrganizationUserRequest{Id: userID})
 	if err != nil {
-		log.Fatalf("Ошибка получения организаций пользователя: %v", err)
+		log.Printf("Ошибка получения организаций пользователя: %v", err)
 	}
 	orgs := []organizationmodel.OrganizationModel{}
 	log.Println("Организации пользователя:")
@@ -85,4 +90,21 @@ func (c *Client) GetOrganizationsByUserID(ctx context.Context, userID uint64) ([
 	}
 
 	return orgs, nil
+}
+
+func (c *Client) GetOrganizationByOwnerUserID(ctx context.Context, userID uint64) (organizationmodel.OrganizationModel, error) {
+	log.Printf("Организация для пользователя: %d", userID)
+	res, err := c.Client.GetOrganizationByOwnerUserID(ctx, &pb.OrganizationUserRequest{Id: userID})
+	if err != nil {
+		log.Printf("Ошибка получения организаций пользователя: %v", err)
+	}
+	if res.StatusId != 2 {
+		return organizationmodel.OrganizationModel{}, errors.New("organization not active")
+	}
+	return organizationmodel.OrganizationModel{
+		StatusID: uint(res.StatusId),
+		ID:       uint(res.Id),
+		Name:     res.Name,
+	}, nil
+
 }

@@ -5,12 +5,13 @@ import (
 	"backend/client/pkg/app/task/data"
 	"backend/client/pkg/app/task/model"
 	"context"
+	"fmt"
 )
 
 type TaskServiceInterface interface {
 	Update(ctx context.Context, task *data.UpdateTask) error
 	Delete(ctx context.Context, id uint) error
-	Create(ctx context.Context, task *data.CreateTask) (uint, error)
+	Create(ctx context.Context, task *data.CreateTask, userId uint) (uint, error)
 }
 
 type TaskService struct {
@@ -39,8 +40,14 @@ func (t *TaskService) Delete(ctx context.Context, id uint) error {
 	return err
 }
 
-func (t *TaskService) Create(ctx context.Context, task *data.CreateTask) (uint, error) {
-	_, err := t.organizationQuery.GetOrganization(ctx, uint64(task.Organization))
+func (t *TaskService) Create(ctx context.Context, task *data.CreateTask, userId uint) (uint, error) {
+	organization, err := t.organizationQuery.GetOrganizationByOwnerUserID(ctx, uint64(userId))
+	fmt.Printf("Organization id %d", organization.ID)
+	if err != nil {
+		return 0, err
+	}
+
+	_, err = t.organizationQuery.GetOrganization(ctx, uint64(organization.ID))
 	if err != nil {
 		return 0, err
 	}

@@ -8,11 +8,13 @@ import (
 type OrganizationQueryInterface interface {
 	GetOrganization(ctx context.Context, orgID uint64) (model.OrganizationModel, error)
 	GetOrganizationsByUserID(ctx context.Context, userID uint64) ([]model.OrganizationModel, error)
+	GetOrganizationByOwnerUserID(ctx context.Context, userID uint64) (model.OrganizationModel, error)
 }
 
 type ClientOrganizationInterface interface {
 	GetOrganization(ctx context.Context, orgID uint64) (model.OrganizationModel, error)
 	GetOrganizationsByUserID(ctx context.Context, userID uint64) ([]model.OrganizationModel, error)
+	GetOrganizationByOwnerUserID(ctx context.Context, userID uint64) (model.OrganizationModel, error)
 }
 
 type OrganizationQuery struct {
@@ -31,4 +33,8 @@ func (o *OrganizationQuery) GetOrganization(ctx context.Context, orgID uint64) (
 
 func (o *OrganizationQuery) GetOrganizationsByUserID(ctx context.Context, userID uint64) ([]model.OrganizationModel, error) {
 	return o.client.GetOrganizationsByUserID(ctx, userID)
+}
+
+func (o *OrganizationQuery) GetOrganizationByOwnerUserID(ctx context.Context, userID uint64) (model.OrganizationModel, error) {
+	return o.client.GetOrganizationByOwnerUserID(ctx, userID)
 }
