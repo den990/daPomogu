@@ -40,14 +40,14 @@ func (h *Handler) getResponses(c *gin.Context) {
 		return
 	}
 
-	var input data.GetResponses
+	var input data.Response
 
 	if err := c.BindJSON(&input); err != nil {
 		response.NewErrorResponse(c, http.StatusBadRequest, InvalidInputBodyErr)
 		return
 	}
 
-	pag, err := h.responseQuery.Show(c.Request.Context(), input.TaskId, input.Pagination)
+	pag, err := h.responseQuery.Show(c.Request.Context(), input.TaskId)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return

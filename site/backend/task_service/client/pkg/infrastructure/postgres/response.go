@@ -1,7 +1,6 @@
 package postgres
 
 import (
-	"backend/client/pkg/app/paginate"
 	"backend/client/pkg/app/response/model"
 	"context"
 	"gorm.io/gorm"
@@ -32,22 +31,15 @@ func (r *ResponseRepository) Create(
 func (r *ResponseRepository) Show(
 	ctx context.Context,
 	taskId uint,
-	pagination *paginate.Pagination,
-) (*paginate.Pagination, error) {
-	var responses []*model.ResponseModel
+) ([]model.ResponseModel, error) {
+	var responses []model.ResponseModel
 
-	res := r.db.
-		WithContext(ctx).
-		Where("task_id = ?", taskId).
-		Scopes(paginate.Paginate(responses, pagination, r.db)).
-		Find(&responses)
+	res := r.db.WithContext(ctx).Where("task_id = ?", taskId).Find(&responses)
 	if res.Error != nil {
-		return &paginate.Pagination{}, res.Error
+		return nil, res.Error
 	}
 
-	pagination.Rows = responses
-
-	return pagination, nil
+	return responses, nil
 }
 
 func (r *ResponseRepository) Update(ctx context.Context, id uint, status uint) error {
@@ -59,7 +51,6 @@ func (r *ResponseRepository) Update(ctx context.Context, id uint, status uint) e
 	}
 
 	response.StatusID = status
-
 	res = r.db.Model(&response).Update("status", status)
 	if res.Error != nil {
 		return res.Error

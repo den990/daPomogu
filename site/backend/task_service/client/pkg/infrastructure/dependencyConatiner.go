@@ -1,6 +1,9 @@
 package infrastructure
 
 import (
+	categorymodel "backend/client/pkg/app/category/model"
+	categoryquery "backend/client/pkg/app/category/query"
+	categoryservice "backend/client/pkg/app/category/service"
 	responsemodel "backend/client/pkg/app/response/model"
 	responsequery "backend/client/pkg/app/response/query"
 	responseservice "backend/client/pkg/app/response/service"
@@ -51,6 +54,10 @@ type Container struct {
 	Client            grpc.ClientInterface
 	UserQuery         userquery.UserQueryInterface
 	OrganizationQuery organizationquery.OrganizationQueryInterface
+
+	categoryRepository categorymodel.CategoryRepositoryInterface
+	CategoryQuery      categoryquery.CategoryQueryInterface
+	CategoryService    categoryservice.CategoryServiceInterface
 }
 
 func NewContainer(config config.Config) *Container {
@@ -76,6 +83,10 @@ func NewContainer(config config.Config) *Container {
 
 	approveRepository := postgres.NewApproveRepository(db)
 	approveService := approveservice.NewApproveService(approveRepository)
+
+	categoryRepository := postgres.NewCategoryRepository(db)
+	categoryQuery := categoryquery.NewCategoryQuery(categoryRepository)
+	categoryService := categoryservice.NewCategoryService(categoryRepository)
 
 	grpcClient, err := grpc.NewGrpcClient(config.Address)
 	if err != nil {
@@ -121,5 +132,9 @@ func NewContainer(config config.Config) *Container {
 		Client:            grpcClient,
 		UserQuery:         userQuery,
 		OrganizationQuery: organizationQuery,
+
+		categoryRepository: categoryRepository,
+		CategoryQuery:      categoryQuery,
+		CategoryService:    categoryService,
 	}
 }

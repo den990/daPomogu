@@ -1,7 +1,6 @@
 package model
 
 import (
-	"backend/client/pkg/app/paginate"
 	"context"
 )
 
@@ -29,8 +28,7 @@ type ResponseRepositoryReadInterface interface {
 	Show(
 		ctx context.Context,
 		taskId uint,
-		pagination *paginate.Pagination,
-	) (*paginate.Pagination, error)
+	) ([]ResponseModel, error) // Возвращаем срез откликов
 }
 
 type ResponseRepositoryInterface interface {
