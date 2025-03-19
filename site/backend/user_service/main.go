@@ -77,6 +77,7 @@ func startHTTPServer() {
 		protected.PUT("/block-user/:id", controllers.BlockUser)
 		protected.PUT("/unblock-user/:id", controllers.UnblockUser)
 		protected.GET("/organization/requests-to-apply", controllers.GetRequestsToApply)
+		protected.GET("/organization/users", controllers.GetUsersInOrganization)
 	}
 
 	log.Println("HTTP Server running on port 8080...")
