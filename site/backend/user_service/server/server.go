@@ -1,8 +1,8 @@
 package Server
 
 import (
-	pb "backend/functions"
-	"backend/internal/models"
+	pb "backend/proto-functions/profile"
+	"backend/user_service/internal/models"
 	"context"
 	"encoding/json"
 	"errors"

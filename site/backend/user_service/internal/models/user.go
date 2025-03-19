@@ -1,8 +1,8 @@
 package models
 
 import (
-	"backend/internal/db"
-	"backend/internal/utils"
+	"backend/user_service/internal/db"
+	"backend/user_service/internal/utils"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgconn"

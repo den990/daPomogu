@@ -13,7 +13,7 @@ RUN go mod tidy
 COPY . .
 
 # Собираем приложение
-RUN CGO_ENABLED=0 GOOS=linux go build -o main .
+RUN CGO_ENABLED=0 GOOS=linux go build -o main ./user_service
 
 # Загружаем и устанавливаем migrate
 RUN wget -O migrate.tar.gz https://github.com/golang-migrate/migrate/releases/download/v4.14.1/migrate.linux-amd64.tar.gz && \
@@ -33,8 +33,8 @@ WORKDIR /app
 # Копируем бинарники из стадии сборки
 COPY --from=builder /app/main .
 COPY --from=builder /app/migrate .
-COPY --from=builder /app/.env .env
-COPY /internal/migrations /app/migrations
+COPY user_service/.env /app/.env
+COPY user_service/internal/migrations /app/migrations
 
 # Разрешаем выполнение файлов
 RUN chmod +x ./main ./migrate
