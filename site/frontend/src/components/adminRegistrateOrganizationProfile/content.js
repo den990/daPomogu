@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useCallback } from "react";
 import { AuthContext } from "../../context/AuthProvider";
 import { userServiceApi } from "../../utils/api/user_service";
 
@@ -8,22 +8,65 @@ function Content({ isSidebarOpen, toggleSidebar }) {
     const [selectedOrganization, setSelectedOrganization] = useState(null);
     const [organizationDetails, setOrganizationDetails] = useState(null);
 
-    useEffect(() => {
+    const fetchOrganizations = useCallback(() => {
         if (token) {
             userServiceApi.getOrganizationRequests(token)
-            .then(data => setOrganizations(data))
-            .catch(error => console.error('Ошибка при загрузке организаций:', error));
+                .then(data => {
+                    setOrganizations(data || []);
+                })
+                .catch(error => {
+                    console.error('Ошибка при загрузке организаций:', error);
+                    setOrganizations([]);
+                });
         }
     }, [token]);
 
+    useEffect(() => {
+        fetchOrganizations();
+    }, [fetchOrganizations]); 
+
     const handleOrganizationSelect = (id) => {
         setSelectedOrganization(id);
+
         if (token) {
-            userServiceApi.getOrganizationProfileInfo(token, id)
-            .then(data => setOrganizationDetails(data))
-            .catch(error => console.error('Ошибка при загрузке данных организации:', error));
+            userServiceApi.getOrganizationProfileById(token, id)
+            .then(data => {
+              setOrganizationDetails(data);
+            })
+            .catch(error => {
+              console.error('Ошибка при загрузке данных организации:', error);
+            });
         }
-    };
+      };
+
+    const handleApplyOrganization = (id) => {
+        if (token) {
+            userServiceApi.putApplyOrganization(token, id)
+            .then(()=> {
+                fetchOrganizations();
+                setOrganizationDetails(null);
+                setSelectedOrganization(null);
+            }
+            )
+            .catch(error => {
+              console.error('Ошибка при регистрации организации:', error);
+            });
+        }
+    }
+
+    const handleRejectOrganization = (id) => {
+        if (token) {
+            userServiceApi.putRejectOrganization(token, id)
+            .then(()=> {
+                fetchOrganizations();
+                setOrganizationDetails(null);
+                setSelectedOrganization(null);
+            })
+            .catch(error => {
+              console.error('Ошибка при регистрации организации:', error);
+            });
+        }
+    }
 
     return (
         <main className={`flex-1 transition-all duration-300 min-w-0 ${isSidebarOpen ? 'md:ml-64' : 'md:ml-0'}`}>
@@ -69,10 +112,10 @@ function Content({ isSidebarOpen, toggleSidebar }) {
                                             </h2>
                                         </div>
                                         <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
-                                            <button className="w-full md:w-auto rounded-lg bg-red-600 text-white px-4 py-2 hover:bg-red-800 text-sm md:text-base">
+                                            <button className="w-full md:w-auto rounded-lg bg-red-600 text-white px-4 py-2 hover:bg-red-800 text-sm md:text-base" onClick={() => handleApplyOrganization(selectedOrganization)}>
                                                 Принять
                                             </button>
-                                            <button className="w-full md:w-auto rounded-lg border px-4 py-2 text-neutral-700 hover:bg-neutral-50 text-sm md:text-base">
+                                            <button className="w-full md:w-auto rounded-lg border px-4 py-2 text-neutral-700 hover:bg-neutral-50 text-sm md:text-base" onClick={() => handleRejectOrganization(selectedOrganization)}>
                                                 Отклонить
                                             </button>
                                         </div>

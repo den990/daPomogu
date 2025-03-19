@@ -56,7 +56,7 @@ func updateOrganizationStatus(c *gin.Context, newStatus uint, successMessage str
 	if newStatus == StatusAccepted {
 		userFound, err := models.FindUserByEmail(organization.Email)
 		if err == nil {
-			_, err := models.FindUserOrganizationByUserId(strconv.Itoa(int(userFound.ID)))
+			_, err := models.FindOrganizationByUserIdOwner(strconv.Itoa(int(userFound.ID)))
 			if err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"message": "Email is required"})
 				return
@@ -107,12 +107,12 @@ func GetOrganizationProfileInfo(c *gin.Context) {
 		}
 		organizationId = uint(parsedID)
 	} else {
-		jwtUserID, exists := c.Get("user_id")
-		if !exists {
+		userID, err := utils.GetUserIDFromToken(c)
+		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
 			return
 		}
-		orgData, err := models.FindOrganizationByUserIdOwner(jwtUserID.(string))
+		orgData, err := models.FindOrganizationByUserIdOwner(strconv.Itoa(int(userID)))
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"message": "Organization not found"})
 			return
@@ -121,21 +121,41 @@ func GetOrganizationProfileInfo(c *gin.Context) {
 		organizationId = orgData.ID
 	}
 
-	organization, err := models.FindActualOrganizationById(strconv.Itoa(int(organizationId)))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "Organization not found"})
-	} else {
-		response := models.OrganizationProfileResponse{
-			Email:         organization.Email,
-			Phone:         organization.Phone,
-			Name:          organization.Name,
-			INN:           organization.INN,
-			Address:       organization.ActualAddress,
-			FullNameOwner: organization.FullNameOwner,
+	isAdmin, _ := models.IsAdmin(c)
+	if !isAdmin {
+		organization, err := models.FindActualOrganizationById(strconv.Itoa(int(organizationId)))
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"message": "Organization not found"})
+			return
+		} else {
+			response := models.OrganizationProfileResponse{
+				Id:            strconv.Itoa(int(organization.ID)),
+				Email:         organization.Email,
+				Phone:         organization.Phone,
+				Name:          organization.Name,
+				INN:           organization.INN,
+				ActualAddress: organization.ActualAddress,
+				FullNameOwner: organization.FullNameOwner,
+			}
+			c.JSON(http.StatusOK, response)
 		}
-		c.JSON(http.StatusOK, response)
+	} else {
+		organization, err := models.FindOrganizationById(strconv.Itoa(int(organizationId)))
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"message": "Organization not found"})
+			return
+		} else {
+			response := models.OrganizationProfileResponse{
+				Email:         organization.Email,
+				Phone:         organization.Phone,
+				Name:          organization.Name,
+				INN:           organization.INN,
+				ActualAddress: organization.ActualAddress,
+				FullNameOwner: organization.FullNameOwner,
+			}
+			c.JSON(http.StatusOK, response)
+		}
 	}
-
 }
 
 func UpdateOrganization(c *gin.Context) {
@@ -216,7 +236,8 @@ func GetPendingOrganizations(c *gin.Context) {
 			Phone:         org.Phone,
 			Name:          org.Name,
 			INN:           org.INN,
-			Address:       org.ActualAddress,
+			ActualAddress: org.ActualAddress,
+			LegalAddress:  org.LegalAddress,
 			FullNameOwner: org.FullNameOwner,
 		})
 	}

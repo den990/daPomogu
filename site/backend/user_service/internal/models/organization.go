@@ -16,6 +16,7 @@ type Organization struct {
 	ActualAddress string `gorm:"not null"`
 	StatusID      uint   `gorm:"not null;default:1"`
 	FullNameOwner string `gorm:"not null"`
+	IsBlocked     bool   `gorm:"default:false"`
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 }
@@ -35,11 +36,13 @@ type OrganizationRegistration struct {
 }
 
 type OrganizationProfileResponse struct {
+	Id            string `json:"id"`
 	Email         string `json:"email"`
 	Phone         string `json:"phone"`
 	INN           string `json:"inn"`
 	Name          string `json:"name"`
-	Address       string `json:"address"`
+	ActualAddress string `json:"actual_address"`
+	LegalAddress  string `json:"legal_address"`
 	FullNameOwner string `json:"full_name_owner"`
 }
 
@@ -49,7 +52,8 @@ type GetProfilesOrganizationResponse struct {
 	Phone         string `json:"phone"`
 	INN           string `json:"inn"`
 	Name          string `json:"name"`
-	Address       string `json:"address"`
+	ActualAddress string `json:"actual_address"`
+	LegalAddress  string `json:"legal_address"`
 	FullNameOwner string `json:"full_name_owner"`
 }
 
@@ -134,4 +138,32 @@ func FindOrganizationsAll() ([]Organization, error) {
 		return nil, err
 	}
 	return organizations, nil
+}
+
+func BlockOrganization(orgID string) error {
+	var organization Organization
+	if err := db.DB.Where("id = ?", orgID).First(&organization).Error; err != nil {
+		return errors.New("user not found")
+	}
+
+	organization.IsBlocked = true
+	if err := db.DB.Save(&organization).Error; err != nil {
+		return errors.New("failed to block organization")
+	}
+
+	return nil
+}
+
+func UnblockOrganization(orgID string) error {
+	var organization Organization
+	if err := db.DB.Where("id = ?", orgID).First(&organization).Error; err != nil {
+		return errors.New("user not found")
+	}
+
+	organization.IsBlocked = false
+	if err := db.DB.Save(&organization).Error; err != nil {
+		return errors.New("failed to unblock organization")
+	}
+
+	return nil
 }

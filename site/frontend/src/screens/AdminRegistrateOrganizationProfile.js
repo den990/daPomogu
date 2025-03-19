@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Content from "../components/adminRegistrateOrganizationProfile/content";
-import SideBar from "../components/adminPanel/sidebar";
+import SideBar from "../components/adminRegistrateOrganizationProfile/sidebar";
 import RoleHeader from "../components/RoleHeader/RoleHeader";
 
 function AdminRegistrateOrganizationProfile() {

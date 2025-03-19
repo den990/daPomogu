@@ -6,11 +6,11 @@ import (
 )
 
 type UserOrganization struct {
-	ID             uint `gorm:"primaryKey"`
-	UserID         uint `gorm:"not null;index"`
-	OrganizationID uint `gorm:"not null;index"`
-	IsOwner        bool `gorm:"default:false"`
-	IsAccepted     bool `gorm:"default:false"`
+	ID             uint `gorm:"column:id;primaryKey"`
+	UserID         uint `gorm:"column:user_id;not null;index"`
+	OrganizationID uint `gorm:"column:organization_id;not null;index"`
+	IsOwner        bool `gorm:"column:is_owner;default:false"`
+	IsAccepted     bool `gorm:"column:is_accepted;default:false"`
 }
 
 type AttachOrganization struct {
@@ -64,13 +64,13 @@ func FindOrganizationByUserIdOwner(userId string) (*Organization, error) {
 		return nil, err
 	}
 
-	var organization Organization
-
-	if err := db.DB.Where("id = ?", userOrganization.OrganizationID).First(&organization).Error; err != nil {
+	orgId := strconv.Itoa(int(userOrganization.OrganizationID))
+	organization, err := FindActualOrganizationById(orgId)
+	if err != nil {
 		return nil, err
 	}
 
-	return &organization, nil
+	return organization, nil
 }
 
 func AddAttachmentOrganization(userID, orgID string) error {
@@ -116,7 +116,7 @@ func RemoveAttachmentOrganization(userID, orgID string) error {
 func FindRequestsToJoin(orgId string) ([]UserOrganization, error) {
 	var requests []UserOrganization
 
-	if err := db.DB.Where("organization_id = ? AND is_accepted = ?", orgId, false).Find(&requests).Error; err != nil {
+	if err := db.DB.Where("organization_id = ? AND is_accepted = ? AND is_owner = ?", orgId, false, false).Find(&requests).Error; err != nil {
 		return nil, err
 	}
 
@@ -141,4 +141,41 @@ func AcceptAttachment(userID, orgID string) error {
 	}
 
 	return nil
+}
+
+func IsUserOwner(userID string) (bool, error) {
+	var count int64
+	err := db.DB.Model(&UserOrganization{}).
+		Where("user_id = ? AND is_owner = ?", userID, true).
+		Count(&count).Error
+
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
+}
+
+func FindUserOwnerOrganizationByOrganizationId(orgId string) (*User, error) {
+	var userOrganization UserOrganization
+	if err := db.DB.Where("organization_id = ? AND is_owner = ?", orgId, true).First(&userOrganization).Error; err != nil {
+		return nil, err
+	}
+
+	var user User
+
+	if err := db.DB.Where("id = ?", orgId).First(&user).Error; err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+func FindOrganizationsByUserId(userId string) ([]UserOrganization, error) {
+	var userOrganization []UserOrganization
+	if err := db.DB.Where("user_id = ? AND is_owner = ? AND is_accepted", userId, false, true).Find(&userOrganization).Error; err != nil {
+		return nil, err
+	}
+
+	return userOrganization, nil
 }

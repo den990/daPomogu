@@ -8,6 +8,7 @@ CREATE TABLE "organization" (
     "actual_address" VARCHAR(255) NOT NULL,
     "status_id" INTEGER NOT NULL,
     "full_name_owner" VARCHAR(255) NOT NULL,
+    "is_blocked" BOOLEAN DEFAULT false,
     "created_at" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
     "updated_at" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP)
 );

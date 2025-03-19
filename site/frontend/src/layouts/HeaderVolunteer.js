@@ -5,20 +5,20 @@ import { AuthContext } from "../context/AuthProvider";
 
 function HeaderVolunteer() {
     const [isOpen, setIsOpen] = useState(false);
-        const menuRef = useRef(null);
-        const { logout } = useContext(AuthContext);
-    
-        useEffect(() => {
-            const handleClickOutside = (event) => {
-                if (menuRef.current && !menuRef.current.contains(event.target)) {
-                    setIsOpen(false);
-                }
-            };
-            document.addEventListener("mousedown", handleClickOutside);
-            return () => {
-                document.removeEventListener("mousedown", handleClickOutside);
-            };
-        }, []);
+    const menuRef = useRef(null);
+    const { logout, profile, loading } = useContext(AuthContext);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setIsOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
     return (
         <header id="header-volunteer" className="bg-white shadow-sm py-4">
@@ -39,7 +39,7 @@ function HeaderVolunteer() {
                             <div className="relative" ref={menuRef}>
                                 <button onClick={() => setIsOpen(!isOpen)} className="px-4 py-2 hover:bg-gray-50 rounded-md">
                                     <div className="flex items-center">
-                                        <span style={{paddingRight: 10}}>Волонтер</span>
+                                        <span style={{paddingRight: 10}}>{loading ? "Загрузка..." : (profile ? profile.name : "Неизвестно")}</span>
                                         <img style={{ width: 14, height: 14 }} src={ require("../images/arrow-down_grey.svg").default } alt="icon" />
                                     </div>
                                 </button>
@@ -48,9 +48,9 @@ function HeaderVolunteer() {
                                     <div className="absolute right-0 mt-2 w-40 bg-white text-black rounded-md shadow-lg overflow-hidden z-50">
                                         <button className="block w-full px-4 py-2 text-left hover:bg-gray-50">
                                             <Link to={ROUTES.ACCOUNT_VOLUNTEER} >Мой аккаунт</Link>
-                                        </button>
+                                        </button>   
                                         <button onClick={logout} className="block w-full px-4 py-2 text-left hover:bg-gray-50">
-                                           Выйти
+                                            <Link to={ROUTES.HOME} >Выйти</Link>
                                         </button>
                                     </div>
                                     

@@ -43,8 +43,7 @@ class UserServiceApi {
     });
   }
 
-  getOrganizationProfileById(token, id) {
-    this._updateToken(token);
+  getOrganizationProfileById(id) {
     return this._request(`${this._baseUrl}/profile-organization/${id}`, {
       method: 'GET',
       headers: this._headers
@@ -64,6 +63,65 @@ class UserServiceApi {
     return this._request(`${this._baseUrl}/profile/${id}`, {
       method: 'GET',
       headers: this._headers
+    });
+  }
+
+  putChangePassword(token, old_password, new_password) {
+    this._updateToken(token);
+    return this._request(`${this._baseUrl}/change-password`, {
+        method: 'PUT',
+        headers: this._headers,
+        body: JSON.stringify({ old_password, new_password })
+    });
+  }
+
+  // protected.PUT("/organizations/:id/apply", controllers.ApplyOrganization)               // принять регистрацию организации
+	// protected.PUT("/organizations/:id/reject", controllers.RejectOrganization)             // отказать регистрацию организации
+
+  putApplyOrganization(token, id) {
+    this._updateToken(token);
+    return this._request(`${this._baseUrl}/organizations/${id}/apply`, {
+        method: 'PUT',
+        headers: this._headers,
+    });
+  }
+
+  putRejectOrganization(token, id) {
+    this._updateToken(token);
+    return this._request(`${this._baseUrl}/organizations/${id}/reject`, {
+        method: 'PUT',
+        headers: this._headers,
+    });
+  }
+
+  putEditVolonteer(token, name, surname, patronymic, date_of_birthday, registration_address, email, phone) {
+    this._updateToken(token);
+    return this._request(`${this._baseUrl}/profile`, {
+        method: 'PUT',
+        headers: this._headers,
+        body: JSON.stringify({ name, surname, patronymic, date_of_birthday, registration_address, email, phone })
+    });
+  }
+
+  getUsersAndOrganizationsWithPagination(token, id) {
+    this._updateToken(token);
+    return this._request(`${this._baseUrl}/organizations-users-list/${id}`, {
+        method: 'GET',
+        headers: this._headers,
+    });
+  }
+  putBlockUser(token, id) {
+    this._updateToken(token);
+    return this._request(`${this._baseUrl}/block-user/${id}`, {
+        method: 'PUT',
+        headers: this._headers,
+    });
+  }
+  putUnblockUser(token, id) {
+    this._updateToken(token);
+    return this._request(`${this._baseUrl}/unblock-user/${id}`, {
+        method: 'PUT',
+        headers: this._headers,
     });
   }
 };

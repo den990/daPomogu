@@ -21,6 +21,7 @@ type User struct {
 	Address        string
 	PasswordHash   string `gorm:"not null"`
 	IsAdmin        bool   `gorm:"default:false"`
+	IsBlocked      bool   `gorm:"default:false"`
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 }
@@ -55,12 +56,22 @@ type UserPasswordUpdate struct {
 	NewPassword string `json:"new_password" binding:"required"`
 }
 
+type UserProfileOtherResponse struct {
+	Name           string `json:"name"`
+	Surname        string `json:"surname"`
+	Patronymic     string `json:"patronymic,omitempty"`
+	DateOfBirthday string `json:"date_of_birthday,omitempty"`
+	Address        string `json:"address"`
+}
+
 type UserProfileResponse struct {
 	Name           string `json:"name"`
 	Surname        string `json:"surname"`
 	Patronymic     string `json:"patronymic,omitempty"`
 	DateOfBirthday string `json:"date_of_birthday,omitempty"`
 	Address        string `json:"address"`
+	Email          string `json:"email"`
+	Phone          string `json:"phone"`
 }
 
 func IsAdmin(c *gin.Context) (bool, error) {
@@ -149,5 +160,72 @@ func FindUsersByIDs(userIDs []uint) ([]User, error) {
 	if err := db.DB.Where("id IN (?)", userIDs).Find(&users).Error; err != nil {
 		return nil, err
 	}
+	return users, nil
+}
+
+func FindUsersAllWithoutOwner() ([]User, error) {
+	var users []User
+	err := db.DB.
+		Where("id NOT IN (SELECT user_id FROM user_organization WHERE is_owner = true)").
+		Find(&users).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
+func BlockUser(userID string) error {
+	var user User
+	if err := db.DB.Where("id = ?", userID).First(&user).Error; err != nil {
+		return errors.New("user not found")
+	}
+
+	user.IsBlocked = true
+	if err := db.DB.Save(&user).Error; err != nil {
+		return errors.New("failed to block user")
+	}
+
+	return nil
+}
+
+func UnblockUser(userID string) error {
+	var user User
+	if err := db.DB.Where("id = ?", userID).First(&user).Error; err != nil {
+		return errors.New("user not found")
+	}
+
+	user.IsBlocked = false
+	if err := db.DB.Save(&user).Error; err != nil {
+		return errors.New("failed to unblock user")
+	}
+
+	return nil
+}
+
+func FindUsersAll() ([]User, error) {
+	var users []User
+	err := db.DB.
+		Find(&users).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
+func FindUsersAllWithPagination(offset, limit int) ([]User, error) {
+	var users []User
+	err := db.DB.
+		Limit(limit).
+		Offset(offset).
+		Find(&users).Error
+
+	if err != nil {
+		return nil, err
+	}
+
 	return users, nil
 }

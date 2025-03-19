@@ -22,6 +22,8 @@ const ROUTES = {
     ADMIN_REGISTER_ORGANIZATION: "/admin-registrate-organization",
     EDIT_PASSWORD: "/edit-password",
     MY_TASKS: "/my-tasks",
+    PUBLIC_ACCOUNT_VOLUNTEER: "/account-volunteer/:volonteerId",
+    PUBLIC_ACCOUNT_ORGANIZATION: "/account-organization/:organizationId",
 };
 
 export default ROUTES;

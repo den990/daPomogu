@@ -2,12 +2,19 @@ package main
 
 import (
 	"backend/config"
+	pb "backend/functions"
 	"backend/internal/controllers"
 	"backend/internal/db"
 	"backend/internal/middleware"
+	Server "backend/server"
+	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"google.golang.org/grpc"
 	"log"
+	"net"
+	"os"
+	"sync"
 )
 
 func main() {
@@ -16,7 +23,23 @@ func main() {
 	if err := db.InitDB(); err != nil {
 		log.Fatalf("Error initializing database: %v", err)
 	}
+	var wg sync.WaitGroup
+	wg.Add(2)
 
+	go func() {
+		defer wg.Done()
+		startHTTPServer()
+	}()
+
+	go func() {
+		defer wg.Done()
+		startGRPCServer()
+	}()
+
+	wg.Wait()
+}
+
+func startHTTPServer() {
 	r := gin.Default()
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
@@ -25,6 +48,7 @@ func main() {
 		ExposeHeaders:    []string{"Authorization"},
 		AllowCredentials: true,
 	}))
+
 	r.POST("/register", controllers.RegisterUser)
 	r.POST("/register-organization", controllers.RegisterOrganization)
 	r.POST("/login", controllers.Login)
@@ -32,28 +56,51 @@ func main() {
 	protected := r.Group("/api")
 	protected.Use(middleware.AuthMiddleware())
 	{
-		protected.GET("/profile", controllers.GetUserProfileInfo)                              // просмотр собственного профиля
-		protected.GET("/profile/:id", controllers.GetUserProfileInfo)                          // просмотр другого пользователя
-		protected.GET("/profile-organization", controllers.GetOrganizationProfileInfo)         // просмотр собственного профиля организации
-		protected.GET("/profile-organization/:id", controllers.GetOrganizationProfileInfo)     // просмотр другого профиля организации
-		protected.PUT("/organizations/:id/apply", controllers.ApplyOrganization)               // принять регистрацию организации
-		protected.PUT("/organizations/:id/reject", controllers.RejectOrganization)             // отказать регистрацию организации
-		protected.POST("/profile-organization", controllers.UpdateOrganization)                // обновить собственные данные организации
-		protected.POST("/profile-organization/:id", controllers.UpdateOrganization)            // обновить данные другой организации
-		protected.POST("/profile", controllers.UpdateUser)                                     // обновить собственные данные профиля
-		protected.POST("/profile/:id", controllers.UpdateUser)                                 // обновить данные другого профиля
-		protected.GET("/organization-requests", controllers.GetPendingOrganizations)           // список организация на регистрацию
-		protected.PUT("/change-password", controllers.ChangePassword)                          // смена пароля от лк
-		protected.GET("/organizations-accepted-list", controllers.GetOrganizationAcceptedList) // список принятых организаций с укороченными данными
-		protected.GET("/organizations-list", controllers.GetAllOrganizationList)               // список всех организаций с укороченными данными
-
-		protected.POST("/attach-organization", controllers.AttachUserToOrganization)     // волонтер создает заявку на прикрепление к организации
-		protected.POST("/detach-organization", controllers.DetachUserToOrganization)     // волонтер удаляет заявку на прикрепление к организации
-		protected.PUT("/organization/accept/:user_id", controllers.AcceptUserAttachment) // организация принимает заявку на прикрепление
+		protected.GET("/profile", controllers.GetUserProfileInfo)
+		protected.GET("/profile/:id", controllers.GetUserProfileInfo)
+		protected.GET("/profile-organization", controllers.GetOrganizationProfileInfo)
+		protected.GET("/profile-organization/:id", controllers.GetOrganizationProfileInfo)
+		protected.PUT("/organizations/:id/apply", controllers.ApplyOrganization)
+		protected.PUT("/organizations/:id/reject", controllers.RejectOrganization)
+		protected.POST("/profile-organization", controllers.UpdateOrganization)
+		protected.POST("/profile-organization/:id", controllers.UpdateOrganization)
+		protected.PUT("/profile", controllers.UpdateUser)
+		protected.PUT("/profile/:id", controllers.UpdateUser)
+		protected.GET("/organization-requests", controllers.GetPendingOrganizations)
+		protected.PUT("/change-password", controllers.ChangePassword)
+		protected.GET("/organizations-accepted-list", controllers.GetOrganizationAcceptedList)
+		protected.GET("/organizations-list", controllers.GetAllOrganizationList)
+		protected.POST("/attach-organization", controllers.AttachUserToOrganization)
+		protected.POST("/detach-organization", controllers.DetachUserToOrganization)
+		protected.PUT("/organization/accept/:user_id", controllers.AcceptUserAttachment)
+		protected.GET("/organizations-users-list/:page", controllers.GetAllUsersAndOrganizations)
+		protected.PUT("/block-user/:id", controllers.BlockUser)
+		protected.PUT("/unblock-user/:id", controllers.UnblockUser)
+		protected.GET("/organization/requests-to-apply", controllers.GetRequestsToApply)
 	}
-	//нужно расширить таблицу user_organization для is_accepted
 
+	log.Println("HTTP Server running on port 8080...")
 	if err := r.Run(":8080"); err != nil {
-		log.Fatalf("Error starting server: %v", err)
+		log.Fatalf("Error starting HTTP server: %v", err)
+	}
+}
+
+func startGRPCServer() {
+	port, exists := os.LookupEnv("PORT")
+	if !exists {
+		port = "50501"
+	}
+
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
+	if err != nil {
+		log.Fatalf("Error in Listen: %v", err)
+	}
+
+	s := grpc.NewServer()
+	pb.RegisterProfileServiceServer(s, &Server.Server{})
+
+	log.Printf("gRPC Server listening at: %v", lis.Addr())
+	if err := s.Serve(lis); err != nil {
+		log.Fatalf("failed to serve gRPC: %v", err)
 	}
 }
