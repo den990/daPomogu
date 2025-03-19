@@ -1,7 +1,5 @@
 package data
 
-import "backend/client/pkg/app/paginate"
-
 type CreateResponse struct {
 	TaskId uint `json:"task_id"`
 	Status uint `json:"status"`
@@ -12,7 +10,13 @@ type UpdateResponse struct {
 	Status uint `json:"status"`
 }
 
+type Response struct {
+	ID     uint `json:"id"`
+	TaskId uint `json:"task_id"`
+	UserId uint `json:"user_id"`
+	Status uint `json:"status_id"`
+}
+
 type GetResponses struct {
-	TaskId     uint
-	Pagination *paginate.Pagination
+	Responses []Response `json:"responses"`
 }

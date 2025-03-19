@@ -3,6 +3,8 @@ package handler
 import (
 	"backend/client/cmd/handler/hub"
 	approveservice "backend/client/pkg/app/approve/service"
+	categoryquery "backend/client/pkg/app/category/query"
+	categoryservice "backend/client/pkg/app/category/service"
 	commentquery "backend/client/pkg/app/comment/query"
 	commentservice "backend/client/pkg/app/comment/service"
 	responsequery "backend/client/pkg/app/response/query"
@@ -30,6 +32,8 @@ type Handler struct {
 	taskQuery       taskquery.TaskQueryInterface
 	taskService     taskservice.TaskServiceInterface
 	approveService  approveservice.ApproveServiceInterface
+	categoryQuery   categoryquery.CategoryQueryInterface
+	categoryService categoryservice.CategoryServiceInterface
 }
 
 func NewTaskHandler(
@@ -40,6 +44,8 @@ func NewTaskHandler(
 	taskQuery taskquery.TaskQueryInterface,
 	taskService taskservice.TaskServiceInterface,
 	approveService approveservice.ApproveServiceInterface,
+	categoryQuery categoryquery.CategoryQueryInterface,
+	categoryService categoryservice.CategoryServiceInterface,
 ) *Handler {
 	return &Handler{
 		responseQuery,
@@ -49,6 +55,8 @@ func NewTaskHandler(
 		taskQuery,
 		taskService,
 		approveService,
+		categoryQuery,
+		categoryService,
 	}
 }
 
@@ -77,6 +85,13 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 	router := gin.New()
 
 	router.Use(cors.Default())
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Authorization", "Content-Type"},
+		ExposeHeaders:    []string{"Authorization"},
+		AllowCredentials: true,
+	}))
 	router.Use(auth.UserIdentity(jwtSecret))
 
 	tasks := router.Group("/tasks")
@@ -93,6 +108,14 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 		responses.GET("/", h.getResponses)
 		responses.POST("/", h.createResponse)
 		responses.PUT("/:id", h.updateResponse)
+	}
+
+	categories := router.Group("/category")
+	{
+		categories.GET("/", h.getCategories)
+		categories.GET("/search", h.searchCategoriesByName)
+		categories.POST("/", h.createCategory)
+		categories.PUT("/:id", h.updateCategory)
 	}
 
 	wsHub := hub.NewHub(h.commentService, h.commentQuery)
