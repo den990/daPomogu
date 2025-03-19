@@ -1,12 +1,12 @@
 package main
 
 import (
-	"backend/config"
-	pb "backend/functions"
-	"backend/internal/controllers"
-	"backend/internal/db"
-	"backend/internal/middleware"
-	Server "backend/server"
+	pb "backend/proto-functions/profile"
+	"backend/user_service/config"
+	"backend/user_service/internal/controllers"
+	"backend/user_service/internal/db"
+	"backend/user_service/internal/middleware"
+	Server "backend/user_service/server"
 	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"

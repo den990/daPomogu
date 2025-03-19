@@ -1,7 +1,7 @@
 package models
 
 import (
-	"backend/internal/db"
+	"backend/user_service/internal/db"
 	"errors"
 	"time"
 )

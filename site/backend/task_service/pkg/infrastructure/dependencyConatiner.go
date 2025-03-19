@@ -1,0 +1,142 @@
+package infrastructure
+
+import (
+	categorymodel "backend/task_service/pkg/app/category/model"
+	categoryquery "backend/task_service/pkg/app/category/query"
+	categoryservice "backend/task_service/pkg/app/category/service"
+	responsemodel "backend/task_service/pkg/app/response/model"
+	responsequery "backend/task_service/pkg/app/response/query"
+	responseservice "backend/task_service/pkg/app/response/service"
+	"backend/task_service/pkg/infrastructure/transport/grpc"
+
+	taskmodel "backend/task_service/pkg/app/task/model"
+	taskquery "backend/task_service/pkg/app/task/query"
+	taskservice "backend/task_service/pkg/app/task/service"
+
+	organizationquery "backend/task_service/pkg/app/organization/query"
+
+	commentmodel "backend/task_service/pkg/app/comment/model"
+	commentquery "backend/task_service/pkg/app/comment/query"
+	commentservice "backend/task_service/pkg/app/comment/service"
+	userquery "backend/task_service/pkg/app/user/query"
+
+	approvemodel "backend/task_service/pkg/app/approve/model"
+	approveservice "backend/task_service/pkg/app/approve/service"
+
+	"backend/task_service/pkg/infrastructure/config"
+	"backend/task_service/pkg/infrastructure/postgres"
+)
+
+type Container struct {
+	taskReadRepository taskmodel.TaskReadRepositoryInterface
+	taskRepository     taskmodel.TaskRepositoryInterface
+	TaskQuery          taskquery.TaskQueryInterface
+	TaskService        taskservice.TaskServiceInterface
+
+	responseReadRepository responsemodel.ResponseRepositoryReadInterface
+	responseRepository     responsemodel.ResponseRepositoryInterface
+	ResponseQuery          responsequery.ResponseQueryInterface
+	ResponseService        responseservice.ResponseServiceInterface
+
+	commentReadRepository commentmodel.CommentReadRepositoryInterface
+	commentRepository     commentmodel.CommentRepositoryInterface
+	CommentQuery          commentquery.CommentQueryInterface
+	CommentService        commentservice.CommentServiceInterface
+
+	approveReadRepository approvemodel.ApproveRepositoryInterface
+	ApproveService        approveservice.ApproveServiceInterface
+
+	TaskUserReadRepository taskmodel.TaskUserReadRepositoryInterface
+	TaskUserRepository     taskmodel.TaskUserRepositoryInterface
+	TaskUserQuery          taskquery.TaskUserQueryInterface
+	TaskUserService        taskservice.TaskUserServiceInterface
+
+	Client            grpc.ClientInterface
+	UserQuery         userquery.UserQueryInterface
+	OrganizationQuery organizationquery.OrganizationQueryInterface
+
+	categoryRepository categorymodel.CategoryRepositoryInterface
+	CategoryQuery      categoryquery.CategoryQueryInterface
+	CategoryService    categoryservice.CategoryServiceInterface
+}
+
+func NewContainer(config config.Config) *Container {
+	db, err := postgres.NewPostgresGormDB(postgres.Config{
+		Host:     config.DBConfig.Host,
+		Port:     config.DBConfig.Port,
+		Username: config.DBConfig.Username,
+		Password: config.DBConfig.Password,
+		DBName:   config.DBConfig.DBName,
+		SSLMode:  config.DBConfig.SSLMode,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	responseRepository := postgres.NewResponsePostgresRepository(db)
+	responseQuery := responsequery.NewResponseQuery(responseRepository)
+	responsestatusRepo := postgres.NewResponseStatusRepository(db)
+	responseService := responseservice.NewResponseService(responseRepository, responsestatusRepo)
+
+	commentResponse := postgres.NewCommentsRepository(db)
+	commentQuery := commentquery.NewCommentQuery(commentResponse)
+	commentService := commentservice.NewCommentService(commentResponse)
+
+	approveRepository := postgres.NewApproveRepository(db)
+	approveStatusRepository := postgres.NewApproveStatusRepository(db)
+	approveService := approveservice.NewApproveService(approveRepository, approveStatusRepository)
+
+	categoryRepository := postgres.NewCategoryRepository(db)
+	categoryQuery := categoryquery.NewCategoryQuery(categoryRepository)
+	categoryService := categoryservice.NewCategoryService(categoryRepository)
+
+	grpcClient, err := grpc.NewGrpcClient(config.Address)
+	if err != nil {
+		panic(err)
+	}
+
+	organizationQuery := organizationquery.NewOrganization(grpcClient)
+
+	taskRepository := postgres.NewTaskPostgresRepository(db)
+	taskQuery := taskquery.NewTaskQuery(taskRepository, organizationQuery)
+	taskService := taskservice.NewTaskService(taskRepository, organizationQuery)
+
+	userQuery := userquery.NewUserQuery(grpcClient)
+
+	taskUserRepository := postgres.NewTaskUserPostgresRepository(db)
+	taskUserQuery := taskquery.NewTaskUserQuery(taskUserRepository)
+	taskUserService := taskservice.NewTaskUserService(taskUserRepository)
+
+	return &Container{
+		taskReadRepository: taskRepository,
+		taskRepository:     taskRepository,
+		TaskQuery:          taskQuery,
+		TaskService:        taskService,
+
+		responseReadRepository: responseRepository,
+		responseRepository:     responseRepository,
+		ResponseQuery:          responseQuery,
+		ResponseService:        responseService,
+
+		commentReadRepository: commentResponse,
+		commentRepository:     commentResponse,
+		CommentQuery:          commentQuery,
+		CommentService:        commentService,
+
+		approveReadRepository: approveRepository,
+		ApproveService:        approveService,
+
+		TaskUserReadRepository: taskUserRepository,
+		TaskUserRepository:     taskUserRepository,
+		TaskUserQuery:          taskUserQuery,
+		TaskUserService:        taskUserService,
+
+		Client:            grpcClient,
+		UserQuery:         userQuery,
+		OrganizationQuery: organizationQuery,
+
+		categoryRepository: categoryRepository,
+		CategoryQuery:      categoryQuery,
+		CategoryService:    categoryService,
+	}
+}

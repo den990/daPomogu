@@ -9,10 +9,8 @@ RUN go mod tidy
 # Копируем остальные файлы проекта
 COPY . .
 
-COPY functions/ functions/
-COPY client/ client/
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o main ./client/cmd
+RUN CGO_ENABLED=0 GOOS=linux go build -o main ./task_service/cmd
 
 RUN wget -O migrate.tar.gz https://github.com/golang-migrate/migrate/releases/download/v4.14.1/migrate.linux-amd64.tar.gz && \
     tar -xzf migrate.tar.gz && \
@@ -25,9 +23,9 @@ WORKDIR /app/
 
 COPY --from=builder /app/main .
 COPY --from=builder /app/migrate .
-COPY --from=builder /app/.env .env
-COPY /client/config.yaml /app/config.yaml
-COPY /migrations /app/migrations
+COPY task_service/.env /app/.env
+COPY task_service/config.yaml /app/config.yaml
+COPY task_service/migrations /app/migrations
 
 # Разрешаем выполнение файлов
 RUN chmod +x ./main ./migrate
