@@ -52,6 +52,7 @@ func startHTTPServer() {
 	r.POST("/register", controllers.RegisterUser)
 	r.POST("/register-organization", controllers.RegisterOrganization)
 	r.POST("/login", controllers.Login)
+	r.GET("/profile-organization/:id", controllers.GetOrganizationProfileInfo)
 
 	protected := r.Group("/api")
 	protected.Use(middleware.AuthMiddleware())
@@ -59,7 +60,6 @@ func startHTTPServer() {
 		protected.GET("/profile", controllers.GetUserProfileInfo)
 		protected.GET("/profile/:id", controllers.GetUserProfileInfo)
 		protected.GET("/profile-organization", controllers.GetOrganizationProfileInfo)
-		protected.GET("/profile-organization/:id", controllers.GetOrganizationProfileInfo)
 		protected.PUT("/organizations/:id/apply", controllers.ApplyOrganization)
 		protected.PUT("/organizations/:id/reject", controllers.RejectOrganization)
 		protected.POST("/profile-organization", controllers.UpdateOrganization)
