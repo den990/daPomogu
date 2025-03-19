@@ -8,7 +8,7 @@ function MainContent() {
 
     const fetchUsersAndOrganizations = useCallback(() => {
         if (token) {
-            userServiceApi.getAllUsersAndOrganizations(token)
+            userServiceApi.getUsersAndOrganizationsWithPagination(token, 1)
                 .then(data => {
                     setUsersAndOrganizations(data.data || []);
                 })
@@ -38,7 +38,7 @@ function MainContent() {
             userServiceApi.putUnblockUser(token, id)
             .then(() => fetchUsersAndOrganizations())
             .catch(error => {
-                console.error('Ошибка при блокировке пользователя', error);
+                console.error('Ошибка при разблокировке пользователя', error);
             });
         }
     };

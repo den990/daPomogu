@@ -103,9 +103,9 @@ class UserServiceApi {
     });
   }
 
-  getAllUsersAndOrganizations(token) {
+  getUsersAndOrganizationsWithPagination(token, id) {
     this._updateToken(token);
-    return this._request(`${this._baseUrl}/organizations-users-list`, {
+    return this._request(`${this._baseUrl}/organizations-users-list/${id}`, {
         method: 'GET',
         headers: this._headers,
     });
