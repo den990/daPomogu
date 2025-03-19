@@ -8,6 +8,7 @@ service ProfileService {
     rpc GetOrganization(OrganizationRequest) returns (OrganizationResponse) {}
     // Все организации, в которых состоит пользователь
     rpc GetOrganizationsByUserID(OrganizationUserRequest) returns (OrganizationUserListResponse) {}
+    rpc GetOrganizationByOwnerUserID(OrganizationUserRequest) returns (OrganizationResponse) {}
 }
 
 message UserRequest {
@@ -27,6 +28,8 @@ message OrganizationRequest {
 message OrganizationResponse {
     string email = 1;
     uint64 status_id = 2;
+    string name = 3;
+    uint64 id = 4;
 }
 
 message OrganizationUserRequest {
@@ -39,5 +42,5 @@ message OrganizationUserResponse {
 }
 
 message OrganizationUserListResponse {
-    repeated OrganizationUserResponse organizations = 1;
+    repeated OrganizationUserResponse organizationUserResponse = 1;
 }

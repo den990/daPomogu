@@ -62,7 +62,7 @@ func (s *server) GetOrganizationsByUserID(ctx context.Context, req *pb.Organizat
 	}
 
 	return &pb.OrganizationUserListResponse{
-		Organizations: organizations,
+		OrganizationUserResponse: organizations,
 	}, nil
 }
 

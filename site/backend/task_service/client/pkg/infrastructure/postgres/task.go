@@ -29,7 +29,7 @@ func NewTaskPostgresRepository(db *gorm.DB) *TaskRepository {
 
 func (t *TaskRepository) Create(ctx context.Context, task *data.CreateTask) (uint, error) {
 	taskModel := model.TaskModel{
-		OrganizationID:    task.Organization,
+		OrganizationID:    task.OrganizationId,
 		Name:              task.Name,
 		TypeID:            task.TaskType,
 		Description:       task.Description,
@@ -37,11 +37,33 @@ func (t *TaskRepository) Create(ctx context.Context, task *data.CreateTask) (uin
 		TaskDate:          task.TaskDate,
 		ParticipantsCount: task.ParticipantsCount,
 		MaxScore:          task.MaxScore,
-		StatusID:          task.TaskStatus,
+		StatusID:          1,
 	}
 	res := t.db.WithContext(ctx).Create(&taskModel)
+
 	if res.Error != nil {
 		return 0, res.Error
+	}
+
+	for _, categoryId := range task.CategoryIds {
+		taskCategory := model.TaskCategory{
+			TaskID:     taskModel.ID,
+			CategoryID: uint(categoryId),
+		}
+		if err := t.db.WithContext(ctx).Create(&taskCategory).Error; err != nil {
+			return 0, err
+		}
+	}
+
+	for _, coordinateId := range task.CoordinateIds {
+		taskUser := model.TaskUser{
+			TaskID:        taskModel.ID,
+			UserID:        uint(coordinateId),
+			IsCoordinator: true,
+		}
+		if err := t.db.WithContext(ctx).Create(&taskUser).Error; err != nil {
+			return 0, err
+		}
 	}
 
 	return taskModel.ID, nil

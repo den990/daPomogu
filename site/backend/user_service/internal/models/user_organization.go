@@ -6,11 +6,11 @@ import (
 )
 
 type UserOrganization struct {
-	ID             uint `gorm:"primaryKey"`
-	UserID         uint `gorm:"not null;index"`
-	OrganizationID uint `gorm:"not null;index"`
-	IsOwner        bool `gorm:"default:false"`
-	IsAccepted     bool `gorm:"default:false"`
+	ID             uint `gorm:"column:id;primaryKey"`
+	UserID         uint `gorm:"column:user_id;not null;index"`
+	OrganizationID uint `gorm:"column:organization_id;not null;index"`
+	IsOwner        bool `gorm:"column:is_owner;default:false"`
+	IsAccepted     bool `gorm:"column:is_accepted;default:false"`
 }
 
 type AttachOrganization struct {
@@ -64,13 +64,13 @@ func FindOrganizationByUserIdOwner(userId string) (*Organization, error) {
 		return nil, err
 	}
 
-	var organization Organization
-
-	if err := db.DB.Where("id = ?", userOrganization.OrganizationID).First(&organization).Error; err != nil {
+	orgId := strconv.Itoa(int(userOrganization.OrganizationID))
+	organization, err := FindActualOrganizationById(orgId)
+	if err != nil {
 		return nil, err
 	}
 
-	return &organization, nil
+	return organization, nil
 }
 
 func AddAttachmentOrganization(userID, orgID string) error {
