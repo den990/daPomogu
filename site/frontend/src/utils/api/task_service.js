@@ -41,7 +41,7 @@ class TaskServiceApi {
 
   postCreateTask(token, name, task_type, description, location, task_date, participants_count, max_score, coordinate_ids, category_ids) {
     this._updateToken(token);
-    return this._request(`${this._baseUrl}/tasks`, {
+    return this._request(`${this._baseUrl}/tasks/`, {
         method: 'POST',
         headers: this._headers,
         body: JSON.stringify({ name, task_type, description, location, task_date, participants_count, max_score, coordinate_ids, category_ids })
