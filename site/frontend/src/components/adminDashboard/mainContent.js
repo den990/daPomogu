@@ -5,23 +5,30 @@ import { userServiceApi } from "../../utils/api/user_service";
 function MainContent() {
     const { token } = useContext(AuthContext);
     const [usersAndOrganizations, setUsersAndOrganizations] = useState([]);
+    const [countOfPages, setCountOfPages] = useState(0);
+    const [numberOfPage, setNumberOfPage] = useState(1);
 
-    const fetchUsersAndOrganizations = useCallback(() => {
+    const fetchUsersAndOrganizations = (page) => {
         if (token) {
-            userServiceApi.getUsersAndOrganizationsWithPagination(token, 1)
+            userServiceApi.getUsersAndOrganizationsWithPagination(token, page)
                 .then(data => {
                     setUsersAndOrganizations(data.data || []);
+                    setCountOfPages(data.total_pages);
                 })
                 .catch(error => {
                     console.error('Ошибка при загрузке всех пользователей и организаций: ', error);
                     setUsersAndOrganizations([]);
                 })
         }
-    }, [token]);
+    };
 
     useEffect(() => {
-        fetchUsersAndOrganizations();
-    }, [fetchUsersAndOrganizations]);
+        fetchUsersAndOrganizations(numberOfPage);
+    }, [numberOfPage, token]);
+
+    const handlePageChange = (page) => {
+        setNumberOfPage(page);
+    }
 
     const handleBlockUser = (id) => {
         if (token) {
@@ -69,7 +76,7 @@ function MainContent() {
                         </thead>
                         <tbody>
                             {usersAndOrganizations.map((user, i) => (
-                                <tr key={i} className="border-b border-gray-100">
+                                <tr key={i} className={(i + 1 == usersAndOrganizations.length) ? "border-gray-100" : "border-b border-gray-100"}>
                                     <td className="py-4">
                                         <div className="flex items-center gap-3">
                                             <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="User" className="w-10 h-10 rounded-full" />
@@ -125,9 +132,11 @@ function MainContent() {
                             <button className="px-3 py-1 border border-gray-200 rounded-md bg-gray-200">
                                 <img style={{width: 10, height: 16}} src={require("../../images/left_arrow_grey.svg").default} alt="left_arrow" />
                             </button>
-                            <button className="px-3 py-1 bg-red-600 text-white rounded-md">1</button>
-                            <button className="px-3 py-1 border border-gray-200 rounded-md hover:bg-gray-50">2</button>
-                            <button className="px-3 py-1 border border-gray-200 rounded-md hover:bg-gray-50">3</button>
+                            {Array.from({ length: countOfPages }, (_, i) => (
+                                <button onClick={() => handlePageChange(i + 1)} key={i} className={`px-3 py-1 ${(i + 1 == numberOfPage) ? "bg-red-600 text-white" : "border border-gray-200 hover:bg-gray-50"} rounded-md`}>
+                                    {i + 1}
+                                </button>
+                            ))}
                             <button className="px-3 py-1 border border-gray-200 rounded-md hover:bg-gray-50">
                                 <img style={{width: 10, height: 16}} src={require("../../images/right_arrow_grey.svg").default} alt="right_arrow" />
                             </button>
