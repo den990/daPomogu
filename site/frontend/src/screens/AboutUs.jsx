@@ -1,6 +1,6 @@
-import Mission from '../components/aboutUs/mission.js';
-import Faq from '../components/aboutUs/faq.js';
-import Footer from '../layouts/Footer.js';
+import Mission from '../components/aboutUs/mission.jsx';
+import Faq from '../components/aboutUs/faq.jsx';
+import Footer from '../layouts/Footer.jsx';
 import RoleHeader from '../components/RoleHeader/RoleHeader.js';
 
 
