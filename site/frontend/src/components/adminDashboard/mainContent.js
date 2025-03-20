@@ -2,7 +2,7 @@ import { AuthContext } from "../../context/AuthProvider";
 import { useContext, useEffect, useState, useCallback } from "react";
 import { userServiceApi } from "../../utils/api/user_service";
 
-function MainContent() {
+function MainContent({onMenuToggle}) {
     const { token } = useContext(AuthContext);
     const [usersAndOrganizations, setUsersAndOrganizations] = useState([]);
     const [countOfPages, setCountOfPages] = useState(0);
@@ -60,18 +60,10 @@ function MainContent() {
                 </svg>
             </button>
             <div className="flex items-center gap-3">
-                <div className="relative">
                 <img 
-                    className="w-4 h-4" 
-                    src={require("../../images/bell_dark.svg").default} 
-                    alt="icon"
-                />
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
-                </div>
-                <img 
-                src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg" 
-                alt="Admin" 
-                className="w-8 h-8 rounded-full"
+                    src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg" 
+                    alt="Admin" 
+                    className="w-8 h-8 rounded-full"
                 />
             </div>
             </div>
