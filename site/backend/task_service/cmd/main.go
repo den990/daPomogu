@@ -35,6 +35,8 @@ func main() {
 		container.CategoryService,
 		container.TaskUserService,
 		container.TaskUserQuery,
+		container.TaskCategoryService,
+		container.TaskCategoryQuery,
 	)
 
 	fmt.Println("Client started")

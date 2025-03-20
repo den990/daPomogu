@@ -23,17 +23,19 @@ const (
 )
 
 type Handler struct {
-	responseQuery   responsequery.ResponseQueryInterface
-	responseService responseservice.ResponseServiceInterface
-	commentQuery    commentquery.CommentQueryInterface
-	commentService  commentservice.CommentServiceInterface
-	taskQuery       taskquery.TaskQueryInterface
-	taskService     taskservice.TaskServiceInterface
-	approveService  approveservice.ApproveServiceInterface
-	categoryQuery   categoryquery.CategoryQueryInterface
-	categoryService categoryservice.CategoryServiceInterface
-	taskuserService taskservice.TaskUserServiceInterface
-	taskuserQuery   taskquery.TaskUserQueryInterface
+	responseQuery       responsequery.ResponseQueryInterface
+	responseService     responseservice.ResponseServiceInterface
+	commentQuery        commentquery.CommentQueryInterface
+	commentService      commentservice.CommentServiceInterface
+	taskQuery           taskquery.TaskQueryInterface
+	taskService         taskservice.TaskServiceInterface
+	approveService      approveservice.ApproveServiceInterface
+	categoryQuery       categoryquery.CategoryQueryInterface
+	categoryService     categoryservice.CategoryServiceInterface
+	taskuserService     taskservice.TaskUserServiceInterface
+	taskuserQuery       taskquery.TaskUserQueryInterface
+	taskcategoryService taskservice.TaskCategoryServiceInterface
+	taskcategoryQuery   taskquery.TaskCategoryQueryInterface
 }
 
 func NewTaskHandler(
@@ -48,6 +50,8 @@ func NewTaskHandler(
 	categoryService categoryservice.CategoryServiceInterface,
 	taskuserService taskservice.TaskUserServiceInterface,
 	takuserQuery taskquery.TaskUserQueryInterface,
+	taskcategoryService taskservice.TaskCategoryServiceInterface,
+	taskcategoryQuery taskquery.TaskCategoryQueryInterface,
 ) *Handler {
 	return &Handler{
 		responseQuery,
@@ -61,6 +65,8 @@ func NewTaskHandler(
 		categoryService,
 		taskuserService,
 		takuserQuery,
+		taskcategoryService,
+		taskcategoryQuery,
 	}
 }
 

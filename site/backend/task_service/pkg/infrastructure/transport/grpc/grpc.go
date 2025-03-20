@@ -4,6 +4,8 @@ import (
 	pb "backend/proto-functions/profile"
 	organizationmodel "backend/task_service/pkg/app/organization/model"
 	organizationquery "backend/task_service/pkg/app/organization/query"
+	"backend/task_service/pkg/app/task/model"
+	taskquery "backend/task_service/pkg/app/task/query"
 	usermodel "backend/task_service/pkg/app/user/model"
 	userquery "backend/task_service/pkg/app/user/query"
 	"context"
@@ -17,6 +19,7 @@ type ClientInterface interface {
 	Close()
 	userquery.ClientUserInterface
 	organizationquery.ClientOrganizationInterface
+	taskquery.ClientTaskCategoryInterface
 }
 
 type Client struct {
@@ -107,5 +110,33 @@ func (c *Client) GetOrganizationByOwnerUserID(ctx context.Context, userID uint64
 		ID:       uint(res.Id),
 		Name:     res.Name,
 	}, nil
+
+}
+
+func (c *Client) GetUsersByIDS(ctx context.Context, userIDs []int) ([]model.TaskViewCoordinator, error) {
+	var userIDsUint64 []uint64
+	for _, id := range userIDs {
+		userIDsUint64 = append(userIDsUint64, uint64(id))
+	}
+
+	req := &pb.GetUsersByIDsRequest{
+		UserIds: userIDsUint64,
+	}
+
+	res, err := c.Client.GetUsersByIDS(ctx, req)
+	if err != nil {
+		log.Printf("Ошибка получения пользователей: %v", err)
+		return []model.TaskViewCoordinator{}, errors.New("error getting users")
+	}
+	var coordinators []model.TaskViewCoordinator
+	for _, user := range res.Users {
+		coordinators = append(coordinators, model.TaskViewCoordinator{
+			ID:      uint(user.Id),
+			Name:    user.Name,
+			Surname: user.Surname,
+		})
+	}
+
+	return coordinators, nil
 
 }

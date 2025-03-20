@@ -2,11 +2,13 @@ package handler
 
 import (
 	"backend/task_service/pkg/app/task/data"
+	"backend/task_service/pkg/app/task/model"
 	"backend/task_service/pkg/infrastructure/middleware/auth"
 	"backend/task_service/pkg/infrastructure/response"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func (h *Handler) createTask(c *gin.Context) {
@@ -41,6 +43,19 @@ func (h *Handler) updateTask(c *gin.Context) {
 		return
 	}
 
+	taskIDParam := c.Param("id")
+
+	if taskIDParam == "" {
+		response.NewErrorResponse(c, http.StatusBadRequest, InvalidInputBodyErr)
+		return
+	}
+
+	taskID, err := strconv.ParseUint(taskIDParam, 10, 64)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusBadRequest, "Invalid task ID")
+		return
+	}
+
 	var input data.UpdateTask
 
 	if err := c.BindJSON(&input); err != nil {
@@ -48,7 +63,7 @@ func (h *Handler) updateTask(c *gin.Context) {
 		return
 	}
 
-	err = h.taskService.Update(c.Request.Context(), &input)
+	err = h.taskService.Update(c.Request.Context(), &input, uint(taskID))
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -87,22 +102,75 @@ func (h *Handler) getTask(c *gin.Context) {
 		return
 	}
 
-	var input data.GetTask
+	taskIDParam := c.Param("id")
 
-	if err := c.BindJSON(&input); err != nil {
+	if taskIDParam == "" {
 		response.NewErrorResponse(c, http.StatusBadRequest, InvalidInputBodyErr)
 		return
 	}
 
-	task, err := h.taskQuery.Get(c.Request.Context(), input.ID)
+	taskID, err := strconv.ParseUint(taskIDParam, 10, 64)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusBadRequest, "Invalid task ID")
+		return
+	}
+
+	task, err := h.taskQuery.Get(c.Request.Context(), uint(taskID))
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, map[string]interface{}{
-		"task": task,
-	})
+	taskCategory, err := h.taskcategoryQuery.GetCategories(c.Request.Context(), task.ID)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	userIds, err := h.taskcategoryQuery.GetUserIDs(c.Request.Context(), task.ID)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	userOrganization, err := h.taskcategoryQuery.GetUsersByIDS(c.Request.Context(), userIds)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	taskViewModel := model.TaskViewModel{
+		ID:                task.ID,
+		OrganizationID:    task.OrganizationID,
+		Name:              task.Name,
+		TypeID:            task.TypeID,
+		Description:       task.Description,
+		Location:          task.Location,
+		TaskDate:          task.TaskDate,
+		ParticipantsCount: task.ParticipantsCount,
+		MaxScore:          task.MaxScore,
+		StatusID:          task.StatusID,
+		CreatedAt:         task.CreatedAt,
+		UpdatedAt:         task.UpdatedAt,
+		Coordinators:      []model.TaskViewCoordinator{},
+		Categories:        []model.TaskViewCategory{},
+	}
+
+	for _, category := range taskCategory {
+		taskViewModel.Categories = append(taskViewModel.Categories, model.TaskViewCategory{
+			ID:   category.ID,
+			Name: category.Name,
+		})
+	}
+
+	for _, user := range userOrganization {
+		taskViewModel.Coordinators = append(taskViewModel.Coordinators, model.TaskViewCoordinator{
+			ID:      user.ID,
+			Name:    user.Name,
+			Surname: user.Surname,
+		})
+	}
+
+	c.JSON(http.StatusOK, taskViewModel)
 }
 
 func (h *Handler) getTasks(c *gin.Context) {

@@ -7,6 +7,7 @@ import (
 	"context"
 	"errors"
 	"gorm.io/gorm"
+	"time"
 )
 
 var (
@@ -69,26 +70,72 @@ func (t *TaskRepository) Create(ctx context.Context, task *data.CreateTask) (uin
 	return taskModel.ID, nil
 }
 
-func (t *TaskRepository) Update(ctx context.Context, task *data.UpdateTask) error {
-	taskModel := model.TaskModel{
-		ID:                task.ID,
-		OrganizationID:    task.Organization,
-		Name:              task.Name,
-		TypeID:            task.TaskType,
-		Description:       task.Description,
-		Location:          task.Location,
-		TaskDate:          task.TaskDate,
-		ParticipantsCount: task.ParticipantsCount,
-		MaxScore:          task.MaxScore,
-		StatusID:          task.TaskStatus,
+func (t *TaskRepository) Update(ctx context.Context, task *data.UpdateTask, id uint) error {
+	tx := t.db.WithContext(ctx).Begin()
+
+	updateData := map[string]interface{}{}
+	if task.Name != "" {
+		updateData["name"] = task.Name
+	}
+	if task.TaskType != 0 {
+		updateData["type_id"] = task.TaskType
+	}
+	if task.Description != "" {
+		updateData["description"] = task.Description
+	}
+	if task.Location != "" {
+		updateData["location"] = task.Location
+	}
+	if task.TaskDate != (time.Time{}) {
+		updateData["task_date"] = task.TaskDate
+	}
+	if task.ParticipantsCount != nil {
+		updateData["participants_count"] = *task.ParticipantsCount
+	}
+	if task.MaxScore != nil {
+		updateData["max_score"] = *task.MaxScore
 	}
 
-	res := t.db.WithContext(ctx).Model(&task).Updates(taskModel)
-	if res.Error != nil {
-		return ErrUpdateTask
+	if len(updateData) > 0 {
+		if err := tx.Model(&model.TaskModel{}).Where("id = ?", id).Updates(updateData).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
 	}
 
-	return nil
+	if err := tx.Where("task_id = ? AND is_coordinator = ?", id, true).Delete(&model.TaskUser{}).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+	if err := tx.Where("task_id = ?", id).Delete(&model.TaskCategory{}).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	for _, userID := range task.CoordinateIds {
+		newTaskUser := model.TaskUser{
+			TaskID:        id,
+			UserID:        uint(userID),
+			IsCoordinator: true,
+		}
+		if err := tx.Create(&newTaskUser).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+	}
+
+	for _, categoryID := range task.CategoryIds {
+		newTaskCategory := model.TaskCategory{
+			TaskID:     id,
+			CategoryID: uint(categoryID),
+		}
+		if err := tx.Create(&newTaskCategory).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+	}
+
+	return tx.Commit().Error
 }
 
 func (t *TaskRepository) Delete(ctx context.Context, id uint) error {
