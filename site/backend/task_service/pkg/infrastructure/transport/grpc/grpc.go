@@ -45,7 +45,8 @@ func (c *Client) Close() {
 func (c *Client) GetUser(ctx context.Context, userID uint64) (usermodel.UserModel, error) {
 	res, err := c.Client.GetUser(ctx, &pb.UserRequest{Id: userID})
 	if err != nil {
-		log.Fatalf("Ошибка получения пользователя: %v", err)
+		log.Printf("Ошибка получения пользователя: %v", err)
+		return usermodel.UserModel{}, err
 	}
 
 	log.Printf("Пользователь: %s %s, Админ: %v", res.Name, res.Surname, res.IsAdmin)
@@ -78,6 +79,7 @@ func (c *Client) GetOrganizationsByUserID(ctx context.Context, userID uint64) ([
 	res, err := c.Client.GetOrganizationsByUserID(ctx, &pb.OrganizationUserRequest{Id: userID})
 	if err != nil {
 		log.Printf("Ошибка получения организаций пользователя: %v", err)
+		return []organizationmodel.OrganizationModel{}, err
 	}
 	orgs := []organizationmodel.OrganizationModel{}
 	log.Println("Организации пользователя:")
@@ -97,6 +99,7 @@ func (c *Client) GetOrganizationByOwnerUserID(ctx context.Context, userID uint64
 	res, err := c.Client.GetOrganizationByOwnerUserID(ctx, &pb.OrganizationUserRequest{Id: userID})
 	if err != nil {
 		log.Printf("Ошибка получения организаций пользователя: %v", err)
+		return organizationmodel.OrganizationModel{}, err
 	}
 	if res.StatusId != 2 {
 		return organizationmodel.OrganizationModel{}, errors.New("organization not active")
@@ -107,4 +110,24 @@ func (c *Client) GetOrganizationByOwnerUserID(ctx context.Context, userID uint64
 		Name:     res.Name,
 	}, nil
 
+}
+
+func (c *Client) GetUsersByIDS(ctx context.Context, userIDS []uint64) ([]usermodel.UserModel, error) {
+	res, err := c.Client.GetUsersByIDS(ctx, &pb.GetUsersByIDsRequest{UserIds: userIDS})
+	if err != nil {
+		return nil, err
+	}
+
+	users := []usermodel.UserModel{}
+	for _, user := range res.Users {
+		users = append(users, usermodel.UserModel{
+			ID:      uint(user.Id),
+			Name:    user.Name,
+			Surname: &user.Surname,
+			IsAdmin: user.IsAdmin,
+		})
+
+	}
+
+	return users, nil
 }

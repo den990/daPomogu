@@ -97,3 +97,25 @@ func (s *Server) GetOrganizationByOwnerUserID(ctx context.Context, req *pb.Organ
 		StatusId: uint64(res.StatusID),
 	}, nil
 }
+
+func (s *Server) GetUsersByIDS(ctx context.Context, req *pb.GetUsersByIDsRequest) (*pb.GetUsersByIDsResponse, error) {
+	users, err := models.GetAllUsersByIds(req.UserIds)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println("Users len : ", len(users))
+	res := []*pb.User{}
+
+	for _, user := range users {
+		res = append(res, &pb.User{
+			Id:      uint64(user.ID),
+			Name:    user.Name,
+			Surname: user.Surname,
+			IsAdmin: user.IsAdmin,
+		})
+	}
+
+	return &pb.GetUsersByIDsResponse{
+		Users: res,
+	}, nil
+}
