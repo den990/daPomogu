@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"backend/config"
+	"backend/user_service/config"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"

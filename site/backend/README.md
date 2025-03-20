@@ -8,3 +8,7 @@
   <code>kubectl logs "Название пода"</code> - Просмотр логов пода <br>
   <code>kubectl rollout restart deployment "Название сервиса"</code> - Перезапуск пода <br>
   <code>kubectl apply -f "Назавание сервиса-deployment.yaml"</code> - Обновить/принять манифест деплоя
+___
+docker build --no-cache -t den990/task_service:1.0.38 -f ./task_service/Dockerfile ./
+docker build --no-cache -t den990/user_service:1.0.58 -f ./user_service/Dockerfile ./
+docker push den990/user_service:1.0.58

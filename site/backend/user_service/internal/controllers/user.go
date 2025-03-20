@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"backend/internal/models"
-	"backend/internal/utils"
+	"backend/user_service/internal/models"
+	"backend/user_service/internal/utils"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"math"
