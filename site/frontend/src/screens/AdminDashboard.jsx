@@ -1,5 +1,5 @@
-import Sidebar from "../components/adminDashboard/sidebar";
-import MainContent from "../components//adminDashboard/mainContent";
+import Sidebar from "../components/adminDashboard/sidebar.jsx";
+import MainContent from "../components/adminDashboard/mainContent.jsx";
 import RoleHeader from '../components/RoleHeader/RoleHeader.js';
 
 function AdminDashboard() {

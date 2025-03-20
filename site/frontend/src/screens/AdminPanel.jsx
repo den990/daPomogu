@@ -1,5 +1,5 @@
-import SideBar from '../components/adminPanel/sidebar.js';
-import Dashboard from '../components/adminPanel/dashboard.js';
+import SideBar from '../components/adminPanel/sidebar.jsx';
+import Dashboard from '../components/adminPanel/dashboard.jsx';
 import RoleHeader from '../components/RoleHeader/RoleHeader.js';
 
 function AdminPanel() {
