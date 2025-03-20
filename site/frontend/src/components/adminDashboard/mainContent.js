@@ -2,7 +2,7 @@ import { AuthContext } from "../../context/AuthProvider";
 import { useContext, useEffect, useState, useCallback } from "react";
 import { userServiceApi } from "../../utils/api/user_service";
 
-function MainContent() {
+function MainContent({onMenuToggle}) {
     const { token } = useContext(AuthContext);
     const [usersAndOrganizations, setUsersAndOrganizations] = useState([]);
     const [countOfPages, setCountOfPages] = useState(0);
