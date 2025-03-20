@@ -39,7 +39,6 @@ func UserIdentity(jwtSecret string) gin.HandlerFunc {
 			response.NewErrorResponse(c, http.StatusUnauthorized, err.Error())
 			return
 		}
-		c
 		c.Set(userCtx, userId.UserID)
 	}
 }
