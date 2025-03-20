@@ -9,7 +9,7 @@ import (
 )
 
 type TaskServiceInterface interface {
-	Update(ctx context.Context, task *data.UpdateTask) error
+	Update(ctx context.Context, task *data.UpdateTask, id uint) error
 	Delete(ctx context.Context, id uint) error
 	Create(ctx context.Context, task *data.CreateTask, userId uint) (uint, error)
 }
@@ -29,8 +29,8 @@ func NewTaskService(
 	}
 }
 
-func (t *TaskService) Update(ctx context.Context, task *data.UpdateTask) error {
-	err := t.taskRepository.Update(ctx, task)
+func (t *TaskService) Update(ctx context.Context, task *data.UpdateTask, id uint) error {
+	err := t.taskRepository.Update(ctx, task, id)
 
 	return err
 }

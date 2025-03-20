@@ -243,3 +243,17 @@ func CountUsers() (int, error) {
 
 	return int(count), nil
 }
+
+func GetAllUsersByIds(ids []uint64) ([]User, error) {
+	var users []User
+
+	err := db.DB.
+		Where("id IN ? AND is_blocked = ?", ids, false).
+		Find(&users).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}

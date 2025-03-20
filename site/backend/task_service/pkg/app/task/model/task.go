@@ -22,6 +22,34 @@ type TaskModel struct {
 	UpdatedAt         time.Time `gorm:"column:updated_at;type:TIMESTAMP;default:CURRENT_TIMESTAMP;autoUpdateTime" json:"updated_at"`
 }
 
+type TaskViewModel struct {
+	ID                uint                  `json:"id"`
+	OrganizationID    uint                  `json:"organization_id"`
+	Name              string                `json:"name"`
+	TypeID            uint                  `json:"type_id"`
+	Description       string                `json:"description"`
+	Location          string                `json:"location"`
+	TaskDate          time.Time             `json:"task_date"`
+	ParticipantsCount *int                  `json:"participants_count"`
+	MaxScore          *int                  `json:"max_score"`
+	StatusID          uint                  `json:"status_id"`
+	CreatedAt         time.Time             `json:"created_at"`
+	UpdatedAt         time.Time             `json:"updated_at"`
+	Coordinators      []TaskViewCoordinator `json:"coordinators"`
+	Categories        []TaskViewCategory    `json:"categories"`
+}
+
+type TaskViewCoordinator struct {
+	ID      uint   `json:"id"`
+	Name    string `json:"name"`
+	Surname string `json:"surname"`
+}
+
+type TaskViewCategory struct {
+	ID   uint   `json:"id"`
+	Name string `json:"name"`
+}
+
 func (TaskModel) TableName() string {
 	return "task"
 }
@@ -33,16 +61,6 @@ type CategoryModel struct {
 
 func (CategoryModel) TableName() string {
 	return "category"
-}
-
-type TaskCategory struct {
-	ID         uint `gorm:"column:id;type:SERIAL;primaryKey;autoIncrement" json:"id"`
-	TaskID     uint `gorm:"column:task_id;type:INTEGER;not null;index" json:"task_id"`
-	CategoryID uint `gorm:"column:category_id;type:INTEGER;not null;index" json:"category_id"`
-}
-
-func (TaskCategory) TableName() string {
-	return "task_category"
 }
 
 type TaskTypeModel struct {
@@ -76,6 +94,6 @@ type TaskReadRepositoryInterface interface {
 type TaskRepositoryInterface interface {
 	TaskReadRepositoryInterface
 	Delete(ctx context.Context, id uint) error
-	Update(ctx context.Context, task *data.UpdateTask) error
+	Update(ctx context.Context, task *data.UpdateTask, id uint) error
 	Create(ctx context.Context, task *data.CreateTask) (uint, error)
 }
