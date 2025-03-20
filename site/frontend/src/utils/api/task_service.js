@@ -47,6 +47,22 @@ class TaskServiceApi {
         body: JSON.stringify({ name, task_type, description, location, task_date, participants_count, max_score, coordinate_ids, category_ids })
     });
   }
+
+  getCategoriesByName(token, name) {
+    this._updateToken(token);
+    return this._request(`${this._baseUrl}/category/search?name=${encodeURIComponent(name)}`, {
+      method: 'GET',
+      headers: this._headers
+    });
+  }
+
+  getAllCategories(token) {
+    this._updateToken(token);
+    return this._request(`${this._baseUrl}/category/`, {
+      method: 'GET',
+      headers: this._headers
+    });
+  }
 };
 
 export const taskServiceApi = new TaskServiceApi(apiSettings);

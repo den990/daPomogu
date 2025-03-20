@@ -1,43 +1,35 @@
 import { Link, useNavigate } from "react-router";
 import ROUTES from "../../constants/routes";
 import useFormWithValidation from "../../hooks/useFormWithValidation";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { taskServiceApi } from "../../utils/api/task_service";
 import { AuthContext } from "../../context/AuthProvider";
-
-import { useTheme } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import Chip from '@mui/material/Chip';
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
-
-const categoriesOptions = [
-    { id: 1, name: "Экология" },
-    { id: 2, name: "Образование" },
-    { id: 3, name: "Спорт" },
-    { id: 4, name: "Культура" },
-];
+import CategoryMultiSelect from "./CategoryMultiSelect";
+import CoordinatorsMultiSelect from "./CoordinatorsMultiSelect";
 
 function TaskForm() {
     const { values, errors, isValid, handleChange, setValues } = useFormWithValidation();
     const { token } = useContext(AuthContext)
     const [error, setError] = useState("");
-    const navigate = useNavigate();
-    const theme = useTheme();
+    const [categories] = useState([]);
+    const [coordinators] = useState([
+      { id: 1, name: "Волонтёр 1" },
+      { id: 2, name: "Волонтёр 2" },
+    ]);
+
+    useEffect(() => {
+        if (!values.task_type) {
+            setValues({ ...values, task_type: "1" });
+        }
+    }, [values, setValues]);
+
+    const handleCategoryChange = (newCategories) => {
+        setValues({ ...values, category_ids: newCategories });
+    };
+
+    const handleCoordinatorsChange = (newCoordinators) => {
+        setValues({ ...values, coordinate_ids: newCoordinators });
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -58,9 +50,13 @@ function TaskForm() {
             task_date,
             participants_count: Number(participants_count),
             max_score: Number(max_score),
-            coordinate_ids: Array.isArray(coordinate_ids) ? coordinate_ids.map(Number) : [],
-            category_ids: Array.isArray(category_ids) ? category_ids.map(Number) : [],
-        };
+            coordinate_ids: Array.isArray(coordinate_ids)
+                ? coordinate_ids.map((coord) => coord.id)
+                : [],
+            category_ids: Array.isArray(category_ids)
+                ? category_ids.map((cat) => cat.ID)
+                : [],
+        }
 
         console.log("Отправляемые данные:", payload);
         
@@ -76,18 +72,9 @@ function TaskForm() {
                 payload.max_score,
                 payload.coordinate_ids,
                 payload.category_ids)
-            // navigate(ROUTES.LOGIN);
         } catch (error) {
             setError("Произошла ошибка при создании задания. Попробуйте снова");
         }
-    };
-
-    const handleCategoryChange = (event) => {
-        const {
-          target: { value },
-        } = event;
-        const selected = (typeof value === 'string' ? value.split(',') : value).map(Number);
-        setValues({ ...values, category_ids: selected });
     };
 
     return (
@@ -100,16 +87,17 @@ function TaskForm() {
                         name="name" 
                         value={values?.name || ''} 
                         onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500" 
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-200 focus:border-blue-200"
+                        placeholder="Введите название"
                     />
                 </div>
                 <div id="task-type-field" className="form-group">
                     <label className="block text-sm font-medium text-gray-700 mb-2">Тип задания</label>
                     <select
-                    name="task_type" 
-                    value={values?.task_type || ''} 
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
+                        name="task_type" 
+                        value={values?.task_type || ''} 
+                        onChange={handleChange}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-200 bg-white"
                     >
                         <option value="1">Открытый</option>
                         <option value="2">Закрытый</option>
@@ -122,7 +110,9 @@ function TaskForm() {
                         name="description"
                         value={values?.description || ''} 
                         onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500">
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-200 focus:border-blue-200"
+                        placeholder="Введите описание"    
+                    >
                     </textarea>
                 </div>
                 <div id="location-field" className="form-group">
@@ -133,7 +123,7 @@ function TaskForm() {
                             name="location"
                             value={values?.location || ''} 
                             onChange={handleChange}
-                            className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500" 
+                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-200 focus:border-blue-200" 
                             placeholder="Введите адрес" 
                         />
                         <button type="button" className="px-4 py-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200">
@@ -149,7 +139,7 @@ function TaskForm() {
                             name="date"
                             value={values.date || ""}
                             onChange={handleChange}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500" 
+                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-200 focus:border-blue-200"
                         />
                     </div>
                     <div>
@@ -159,7 +149,7 @@ function TaskForm() {
                             name="time"
                             value={values.time || ""}
                             onChange={handleChange}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500" 
+                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-200 focus:border-blue-200" 
                         />
                     </div>
                 </div>
@@ -171,58 +161,27 @@ function TaskForm() {
                         name="participants_count"
                         value={values.participants_count || ""}
                         onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500" 
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-200 focus:border-blue-200"
+                        placeholder="Выберите необходимое количество участников"
                     />
                 </div>
+
                 <div id="coordinators-field" className="form-group">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Координаторы</label>
-                <select 
-                    name="coordinate_ids"
-                    value={values.coordinate_ids && values.coordinate_ids[0] ? values.coordinate_ids[0] : ""}
-                    onChange={(e) => {
-                    const num = Number(e.target.value);
-                    setValues({ ...values, coordinate_ids: [num] });
-                    }}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
-                >
-                    <option value="3">Волонтёр 1</option>
-                    <option value="2">Волонтёр 2</option>
-                </select>
+                    <CoordinatorsMultiSelect
+                        value={values.coordinate_ids || []}
+                        onChange={handleCoordinatorsChange}
+                        options={coordinators}
+                    />
                 </div>
-                <div id="categories-field" className="form-group">
-                <FormControl sx={{ m: 1, minWidth: 300 }}>
-                    <InputLabel id="categories-select-label">Категории</InputLabel>
-                    <Select
-                    labelId="categories-select-label"
-                    id="categories-select"
-                    multiple
-                    name="category_ids"
-                    value={values.category_ids || []}
-                    onChange={handleCategoryChange}
-                    input={<OutlinedInput id="select-multiple-chip" label="Категории" />}
-                    renderValue={(selected) => (
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                        {selected.map((value) => {
-                            const category = categoriesOptions.find(cat => cat.id === value);
-                            return (
-                            <Chip
-                                key={value}
-                                label={category ? category.name : value}
-                            />
-                            );
-                        })}
-                        </Box>
-                    )}
-                    MenuProps={MenuProps}
-                    >
-                    {categoriesOptions.map((category) => (
-                        <MenuItem key={category.id} value={category.id}>
-                        {category.name}
-                        </MenuItem>
-                    ))}
-                    </Select>
-                </FormControl>
+
+                <div id="category-field" className="form-group">
+                    <CategoryMultiSelect
+                        value={values.category_ids || []}
+                        onChange={handleCategoryChange}
+                        options={categories}
+                    />
                 </div>
+
                 <div id="points-field" className="form-group">
                     <label className="block text-sm font-medium text-gray-700 mb-2">Максимальное количество баллов</label>
                     <input 
@@ -230,8 +189,9 @@ function TaskForm() {
                         name="max_score"
                         value={values.max_score || ""}
                         onChange={handleChange}
-                        min="0" 
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500" 
+                        min="0"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-200 focus:border-blue-200"
+                        placeholder="Выберите максимальное количество баллов"
                     />
                 </div>
                 {error && <p className="text-red-500 mt-4">{error}</p>}
