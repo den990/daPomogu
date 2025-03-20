@@ -91,8 +91,8 @@ function TaskForm() {
     };
 
     return (
-        <form id="task-form" className="bg-white rounded-lg shadow-md p-6" onSubmit={handleSubmit}>
-            <div className="space-y-6">
+        <form id="task-form" className="bg-white rounded-lg shadow-md p-4 md:p-6" onSubmit={handleSubmit}>
+            <div className="space-y-4 md:space-y-6">
                 <div id="task-name-field" className="form-group">
                     <label className="block text-sm font-medium text-gray-700 mb-2">Название задания</label>
                     <input 
@@ -100,16 +100,16 @@ function TaskForm() {
                         name="name" 
                         value={values?.name || ''} 
                         onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500" 
+                        className="w-full px-3 md:px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500 text-sm md:text-base" 
                     />
                 </div>
                 <div id="task-type-field" className="form-group">
                     <label className="block text-sm font-medium text-gray-700 mb-2">Тип задания</label>
                     <select
-                    name="task_type" 
-                    value={values?.task_type || ''} 
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
+                        name="task_type" 
+                        value={values?.task_type || ''} 
+                        onChange={handleChange}
+                        className="w-full px-3 md:px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500 text-sm md:text-base"
                     >
                         <option value="1">Открытый</option>
                         <option value="2">Закрытый</option>
@@ -122,26 +122,27 @@ function TaskForm() {
                         name="description"
                         value={values?.description || ''} 
                         onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500">
+                        className="w-full px-3 md:px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500 text-sm md:text-base"
+                    >
                     </textarea>
                 </div>
                 <div id="location-field" className="form-group">
                     <label className="block text-sm font-medium text-gray-700 mb-2">Местоположение</label>
-                    <div className="flex space-x-4">
+                    <div className="flex flex-wrap gap-2">
                         <input 
                             type="text"
                             name="location"
                             value={values?.location || ''} 
                             onChange={handleChange}
-                            className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500" 
+                            className="flex-grow min-w-[200px] px-3 md:px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500 text-sm md:text-base" 
                             placeholder="Введите адрес" 
                         />
-                        <button type="button" className="px-4 py-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200">
-                            <img style={{width: 12, height: 16}} src={require("../../images/placemark_grey.svg").default} alt="placemark" />
+                        <button type="button" className="px-4 py-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200 flex-shrink-0">
+                            <img className="w-3 h-4 md:w-4 md:h-5" src={require("../../images/placemark_grey.svg").default} alt="placemark" />
                         </button>
                     </div>
                 </div>
-                <div id="datetime-field" className="grid grid-cols-2 gap-4">
+                <div id="datetime-field" className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Дата</label>
                         <input 
@@ -149,7 +150,7 @@ function TaskForm() {
                             name="date"
                             value={values.date || ""}
                             onChange={handleChange}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500" 
+                            className="w-full px-3 md:px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500 text-sm md:text-base" 
                         />
                     </div>
                     <div>
@@ -159,7 +160,7 @@ function TaskForm() {
                             name="time"
                             value={values.time || ""}
                             onChange={handleChange}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500" 
+                            className="w-full px-3 md:px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500 text-sm md:text-base" 
                         />
                     </div>
                 </div>
@@ -171,7 +172,7 @@ function TaskForm() {
                         name="participants_count"
                         value={values.participants_count || ""}
                         onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500" 
+                        className="w-full px-3 md:px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500 text-sm md:text-base" 
                     />
                 </div>
                 <div id="coordinators-field" className="form-group">
@@ -231,15 +232,15 @@ function TaskForm() {
                         value={values.max_score || ""}
                         onChange={handleChange}
                         min="0" 
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500" 
+                        className="w-full px-3 md:px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500 text-sm md:text-base" 
                     />
                 </div>
                 {error && <p className="text-red-500 mt-4">{error}</p>}
                 <div id="form-actions" className="flex items-center justify-end space-x-4 pt-6">
-                    <Link to={ROUTES.ACCOUNT_ORGANIZATION} type="button" className="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                    <Link to={ROUTES.ACCOUNT_ORGANIZATION} type="button" className="px-4 md:px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 text-center text-sm md:text-base">
                         Отмена
                     </Link>
-                    <button type="submit" className="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
+                    <button type="submit" className="px-4 md:px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 text-sm md:text-base">
                         Создать задание
                     </button>
                 </div>
