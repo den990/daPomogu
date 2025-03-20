@@ -135,7 +135,7 @@ function RegistrationForm() {
                 <div className="mt-6 text-center">
                     <p className="text-sm text-gray-600">
                         Уже есть аккаунт? 
-                        <Link to={ROUTES.LOGIN} className="font-medium text-red-600 hover:text-red-500 cursor-pointer" style={{ paddingLeft: 4 }}>Войти</Link>
+                        <Link to={ROUTES.LOGIN} className="font-medium text-gray-600 hover:text-gray-500 cursor-pointer" style={{ paddingLeft: 4 }}>Войти</Link>
                     </p>
                 </div>
             </div>
