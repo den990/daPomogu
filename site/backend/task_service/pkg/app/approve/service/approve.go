@@ -153,7 +153,10 @@ func (a *ApproveService) Show(ctx context.Context, dto data.ShowApproves) (pagin
 
 	users, err := a.userquery.GetUsersByIDS(ctx, userIDs)
 	for _, el := range approves {
-		user := find(users, el.UserID)
+		user, err := find(users, el.UserID)
+		if err != nil {
+			continue
+		}
 
 		res = append(res, struct {
 			ID     uint
@@ -170,11 +173,11 @@ func (a *ApproveService) Show(ctx context.Context, dto data.ShowApproves) (pagin
 	return paginate.Pagination{Limit: int(dto.Limit), Page: int(dto.Page), TotalPages: int64(len(approves)), Rows: res}, err
 }
 
-func find(users []usermodel.UserModel, id uint) usermodel.UserModel {
+func find(users []usermodel.UserModel, id uint) (usermodel.UserModel, error) {
 	for _, user := range users {
 		if user.ID == id {
-			return user
+			return user, nil
 		}
 	}
-	return usermodel.UserModel{}
+	return usermodel.UserModel{}, fmt.Errorf("Пользователь не найден")
 }
