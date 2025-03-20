@@ -127,6 +127,14 @@ class UserServiceApi {
         headers: this._headers,
     });
   }
+
+  getUsersInOrganization(token) {
+    this._updateToken(token);
+    return this._request(`${this._baseUrl}/organization/users`, {
+      method: 'GET',
+      headers: this._headers
+    });
+  }
 };
 
 export const userServiceApi = new UserServiceApi(apiSettings);
