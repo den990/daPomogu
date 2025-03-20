@@ -48,7 +48,8 @@ func (c *Client) Close() {
 func (c *Client) GetUser(ctx context.Context, userID uint64) (usermodel.UserModel, error) {
 	res, err := c.Client.GetUser(ctx, &pb.UserRequest{Id: userID})
 	if err != nil {
-		log.Fatalf("Ошибка получения пользователя: %v", err)
+		log.Printf("Ошибка получения пользователя: %v", err)
+		return usermodel.UserModel{}, err
 	}
 
 	log.Printf("Пользователь: %s %s, Админ: %v", res.Name, res.Surname, res.IsAdmin)
@@ -113,30 +114,22 @@ func (c *Client) GetOrganizationByOwnerUserID(ctx context.Context, userID uint64
 
 }
 
-func (c *Client) GetUsersByIDS(ctx context.Context, userIDs []int) ([]model.TaskViewCoordinator, error) {
-	var userIDsUint64 []uint64
-	for _, id := range userIDs {
-		userIDsUint64 = append(userIDsUint64, uint64(id))
-	}
-
-	req := &pb.GetUsersByIDsRequest{
-		UserIds: userIDsUint64,
-	}
-
-	res, err := c.Client.GetUsersByIDS(ctx, req)
+func (c *Client) GetUsersByIDS(ctx context.Context, userIDS []uint64) ([]usermodel.UserModel, error) {
+	res, err := c.Client.GetUsersByIDS(ctx, &pb.GetUsersByIDsRequest{UserIds: userIDS})
 	if err != nil {
-		log.Printf("Ошибка получения пользователей: %v", err)
-		return []model.TaskViewCoordinator{}, errors.New("error getting users")
+		return nil, err
 	}
-	var coordinators []model.TaskViewCoordinator
+
+	users := []usermodel.UserModel{}
 	for _, user := range res.Users {
-		coordinators = append(coordinators, model.TaskViewCoordinator{
+		users = append(users, usermodel.UserModel{
 			ID:      uint(user.Id),
 			Name:    user.Name,
-			Surname: user.Surname,
+			Surname: &user.Surname,
+			IsAdmin: user.IsAdmin,
 		})
+
 	}
 
-	return coordinators, nil
-
+	return users, nil
 }
