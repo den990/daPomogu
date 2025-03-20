@@ -1,10 +1,12 @@
 const apiSettings = {
     baseUrl: 'http://localhost:8080/api',
+    baseUrlWithoutApi: 'http://localhost:8080',
   };
 
 class UserServiceApi {
-  constructor({ baseUrl }) {
+  constructor({ baseUrl, baseUrlWithoutApi }) {
     this._baseUrl = baseUrl;
+    this._baseUrlWithoutApi = baseUrlWithoutApi;
   };
 
   _request(url, options) {
@@ -43,8 +45,9 @@ class UserServiceApi {
     });
   }
 
-  getOrganizationProfileById(id) {
-    return this._request(`${this._baseUrl}/profile-organization/${id}`, {
+  getOrganizationProfileById(token, id) {
+    this._updateToken(token);
+    return this._request(`${this._baseUrlWithoutApi}/profile-organization/${id}`, {
       method: 'GET',
       headers: this._headers
     });

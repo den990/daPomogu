@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"backend/internal/db"
-	"backend/internal/models"
-	"backend/internal/utils"
+	"backend/user_service/internal/db"
+	"backend/user_service/internal/models"
+	"backend/user_service/internal/utils"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"log"
@@ -135,6 +135,7 @@ func GetOrganizationProfileInfo(c *gin.Context) {
 				Name:          organization.Name,
 				INN:           organization.INN,
 				ActualAddress: organization.ActualAddress,
+				LegalAddress:  organization.LegalAddress,
 				FullNameOwner: organization.FullNameOwner,
 			}
 			c.JSON(http.StatusOK, response)

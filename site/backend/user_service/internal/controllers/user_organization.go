@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"backend/internal/models"
-	"backend/internal/utils"
+	"backend/user_service/internal/models"
+	"backend/user_service/internal/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -125,4 +125,37 @@ func AcceptUserAttachment(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "User successfully accepted into organization"})
+}
+
+func GetUsersInOrganization(c *gin.Context) {
+	userID, err := utils.GetUserIDFromToken(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
+		return
+	}
+
+	org, err := models.FindOrganizationByUserIdOwner(strconv.Itoa(int(userID)))
+	if err != nil {
+		c.JSON(http.StatusForbidden, gin.H{"message": "You are not the owner of any organization"})
+		return
+	}
+
+	users, err := models.FindUsersByOrganizationId(strconv.Itoa(int(org.ID)))
+	if err != nil {
+		c.JSON(http.StatusForbidden, gin.H{"message": err})
+		return
+	}
+
+	var result []map[string]interface{}
+
+	for _, user := range users {
+		result = append(result, map[string]interface{}{
+			"id":         user.ID,
+			"name":       user.Name,
+			"surname":    user.Surname,
+			"patronymic": user.Patronymic,
+		})
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": result})
 }

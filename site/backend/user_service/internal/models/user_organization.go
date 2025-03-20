@@ -1,7 +1,8 @@
 package models
 
 import (
-	"backend/internal/db"
+	"backend/user_service/internal/db"
+	"errors"
 	"strconv"
 )
 
@@ -178,4 +179,28 @@ func FindOrganizationsByUserId(userId string) ([]UserOrganization, error) {
 	}
 
 	return userOrganization, nil
+}
+
+func FindUsersByOrganizationId(orgId string) ([]User, error) {
+	var userOrganizations []UserOrganization
+	if err := db.DB.Where("organization_id = ? AND is_owner = ? AND is_accepted = ?", orgId, false, true).
+		Find(&userOrganizations).Error; err != nil {
+		return nil, err
+	}
+
+	if len(userOrganizations) == 0 {
+		return nil, errors.New("no users found for this organization")
+	}
+
+	var userIDs []uint
+	for _, userOrganization := range userOrganizations {
+		userIDs = append(userIDs, userOrganization.UserID)
+	}
+
+	var users []User
+	if err := db.DB.Where("id IN ?", userIDs).Find(&users).Error; err != nil {
+		return nil, err
+	}
+
+	return users, nil
 }

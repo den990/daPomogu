@@ -1,12 +1,12 @@
 package main
 
 import (
-	"backend/config"
-	pb "backend/functions"
-	"backend/internal/controllers"
-	"backend/internal/db"
-	"backend/internal/middleware"
-	Server "backend/server"
+	pb "backend/proto-functions/profile"
+	"backend/user_service/config"
+	"backend/user_service/internal/controllers"
+	"backend/user_service/internal/db"
+	"backend/user_service/internal/middleware"
+	Server "backend/user_service/server"
 	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -52,6 +52,7 @@ func startHTTPServer() {
 	r.POST("/register", controllers.RegisterUser)
 	r.POST("/register-organization", controllers.RegisterOrganization)
 	r.POST("/login", controllers.Login)
+	r.GET("/profile-organization/:id", controllers.GetOrganizationProfileInfo)
 
 	protected := r.Group("/api")
 	protected.Use(middleware.AuthMiddleware())
@@ -59,7 +60,6 @@ func startHTTPServer() {
 		protected.GET("/profile", controllers.GetUserProfileInfo)
 		protected.GET("/profile/:id", controllers.GetUserProfileInfo)
 		protected.GET("/profile-organization", controllers.GetOrganizationProfileInfo)
-		protected.GET("/profile-organization/:id", controllers.GetOrganizationProfileInfo)
 		protected.PUT("/organizations/:id/apply", controllers.ApplyOrganization)
 		protected.PUT("/organizations/:id/reject", controllers.RejectOrganization)
 		protected.POST("/profile-organization", controllers.UpdateOrganization)
@@ -77,6 +77,7 @@ func startHTTPServer() {
 		protected.PUT("/block-user/:id", controllers.BlockUser)
 		protected.PUT("/unblock-user/:id", controllers.UnblockUser)
 		protected.GET("/organization/requests-to-apply", controllers.GetRequestsToApply)
+		protected.GET("/organization/users", controllers.GetUsersInOrganization)
 	}
 
 	log.Println("HTTP Server running on port 8080...")

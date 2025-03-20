@@ -1,8 +1,8 @@
 package models
 
 import (
-	"backend/internal/db"
-	"backend/internal/utils"
+	"backend/user_service/internal/db"
+	"backend/user_service/internal/utils"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgconn"
@@ -228,4 +228,18 @@ func FindUsersAllWithPagination(offset, limit int) ([]User, error) {
 	}
 
 	return users, nil
+}
+
+func CountUsers() (int, error) {
+	var count int64
+	err := db.DB.
+		Model(&User{}). // Указываем модель, по которой нужно посчитать записи
+		Count(&count).  // Метод для подсчета количества записей
+		Error
+
+	if err != nil {
+		return 0, err
+	}
+
+	return int(count), nil
 }

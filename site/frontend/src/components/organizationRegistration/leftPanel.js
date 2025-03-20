@@ -3,7 +3,7 @@ import ROUTES from '../../constants/routes';
 
 function LeftPanel() {
     return (
-        <div id="left-panel" className="hidden lg:flex lg:w-1/2 bg-red-600 relative overflow-hidden">
+        <div id="left-panel" className="hidden lg:flex lg:w-1/2 bg-gray-600 relative overflow-hidden">
             <div className="flex flex-col justify-center px-12 py-12 relative z-10">
                 <h1 className="text-4xl font-bold text-white mb-6">Платформа для волонтерских организаций</h1>
                 <p className="text-white/90 text-lg mb-8">Находите добровольцев и управляйте волонтерской деятельностью эффективно</p>

@@ -38,11 +38,11 @@ function HeaderOrganization() {
                             <img style={{width: 14, height: 16}} src={ require("../images/add_white.svg").default } alt="icon" /><span style={{paddingLeft: 10}}>Добавить задание</span>
                         </Link>
                         <div className="flex items-center space-x-2">
-                            <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" className="w-8 h-8 rounded-full" alt="Organization" />
                             <div className="relative" ref={menuRef}>
                                 <button onClick={() => setIsOpen(!isOpen)} className="px-4 py-2 hover:bg-gray-50 rounded-md">
                                     <div className="flex items-center">
-                                        <span style={{paddingRight: 10}}>{loading ? "Загрузка..." : (profile ? profile.name : "Неизвестно")}</span>
+                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" className="w-8 h-8 rounded-full" alt="Organization" />
+                                        <span style={{paddingRight: 10, paddingLeft: 12}}>{loading ? "Загрузка..." : (profile ? profile.name : "Неизвестно")}</span>
                                         <img style={{ width: 14, height: 14 }} src={ require("../images/arrow-down_grey.svg").default } alt="icon" />
                                     </div>
                                 </button>
