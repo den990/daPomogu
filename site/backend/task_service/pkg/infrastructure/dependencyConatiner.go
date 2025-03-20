@@ -78,30 +78,36 @@ func NewContainer(config config.Config) *Container {
 	responsestatusRepo := postgres.NewResponseStatusRepository(db)
 	responseService := responseservice.NewResponseService(responseRepository, responsestatusRepo)
 
+	grpcClient, err := grpc.NewGrpcClient(config.Address)
+	if err != nil {
+		panic(err)
+	}
+	userQuery := userquery.NewUserQuery(grpcClient)
+
 	commentResponse := postgres.NewCommentsRepository(db)
 	commentQuery := commentquery.NewCommentQuery(commentResponse)
 	commentService := commentservice.NewCommentService(commentResponse)
-
+	organizationQuery := organizationquery.NewOrganization(grpcClient)
 	approveRepository := postgres.NewApproveRepository(db)
 	approveStatusRepository := postgres.NewApproveStatusRepository(db)
-	approveService := approveservice.NewApproveService(approveRepository, approveStatusRepository)
+	fileRepo := postgres.NewFileRepository(db)
+	approveFileRepo := postgres.NewApproveFileRepository(db)
+	approveService := approveservice.NewApproveService(
+		approveRepository,
+		approveStatusRepository,
+		userQuery,
+		fileRepo,
+		approveFileRepo,
+		organizationQuery,
+	)
 
 	categoryRepository := postgres.NewCategoryRepository(db)
 	categoryQuery := categoryquery.NewCategoryQuery(categoryRepository)
 	categoryService := categoryservice.NewCategoryService(categoryRepository)
 
-	grpcClient, err := grpc.NewGrpcClient(config.Address)
-	if err != nil {
-		panic(err)
-	}
-
-	organizationQuery := organizationquery.NewOrganization(grpcClient)
-
 	taskRepository := postgres.NewTaskPostgresRepository(db)
 	taskQuery := taskquery.NewTaskQuery(taskRepository, organizationQuery)
 	taskService := taskservice.NewTaskService(taskRepository, organizationQuery)
-
-	userQuery := userquery.NewUserQuery(grpcClient)
 
 	taskUserRepository := postgres.NewTaskUserPostgresRepository(db)
 	taskUserQuery := taskquery.NewTaskUserQuery(taskUserRepository)

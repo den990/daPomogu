@@ -33,5 +33,5 @@ RUN chmod +x ./main ./migrate
 EXPOSE 8080
 
 ENV PORT=50501
-CMD sh -c "./migrate -path /app/migrations -database 'postgresql://postgres:dapomogu_password@postgres-service:5432/dapomogu_task_db?sslmode=disable' up && ./main --config=./config.yaml"
+CMD sh -c "./migrate -path /app/migrations -database 'postgresql://postgres:dapomogu_password@dapomogu_postgres:5432/dapomogu_task_db?sslmode=disable' up && ./main --config=./config.yaml"
 

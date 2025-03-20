@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  dapomogu_postgres:
+    container_name: dapomogu_postgres
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: dapomogu_password
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+      - ./db-init/:/docker-entrypoint-initdb.d/
+    ports:
+      - "5435:5432"
+    networks:
+      - grpc
+    restart: unless-stopped
+
+  user-service:
+    build:
+      context: .
+      dockerfile: ./user_service/Dockerfile
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dapomogu_password}
+      DB_NAME: ${DB_NAME:-dapomogu_user_db}
+    depends_on:
+      - dapomogu_postgres  # Теперь сервис ждет запуск БД
+    ports:
+      - "8081:8080"
+    networks:
+      - grpc
+
+  task-service:
+    build:
+      context: .
+      dockerfile: ./task_service/Dockerfile
+    environment:
+      - SERVER_HOST=user-service:50501
+    depends_on:
+      - dapomogu_postgres
+      - user-service
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./uploads:/app/uploads
+    networks:
+      - grpc
+
+  migrate:
+    image: migrate/migrate
+    volumes:
+      - ./task_service/migrations:/migrations  # исправлен путь
+    networks:
+      - grpc
+    depends_on:
+      - dapomogu_postgres
+    command: [
+      "-path", "/migrations",
+      "-database", "postgres://postgres:dapomogu_password@dapomogu_postgres:5432/dapomogu_task_db?sslmode=disable",
+      "up"
+    ]
+
+  migrate2:
+    image: migrate/migrate
+    volumes:
+      - ./user_service/internal/migrations:/migrations  # исправлен путь
+    networks:
+      - grpc
+    depends_on:
+      - dapomogu_postgres
+    command: [
+      "-path", "/migrations",
+      "-database", "postgres://postgres:dapomogu_password@dapomogu_postgres:5432/dapomogu_user_db?sslmode=disable",
+      "up"
+    ]
+
+networks:
+  grpc:
+    driver: bridge
+
+volumes:
+  postgres:

@@ -3,9 +3,9 @@ server:
   host: "localhost"
 db:
   port: "5432"
-  host: "dapomogu_task_postgres"
+  host: "dapomogu_postgres"
   username: "postgres"
-  dbname: "dapomogu_task_postgres_db"
+  dbname: "dapomogu_task_db"
   ssl_mode: "disable"
   password: "dapomogu_password"
 kafka:

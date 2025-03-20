@@ -30,34 +30,15 @@ func (ApproveTaskModel) TableName() string {
 	return "approve_task"
 }
 
-type ApproveFile struct {
-	ID            uint `gorm:"column:id;type:SERIAL;primaryKey;autoIncrement"`
-	UserID        uint `gorm:"column:user_id;type:INTEGER;not null;index"`
-	FileID        uint `gorm:"column:file_id;type:INTEGER;not null;index"`
-	ApproveTaskID uint `gorm:"column:approve_task_id;type:INTEGER;not null;index"`
-}
-
-func (ApproveFile) TableName() string {
-	return "approve_file"
-}
-
-type File struct {
-	ID         uint      `gorm:"column:id;type:SERIAL;primaryKey;autoIncrement"`
-	SRC        string    `gorm:"column:src;type:TEXT;not null"`
-	UploadedAt time.Time `gorm:"column:uploaded_at;type:TIMESTAMP;not null"`
-}
-
-func (File) TableName() string {
-	return "file"
-}
-
 type ApproveReadRepositoryInterface interface {
-	Show(ctx context.Context, dto data.ShowApproves) (paginate.Pagination, error)
+	Show(ctx context.Context, dto data.ShowApproves, status uint) ([]ApproveTaskModel, error)
+	Get(ctx context.Context, id uint) (ApproveTaskModel, error)
+	GetByParams(ctx context.Context, taskID uint, userID uint) (ApproveTaskModel, error)
 }
 
 type ApproveRepositoryInterface interface {
 	ApproveReadRepositoryInterface
-	Create(ctx context.Context, dto data.CreateApprove, status uint) error
+	Create(ctx context.Context, dto data.CreateApprove, status uint) (uint, error)
 	Update(ctx context.Context, dto data.SetStatusApprove) error
 }
 

@@ -43,4 +43,4 @@ RUN chmod +x ./main ./migrate
 EXPOSE 8080
 
 # Запускаем миграции перед запуском приложения
-CMD ./migrate -path /app/migrations -database "postgresql://postgres:dapomogu_password@postgres-service:5432/dapomogu_user_db?sslmode=disable" up && ./main
+CMD ./migrate -path /app/migrations -database "postgresql://postgres:dapomogu_password@dapomogu_postgres:5432/dapomogu_user_db?sslmode=disable" up && ./main
