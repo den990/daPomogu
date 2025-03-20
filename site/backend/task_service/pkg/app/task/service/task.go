@@ -47,6 +47,7 @@ func (t *TaskService) Create(ctx context.Context, task *data.CreateTask, userId 
 		return 0, err
 	}
 
+	task.OrganizationId = organization.ID
 	_, err = t.organizationQuery.GetOrganization(ctx, uint64(organization.ID))
 	if err != nil {
 		return 0, err

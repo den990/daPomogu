@@ -185,7 +185,7 @@ function TaskForm() {
                     }}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
                 >
-                    <option value="1">Волонтёр 1</option>
+                    <option value="3">Волонтёр 1</option>
                     <option value="2">Волонтёр 2</option>
                 </select>
                 </div>
