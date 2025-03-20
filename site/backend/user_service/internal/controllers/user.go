@@ -7,6 +7,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"math"
 	"net/http"
+	"sort"
 	"strconv"
 	"time"
 )
@@ -200,6 +201,9 @@ func GetAllUsersAndOrganizations(c *gin.Context) {
 			})
 		}
 	}
+	sort.Slice(result, func(i, j int) bool {
+		return result[i]["id"].(uint) < result[j]["id"].(uint)
+	})
 	totalPages := int(math.Ceil(float64(countAllUsers) / float64(limit)))
 	c.JSON(http.StatusOK, gin.H{"data": result, "total_pages": totalPages})
 }
