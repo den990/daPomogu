@@ -1,12 +1,12 @@
 const ROUTES = {
-    HOME: "/", //+
-    ABOUT: "/about", //+
-    LOGIN: "/login", //+
-    TASK: "/task", // +
-    ACCOUNT_VOLUNTEER: "/account-volunteer", //+
-    ACCOUNT_ORGANIZATION: "/account-organization", //+
-    TASKS_CATALOG: "/tasks-catalog",  //+
-    ADMIN_PANEL: "/admin-panel", //+
+    HOME: "/",
+    ABOUT: "/about",
+    LOGIN: "/login",
+    TASK: "/task",
+    ACCOUNT_VOLUNTEER: "/account-volunteer",
+    ACCOUNT_ORGANIZATION: "/account-organization",
+    TASKS_CATALOG: "/tasks-catalog",
+    ADMIN_PANEL: "/admin-panel",
     REGISTER_VOLUNTEER: "/registration-volunteer",
     CREATE_TASK: "/create-task",
     REGISTER_ORGANIZATION: "/registration-organization",
