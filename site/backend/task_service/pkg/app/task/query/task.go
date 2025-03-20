@@ -1,6 +1,7 @@
 package query
 
 import (
+	organizationmodel "backend/task_service/pkg/app/organization/model"
 	"backend/task_service/pkg/app/organization/query"
 	"backend/task_service/pkg/app/task/model"
 	"context"
@@ -39,16 +40,27 @@ func (t *TaskQuery) Get(ctx context.Context, id uint) (*model.TaskModel, error) 
 }
 
 func (t *TaskQuery) Show(ctx context.Context, user uint) ([]model.TaskModel, error) {
+	org, _ := t.organizationQuery.GetOrganizationByOwnerUserID(ctx, uint64(user))
 
-	organizations, err := t.organizationQuery.GetOrganizationsByUserID(ctx, uint64(user))
-	if err != nil {
-		return nil, err
+	if org != (organizationmodel.OrganizationModel{}) {
+		tasks, err := t.readRepository.GetAll(ctx, user, true, []organizationmodel.OrganizationModel{org})
+		if err != nil {
+			return nil, err
+		}
+
+		return tasks, nil
+
+	} else {
+		organizations, err := t.organizationQuery.GetOrganizationsByUserID(ctx, uint64(user))
+		if err != nil {
+			return nil, err
+		}
+
+		tasks, err := t.readRepository.GetAll(ctx, user, false, organizations)
+		if err != nil {
+			return nil, err
+		}
+
+		return tasks, nil
 	}
-
-	tasks, err := t.readRepository.GetAll(ctx, user, organizations)
-	if err != nil {
-		return nil, err
-	}
-
-	return tasks, nil
 }

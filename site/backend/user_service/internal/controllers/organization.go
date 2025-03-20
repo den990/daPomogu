@@ -152,6 +152,7 @@ func GetOrganizationProfileInfo(c *gin.Context) {
 				Name:          organization.Name,
 				INN:           organization.INN,
 				ActualAddress: organization.ActualAddress,
+				LegalAddress:  organization.LegalAddress,
 				FullNameOwner: organization.FullNameOwner,
 			}
 			c.JSON(http.StatusOK, response)

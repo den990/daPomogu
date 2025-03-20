@@ -97,6 +97,7 @@ func (c *Client) GetOrganizationByOwnerUserID(ctx context.Context, userID uint64
 	res, err := c.Client.GetOrganizationByOwnerUserID(ctx, &pb.OrganizationUserRequest{Id: userID})
 	if err != nil {
 		log.Printf("Ошибка получения организаций пользователя: %v", err)
+		return organizationmodel.OrganizationModel{}, errors.New("error getting organization")
 	}
 	if res.StatusId != 2 {
 		return organizationmodel.OrganizationModel{}, errors.New("organization not active")

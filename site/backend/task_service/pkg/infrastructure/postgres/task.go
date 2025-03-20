@@ -114,34 +114,51 @@ func (t *TaskRepository) Get(ctx context.Context, id uint) (*model.TaskModel, er
 func (t *TaskRepository) GetAll(
 	ctx context.Context,
 	user uint,
+	isOwner bool,
 	organizations []organizationmodel.OrganizationModel,
 ) ([]model.TaskModel, error) {
 	var tasks []*model.TaskModel
-
-	var orgIDs []uint
-	for _, org := range organizations {
-		orgIDs = append(orgIDs, org.ID)
-	}
-
-	query := t.db.WithContext(ctx).
-		Joins("JOIN task_type tt on tt.id = task.type_id").
-		Joins("JOIN task_user tu ON tu.task_id = task.id").
-		Where("tu.user_id = ?", user)
-
-	if len(orgIDs) > 0 {
-		query = query.Where("tt.name = 'Открытый' OR (tt.name = 'Закрытый' AND task.organization_id IN ?)", orgIDs)
-	} else {
-		query = query.Where("tt.name = 'Открытый'")
-	}
-
-	res := query.Find(&tasks)
-	if res.Error != nil {
-		return nil, res.Error
-	}
-
 	result := make([]model.TaskModel, 0, len(tasks))
-	for _, task := range tasks {
-		result = append(result, *task)
+	if !isOwner {
+		var orgIDs []uint
+		for _, org := range organizations {
+			orgIDs = append(orgIDs, org.ID)
+		}
+
+		query := t.db.WithContext(ctx).
+			Joins("JOIN task_type tt on tt.id = task.type_id").
+			Joins("JOIN task_user tu ON tu.task_id = task.id").
+			Where("tu.user_id = ?", user)
+
+		if len(orgIDs) > 0 {
+			query = query.Where("tt.name = 'Открытый' OR (tt.name = 'Закрытый' AND task.organization_id IN ?)", orgIDs)
+		} else {
+			query = query.Where("tt.name = 'Открытый'")
+		}
+
+		res := query.Find(&tasks)
+		if res.Error != nil {
+			return nil, res.Error
+		}
+
+		for _, task := range tasks {
+			result = append(result, *task)
+		}
+	} else {
+		var orgIDs []uint
+		for _, org := range organizations {
+			orgIDs = append(orgIDs, org.ID)
+		}
+		query := t.db.WithContext(ctx).Joins("JOIN task_type tt on tt.id = task.type_id")
+		res := query.Find(&tasks).Where("tt.name = 'Открытый' OR task.organization_id IN ?", orgIDs)
+
+		if res.Error != nil {
+			return nil, res.Error
+		}
+
+		for _, task := range tasks {
+			result = append(result, *task)
+		}
 	}
 
 	return result, nil

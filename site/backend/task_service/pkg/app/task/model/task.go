@@ -68,6 +68,7 @@ type TaskReadRepositoryInterface interface {
 	GetAll(
 		ctx context.Context,
 		user uint,
+		isOwner bool,
 		organizations []model.OrganizationModel,
 	) ([]TaskModel, error)
 }
