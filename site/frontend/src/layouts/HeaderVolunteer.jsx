@@ -36,7 +36,7 @@ function HeaderVolunteer() {
                     <div className="flex items-center space-x-4">
                         <div className="flex items-center space-x-2">
                             <div className="relative" ref={menuRef}>
-                                <button onClick={() => setIsOpen(!isOpen)} className="px-4 py-2 hover:bg-gray-50 rounded-md">
+                                <button onClick={() => setIsOpen(!isOpen)} className="px-1 py-2 hover:bg-gray-50 rounded-md">
                                     <div className="flex items-center">
                                         <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg" className="w-8 h-8 rounded-full" alt="Profile" />
                                         <span style={{paddingRight: 10, paddingLeft: 12}}>{loading ? "Загрузка..." : (profile ? profile.name : "Неизвестно")}</span>
