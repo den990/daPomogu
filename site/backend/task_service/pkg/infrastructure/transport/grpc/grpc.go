@@ -82,6 +82,7 @@ func (c *Client) GetOrganizationsByUserID(ctx context.Context, userID uint64) ([
 	res, err := c.Client.GetOrganizationsByUserID(ctx, &pb.OrganizationUserRequest{Id: userID})
 	if err != nil {
 		log.Printf("Ошибка получения организаций пользователя: %v", err)
+		return []organizationmodel.OrganizationModel{}, err
 	}
 	orgs := []organizationmodel.OrganizationModel{}
 	log.Println("Организации пользователя:")
