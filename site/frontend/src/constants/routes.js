@@ -24,6 +24,7 @@ const ROUTES = {
     MY_TASKS: "/my-tasks",
     PUBLIC_ACCOUNT_VOLUNTEER: "/account-volunteer/:volonteerId",
     PUBLIC_ACCOUNT_ORGANIZATION: "/account-organization/:organizationId",
+    ORGANIZATION_TASKS: "/organization-tasks",
 };
 
 export default ROUTES;

@@ -1,6 +1,6 @@
 import SearchFilters from '../components/tasksCatalog/searchFilters.jsx';
 import Tasks from '../components/tasksCatalog/tasks.jsx';
-import Pagination from '../components/tasksCatalog/pagination.jsx';
+import Pagination from '../layouts/pagination/pagination.jsx';
 import Footer from '../layouts/Footer.jsx';
 import RoleHeader from '../components/RoleHeader/RoleHeader.js';
 
@@ -12,7 +12,7 @@ function TasksCatalog() {
                 <div className="container mx-auto px-4">
                     <SearchFilters />
                     <Tasks />
-                    <Pagination />
+                    <Pagination numberOfPageOut={1} countOfPages={3} />
                 </div>
             </main>
             <Footer />
