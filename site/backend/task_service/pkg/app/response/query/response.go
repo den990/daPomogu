@@ -17,7 +17,6 @@ type ResponseQueryInterface interface {
 		page int,
 		limit int,
 	) (*paginate.Pagination, error)
-	Get(ctx context.Context, id uint) (*model.ResponseModel, error)
 }
 
 type ResponseQuery struct {

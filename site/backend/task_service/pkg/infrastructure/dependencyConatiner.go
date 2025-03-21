@@ -81,7 +81,6 @@ func NewContainer(config config.Config) *Container {
 	responseRepository := postgres.NewResponsePostgresRepository(db)
 	responseQuery := responsequery.NewResponseQuery(responseRepository)
 	responsestatusRepo := postgres.NewResponseStatusRepository(db)
-	responseService := responseservice.NewResponseService(responseRepository, responsestatusRepo)
 
 	grpcClient, err := grpc.NewGrpcClient(config.Address)
 	if err != nil {
@@ -125,6 +124,13 @@ func NewContainer(config config.Config) *Container {
 	taskUserQuery := taskquery.NewTaskUserQuery(taskUserRepository)
 	taskUserService := taskservice.NewTaskUserService(taskUserRepository)
 
+	responseService := responseservice.NewResponseService(
+		responseRepository,
+		responsestatusRepo,
+		taskUserQuery,
+		responseQuery,
+		taskQuery,
+	)
 	taskCategoryRepository := postgres.NewTaskCategoryPostgresRepository(db)
 	taskCategoryQuery := taskquery.NewTaskCategoryQuery(taskCategoryRepository, grpcClient)
 	taskCategoryService := taskservice.NewTaskCategoryService(taskCategoryRepository)
