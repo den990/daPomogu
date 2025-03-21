@@ -89,10 +89,14 @@ func NewContainer(config config.Config) *Container {
 	taskUserQuery := taskquery.NewTaskUserQuery(taskUserRepository)
 	taskUserService := taskservice.NewTaskUserService(taskUserRepository)
 
+	taskCategoryRepository := postgres.NewTaskCategoryPostgresRepository(db)
+	taskCategoryQuery := taskquery.NewTaskCategoryQuery(taskCategoryRepository, grpcClient)
+	taskCategoryService := taskservice.NewTaskCategoryService(taskCategoryRepository)
+
 	taskRepository := postgres.NewTaskPostgresRepository(db)
 	taskstatusRepo := postgres.NewTaskStatus(db)
 	taskstatusService := taskquery.NewTaskStatusService(taskstatusRepo)
-	taskQuery := taskquery.NewTaskQuery(taskRepository, organizationQuery, taskstatusService)
+	taskQuery := taskquery.NewTaskQuery(taskRepository, organizationQuery, taskstatusService, *taskCategoryQuery, *taskUserQuery)
 	taskService := taskservice.NewTaskService(taskRepository, organizationQuery)
 
 	responseRepository := postgres.NewResponsePostgresRepository(db)
@@ -125,10 +129,6 @@ func NewContainer(config config.Config) *Container {
 	categoryRepository := postgres.NewCategoryRepository(db)
 	categoryQuery := categoryquery.NewCategoryQuery(categoryRepository)
 	categoryService := categoryservice.NewCategoryService(categoryRepository)
-
-	taskCategoryRepository := postgres.NewTaskCategoryPostgresRepository(db)
-	taskCategoryQuery := taskquery.NewTaskCategoryQuery(taskCategoryRepository, grpcClient)
-	taskCategoryService := taskservice.NewTaskCategoryService(taskCategoryRepository)
 
 	return &Container{
 		taskReadRepository: taskRepository,

@@ -4,6 +4,7 @@ import (
 	"backend/task_service/pkg/app/task/model"
 	usermodel "backend/task_service/pkg/app/user/model"
 	"context"
+	"fmt"
 )
 
 type TaskCategoryQueryInterface interface {
@@ -36,7 +37,8 @@ func (tc *TaskCategoryQuery) GetCategories(
 	ctx context.Context,
 	taskID uint,
 ) ([]model.TaskViewCategory, error) {
-
+	fmt.Println("Получаем репо")
+	fmt.Println(tc.repo)
 	return tc.repo.GetCategories(ctx, taskID)
 }
 
