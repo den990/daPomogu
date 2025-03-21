@@ -110,6 +110,13 @@ type TaskReadRepositoryInterface interface {
 		page int,
 		limit int,
 	) ([]TaskModel, error)
+	GetTasksByUserIDWithStatuses(
+		ctx context.Context,
+		userID uint,
+		taskStatus []uint,
+		page int,
+		limit int,
+	) ([]TaskModel, error)
 }
 
 type TaskRepositoryInterface interface {
