@@ -2,7 +2,10 @@ package query
 
 import (
 	"backend/task_service/pkg/app/response/model"
+	usermodel "backend/task_service/pkg/app/user/model"
+	userquery "backend/task_service/pkg/app/user/query"
 	"backend/task_service/pkg/infrastructure/lib/paginate"
+	userlib "backend/task_service/pkg/infrastructure/lib/user"
 	"context"
 	"errors"
 )
@@ -18,6 +21,7 @@ type ResponseQueryInterface interface {
 
 type ResponseQuery struct {
 	responseRepository model.ResponseRepositoryReadInterface
+	userquery          userquery.UserQueryInterface
 }
 
 func NewResponseQuery(responseRepository model.ResponseRepositoryReadInterface) *ResponseQuery {
@@ -36,5 +40,48 @@ func (r *ResponseQuery) Show(
 		return nil, errors.New("invalid task id")
 	}
 
-	return r.responseRepository.Show(ctx, taskId, page, limit)
+	responses, err := r.responseRepository.Show(ctx, taskId, page, limit)
+	if err != nil {
+		return nil, err
+	}
+
+	userIDs := make([]uint64, len(responses))
+	for i, response := range responses {
+		userIDs[i] = uint64(response.UserID)
+	}
+
+	users, err := r.userquery.GetUsersByIDS(ctx, userIDs)
+	if err != nil {
+		return nil, err
+	}
+
+	res := make([]struct {
+		ID     uint
+		TaskID uint
+		User   usermodel.UserModel
+	}, len(responses))
+	for i, response := range responses {
+		user, err := userlib.FindUser(users, response.UserID)
+		if err != nil {
+			continue
+		}
+
+		res[i] = struct {
+			ID     uint
+			TaskID uint
+			User   usermodel.UserModel
+		}{
+			ID:     response.UserID,
+			TaskID: response.TaskID,
+			User:   user,
+		}
+	}
+
+	pagination := paginate.Pagination{
+		Limit: limit,
+		Page:  page,
+		Rows:  res,
+	}
+
+	return &pagination, nil
 }

@@ -4,7 +4,7 @@ import ROUTES from "../../constants/routes";
 import useFormWithValidation from "../../hooks/useFormWithValidation";
 import { useState } from "react";
 
-function RegistrationForm() {
+function RegistrationForm({ setIsPopUpVisible }) {
     const { values, errors, isValid, handleChange } = useFormWithValidation();
     const [error, setError] = useState("");
     const navigate = useNavigate();
@@ -17,7 +17,7 @@ function RegistrationForm() {
         
         try {
             await registerOrganization(email, phone, inn, name, legal_address, actual_address, full_name_owner)
-            navigate(ROUTES.HOME);
+            setIsPopUpVisible(true);
         } catch {
             setError("Произошла ошибка при регистрации. Попробуйте снова");
         }
@@ -135,7 +135,7 @@ function RegistrationForm() {
                 <div className="mt-6 text-center">
                     <p className="text-sm text-gray-600">
                         Уже есть аккаунт? 
-                        <Link to={ROUTES.LOGIN} className="font-medium text-red-600 hover:text-red-500 cursor-pointer" style={{ paddingLeft: 4 }}>Войти</Link>
+                        <Link to={ROUTES.LOGIN} className="font-medium text-gray-600 hover:text-gray-500 cursor-pointer" style={{ paddingLeft: 4 }}>Войти</Link>
                     </p>
                 </div>
             </div>

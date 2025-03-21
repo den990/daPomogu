@@ -2,6 +2,7 @@ package query
 
 import (
 	"backend/task_service/pkg/app/task/model"
+	usermodel "backend/task_service/pkg/app/user/model"
 	"context"
 )
 
@@ -12,11 +13,11 @@ type TaskCategoryQueryInterface interface {
 	) ([]model.TaskViewCategory, error)
 	GetUserIDs(ctx context.Context,
 		taskID uint) ([]int, error)
-	GetUsersByIDS(ctx context.Context, userIDs []int) ([]model.TaskViewCoordinator, error)
+	GetUsersByIDS(ctx context.Context, userIDS []uint64) ([]usermodel.UserModel, error)
 }
 
 type ClientTaskCategoryInterface interface {
-	GetUsersByIDS(ctx context.Context, userIDs []int) ([]model.TaskViewCoordinator, error)
+	GetUsersByIDS(ctx context.Context, userIDS []uint64) ([]usermodel.UserModel, error)
 }
 
 type TaskCategoryQuery struct {
@@ -43,6 +44,6 @@ func (tc *TaskCategoryQuery) GetUserIDs(ctx context.Context, taskID uint) ([]int
 	return tc.repo.GetUserIDs(ctx, taskID)
 }
 
-func (tc *TaskCategoryQuery) GetUsersByIDS(ctx context.Context, userIDs []int) ([]model.TaskViewCoordinator, error) {
-	return tc.client.GetUsersByIDS(ctx, userIDs)
+func (tc *TaskCategoryQuery) GetUsersByIDS(ctx context.Context, userIDS []uint64) ([]usermodel.UserModel, error) {
+	return tc.client.GetUsersByIDS(ctx, userIDS)
 }

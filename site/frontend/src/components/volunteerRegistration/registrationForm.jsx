@@ -4,7 +4,7 @@ import { useState } from "react";
 import ROUTES from "../../constants/routes";
 import useFormWithValidation from "../../hooks/useFormWithValidation";
 
-function RegistrationForm() {
+function RegistrationForm({ setIsPopUpVisible }) {
     const { values, errors, isValid, handleChange } = useFormWithValidation();
     const [error, setError] = useState("");
     const navigate = useNavigate();
@@ -26,8 +26,8 @@ function RegistrationForm() {
         const {surname, name, patronymic, email, phone, date_of_birthday, registration_address, password} = values;
         
         try {
-            await registerVolunteer(email, phone, name, surname, patronymic, date_of_birthday, registration_address, password)
-            navigate(ROUTES.LOGIN);
+            await registerVolunteer(email, phone, name, surname, patronymic, date_of_birthday, registration_address, password);
+            setIsPopUpVisible(true);
         } catch (error) {
             setError("Произошла ошибка при регистрации. Попробуйте снова");
         }

@@ -1,13 +1,15 @@
 import RoleHeader from '../components/RoleHeader/RoleHeader.js';
 import Content from '../components/tasks/Content.jsx';
+import Pagination from '../layouts/pagination/pagination.jsx';
 
-function AccountVolunteer() {
+function Tasks() {
     return (
         <div>
             <RoleHeader />
             <Content />
+            <Pagination numberOfPageOut={1} countOfPages={3} />
         </div>
     );
 }
 
-export default AccountVolunteer;
+export default Tasks;

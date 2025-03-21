@@ -50,6 +50,14 @@ class TaskServiceApi {
             headers: this._headers,
         });
     }
+
+    getAllTasks(token) {
+        this._updateToken(token);
+        return this._request(`${this._baseUrl}/tasks/`, {
+            method: 'GET',
+            headers: this._headers,
+        });
+    }
 }
 
 export const taskServiceApi = new TaskServiceApi(apiSettings);

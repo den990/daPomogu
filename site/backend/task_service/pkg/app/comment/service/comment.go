@@ -11,7 +11,7 @@ type CommentServiceInterface interface {
 		ctx context.Context,
 		comment data.CreateComment,
 		user uint,
-	) (uint, error)
+	) (model.CommentModel, error)
 }
 
 type CommentService struct {
@@ -28,6 +28,6 @@ func (c *CommentService) Create(
 	ctx context.Context,
 	comment data.CreateComment,
 	user uint,
-) (uint, error) {
+) (model.CommentModel, error) {
 	return c.commentRepo.Create(ctx, comment, user)
 }

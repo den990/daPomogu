@@ -18,7 +18,6 @@ type Config struct {
 }
 
 func NewPostgresGormDB(cfg Config) (*gorm.DB, error) {
-
 	postgresUser := os.Getenv("POSTGRES_USER")
 	postgresPassword := os.Getenv("POSTGRES_PASSWORD")
 	dbName := os.Getenv("DB_NAME")
