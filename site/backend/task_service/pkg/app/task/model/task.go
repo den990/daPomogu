@@ -25,6 +25,7 @@ type TaskModel struct {
 type TaskViewModel struct {
 	ID                uint                  `json:"id"`
 	OrganizationID    uint                  `json:"organization_id"`
+	OrganizationName  string                `json:"organization_name"`
 	Name              string                `json:"name"`
 	TypeID            uint                  `json:"type_id"`
 	Description       string                `json:"description"`
@@ -48,6 +49,11 @@ type TaskViewCoordinator struct {
 type TaskViewCategory struct {
 	ID   uint   `json:"id"`
 	Name string `json:"name"`
+}
+
+type TasksView struct {
+	OrganizationName string    `json:"organization_name"`
+	Task             TaskModel `json:"tasks"`
 }
 
 func (TaskModel) TableName() string {

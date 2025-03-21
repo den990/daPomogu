@@ -15,14 +15,13 @@ func AttachUserToOrganization(c *gin.Context) {
 		return
 	}
 
-	var attachOrganization models.AttachOrganization
-
-	if err := c.ShouldBindJSON(&attachOrganization); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid input", "error": err.Error()})
+	organizationIdParam := c.Param("id")
+	if organizationIdParam == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Empty organization"})
 		return
 	}
 
-	org, err := models.FindActualOrganizationById(attachOrganization.OrganizationID)
+	org, err := models.FindActualOrganizationById(organizationIdParam)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"message": "Organization not found"})
 		return
@@ -44,14 +43,13 @@ func DetachUserToOrganization(c *gin.Context) {
 		return
 	}
 
-	var attachOrganization models.AttachOrganization
-
-	if err := c.ShouldBindJSON(&attachOrganization); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid input", "error": err.Error()})
+	organizationIdParam := c.Param("id")
+	if organizationIdParam == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Empty organization"})
 		return
 	}
 
-	org, err := models.FindActualOrganizationById(attachOrganization.OrganizationID)
+	org, err := models.FindActualOrganizationById(organizationIdParam)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"message": "Organization not found"})
 		return
