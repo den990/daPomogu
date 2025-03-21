@@ -1,6 +1,6 @@
 function Content() {
     return (
-        <div id="tasks-section" className="md:col-span-2 mx-2 md:mx-0">
+        <div id="tasks-section" className="md:col-span-2 mx-2 md:mx-0 md:p-8">
             <div className="bg-white rounded-lg shadow p-4 md:p-6">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 md:mb-8">
                     <h3 className="text-lg md:text-xl font-semibold">Мои задания</h3>

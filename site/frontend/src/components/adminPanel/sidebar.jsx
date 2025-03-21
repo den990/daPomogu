@@ -75,7 +75,7 @@ function Sidebar({ isOpen, setIsOpen }) {
                     </Link>
                     
                     <Link 
-                        to="#" 
+                        to={ROUTES.ADMIN_DASHBOARD} 
                         className="flex items-center gap-3 px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
                     >
                         <img 

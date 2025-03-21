@@ -1,18 +1,42 @@
 import { Link } from "react-router";
 import ROUTES from "../../constants/routes";
+import { taskServiceApi } from "../../utils/api/task_service";
+import { AuthContext } from "../../context/AuthProvider";
+import { useContext, useState, useEffect } from "react";
 
 function Tasks() {
+    const { token } = useContext(AuthContext);
+    const [tasks, setTasks] = useState([]);
+
+    const fetchTasks = () => {
+            if (token) {
+                taskServiceApi.getAllTasks(token)
+                    .then(data => {
+                        setTasks(data.data || []);
+                        console.log(data.data);
+                    })
+                    .catch(error => {
+                        console.error('Ошибка при загрузке всех заданий: ', error);
+                        setTasks([]);
+                    })
+            }
+        };
+
+    useEffect(() => {
+        fetchTasks();
+    }, [token]);
+
     return (
         <section id="tasks-grid" className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
-            {[1, 2, 3].map((taskId) => (
+            {tasks.map((task, i) => (
                 <div 
-                    key={taskId} 
+                    key={i} 
                     className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow"
                 >
                     <div className="p-4 md:p-6">
                         {/* Заголовок и теги */}
                         <div className="flex flex-wrap gap-2 mb-3 md:mb-4">
-                            {taskId === 2 ? (
+                            {task === 2 ? (
                                 <>
                                     <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs md:text-sm">
                                         Образование
@@ -23,36 +47,30 @@ function Tasks() {
                                 </>
                             ) : (
                                 <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs md:text-sm">
-                                    {taskId === 1 ? 'Экология' : 'Помощь пожилым'}
+                                    {task === 1 ? 'Экология' : 'Помощь пожилым'}
                                 </span>
                             )}
                         </div>
 
                         {/* Заголовок задания */}
                         <h3 className="text-lg md:text-xl font-semibold mb-2">
-                            {taskId === 1 && 'Уборка парка "Сокольники"'}
-                            {taskId === 2 && 'Онлайн-уроки английского'}
-                            {taskId === 3 && 'Доставка продуктов'}
+                            {task.name}
                         </h3>
 
                         {/* Описание */}
                         <p className="text-gray-600 text-sm md:text-base mb-3 md:mb-4 line-clamp-2">
-                            {taskId === 1 && 'Требуются волонтеры для уборки территории парка. Инвентарь предоставляется.'}
-                            {taskId === 2 && 'Требуются волонтеры для проведения онлайн-уроков английского языка для детей из детских домов.'}
-                            {taskId === 3 && 'Требуются волонтеры для доставки продуктовых наборов пожилым людям.'}
+                            {task.description}
                         </p>
 
                         {/* Организация */}
                         <div className="flex items-center mb-3 md:mb-4">
                             <img 
-                                src={`https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-${taskId}.jpg`} 
+                                src={`https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg`} 
                                 className="w-6 h-6 rounded-full mr-2" 
                                 alt="Логотип организации" 
                             />
                             <span className="text-gray-600 text-sm md:text-base">
-                                {taskId === 1 && 'Экологическое движение'}
-                                {taskId === 2 && 'Образовательный центр'}
-                                {taskId === 3 && 'Забота о старших'}
+                                {task.organization_id}
                             </span>
                         </div>
 
@@ -65,9 +83,11 @@ function Tasks() {
                                     alt="Дата" 
                                 />
                                 <span>
-                                    {taskId === 1 && '15 мая 2025'}
-                                    {taskId === 2 && '20 мая 2025'}
-                                    {taskId === 3 && '25 мая 2025'}
+                                    {new Date(task.task_date).toLocaleDateString("ru-RU", {
+                                        day: "2-digit",
+                                        month: "2-digit",
+                                        year: "numeric"
+                                    })}
                                 </span>
                             </div>
                             <div className="flex items-center">
@@ -77,9 +97,7 @@ function Tasks() {
                                     alt="Участники" 
                                 />
                                 <span>
-                                    {taskId === 1 && '12/20'}
-                                    {taskId === 2 && '5/20'}
-                                    {taskId === 3 && '8/15'}
+                                    {`0/${task.participants_count}`}
                                 </span>
                             </div>
                         </div>

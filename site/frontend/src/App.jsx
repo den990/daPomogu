@@ -30,6 +30,7 @@ import Tasks from './screens/Tasks';
 import { useContext } from 'react';
 import PublicAccountOrganization from './screens/PublicAccountOrganization';
 import PublicAccountVolonteer from './screens/PublicAccountVolunteer';
+import OrganizationTasks from './screens/OrganizationTasks';
 
 function App() {
     const { loading } = useContext(AuthContext);
@@ -69,6 +70,7 @@ function App() {
                                 <Route path={ROUTES.CONFIRMATIONS_TASKS} element={<ConfirmationsTasks />} />
                                 <Route path={ROUTES.ADMIN_REGISTER_ORGANIZATION} element={<AdminRegistrateOrganizationProfile />} />
                                 <Route path={ROUTES.MY_TASKS} element={<Tasks />} />
+                                <Route path={ROUTES.ORGANIZATION_TASKS} element={<OrganizationTasks />} />
                             </Route>
                         </Routes>
                     </div>
