@@ -18,8 +18,8 @@ func NewCommentsRepository(db *gorm.DB) *CommentsRepository {
 	}
 }
 
-func (c *CommentsRepository) Create(ctx context.Context, comment data.CreateComment, userID uint) (uint, error) {
-	commentModel := &model.CommentModel{
+func (c *CommentsRepository) Create(ctx context.Context, comment data.CreateComment, userID uint) (model.CommentModel, error) {
+	commentModel := model.CommentModel{
 		TaskID:  comment.TaskID,
 		UserID:  userID,
 		Comment: comment.Comment,
@@ -27,10 +27,10 @@ func (c *CommentsRepository) Create(ctx context.Context, comment data.CreateComm
 
 	res := c.db.WithContext(ctx).Create(&commentModel)
 	if res.Error != nil {
-		return 0, res.Error
+		return model.CommentModel{}, res.Error
 	}
 
-	return commentModel.ID, nil
+	return commentModel, nil
 }
 
 func (c *CommentsRepository) Show(ctx context.Context, taskId uint, page int, limit int) (*paginate.Pagination, error) {
@@ -47,6 +47,6 @@ func (c *CommentsRepository) Show(ctx context.Context, taskId uint, page int, li
 		return nil, err
 	}
 
-	pagination := paginate.Pagination{limit, page, total, responses}
+	pagination := paginate.Pagination{limit, page, responses}
 	return &pagination, nil
 }
