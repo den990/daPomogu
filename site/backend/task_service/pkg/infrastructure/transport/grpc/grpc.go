@@ -4,7 +4,6 @@ import (
 	pb "backend/proto-functions/profile"
 	organizationmodel "backend/task_service/pkg/app/organization/model"
 	organizationquery "backend/task_service/pkg/app/organization/query"
-	"backend/task_service/pkg/app/task/model"
 	taskquery "backend/task_service/pkg/app/task/query"
 	usermodel "backend/task_service/pkg/app/user/model"
 	userquery "backend/task_service/pkg/app/user/query"
