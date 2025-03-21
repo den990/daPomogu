@@ -42,3 +42,8 @@ type GetTask struct {
 type GetAllTasks struct {
 	Pagination paginate.Pagination `json:"pagination"`
 }
+
+type GetTasksByUser struct {
+	Page  int `json:"page"`
+	Limit int `json:"limit"`
+}

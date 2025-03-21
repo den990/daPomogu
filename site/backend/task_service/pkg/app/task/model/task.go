@@ -72,15 +72,6 @@ func (TaskTypeModel) TableName() string {
 	return "task_type"
 }
 
-type TaskStatusModel struct {
-	ID   uint    `gorm:"column:id;type:SERIAL;primaryKey;autoIncrement" json:"id"`
-	Name *string `gorm:"column:name;type:VARCHAR(255)" json:"name"`
-}
-
-func (TaskStatusModel) TableName() string {
-	return "task_status"
-}
-
 type TaskReadRepositoryInterface interface {
 	Get(ctx context.Context, id uint) (*TaskModel, error)
 	GetAll(
@@ -88,6 +79,13 @@ type TaskReadRepositoryInterface interface {
 		user uint,
 		isOwner bool,
 		organizations []model.OrganizationModel,
+	) ([]TaskModel, error)
+	GetTasksByUserIDWithStatuses(
+		ctx context.Context,
+		userID uint,
+		taskStatus []uint,
+		page int,
+		limit int,
 	) ([]TaskModel, error)
 }
 
