@@ -30,7 +30,7 @@ func NewTaskQuery(
 	readRepository model.TaskReadRepositoryInterface,
 	organizationQuery query.OrganizationQueryInterface,
 	taskstatus TaskStatusServiceInterface,
-) *TaskQuery {
+) TaskQueryInterface {
 	return &TaskQuery{
 		readRepository:    readRepository,
 		organizationQuery: organizationQuery,
@@ -173,4 +173,3 @@ func (t *TaskQuery) GetFinishedTasks(ctx context.Context, dto data.GetTasksByUse
 
 	return paginate.Pagination{Page: dto.Page, Limit: dto.Limit, Rows: tasks}, nil
 }
-

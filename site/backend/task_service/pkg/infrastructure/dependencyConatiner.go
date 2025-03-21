@@ -78,22 +78,33 @@ func NewContainer(config config.Config) *Container {
 		panic(err)
 	}
 
-	responseRepository := postgres.NewResponsePostgresRepository(db)
-	responseQuery := responsequery.NewResponseQuery(responseRepository)
-	responsestatusRepo := postgres.NewResponseStatusRepository(db)
-	responseService := responseservice.NewResponseService(responseRepository, responsestatusRepo)
-
 	grpcClient, err := grpc.NewGrpcClient(config.Address)
 	if err != nil {
 		panic(err)
 	}
+
+	organizationQuery := organizationquery.NewOrganization(grpcClient)
+
+	taskUserRepository := postgres.NewTaskUserPostgresRepository(db)
+	taskUserQuery := taskquery.NewTaskUserQuery(taskUserRepository)
+	taskUserService := taskservice.NewTaskUserService(taskUserRepository)
+
+	taskRepository := postgres.NewTaskPostgresRepository(db)
+	taskstatusRepo := postgres.NewTaskStatus(db)
+	taskstatusService := taskquery.NewTaskStatusService(taskstatusRepo)
+	taskQuery := taskquery.NewTaskQuery(taskRepository, organizationQuery, taskstatusService)
+	taskService := taskservice.NewTaskService(taskRepository, organizationQuery)
+
+	responseRepository := postgres.NewResponsePostgresRepository(db)
+	responseQuery := responsequery.NewResponseQuery(responseRepository)
+	responsestatusRepo := postgres.NewResponseStatusRepository(db)
+	responseService := responseservice.NewResponseService(responseRepository, responsestatusRepo, taskUserQuery)
+
 	userQuery := userquery.NewUserQuery(grpcClient)
 
 	commentResponse := postgres.NewCommentsRepository(db)
 	commentQuery := commentquery.NewCommentQuery(commentResponse)
 	commentService := commentservice.NewCommentService(commentResponse)
-
-	organizationQuery := organizationquery.NewOrganization(grpcClient)
 
 	approveRepository := postgres.NewApproveRepository(db)
 	approveStatusRepository := postgres.NewApproveStatusRepository(db)
@@ -114,16 +125,6 @@ func NewContainer(config config.Config) *Container {
 	categoryRepository := postgres.NewCategoryRepository(db)
 	categoryQuery := categoryquery.NewCategoryQuery(categoryRepository)
 	categoryService := categoryservice.NewCategoryService(categoryRepository)
-
-	taskRepository := postgres.NewTaskPostgresRepository(db)
-	taskstatusRepo := postgres.NewTaskStatus(db)
-	taskstatusService := taskquery.NewTaskStatusService(taskstatusRepo)
-	taskQuery := taskquery.NewTaskQuery(taskRepository, organizationQuery, taskstatusService)
-	taskService := taskservice.NewTaskService(taskRepository, organizationQuery)
-
-	taskUserRepository := postgres.NewTaskUserPostgresRepository(db)
-	taskUserQuery := taskquery.NewTaskUserQuery(taskUserRepository)
-	taskUserService := taskservice.NewTaskUserService(taskUserRepository)
 
 	taskCategoryRepository := postgres.NewTaskCategoryPostgresRepository(db)
 	taskCategoryQuery := taskquery.NewTaskCategoryQuery(taskCategoryRepository, grpcClient)
