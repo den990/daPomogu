@@ -1,7 +1,7 @@
-import Profile from '../components/accountOrganization/profile.js';
-import ActiveTasks from '../components/accountOrganization/activeTasks.js';
-import Volunteers from '../components/accountOrganization/volunteers.js';
-import Stats from '../components/accountOrganization/stats.js';
+import Profile from '../components/accountOrganization/profile.jsx';
+import ActiveTasks from '../components/accountOrganization/activeTasks.jsx';
+import Volunteers from '../components/accountOrganization/volunteers.jsx';
+import Stats from '../components/accountOrganization/stats.jsx';
 import RoleHeader from '../components/RoleHeader/RoleHeader.js';
 
 

@@ -51,6 +51,11 @@ type Container struct {
 	TaskUserQuery          taskquery.TaskUserQueryInterface
 	TaskUserService        taskservice.TaskUserServiceInterface
 
+	TaskCategoryReadRepository taskmodel.TaskCategoryReadRepositoryInterface
+	TaskCategoryRepository     taskmodel.TaskCategoryRepositoryInterface
+	TaskCategoryQuery          taskquery.TaskCategoryQueryInterface
+	TaskCategoryService        taskservice.TaskCategoryServiceInterface
+
 	Client            grpc.ClientInterface
 	UserQuery         userquery.UserQueryInterface
 	OrganizationQuery organizationquery.OrganizationQueryInterface
@@ -107,6 +112,10 @@ func NewContainer(config config.Config) *Container {
 	taskUserQuery := taskquery.NewTaskUserQuery(taskUserRepository)
 	taskUserService := taskservice.NewTaskUserService(taskUserRepository)
 
+	taskCategoryRepository := postgres.NewTaskCategoryPostgresRepository(db)
+	taskCategoryQuery := taskquery.NewTaskCategoryQuery(taskCategoryRepository, grpcClient)
+	taskCategoryService := taskservice.NewTaskCategoryService(taskCategoryRepository)
+
 	return &Container{
 		taskReadRepository: taskRepository,
 		taskRepository:     taskRepository,
@@ -130,6 +139,11 @@ func NewContainer(config config.Config) *Container {
 		TaskUserRepository:     taskUserRepository,
 		TaskUserQuery:          taskUserQuery,
 		TaskUserService:        taskUserService,
+
+		TaskCategoryReadRepository: taskCategoryRepository,
+		TaskCategoryRepository:     taskCategoryRepository,
+		TaskCategoryQuery:          taskCategoryQuery,
+		TaskCategoryService:        taskCategoryService,
 
 		Client:            grpcClient,
 		UserQuery:         userQuery,

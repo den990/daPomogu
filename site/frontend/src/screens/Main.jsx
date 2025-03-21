@@ -1,7 +1,7 @@
-import Hero from '../components/main/hero.js';
-import FeaturedProjects from '../components/main/featuredProjects.js';
-import HowItWorks from '../components/main/howItWorks.js';
-import Footer from '../layouts/Footer.js';
+import Hero from '../components/main/hero.jsx';
+import FeaturedProjects from '../components/main/featuredProjects.jsx';
+import HowItWorks from '../components/main/howItWorks.jsx';
+import Footer from '../layouts/Footer.jsx';
 import RoleHeader from '../components/RoleHeader/RoleHeader.js';
 
 function Main() {

@@ -1,5 +1,5 @@
 import RoleHeader from '../components/RoleHeader/RoleHeader.js';
-import Content from '../components/tasks/Content.js';
+import Content from '../components/tasks/Content.jsx';
 
 function AccountVolunteer() {
     return (

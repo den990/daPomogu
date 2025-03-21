@@ -1,20 +1,10 @@
 import { Link } from "react-router";
-import ROUTES from "../../constants/routes";
 import { AuthContext } from "../../context/AuthProvider";
-import { useContext, useState, useEffect } from "react";
-import { userServiceApi } from "../../utils/api/user_service";
+import { useContext } from "react";
+import ROUTES from "../../constants/routes";
 
 function Profile() {
-    const [profileData, setProfileData] = useState(null);
-    const { token } = useContext(AuthContext);
-
-    useEffect(() => {
-        if (token) {
-            userServiceApi.getMyOrganizationProfile(token)
-                .then(data => setProfileData(data))
-                .catch(error => console.error('Ошибка при загрузке профиля:', error));
-        }
-    }, [token]);
+    const { profile, loading } = useContext(AuthContext);
 
     return (
         <section className="bg-white rounded-lg shadow-sm p-4 md:p-6 mb-6 md:mb-8">
@@ -27,7 +17,7 @@ function Profile() {
                 
                 <div className="flex-1 space-y-4">
                     <h2 className="text-xl md:text-2xl font-bold text-gray-900">
-                        {profileData?.name || "Загрузка..."}
+                        {loading ? "Загрузка..." : (profile ? profile.name : "Нет данных")}
                     </h2>
                     
                     <p className="text-gray-600 text-sm md:text-base">

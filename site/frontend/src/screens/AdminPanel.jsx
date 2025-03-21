@@ -1,7 +1,7 @@
+import SideBar from '../components/adminPanel/sidebar.jsx';
+import Dashboard from '../components/adminPanel/dashboard.jsx';
+import RoleHeader from '../components/RoleHeader/RoleHeader.js';
 import { useState } from 'react';
-import Sidebar from '../components/adminPanel/sidebar';
-import Dashboard from '../components/adminPanel/dashboard';
-import RoleHeader from '../components/RoleHeader/RoleHeader';
 
 function AdminPanel() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -10,7 +10,7 @@ function AdminPanel() {
         <div className="bg-gray-50 min-h-screen flex flex-col">
             <RoleHeader />
             <div className="flex flex-1 relative">
-                <Sidebar 
+                <SideBar 
                     isOpen={isSidebarOpen} 
                     setIsOpen={setIsSidebarOpen} 
                 />

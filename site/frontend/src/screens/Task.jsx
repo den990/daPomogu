@@ -1,7 +1,7 @@
-import Footer from '../layouts/Footer';
-import RoleHeader from '../components/RoleHeader/RoleHeader';
-import Info from '../components/task/info';
-import ButtonsPanel from '../components/task/buttonsPanel';
+import Footer from '../layouts/Footer.jsx';
+import Info from '../components/task/info.jsx';
+import ButtonsPanel from '../components/task/buttonsPanel.jsx';
+import RoleHeader from '../components/RoleHeader/RoleHeader.js';
 
 function Task() {
     return (
