@@ -17,12 +17,7 @@ type Config struct {
 }
 
 func NewPostgresGormDB(cfg Config) (*gorm.DB, error) {
-	postgresUser := os.Getenv("POSTGRES_USER")
-	postgresPassword := os.Getenv("POSTGRES_PASSWORD")
-	dbName := os.Getenv("DB_NAME")
-	postgresHost := "postgres-service"
-
-	dsn := fmt.Sprintf("user=%s password=%s dbname=%s host=%s sslmode=disable port=5432", postgresUser, postgresPassword, dbName, postgresHost)
+	dsn := fmt.Sprintf("user=%s password=%s dbname=%s host=%s sslmode=disable port=%s", cfg.Username, cfg.Password, cfg.DBName, cfg.Host, cfg.Port)
 
 	var err error
 	dbg, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
