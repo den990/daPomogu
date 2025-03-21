@@ -5,6 +5,7 @@ import (
 	"backend/task_service/pkg/app/task/model"
 	"backend/task_service/pkg/infrastructure/middleware/auth"
 	"backend/task_service/pkg/infrastructure/response"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -200,6 +201,7 @@ func (h *Handler) getTasks(c *gin.Context) {
 	}
 
 	pageStr := c.Param("page")
+	fmt.Println("Страница: " + pageStr)
 	if pageStr == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Empty organization"})
 		return

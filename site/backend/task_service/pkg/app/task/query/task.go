@@ -30,11 +30,15 @@ func NewTaskQuery(
 	readRepository model.TaskReadRepositoryInterface,
 	organizationQuery query.OrganizationQueryInterface,
 	taskstatus TaskStatusServiceInterface,
+	taskcategoryQuery TaskCategoryQuery,
+	taskuserQuery TaskUserQuery,
 ) TaskQueryInterface {
 	return &TaskQuery{
 		readRepository:    readRepository,
 		organizationQuery: organizationQuery,
 		taskstatusService: taskstatus,
+		taskcategoryquery: taskcategoryQuery,
+		taskuserquery:     taskuserQuery,
 	}
 }
 
