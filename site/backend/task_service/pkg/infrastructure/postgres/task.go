@@ -213,3 +213,28 @@ func (t *TaskRepository) GetAll(ctx context.Context, user uint, isOwner bool, or
 
 	return result, nil
 }
+
+func (t *TaskRepository) GetTasksByUserIDWithStatuses(
+	ctx context.Context,
+	userID uint,
+	taskStatuses []uint,
+	page int,
+	limit int,
+) ([]model.TaskModel, error) {
+	tasks := make([]model.TaskModel, 0, limit)
+
+	query := t.db.WithContext(ctx).
+		Model(model.TaskModel{}).
+		Joins("JOIN task_user tu ON tu.task_id = task.id").
+		Where("tu.user_id = ?", userID).
+		Where("task.status_id IN (?)", taskStatuses).
+		Offset((page - 1) * limit).
+		Limit(limit)
+
+	res := query.Find(&tasks)
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	return tasks, nil
+}
