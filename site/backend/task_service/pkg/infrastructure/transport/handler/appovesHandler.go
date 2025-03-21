@@ -4,13 +4,9 @@ import (
 	"backend/task_service/pkg/app/approve/data"
 	"backend/task_service/pkg/infrastructure/middleware/auth"
 	"backend/task_service/pkg/infrastructure/response"
-	"encoding/base64"
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"io/ioutil"
 	"net/http"
-	"os"
-	"path/filepath"
+	"strconv"
 )
 
 func (h *Handler) getAllByTaskID(c *gin.Context) {
@@ -39,7 +35,7 @@ func (h *Handler) getAllByTaskID(c *gin.Context) {
 }
 
 func (h *Handler) addApproves(c *gin.Context) {
-	_, err := auth.GetUserId(c)
+	userID, err := auth.GetUserId(c)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -47,36 +43,25 @@ func (h *Handler) addApproves(c *gin.Context) {
 
 	var input data.CreateApprove
 
-	fileBytes, err := base64.StdEncoding.DecodeString(input.File)
+	taskIDParam := c.DefaultPostForm("task_id", "")
+	taskID, err := strconv.ParseUint(taskIDParam, 10, 0)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Ошибка декодирования файла"})
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	// Формируем путь сохранения файла
-	saveDir := fmt.Sprintf("uploads/task_%d", input.TaskID) // Папка для конкретного задания
-	savePath := filepath.Join(saveDir, fmt.Sprintf("user_%d.png", input.UserID))
+	input.UserID = userID
+	input.TaskID = uint(taskID)
 
-	// Создаём директорию, если её нет
-	if err := os.MkdirAll(saveDir, os.ModePerm); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка при создании папки"})
+	file, _, err := c.Request.FormFile("image")
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	// Записываем файл
-	if err := ioutil.WriteFile(savePath, fileBytes, 0644); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка при сохранении файла"})
-		return
-	}
+	input.File = file
 
-	if err := c.BindJSON(&input); err != nil {
-		response.NewErrorResponse(c, http.StatusBadRequest, InvalidInputBodyErr)
-		return
-	}
-
-	input.File = savePath
-
-	err = h.approveService.Create(c.Request.Context(), input)
+	id, err := h.approveService.Create(c.Request.Context(), input)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -84,11 +69,12 @@ func (h *Handler) addApproves(c *gin.Context) {
 
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"success": true,
+		"id":      id,
 	})
 }
 
 func (h *Handler) rejectApproves(c *gin.Context) {
-	_, err := auth.GetUserId(c)
+	userID, err := auth.GetUserId(c)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -101,7 +87,7 @@ func (h *Handler) rejectApproves(c *gin.Context) {
 		return
 	}
 
-	err = h.approveService.Reject(c.Request.Context(), input)
+	err = h.approveService.Reject(c.Request.Context(), input, userID)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -113,7 +99,7 @@ func (h *Handler) rejectApproves(c *gin.Context) {
 }
 
 func (h *Handler) confirmApproves(c *gin.Context) {
-	_, err := auth.GetUserId(c)
+	userID, err := auth.GetUserId(c)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -126,7 +112,7 @@ func (h *Handler) confirmApproves(c *gin.Context) {
 		return
 	}
 
-	err = h.approveService.Confirm(c.Request.Context(), input)
+	err = h.approveService.Confirm(c.Request.Context(), input, userID)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return

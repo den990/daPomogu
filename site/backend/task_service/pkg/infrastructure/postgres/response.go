@@ -2,7 +2,6 @@ package postgres
 
 import (
 	"backend/task_service/pkg/app/response/model"
-	"backend/task_service/pkg/infrastructure/lib/paginate"
 	"context"
 
 	"gorm.io/gorm"
@@ -30,8 +29,8 @@ func (r *ResponseRepository) Create(
 	return response.ID, res.Error
 }
 
-func (r *ResponseRepository) Show(ctx context.Context, taskId uint, page int, limit int) (*paginate.Pagination, error) {
-	var responses []*model.ResponseModel
+func (r *ResponseRepository) Show(ctx context.Context, taskId uint, page int, limit int) ([]model.ResponseModel, error) {
+	var responses []model.ResponseModel
 	query := r.db.WithContext(ctx).Where("task_id = ?", taskId)
 
 	var total int64
@@ -45,8 +44,8 @@ func (r *ResponseRepository) Show(ctx context.Context, taskId uint, page int, li
 	}
 
 	// пагинация каждый раз по одинаково работает
-	pagination := paginate.Pagination{limit, page, total, responses}
-	return &pagination, nil
+	//pagination := paginate.Pagination{limit, page, total, responses}
+	return responses, nil
 }
 
 func (r *ResponseRepository) Update(ctx context.Context, id uint, status uint) error {

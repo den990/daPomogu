@@ -6,11 +6,12 @@ type CreateResponse struct {
 }
 
 // todo: сделать два разных метода для отмены отклика и для подтверждения отклика
+// todo: сделал 2 разных метода но статусы ищу самостоятельно
 type UpdateResponse struct {
 	ID uint `json:"response_id"`
 }
 
-// валдидировать что координатор - на фронте
+// todo: валдидировать что координатор - на фронте
 type GetResponses struct {
 	TaskId uint `json:"task_id"`
 	Page   int  `json:"page,omitempty;query:page"`

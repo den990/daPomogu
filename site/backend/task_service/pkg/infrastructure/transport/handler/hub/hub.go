@@ -88,18 +88,6 @@ func (h *Hub) RegisterClient(client *Client) {
 	}
 	h.clients[client.RoomID][client] = true
 	fmt.Println("Клиент подключился:", client.RoomID)
-
-	/*comments, err := h.commentQuery.Show(
-		context.Background(),
-		data.ShowComment{TaskID: client.RoomID, Pagination: paginate.Pagination{}},
-	)
-	if err == nil {
-		client.send <- Message{
-			Type:   "history",
-			TaskID: client.RoomID,
-			Data:   serializeComments(comments),
-		}
-	}*/
 }
 
 func (h *Hub) RemoveClient(client *Client) {
@@ -119,16 +107,64 @@ func (h *Hub) HandleMessage(message Message) {
 
 	switch message.Type {
 	case "Create":
-		{
-			_, err := h.commentService.Create(
-				context.Background(),
-				data.CreateComment{Comment: message.Data, TaskID: message.TaskID},
-				message.UserID,
-			)
-			if err != nil {
-				fmt.Println("Ошибка сохранения комментария:", err)
+		fmt.Println(message.Type)
+		cooment, err := h.commentService.Create(
+			context.Background(),
+			data.CreateComment{Comment: message.Data, TaskID: message.TaskID},
+			message.UserID,
+		)
+
+		if err != nil {
+			fmt.Println("Ошибка загрузки комментариев:", err)
+			message := Message{
+				Type:   "Error",
+				TaskID: message.TaskID,
+				Data:   "its ok",
 			}
 
+			for client := range h.clients[message.TaskID] {
+				select {
+				case client.send <- message:
+				default:
+					close(client.send)
+					delete(h.clients[message.TaskID], client)
+				}
+			}
+			return
+		}
+
+		h.sendMessageToClients(message.TaskID, cooment)
+
+	case "Get":
+		fmt.Println(message.Type)
+		var pagination paginate.Pagination
+		err := json.Unmarshal([]byte(message.Data), &pagination)
+		if err != nil {
+			fmt.Println("Ошибка загрузки комментариев:", err)
+			message := Message{
+				Type:   "message",
+				TaskID: message.TaskID,
+				Data:   "its ok",
+			}
+			for client := range h.clients[message.TaskID] {
+				select {
+				case client.send <- message:
+				default:
+					close(client.send)
+					delete(h.clients[message.TaskID], client)
+				}
+			}
+			return
+		}
+
+		// todo: поправить пагинацию
+		comments, err := h.commentQuery.Show(
+			context.Background(),
+			data.ShowComment{TaskID: message.TaskID, Page: 1, Limit: pagination.Limit},
+		)
+		fmt.Println(comments)
+		if err != nil {
+			fmt.Println("Ошибка загрузки комментариев:", err)
 			message := Message{
 				Type:   "message",
 				TaskID: message.TaskID,
@@ -143,47 +179,21 @@ func (h *Hub) HandleMessage(message Message) {
 					delete(h.clients[message.TaskID], client)
 				}
 			}
+			return
 		}
-	case "Get":
-		{
-			var pagination paginate.Pagination
-			err := json.Unmarshal([]byte(message.Data), &pagination)
-			// todo: поправить пагинацию
-			comments, err := h.commentQuery.Show(
-				context.Background(),
-				data.ShowComment{TaskID: message.TaskID, Page: 1, Limit: pagination.Limit},
-			)
-			if err != nil {
-				fmt.Println("Ошибка загрузки комментариев:", err)
-				message := Message{
-					Type:   "message",
-					TaskID: message.TaskID,
-					Data:   "its ok",
-				}
 
-				for client := range h.clients[message.TaskID] {
-					select {
-					case client.send <- message:
-					default:
-						close(client.send)
-						delete(h.clients[message.TaskID], client)
-					}
-				}
-				return
-			}
+		h.sendMessageToClients(message.TaskID, *comments)
 
-			h.sendMessageToClients(message.TaskID, comments)
-		}
 	default:
 		return
 	}
 }
 
-func (h *Hub) sendMessageToClients(taskID uint, comments *paginate.Pagination) {
+func (h *Hub) sendMessageToClients(taskID uint, data interface{}) {
 	message := Message{
 		Type:   "message",
 		TaskID: taskID,
-		Data:   serializeComments(comments),
+		Data:   serializeData(data),
 	}
 
 	for client := range h.clients[taskID] {
@@ -196,7 +206,11 @@ func (h *Hub) sendMessageToClients(taskID uint, comments *paginate.Pagination) {
 	}
 }
 
-func serializeComments(comments *paginate.Pagination) string {
+func (h *Hub) sendMessage(taskID uint, data interface{}) {
+
+}
+
+func serializeData(comments interface{}) string {
 	jsonData, err := json.Marshal(comments)
 	if err != nil {
 		fmt.Println("Ошибка сериализация:", err)

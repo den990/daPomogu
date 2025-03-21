@@ -80,6 +80,7 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 		ExposeHeaders:    []string{"Authorization"},
 		AllowCredentials: true,
 	}))
+
 	httphands := router.Group("/api")
 	{
 		httphands.Use(auth.UserIdentity(jwtSecret))
@@ -91,6 +92,7 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 			tasksUsers.POST("/add/:id", h.addTasksUsers)
 			tasksUsers.DELETE("/delete", h.deleteTasksUsers)
 		}
+
 		tasks := httphands.Group("/tasks")
 		{
 			tasks.GET("/", h.getTasks)

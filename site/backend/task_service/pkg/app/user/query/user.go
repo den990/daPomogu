@@ -9,15 +9,20 @@ import (
 
 type UserQueryInterface interface {
 	GetUser(ctx context.Context, userID uint64) (model.UserModel, error)
-	//GetUsersByIDS(ctx context.Context, userIDS []uint64) ([]model.UserModel, error)
+	GetUsersByIDS(ctx context.Context, userIDS []uint64) ([]model.UserModel, error)
 }
 
 type ClientUserInterface interface {
 	GetUser(ctx context.Context, userID uint64) (model.UserModel, error)
+	GetUsersByIDS(ctx context.Context, userIDS []uint64) ([]model.UserModel, error)
 }
 
 type UserQuery struct {
 	client ClientUserInterface
+}
+
+func (u *UserQuery) GetUsersByIDS(ctx context.Context, userIDS []uint64) ([]model.UserModel, error) {
+	return u.client.GetUsersByIDS(ctx, userIDS)
 }
 
 func NewUserQuery(client ClientUserInterface) *UserQuery {
