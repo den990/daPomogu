@@ -31,7 +31,7 @@ func (ApproveTaskModel) TableName() string {
 }
 
 type ApproveReadRepositoryInterface interface {
-	Show(ctx context.Context, dto data.ShowApproves, status uint) ([]ApproveTaskModel, error)
+	Show(ctx context.Context, dto data.ShowApproves, status uint) ([]data.ApproveFile, error)
 	Get(ctx context.Context, id uint) (ApproveTaskModel, error)
 	GetByParams(ctx context.Context, taskID uint, userID uint) (ApproveTaskModel, error)
 }

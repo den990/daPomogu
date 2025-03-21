@@ -26,3 +26,9 @@ func (af *ApproveFileRepository) Create(ctx context.Context, dto data.CreateAppr
 
 	return approvefile.ID, res.Error
 }
+
+func (af *ApproveFileRepository) GetAll(ctx context.Context, approveTaskIDs []uint) ([]model.ApproveFile, error) {
+	approveFiles := []model.ApproveFile{}
+	err := af.db.WithContext(ctx).Where("approve_task_id IN (?)", approveTaskIDs).Error
+	return approveFiles, err
+}

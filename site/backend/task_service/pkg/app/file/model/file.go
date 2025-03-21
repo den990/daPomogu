@@ -16,6 +16,11 @@ func (FileModel) TableName() string {
 	return "file"
 }
 
-type FileModelRepository interface {
+type FileModelQueryRepositoryInterface interface {
+	GetAll(ctx context.Context, ids []uint) ([]FileModel, error)
+}
+
+type FileModelRepositoryInterface interface {
+	FileModelQueryRepositoryInterface
 	Create(ctx context.Context, dto data.CreateFileModel) (uint, error)
 }
