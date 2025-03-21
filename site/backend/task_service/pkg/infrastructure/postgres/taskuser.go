@@ -49,7 +49,7 @@ func (tu *TaskUserRepository) GetUsers(
 		return nil, err
 	}
 
-	pagination := paginate.Pagination{limit, page, total, taskUsers}
+	pagination := paginate.Pagination{limit, page, taskUsers}
 	return &pagination, nil
 }
 

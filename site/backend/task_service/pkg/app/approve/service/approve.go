@@ -138,26 +138,6 @@ func (a *ApproveService) Show(ctx context.Context, dto data.ShowApproves) (pagin
 		return paginate.Pagination{}, err
 	}
 
-	/*approveTaskIDs := make([]uint, 0, len(approves))
-	for _, approve := range approves {
-		approveTaskIDs = append(approveTaskIDs, approve.ID)
-	}
-
-	approveFiles, err := a.approvefileService.Show(ctx, approveTaskIDs)
-	if err != nil {
-		return paginate.Pagination{}, err
-	}
-
-	fileIDs := make([]uint, 0, len(approveFiles))
-	for _, approveFile := range approveFiles {
-		fileIDs = append(fileIDs, approveFile.FileID)
-	}
-
-	files, err := a.fileservice.GetAll(ctx, fileIDs)
-	if err != nil {
-		return paginate.Pagination{}, err
-	}
-	*/
 	userIDs := make([]uint64, len(approves))
 	for _, el := range approves {
 		userIDs = append(userIDs, uint64(el.UserID))
@@ -190,7 +170,7 @@ func (a *ApproveService) Show(ctx context.Context, dto data.ShowApproves) (pagin
 		})
 	}
 
-	return paginate.Pagination{Limit: int(dto.Limit), Page: int(dto.Page), TotalPages: int64(len(approves)), Rows: res}, err
+	return paginate.Pagination{Limit: int(dto.Limit), Page: int(dto.Page), Rows: res}, err
 }
 
 func findUser(users []usermodel.UserModel, id uint) (usermodel.UserModel, error) {
