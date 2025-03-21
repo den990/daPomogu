@@ -34,7 +34,7 @@ function Content() {
 
         if (token) {
             userServiceApi
-                .getOrganizationProfileById(token, id)
+                .getOrganizationProfileById(id)
                 .then((data) => {
                     setOrganizationDetails(data);
                 })

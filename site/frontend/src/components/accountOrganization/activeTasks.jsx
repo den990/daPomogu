@@ -10,7 +10,11 @@ function activeTasks() {
                             <p className="text-gray-600 text-sm mt-1">Требуется 5 волонтеров • Срок: 25.03.2025</p>
                         </div>
                         <button className="text-red-600 hover:text-red-700">
-                            <img style={{width: 16, height: 16}} src={require("../../images/edit_red.svg").default} alt="edit" />
+                            <img
+                                style={{ width: 16, height: 16 }}
+                                src={require("../../images/edit_red.svg").default}
+                                alt="edit"
+                            />
                         </button>
                     </div>
                 </div>
@@ -21,7 +25,11 @@ function activeTasks() {
                             <p className="text-gray-600 text-sm mt-1">Требуется 10 волонтеров • Срок: 28.03.2025</p>
                         </div>
                         <button className="text-red-600 hover:text-red-700">
-                            <img style={{width: 16, height: 16}} src={require("../../images/edit_red.svg").default} alt="edit" />
+                            <img
+                                style={{ width: 16, height: 16 }}
+                                src={require("../../images/edit_red.svg").default}
+                                alt="edit"
+                            />
                         </button>
                     </div>
                 </div>
