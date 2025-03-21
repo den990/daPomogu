@@ -215,19 +215,6 @@ func FindUsersAll() ([]User, error) {
 
 	return users, nil
 }
-func GetAllUsersByIds(ids []uint64) ([]User, error) {
-	var users []User
-
-	err := db.DB.
-		Where("id IN ?", ids).
-		Find(&users).Error
-
-	if err != nil {
-		return nil, err
-	}
-
-	return users, nil
-}
 
 func FindUsersAllWithPagination(offset, limit int) ([]User, error) {
 	var users []User

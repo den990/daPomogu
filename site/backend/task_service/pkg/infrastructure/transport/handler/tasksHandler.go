@@ -132,7 +132,12 @@ func (h *Handler) getTask(c *gin.Context) {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	userOrganization, err := h.taskcategoryQuery.GetUsersByIDS(c.Request.Context(), userIds)
+	userIdsUint64 := make([]uint64, len(userIds))
+	for i, id := range userIds {
+		userIdsUint64[i] = uint64(id)
+	}
+
+	userOrganization, err := h.taskcategoryQuery.GetUsersByIDS(c.Request.Context(), userIdsUint64)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -163,10 +168,15 @@ func (h *Handler) getTask(c *gin.Context) {
 	}
 
 	for _, user := range userOrganization {
+		var surname string
+		if user.Surname != nil {
+			surname = *user.Surname
+		}
+
 		taskViewModel.Coordinators = append(taskViewModel.Coordinators, model.TaskViewCoordinator{
 			ID:      user.ID,
 			Name:    user.Name,
-			Surname: user.Surname,
+			Surname: surname,
 		})
 	}
 
