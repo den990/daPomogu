@@ -199,7 +199,7 @@ func (h *Handler) getTasks(c *gin.Context) {
 		return
 	}
 
-	pageStr := c.Param("id")
+	pageStr := c.Param("page")
 	if pageStr == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Empty organization"})
 		return
