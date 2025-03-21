@@ -116,7 +116,9 @@ func NewContainer(config config.Config) *Container {
 	categoryService := categoryservice.NewCategoryService(categoryRepository)
 
 	taskRepository := postgres.NewTaskPostgresRepository(db)
-	taskQuery := taskquery.NewTaskQuery(taskRepository, organizationQuery)
+	taskstatusRepo := postgres.NewTaskStatus(db)
+	taskstatusService := taskquery.NewTaskStatusService(taskstatusRepo)
+	taskQuery := taskquery.NewTaskQuery(taskRepository, organizationQuery, taskstatusService)
 	taskService := taskservice.NewTaskService(taskRepository, organizationQuery)
 
 	taskUserRepository := postgres.NewTaskUserPostgresRepository(db)

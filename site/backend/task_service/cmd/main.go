@@ -19,7 +19,7 @@ import (
 
 func main() {
 	appconfig.LoadEnv()
-	fmt.Println(jwt.GenerateToken(2, os.Getenv("JWT_SECRET_KEY")))
+	fmt.Println(jwt.GenerateToken(1, os.Getenv("JWT_SECRET_KEY")))
 	cfg := config.MustLoad()
 	container := infrastructure.NewContainer(*cfg)
 

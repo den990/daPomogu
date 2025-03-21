@@ -100,6 +100,8 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 		tasks := httphands.Group("/tasks")
 		{
 			tasks.GET("/page/:page", h.getTasks)
+			tasks.GET("/myOpenedTasks", h.getOpenedTasks)
+			tasks.GET("/myClosedTasks", h.getClosedTasks)
 			tasks.GET("/:id", h.getTask)
 			tasks.POST("/", h.createTask)
 			tasks.PUT("/:id", h.updateTask)

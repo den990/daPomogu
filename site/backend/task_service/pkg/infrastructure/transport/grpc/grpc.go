@@ -4,7 +4,6 @@ import (
 	pb "backend/proto-functions/profile"
 	organizationmodel "backend/task_service/pkg/app/organization/model"
 	organizationquery "backend/task_service/pkg/app/organization/query"
-	taskquery "backend/task_service/pkg/app/task/query"
 	usermodel "backend/task_service/pkg/app/user/model"
 	userquery "backend/task_service/pkg/app/user/query"
 	"context"
@@ -18,7 +17,6 @@ type ClientInterface interface {
 	Close()
 	userquery.ClientUserInterface
 	organizationquery.ClientOrganizationInterface
-	taskquery.ClientTaskCategoryInterface
 }
 
 type Client struct {
@@ -101,7 +99,7 @@ func (c *Client) GetOrganizationByOwnerUserID(ctx context.Context, userID uint64
 	res, err := c.Client.GetOrganizationByOwnerUserID(ctx, &pb.OrganizationUserRequest{Id: userID})
 	if err != nil {
 		log.Printf("Ошибка получения организаций пользователя: %v", err)
-		return organizationmodel.OrganizationModel{}, errors.New("error getting organization")
+		return organizationmodel.OrganizationModel{}, err
 	}
 	if res.StatusId != 2 {
 		return organizationmodel.OrganizationModel{}, errors.New("organization not active")
