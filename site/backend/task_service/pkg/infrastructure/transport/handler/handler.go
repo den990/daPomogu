@@ -6,6 +6,7 @@ import (
 	categoryservice "backend/task_service/pkg/app/category/service"
 	commentquery "backend/task_service/pkg/app/comment/query"
 	commentservice "backend/task_service/pkg/app/comment/service"
+	organizationquery "backend/task_service/pkg/app/organization/query"
 	responsequery "backend/task_service/pkg/app/response/query"
 	responseservice "backend/task_service/pkg/app/response/service"
 	taskquery "backend/task_service/pkg/app/task/query"
@@ -36,6 +37,7 @@ type Handler struct {
 	taskuserQuery       taskquery.TaskUserQueryInterface
 	taskcategoryService taskservice.TaskCategoryServiceInterface
 	taskcategoryQuery   taskquery.TaskCategoryQueryInterface
+	organizationQuery   organizationquery.OrganizationQueryInterface
 }
 
 func NewTaskHandler(
@@ -52,6 +54,7 @@ func NewTaskHandler(
 	takuserQuery taskquery.TaskUserQueryInterface,
 	taskcategoryService taskservice.TaskCategoryServiceInterface,
 	taskcategoryQuery taskquery.TaskCategoryQueryInterface,
+	organizationquery organizationquery.OrganizationQueryInterface,
 ) *Handler {
 	return &Handler{
 		responseQuery,
@@ -67,6 +70,7 @@ func NewTaskHandler(
 		takuserQuery,
 		taskcategoryService,
 		taskcategoryQuery,
+		organizationquery,
 	}
 }
 
