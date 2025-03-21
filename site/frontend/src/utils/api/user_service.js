@@ -138,10 +138,9 @@ class UserServiceApi {
 
     postAttachUserToOrganization(token, organization_id) {
         this._updateToken(token);
-        return this._request(`${this._baseUrl}/attach-organization`, {
+        return this._request(`${this._baseUrl}/attach-organization/${organization_id}`, {
             method: "POST",
             headers: this._headers,
-            body: JSON.stringify({ organization_id: organization_id }),
         });
     }
 
