@@ -38,7 +38,7 @@ func NewResponseService(responseRepository model.ResponseRepositoryInterface,
 
 func (r *ResponseService) Update(ctx context.Context, id uint, statusName string) error {
 	if statusName == "Принято" {
-		response, err := r.responseQuery.Get(ctx, id)
+		response, err := r.responseRepository.Get(ctx, id)
 		if err != nil {
 			return err
 		}
@@ -62,8 +62,6 @@ func (r *ResponseService) Update(ctx context.Context, id uint, statusName string
 	if err != nil {
 		return err
 	}
-
-	// я должен получать отклики токо типо такие сякие
 
 	return r.responseRepository.Update(ctx, id, status.ID)
 }
