@@ -8,21 +8,17 @@ function Content() {
     const [organizations, setOrganizations] = useState([]);
     const [selectedOrganization, setSelectedOrganization] = useState(null);
     const [organizationDetails, setOrganizationDetails] = useState(null);
-    const [openAlert, setOpenAlert] = useState(false);
-    const [alertMessage, setAlertMessage] = useState("");
+    const [alert, setAlert] = useState(null);
 
     const fetchOrganizations = useCallback(() => {
-        if (token) {
-            userServiceApi
-                .getOrganizationRequests(token)
-                .then((data) => {
-                    setOrganizations(data || []);
-                })
-                .catch((error) => {
-                    console.error("Ошибка при загрузке организаций:", error);
-                    setOrganizations([]);
-                });
-        }
+        if (!token) return;
+        userServiceApi
+            .getOrganizationRequests(token)
+            .then((data) => setOrganizations(data || []))
+            .catch(() => {
+                setAlert({ message: "Ошибка при загрузке организации", severity: "error" });
+                setOrganizations([]);
+            });
     }, [token]);
 
     useEffect(() => {
@@ -31,58 +27,42 @@ function Content() {
 
     const handleOrganizationSelect = (id) => {
         setSelectedOrganization(id);
-
-        if (token) {
-            userServiceApi
-                .getOrganizationProfileById(id)
-                .then((data) => {
-                    setOrganizationDetails(data);
-                })
-                .catch((error) => {
-                    console.error("Ошибка при загрузке данных организации:", error);
-                });
-        }
+        if (!token) return;
+        userServiceApi
+            .getOrganizationProfileById(id)
+            .then(setOrganizationDetails)
+            .catch(() => setAlert({ message: "Ошибка загрузки данных", severity: "error" }));
     };
 
     const handleApplyOrganization = (id) => {
-        if (token) {
-            userServiceApi
-                .putApplyOrganization(token, id)
-                .then(() => {
-                    fetchOrganizations();
-                    setOrganizationDetails(null);
-                    setSelectedOrganization(null);
-                    setAlertMessage("Организация успешно зарегестрированна!");
-                    setOpenAlert(true);
-                })
-                .catch((error) => {
-                    console.error("Ошибка при регистрации организации:", error);
-                });
-        }
+        if (!token) return;
+        userServiceApi
+            .putApplyOrganization(token, id)
+            .then(() => {
+                fetchOrganizations();
+                setOrganizationDetails(null);
+                setSelectedOrganization(null);
+                setAlert({ message: "Организация успешно зарегистрирована!", severity: "success" });
+            })
+            .catch(() => setAlert({ message: "Ошибка при регистрации организации", severity: "error" }));
     };
 
     const handleRejectOrganization = (id) => {
-        if (token) {
-            userServiceApi
-                .putRejectOrganization(token, id)
-                .then(() => {
-                    fetchOrganizations();
-                    setOrganizationDetails(null);
-                    setSelectedOrganization(null);
-                    setAlertMessage("Организация успешно отклонена!");
-                    setOpenAlert(true);
-                })
-                .catch((error) => {
-                    console.error("Ошибка при регистрации организации:", error);
-                });
-        }
+        if (!token) return;
+        userServiceApi
+            .putRejectOrganization(token, id)
+            .then(() => {
+                fetchOrganizations();
+                setOrganizationDetails(null);
+                setSelectedOrganization(null);
+                setAlert({ message: "Организация успешно отклонена!", severity: "success" });
+            })
+            .catch(() => setAlert({ message: "Ошибка при отклонении организации", severity: "error" }));
     };
 
     const handleCloseAlert = (event, reason) => {
-        if (reason === "clickaway") {
-            return;
-        }
-        setOpenAlert(false);
+        if (reason === "clickaway") return;
+        setAlert(null);
     };
 
     return (
@@ -196,16 +176,18 @@ function Content() {
                     </div>
                 </div>
             </main>
-            <Snackbar
-                open={openAlert}
-                autoHideDuration={4000}
-                onClose={handleCloseAlert}
-                anchorOrigin={{ vertical: "top", horizontal: "center" }}
-            >
-                <Alert onClose={handleCloseAlert} severity="success" sx={{ width: "100%" }}>
-                    {alertMessage}
-                </Alert>
-            </Snackbar>
+            {alert && (
+                <Snackbar
+                    open={true}
+                    autoHideDuration={4000}
+                    onClose={handleCloseAlert}
+                    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                >
+                    <Alert onClose={handleCloseAlert} severity={alert.severity} sx={{ width: "100%" }}>
+                        {alert.message}
+                    </Alert>
+                </Snackbar>
+            )}
         </>
     );
 }

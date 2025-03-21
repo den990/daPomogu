@@ -141,7 +141,23 @@ class UserServiceApi {
         return this._request(`${this._baseUrl}/attach-organization`, {
             method: "POST",
             headers: this._headers,
-            body: JSON.stringify(organization_id),
+            body: JSON.stringify({ organization_id: organization_id }),
+        });
+    }
+
+    getRequestsToApply(token) {
+        this._updateToken(token);
+        return this._request(`${this._baseUrl}/organization/requests-to-apply`, {
+            method: "GET",
+            headers: this._headers,
+        });
+    }
+
+    putAcceptUserAttachment(token, id) {
+        this._updateToken(token);
+        return this._request(`${this._baseUrl}/organization/accept/${id}`, {
+            method: "PUT",
+            headers: this._headers,
         });
     }
 }
