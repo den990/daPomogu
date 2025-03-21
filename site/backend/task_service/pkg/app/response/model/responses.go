@@ -1,7 +1,6 @@
 package model
 
 import (
-	"backend/task_service/pkg/infrastructure/lib/paginate"
 	"context"
 )
 
@@ -31,7 +30,7 @@ type ResponseRepositoryReadInterface interface {
 		taskId uint,
 		page int,
 		limit int,
-	) (*paginate.Pagination, error)
+	) ([]ResponseModel, error)
 }
 
 type ResponseRepositoryInterface interface {

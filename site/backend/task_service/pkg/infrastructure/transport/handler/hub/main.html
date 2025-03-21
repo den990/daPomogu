@@ -11,14 +11,10 @@
 
 <script>
     const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3NDIyMTUzOTZ9.0LdTgAuuFwsY6Vqt0C9hDOI12BECmUaph-z8fPTKBrE";
-    const socket = new WebSocket(`ws://localhost:8080/ws?roomID=7`);
+    const socket = new WebSocket(`ws://localhost:8080/ws?roomID=1`);
 
     socket.onopen = () => {
         console.log("✅ Соединение установлено");
-    };
-
-    socket.onmessage = (event) => {
-        console.log("📩 Ответ от сервера:", event.data);
     };
 
     socket.onerror = (error) => {
@@ -32,9 +28,13 @@
     function sendMessage() {
         if (socket.readyState === WebSocket.OPEN) {
             const message = {
-                type: "Create",
-                task_id: 7,
-                data: "asd",
+                type: "Get",
+                task_id: 1,
+                data: "{\n" +
+                    "  \"limit\": 10,\n" +
+                    "  \"page\": 1,\n" +
+                    "  \"rows\": []\n" +
+                    "}",
                 user_id: 1
             };  
             socket.send(JSON.stringify(message));
@@ -43,6 +43,10 @@
             console.log("⚠️ WebSocket не подключен");
         }
     }
+
+    socket.onmessage = (event) => {
+        console.log("📩 Ответ от сервера:", event.data);
+    };
 </script>
 </body>
 </html>

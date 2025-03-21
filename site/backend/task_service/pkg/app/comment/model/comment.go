@@ -30,5 +30,5 @@ type CommentReadRepositoryInterface interface {
 
 type CommentRepositoryInterface interface {
 	CommentReadRepositoryInterface
-	Create(ctx context.Context, comment data.CreateComment, userId uint) (uint, error)
+	Create(ctx context.Context, comment data.CreateComment, userId uint) (CommentModel, error)
 }

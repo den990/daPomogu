@@ -13,7 +13,7 @@ func InitDB() error {
 	postgresUser := os.Getenv("POSTGRES_USER")
 	postgresPassword := os.Getenv("POSTGRES_PASSWORD")
 	dbName := os.Getenv("DB_NAME")
-	postgresHost := "postgres-service"
+	postgresHost := "dapomogu_postgres"
 
 	dsn := fmt.Sprintf("user=%s password=%s dbname=%s host=%s sslmode=disable port=5432", postgresUser, postgresPassword, dbName, postgresHost)
 
