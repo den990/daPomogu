@@ -92,17 +92,22 @@ func NewContainer(config config.Config) *Container {
 	commentResponse := postgres.NewCommentsRepository(db)
 	commentQuery := commentquery.NewCommentQuery(commentResponse)
 	commentService := commentservice.NewCommentService(commentResponse)
+
 	organizationQuery := organizationquery.NewOrganization(grpcClient)
+
 	approveRepository := postgres.NewApproveRepository(db)
 	approveStatusRepository := postgres.NewApproveStatusRepository(db)
+
 	fileRepo := postgres.NewFileRepository(db)
+
 	approveFileRepo := postgres.NewApproveFileRepository(db)
+	approveFileService := approveservice.NewApproveFileService(approveFileRepo)
 	approveService := approveservice.NewApproveService(
 		approveRepository,
 		approveStatusRepository,
 		userQuery,
 		fileRepo,
-		approveFileRepo,
+		approveFileService,
 		organizationQuery,
 	)
 

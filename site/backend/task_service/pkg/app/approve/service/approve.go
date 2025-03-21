@@ -138,11 +138,30 @@ func (a *ApproveService) Show(ctx context.Context, dto data.ShowApproves) (pagin
 		return paginate.Pagination{}, err
 	}
 
+	/*approveTaskIDs := make([]uint, 0, len(approves))
+	for _, approve := range approves {
+		approveTaskIDs = append(approveTaskIDs, approve.ID)
+	}
+
+	approveFiles, err := a.approvefileService.Show(ctx, approveTaskIDs)
+	if err != nil {
+		return paginate.Pagination{}, err
+	}
+
+	fileIDs := make([]uint, 0, len(approveFiles))
+	for _, approveFile := range approveFiles {
+		fileIDs = append(fileIDs, approveFile.FileID)
+	}
+
+	files, err := a.fileservice.GetAll(ctx, fileIDs)
+	if err != nil {
+		return paginate.Pagination{}, err
+	}
+	*/
 	userIDs := make([]uint64, len(approves))
 	for _, el := range approves {
 		userIDs = append(userIDs, uint64(el.UserID))
 	}
-	fmt.Println(approves, userIDs)
 
 	var res []struct {
 		ID     uint
@@ -153,7 +172,7 @@ func (a *ApproveService) Show(ctx context.Context, dto data.ShowApproves) (pagin
 
 	users, err := a.userquery.GetUsersByIDS(ctx, userIDs)
 	for _, el := range approves {
-		user, err := find(users, el.UserID)
+		user, err := findUser(users, el.UserID)
 		if err != nil {
 			continue
 		}
@@ -167,13 +186,14 @@ func (a *ApproveService) Show(ctx context.Context, dto data.ShowApproves) (pagin
 			ID:     el.ID,
 			TaskID: el.TaskID,
 			User:   user,
+			File:   el.SRC,
 		})
 	}
 
 	return paginate.Pagination{Limit: int(dto.Limit), Page: int(dto.Page), TotalPages: int64(len(approves)), Rows: res}, err
 }
 
-func find(users []usermodel.UserModel, id uint) (usermodel.UserModel, error) {
+func findUser(users []usermodel.UserModel, id uint) (usermodel.UserModel, error) {
 	for _, user := range users {
 		if user.ID == id {
 			return user, nil
@@ -181,3 +201,12 @@ func find(users []usermodel.UserModel, id uint) (usermodel.UserModel, error) {
 	}
 	return usermodel.UserModel{}, fmt.Errorf("Пользователь не найден")
 }
+
+/*func findFile(files []filemodel.FileModel, id uint) (filemodel.FileModel, error) {
+	for _, user := range files {
+		if user.ID == id {
+			return user, nil
+		}
+	}
+	return filemodel.FileModel{}, fmt.Errorf("Пользователь не найден")
+}*/
