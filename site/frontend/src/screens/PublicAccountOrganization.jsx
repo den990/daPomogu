@@ -10,20 +10,21 @@ function PublicAccountOrganization() {
     const [profile, setProfile] = useState(null);
 
     useEffect(() => {
-        userServiceApi.getOrganizationProfileById(organizationId)
-            .then(data => {
+        userServiceApi
+            .getOrganizationProfileById(organizationId)
+            .then((data) => {
                 setProfile(data);
             })
-            .catch(error => {
-                console.error('Ошибка при загрузке профиля организации:', error);
-            });    
+            .catch((error) => {
+                console.error("Ошибка при загрузке профиля организации:", error);
+            });
     }, [organizationId]);
 
     return (
         <div>
             <RoleHeader />
             <main className="max-w-7x1 mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <Profile profile={profile}/>
+                <Profile profile={profile} />
                 <ActiveTasks />
             </main>
         </div>
