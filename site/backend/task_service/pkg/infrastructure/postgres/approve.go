@@ -30,24 +30,28 @@ func (a *ApproveRepository) Create(ctx context.Context, dto data.CreateApprove, 
 }
 
 // получает все отправления потжтверждения для заявки
-func (a *ApproveRepository) Show(ctx context.Context, dto data.ShowApproves, status uint) ([]model.ApproveTaskModel, error) {
-	approves := []model.ApproveTaskModel{}
+func (a *ApproveRepository) Show(ctx context.Context, dto data.ShowApproves, status uint) ([]data.ApproveFile, error) {
+	approves := []data.ApproveFile{}
 
 	query := a.db.WithContext(ctx).
-		Model(&model.ApproveTaskModel{}).
+		Model(&data.ApproveFile{}).
 		Joins("LEFT JOIN approve_file ON approve_file.approve_task_id = approve_task.id").
 		Joins("LEFT JOIN file ON file.id = approve_file.file_id").
 		Where("approve_task.task_id = ?", dto.TaskID).
-		Where("approve_task.status_id = ?", status)
+		Where("approve_task.status_id = ?", status).
+		Select("approve_task.id as id," +
+			" approve_task.task_id as task_id," +
+			" approve_task.user_id as user_id, " +
+			"file.src as src")
 
 	var total int64
-	if err := query.Model(&model.ApproveTaskModel{}).Count(&total).Error; err != nil {
-		return []model.ApproveTaskModel{}, err
+	if err := query.Model(&data.ApproveFile{}).Count(&total).Error; err != nil {
+		return []data.ApproveFile{}, err
 	}
 
 	offset := (dto.Page - 1) * dto.Limit
 	if err := query.Offset(int(offset)).Limit(int(dto.Limit)).Find(&approves).Error; err != nil {
-		return []model.ApproveTaskModel{}, err
+		return []data.ApproveFile{}, err
 	}
 
 	return approves, nil

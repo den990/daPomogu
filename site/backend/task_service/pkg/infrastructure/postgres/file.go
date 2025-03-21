@@ -22,3 +22,9 @@ func (f *FileRepository) Create(ctx context.Context, dto data.CreateFileModel) (
 	res := f.db.WithContext(ctx).Create(file)
 	return file.ID, res.Error
 }
+
+func (f *FileRepository) GetAll(ctx context.Context, ids []uint) ([]model.FileModel, error) {
+	files := []model.FileModel{}
+	err := f.db.WithContext(ctx).Find(&files, ids).Error
+	return files, err
+}
