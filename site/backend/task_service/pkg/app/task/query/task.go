@@ -173,3 +173,48 @@ func (t *TaskQuery) GetFinishedTasks(ctx context.Context, dto data.GetTasksByUse
 
 	return paginate.Pagination{Page: dto.Page, Limit: dto.Limit, Rows: tasks}, nil
 }
+
+func (t *TaskQuery) GetCurrentTasks(ctx context.Context, dto data.GetTasksByUser, user uint) (paginate.Pagination, error) {
+	status, err := t.taskstatusService.Get(ctx, "В работе")
+	if err != nil {
+		return paginate.Pagination{}, err
+	}
+	log.Println("status:", status)
+	tasks, err := t.readRepository.GetTasksByUserIDWithStatuses(
+		ctx,
+		user,
+		[]uint{status.ID},
+		dto.Page,
+		dto.Limit,
+	)
+	log.Println("tasks:", tasks)
+	if err != nil {
+		return paginate.Pagination{}, err
+	}
+
+	return paginate.Pagination{Page: dto.Page, Limit: dto.Limit, Rows: tasks}, nil
+}
+
+func (t *TaskQuery) GetFinishedTasks(ctx context.Context, dto data.GetTasksByUser, user uint) (paginate.Pagination, error) {
+	statusNotFinished, err := t.taskstatusService.Get(ctx, "Не выполнено")
+	if err != nil {
+		return paginate.Pagination{}, err
+	}
+	statusFinished, err := t.taskstatusService.Get(ctx, "Выполнено")
+	if err != nil {
+		return paginate.Pagination{}, err
+	}
+
+	tasks, err := t.readRepository.GetTasksByUserIDWithStatuses(
+		ctx,
+		user,
+		[]uint{statusFinished.ID, statusNotFinished.ID},
+		dto.Page,
+		dto.Limit,
+	)
+	if err != nil {
+		return paginate.Pagination{}, err
+	}
+
+	return paginate.Pagination{Page: dto.Page, Limit: dto.Limit, Rows: tasks}, nil
+}
