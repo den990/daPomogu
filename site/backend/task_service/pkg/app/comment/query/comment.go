@@ -25,5 +25,5 @@ func NewCommentQuery(commentRepo model.CommentReadRepositoryInterface) *CommentQ
 }
 
 func (c *CommentQuery) Show(ctx context.Context, comment data.ShowComment) (*paginate.Pagination, error) {
-	return nil, nil
+	return c.commentRepo.Show(ctx, comment.TaskID, comment.Page, comment.Limit)
 }
