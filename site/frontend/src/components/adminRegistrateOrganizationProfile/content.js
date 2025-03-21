@@ -46,8 +46,7 @@ function Content({ isSidebarOpen, toggleSidebar }) {
                 fetchOrganizations();
                 setOrganizationDetails(null);
                 setSelectedOrganization(null);
-            }
-            )
+            })
             .catch(error => {
               console.error('Ошибка при регистрации организации:', error);
             });
@@ -95,64 +94,8 @@ function Content({ isSidebarOpen, toggleSidebar }) {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6">
-                    {/* Детали заявки - первый на мобильных */}
-                    <div className="md:col-span-8 order-1">
-                        <div className="rounded-lg border bg-white p-4 md:p-6">
-                            {organizationDetails ? (
-                                <>
-                                    <div className="flex flex-col md:flex-row items-start justify-between gap-3 md:gap-4 mb-4 md:mb-6">
-                                        <div className="flex items-center gap-3 md:gap-4">
-                                            <img 
-                                                src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=2"
-                                                className="h-12 w-12 md:h-16 md:w-16 rounded-full"
-                                                alt="Логотип организации"
-                                            />
-                                            <h2 className="text-lg md:text-xl truncate">
-                                                {organizationDetails.name}
-                                            </h2>
-                                        </div>
-                                        <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
-                                            <button className="w-full md:w-auto rounded-lg bg-red-600 text-white px-4 py-2 hover:bg-red-800 text-sm md:text-base" onClick={() => handleApplyOrganization(selectedOrganization)}>
-                                                Принять
-                                            </button>
-                                            <button className="w-full md:w-auto rounded-lg border px-4 py-2 text-neutral-700 hover:bg-neutral-50 text-sm md:text-base" onClick={() => handleRejectOrganization(selectedOrganization)}>
-                                                Отклонить
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-4">
-                                        <div className="rounded-lg border p-4">
-                                            <h3 className="text-lg font-medium mb-3">Данные организации</h3>
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                                {[
-                                                    {label: "Юридическое название", value: organizationDetails.name},
-                                                    {label: "Email", value: organizationDetails.email},
-                                                    {label: "Телефон", value: organizationDetails.phone},
-                                                    {label: "ИНН", value: organizationDetails.inn},
-                                                    {label: "Юридический адрес", value: organizationDetails.legal_address},
-                                                    {label: "Фактический адрес", value: organizationDetails.actual_address},
-                                                    {label: "Руководитель", value: organizationDetails.full_name_owner},
-                                                ].map((item, index) => (
-                                                    <div key={index} className="break-words">
-                                                        <p className="text-sm text-neutral-600 mb-1">{item.label}</p>
-                                                        <p className="text-base truncate">{item.value || "Не указано"}</p>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </>
-                            ) : (
-                                <div className="text-center p-4 md:p-6 text-neutral-500 text-sm md:text-base">
-                                    Выберите организацию, чтобы увидеть подробности
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Список заявок - второй на мобильных */}
-                    <div className="md:col-span-4 order-2">
+                    {/* Список заявок - первый на мобильных */}
+                    <div className="md:col-span-4 order-1">
                         <div className="rounded-lg border bg-white p-3 md:p-4">
                             <div className="mb-3 md:mb-4">
                                 <h2 className="text-base md:text-lg font-medium">Заявки</h2>
@@ -182,6 +125,70 @@ function Content({ isSidebarOpen, toggleSidebar }) {
                                     </div>
                                 ))}
                             </div>
+                        </div>
+                    </div>
+
+                    {/* Детали заявки - второй на мобильных */}
+                    <div className="md:col-span-8 order-2">
+                        <div className="rounded-lg border bg-white p-4 md:p-6">
+                            {organizationDetails ? (
+                                <>
+                                    <div className="flex flex-col md:flex-row items-start justify-between gap-3 md:gap-4 mb-4 md:mb-6">
+                                        <div className="flex items-center gap-3 md:gap-4">
+                                            <img 
+                                                src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=2"
+                                                className="h-12 w-12 md:h-16 md:w-16 rounded-full"
+                                                alt="Логотип организации"
+                                            />
+                                            <h2 className="text-lg md:text-xl truncate">
+                                                {organizationDetails.name}
+                                            </h2>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <div className="rounded-lg border p-4">
+                                            <h3 className="text-lg font-medium mb-3">Данные организации</h3>
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                {[
+                                                    {label: "Юридическое название", value: organizationDetails.name},
+                                                    {label: "Email", value: organizationDetails.email},
+                                                    {label: "Телефон", value: organizationDetails.phone},
+                                                    {label: "ИНН", value: organizationDetails.inn},
+                                                    {label: "Юридический адрес", value: organizationDetails.legal_address},
+                                                    {label: "Фактический адрес", value: organizationDetails.actual_address},
+                                                    {label: "Руководитель", value: organizationDetails.full_name_owner},
+                                                ].map((item, index) => (
+                                                    <div key={index} className="break-words">
+                                                        <p className="text-sm text-neutral-600 mb-1">{item.label}</p>
+                                                        <p className="text-base truncate">{item.value || "Не указано"}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Кнопки перенесены сюда */}
+                                    <div className="mt-6 flex flex-col md:flex-row gap-3 w-full">
+                                        <button 
+                                            className="w-full md:w-auto rounded-lg bg-red-600 text-white px-4 py-2 hover:bg-red-800 text-sm md:text-base" 
+                                            onClick={() => handleApplyOrganization(selectedOrganization)}
+                                        >
+                                            Принять
+                                        </button>
+                                        <button 
+                                            className="w-full md:w-auto rounded-lg border px-4 py-2 text-neutral-700 hover:bg-neutral-50 text-sm md:text-base" 
+                                            onClick={() => handleRejectOrganization(selectedOrganization)}
+                                        >
+                                            Отклонить
+                                        </button>
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="text-center p-4 md:p-6 text-neutral-500 text-sm md:text-base">
+                                    Выберите организацию, чтобы увидеть подробности
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
