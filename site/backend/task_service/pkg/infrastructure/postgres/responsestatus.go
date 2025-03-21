@@ -11,6 +11,15 @@ type ResponseStatusRepository struct {
 	db *gorm.DB
 }
 
+func (r ResponseStatusRepository) Get(ctx context.Context, id uint) (*model.ResponseModel, error) {
+	response := model.ResponseModel{}
+	err := r.db.WithContext(ctx).Where("id = ?", id).First(&response).Error
+	if err != nil {
+		return nil, err
+	}
+	return &response, nil
+}
+
 func NewResponseStatusRepository(db *gorm.DB) ResponseStatusRepository {
 	return ResponseStatusRepository{db: db}
 }
