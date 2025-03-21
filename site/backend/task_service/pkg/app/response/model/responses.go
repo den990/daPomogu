@@ -41,4 +41,5 @@ type ResponseRepositoryInterface interface {
 
 type ResponseStatusRepositoryInterface interface {
 	GetStatus(ctx context.Context, name string) (*ResponseStatusModel, error)
+	Get(ctx context.Context, id uint) (*ResponseModel, error)
 }
