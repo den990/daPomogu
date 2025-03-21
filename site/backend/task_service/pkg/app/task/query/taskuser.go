@@ -14,6 +14,7 @@ type TaskUserQueryInterface interface {
 		limit int,
 		isCoordinators *bool,
 	) (*paginate.Pagination, error)
+	GetCountUserWithoutCoordinators(ctx context.Context, taskId uint) (count int, err error)
 }
 
 type TaskUserQuery struct {
@@ -35,4 +36,8 @@ func (tu *TaskUserQuery) GetUsers(
 ) (*paginate.Pagination, error) {
 
 	return tu.repo.GetUsers(ctx, taskID, page, limit, isCoordinators)
+}
+
+func (tu *TaskUserQuery) GetCountUserWithoutCoordinators(ctx context.Context, taskId uint) (count int, err error) {
+	return tu.repo.GetCountUserWithoutCoordinators(ctx, taskId)
 }

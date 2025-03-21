@@ -158,14 +158,11 @@ func (t *TaskRepository) Get(ctx context.Context, id uint) (*model.TaskModel, er
 	return &task, nil
 }
 
-func (t *TaskRepository) GetAll(
-	ctx context.Context,
-	user uint,
-	isOwner bool,
-	organizations []organizationmodel.OrganizationModel,
-) ([]model.TaskModel, error) {
+func (t *TaskRepository) GetAll(ctx context.Context, user uint, isOwner bool, organizations []organizationmodel.OrganizationModel, page int) ([]model.TaskModel, error) {
 	var tasks []*model.TaskModel
 	result := make([]model.TaskModel, 0, len(tasks))
+	limit := 3
+	offset := (page - 1) * limit
 	if !isOwner {
 		var orgIDs []uint
 		for _, org := range organizations {
@@ -175,7 +172,9 @@ func (t *TaskRepository) GetAll(
 		query := t.db.WithContext(ctx).
 			Joins("JOIN task_type tt on tt.id = task.type_id").
 			Joins("JOIN task_user tu ON tu.task_id = task.id").
-			Where("tu.user_id = ?", user)
+			Where("tu.user_id = ?", user).
+			Limit(limit).
+			Offset(offset)
 
 		if len(orgIDs) > 0 {
 			query = query.Where("tt.name = 'Открытый' OR (tt.name = 'Закрытый' AND task.organization_id IN ?)", orgIDs)
@@ -196,7 +195,11 @@ func (t *TaskRepository) GetAll(
 		for _, org := range organizations {
 			orgIDs = append(orgIDs, org.ID)
 		}
-		query := t.db.WithContext(ctx).Joins("JOIN task_type tt on tt.id = task.type_id")
+		query := t.db.WithContext(ctx).
+			Joins("JOIN task_type tt on tt.id = task.type_id").
+			Limit(limit).
+			Offset(offset)
+
 		res := query.Find(&tasks).Where("tt.name = 'Открытый' OR task.organization_id IN ?", orgIDs)
 
 		if res.Error != nil {

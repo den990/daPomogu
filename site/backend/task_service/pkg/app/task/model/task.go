@@ -52,8 +52,10 @@ type TaskViewCategory struct {
 }
 
 type TasksView struct {
-	OrganizationName string    `json:"organization_name"`
-	Task             TaskModel `json:"tasks"`
+	OrganizationName string             `json:"organization_name"`
+	Task             TaskModel          `json:"tasks"`
+	Categories       []TaskViewCategory `json:"categories"`
+	CountApplying    int                `json:"count_applying"`
 }
 
 func (TaskModel) TableName() string {
@@ -94,6 +96,7 @@ type TaskReadRepositoryInterface interface {
 		user uint,
 		isOwner bool,
 		organizations []model.OrganizationModel,
+		page int,
 	) ([]TaskModel, error)
 }
 

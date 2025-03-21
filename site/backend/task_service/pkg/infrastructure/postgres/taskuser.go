@@ -105,3 +105,17 @@ func (tu *TaskUserRepository) DeleteAllByUserID(ctx context.Context, userID uint
 	}
 	return nil
 }
+
+func (tu *TaskUserRepository) GetCountUserWithoutCoordinators(ctx context.Context, taskId uint) (int, error) {
+	var count int64
+	err := tu.db.WithContext(ctx).
+		Model(&model.TaskUser{}).
+		Where("task_id = ? AND is_coordinator = ?", taskId, false).
+		Count(&count).Error
+
+	if err != nil {
+		return 0, err
+	}
+
+	return int(count), nil
+}
