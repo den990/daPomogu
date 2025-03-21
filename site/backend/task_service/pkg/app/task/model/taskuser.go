@@ -13,6 +13,7 @@ type TaskUserReadRepositoryInterface interface {
 		limit int,
 		isCoordinators *bool, // получить либо координаторов либо волонтеров
 	) (*paginate.Pagination, error)
+	GetCountUserWithoutCoordinators(ctx context.Context, taskId uint) (count int, err error)
 }
 
 type TaskUserRepositoryInterface interface {

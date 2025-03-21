@@ -199,7 +199,19 @@ func (h *Handler) getTasks(c *gin.Context) {
 		return
 	}
 
-	tasks, err := h.taskQuery.Show(c.Request.Context(), authUser)
+	pageStr := c.Param("id")
+	if pageStr == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Empty organization"})
+		return
+	}
+
+	page, err := strconv.Atoi(pageStr)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusBadRequest, "Invalid page number")
+		return
+	}
+
+	tasks, err := h.taskQuery.Show(c.Request.Context(), authUser, page)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return

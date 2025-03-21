@@ -10,12 +10,14 @@ import (
 
 type TaskQueryInterface interface {
 	Get(ctx context.Context, id uint) (*model.TaskModel, error)
-	Show(ctx context.Context, user uint) ([]model.TasksView, error)
+	Show(ctx context.Context, user uint, page int) ([]model.TasksView, error)
 }
 
 type TaskQuery struct {
 	readRepository    model.TaskReadRepositoryInterface
 	organizationQuery query.OrganizationQueryInterface
+	taskcategoryquery TaskCategoryQuery
+	taskuserquery     TaskUserQuery
 }
 
 func NewTaskQuery(
@@ -37,11 +39,11 @@ func (t *TaskQuery) Get(ctx context.Context, id uint) (*model.TaskModel, error) 
 	return task, nil
 }
 
-func (t *TaskQuery) Show(ctx context.Context, user uint) ([]model.TasksView, error) {
+func (t *TaskQuery) Show(ctx context.Context, user uint, page int) ([]model.TasksView, error) {
 	org, _ := t.organizationQuery.GetOrganizationByOwnerUserID(ctx, uint64(user))
 	var taskView []model.TasksView
 	if org != (organizationmodel.OrganizationModel{}) {
-		tasks, err := t.readRepository.GetAll(ctx, user, true, []organizationmodel.OrganizationModel{org})
+		tasks, err := t.readRepository.GetAll(ctx, user, true, []organizationmodel.OrganizationModel{org}, page)
 
 		for _, task := range tasks {
 			organization, err := t.organizationQuery.GetOrganization(ctx, uint64(task.OrganizationID))
@@ -49,7 +51,23 @@ func (t *TaskQuery) Show(ctx context.Context, user uint) ([]model.TasksView, err
 				fmt.Println("Organization not found in Show query task")
 				continue
 			}
-			taskView = append(taskView, model.TasksView{OrganizationName: organization.Name, Task: task})
+			categories, err := t.taskcategoryquery.GetCategories(ctx, task.ID)
+			if err != nil {
+				fmt.Println("Category not found in Show query task")
+				continue
+			}
+
+			count, err := t.taskuserquery.repo.GetCountUserWithoutCoordinators(ctx, task.ID)
+			if err != nil {
+				fmt.Println("Count not found in Show query task")
+				continue
+			}
+
+			taskView = append(taskView, model.TasksView{OrganizationName: organization.Name,
+				Task:          task,
+				Categories:    categories,
+				CountApplying: count,
+			})
 		}
 		if err != nil {
 			return nil, err
@@ -63,7 +81,7 @@ func (t *TaskQuery) Show(ctx context.Context, user uint) ([]model.TasksView, err
 			return nil, err
 		}
 
-		tasks, err := t.readRepository.GetAll(ctx, user, false, organizations)
+		tasks, err := t.readRepository.GetAll(ctx, user, false, organizations, page)
 
 		if err != nil {
 			return nil, err
@@ -75,7 +93,24 @@ func (t *TaskQuery) Show(ctx context.Context, user uint) ([]model.TasksView, err
 				fmt.Println("Organization not found in Show query task")
 				continue
 			}
-			taskView = append(taskView, model.TasksView{OrganizationName: organization.Name, Task: task})
+
+			categories, err := t.taskcategoryquery.GetCategories(ctx, task.ID)
+			if err != nil {
+				fmt.Println("Category not found in Show query task")
+				continue
+			}
+
+			count, err := t.taskuserquery.repo.GetCountUserWithoutCoordinators(ctx, task.ID)
+			if err != nil {
+				fmt.Println("Count not found in Show query task")
+				continue
+			}
+
+			taskView = append(taskView, model.TasksView{OrganizationName: organization.Name,
+				Task:          task,
+				Categories:    categories,
+				CountApplying: count,
+			})
 		}
 		if err != nil {
 			return nil, err
