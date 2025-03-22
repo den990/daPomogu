@@ -44,5 +44,5 @@ func (tu *TaskUserQuery) GetCountUserWithoutCoordinators(ctx context.Context, ta
 }
 
 func (tu *TaskUserQuery) IsRecorded(ctx context.Context, taskId, userId uint) (bool, error) {
-	return tu.IsRecorded(ctx, taskId, userId)
+	return tu.repo.IsRecorded(ctx, taskId, userId)
 }
