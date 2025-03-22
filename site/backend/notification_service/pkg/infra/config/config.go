@@ -16,6 +16,7 @@ type DataBaseConfig struct {
 type Config struct {
 	HandlerPort string
 	ServerPort  string
+	JWTSecret   string
 	DBConfig    DataBaseConfig
 }
 
@@ -23,6 +24,7 @@ func NewConfig() *Config {
 	return &Config{
 		HandlerPort: getEnv("APP_PORT", "8082"),
 		ServerPort:  getEnv("SERVER_ADDRESS", "50502"),
+		JWTSecret:   getEnv("JWT_SECRET", "verysecret"),
 		DBConfig: DataBaseConfig{
 			Port:     getEnv("DB_PORT", "5435"),
 			Host:     getEnv("DB_HOST", "localhost"),

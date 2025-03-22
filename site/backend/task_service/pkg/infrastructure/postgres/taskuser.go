@@ -35,6 +35,8 @@ func (tu *TaskUserRepository) GetUsers(
 		return nil, err
 	}
 
+	totalPages := int((total + int64(limit) - 1) / int64(limit))
+
 	// todo: вынести в сервис
 	if limit <= paginate.MinLimit {
 		limit = paginate.DefaultLimit
@@ -49,7 +51,7 @@ func (tu *TaskUserRepository) GetUsers(
 		return nil, err
 	}
 
-	pagination := paginate.Pagination{limit, page, taskUsers}
+	pagination := paginate.Pagination{limit, page, taskUsers, totalPages}
 	return &pagination, nil
 }
 

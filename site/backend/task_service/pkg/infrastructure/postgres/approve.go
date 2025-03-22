@@ -4,6 +4,7 @@ import (
 	"backend/task_service/pkg/app/approve/data"
 	"backend/task_service/pkg/app/approve/model"
 	"context"
+	"errors"
 
 	"gorm.io/gorm"
 )
@@ -19,18 +20,37 @@ func NewApproveRepository(db *gorm.DB) *ApproveRepository {
 }
 
 func (a *ApproveRepository) Create(ctx context.Context, dto data.CreateApprove, status uint) (uint, error) {
-	approve := &model.ApproveTaskModel{
-		TaskID:   dto.TaskID,
-		UserID:   dto.UserID,
-		StatusID: status,
+	approve := &model.ApproveTaskModel{}
+	res := a.db.WithContext(ctx).
+		Where("task_id = ? AND user_id = ?", dto.TaskID, dto.UserID).
+		First(&approve)
+	if res.Error != nil {
+		if !errors.Is(res.Error, gorm.ErrRecordNotFound) {
+			return 0, errors.New("task not found")
+		}
+		approve = &model.ApproveTaskModel{
+			TaskID:   dto.TaskID,
+			UserID:   dto.UserID,
+			StatusID: status,
+		}
+
+		res = a.db.WithContext(ctx).Model(&approve).Create(approve)
+		if res.Error != nil {
+			return 0, errors.New(res.Error.Error())
+		}
+
+		return approve.ID, nil
 	}
-	res := a.db.WithContext(ctx).Create(approve)
+	approve.StatusID = status
+	if err := a.db.WithContext(ctx).Save(approve).Error; err != nil {
+		return 0, err
+	}
 
 	return approve.ID, res.Error
 }
 
 // получает все отправления потжтверждения для заявки
-func (a *ApproveRepository) Show(ctx context.Context, dto data.ShowApproves, status uint) ([]data.ApproveFile, error) {
+func (a *ApproveRepository) Show(ctx context.Context, dto data.ShowApproves, status uint) ([]data.ApproveFile, int, error) {
 	approves := []data.ApproveFile{}
 
 	query := a.db.WithContext(ctx).
@@ -45,16 +65,19 @@ func (a *ApproveRepository) Show(ctx context.Context, dto data.ShowApproves, sta
 			"file.src as src")
 
 	var total int64
-	if err := query.Model(&data.ApproveFile{}).Count(&total).Error; err != nil {
-		return []data.ApproveFile{}, err
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
 	}
+
+	// Рассчитываем totalPages
+	totalPages := int((total + int64(dto.Limit) - 1) / int64(dto.Limit))
 
 	offset := (dto.Page - 1) * dto.Limit
 	if err := query.Offset(int(offset)).Limit(int(dto.Limit)).Find(&approves).Error; err != nil {
-		return []data.ApproveFile{}, err
+		return nil, 0, err
 	}
 
-	return approves, nil
+	return approves, totalPages, nil
 }
 
 func (a *ApproveRepository) Update(ctx context.Context, dto data.SetStatusApprove) error {

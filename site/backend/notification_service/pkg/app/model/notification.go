@@ -2,7 +2,6 @@ package model
 
 import (
 	"context"
-	"github.com/TemaStatham/TaskService/notificationservice/pkg/app/notification/data"
 	"time"
 )
 
@@ -16,6 +15,6 @@ type Notification struct {
 
 type NotificationRepositoryInterface interface {
 	GetMessages(ctx context.Context, id uint, page int, limit int) ([]Notification, error)
-	CreateMessage(ctx context.Context, notification data.CreateNotification) error
+	CreateMessage(ctx context.Context, notification Notification) error
 	SetIsRead(ctx context.Context, id uint) error
 }
