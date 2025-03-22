@@ -25,6 +25,10 @@ const ROUTES = {
     PUBLIC_ACCOUNT_VOLUNTEER: "/account-volunteer/:volonteerId",
     PUBLIC_ACCOUNT_ORGANIZATION: "/account-organization/:organizationId",
     ORGANIZATION_TASKS: "/organization-tasks",
+
+    LIST_ORGANIZATION: "/organizations",
+    CONFIRMATIONS_RESPONSES: "/task/:taskId/confirmations-responses",
+    TEST_AUTH: "/test-auth",
 };
 
 export default ROUTES;
