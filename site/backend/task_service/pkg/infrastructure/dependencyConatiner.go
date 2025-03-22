@@ -82,6 +82,7 @@ func NewContainer(config config.Config) *Container {
 	if err != nil {
 		panic(err)
 	}
+	userQuery := userquery.NewUserQuery(grpcClient)
 
 	organizationQuery := organizationquery.NewOrganization(grpcClient)
 
@@ -97,7 +98,7 @@ func NewContainer(config config.Config) *Container {
 	taskstatusRepo := postgres.NewTaskStatus(db)
 	taskstatusService := taskquery.NewTaskStatusService(taskstatusRepo)
 	taskQuery := taskquery.NewTaskQuery(taskRepository, organizationQuery, taskstatusService, *taskCategoryQuery, *taskUserQuery)
-	taskService := taskservice.NewTaskService(taskRepository, organizationQuery)
+	taskService := taskservice.NewTaskService(taskRepository, organizationQuery, *userQuery)
 
 	responseRepository := postgres.NewResponsePostgresRepository(db)
 	responseQuery := responsequery.NewResponseQuery(responseRepository)
@@ -109,8 +110,6 @@ func NewContainer(config config.Config) *Container {
 		responseQuery,
 		taskQuery,
 	)
-
-	userQuery := userquery.NewUserQuery(grpcClient)
 
 	commentResponse := postgres.NewCommentsRepository(db)
 	commentQuery := commentquery.NewCommentQuery(commentResponse)

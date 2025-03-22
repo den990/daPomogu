@@ -10,6 +10,7 @@ service ProfileService {
     rpc GetOrganizationsByUserID(OrganizationUserRequest) returns (OrganizationUserListResponse) {}
     rpc GetOrganizationByOwnerUserID(OrganizationUserRequest) returns (OrganizationResponse) {}
     rpc GetUsersByIDS(GetUsersByIDsRequest) returns (GetUsersByIDsResponse) {}
+    rpc IsUserAdmin(UserRequest) returns (UserAdminResponse) {}
 }
 
 message User {
@@ -59,4 +60,8 @@ message OrganizationUserResponse {
 
 message OrganizationUserListResponse {
     repeated OrganizationUserResponse organizationUserResponse = 1;
+}
+
+message UserAdminResponse {
+    bool isAdmin = 1;
 }

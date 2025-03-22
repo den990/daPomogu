@@ -13,6 +13,7 @@ import (
 const (
 	authorizationHeader = "Authorization"
 	userCtx             = "userId"
+	roleCtx             = "role"
 )
 
 func UserIdentity(jwtSecret string) gin.HandlerFunc {
@@ -40,6 +41,7 @@ func UserIdentity(jwtSecret string) gin.HandlerFunc {
 			return
 		}
 		c.Set(userCtx, userId.UserID)
+		c.Set(roleCtx, userId.Role)
 	}
 }
 
@@ -56,4 +58,17 @@ func GetUserId(c *gin.Context) (uint, error) {
 	}
 
 	return idInt, nil
+}
+
+func IsAdmin(c *gin.Context) (bool, error) {
+	role, ok := c.Get(roleCtx)
+	if !ok {
+		return false, errors.New("role not found")
+	}
+
+	if role == "admin" {
+		return true, nil
+	}
+
+	return false, nil
 }
