@@ -148,10 +148,8 @@ func (h *Handler) getTask(c *gin.Context) {
 
 	isRecorded, _ := h.taskuserQuery.IsRecorded(c.Request.Context(), task.ID, userId)
 
-	responsed, err := h.responseQuery.IsResponsed(c.Request.Context(), task.ID, userId)
-	if err != nil {
-		return
-	}
+	responsed, _ := h.responseQuery.IsResponsed(c.Request.Context(), task.ID, userId)
+
 	userIdsUint64 := make([]uint64, len(userIds))
 	for i, id := range userIds {
 		userIdsUint64[i] = uint64(id)
