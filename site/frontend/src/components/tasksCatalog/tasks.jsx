@@ -10,7 +10,7 @@ function Tasks({ tasks }) {
                         key={i} 
                         className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow"
                     >
-                        <div className="p-4 md:p-6">
+                        <div key={i} className="p-4 md:p-6">
                             <div className="flex flex-wrap gap-2 mb-3 md:mb-4">
                                 {task.categories.map((category) => (
                                     <span className="px-2 py-1 bg-red-500 text-white rounded-full text-xs md:text-sm whitespace-nowrap">
@@ -60,7 +60,7 @@ function Tasks({ tasks }) {
                                         alt="Участники" 
                                     />
                                     <span>
-                                        {`0/${task.tasks.participants_count}`}
+                                        {`${task.count_applying}/${task.tasks.participants_count}`}
                                     </span>
                                 </div>
                             </div>
