@@ -135,7 +135,7 @@ func (t *TaskQuery) GetCurrentTasks(ctx context.Context, dto data.GetTasksByUser
 		return paginate.Pagination{}, err
 	}
 	log.Println("status:", status)
-	tasks, err := t.readRepository.GetTasksByUserIDWithStatuses(
+	tasks, total, err := t.readRepository.GetTasksByUserIDWithStatuses(
 		ctx,
 		user,
 		[]uint{status.ID},
@@ -147,7 +147,7 @@ func (t *TaskQuery) GetCurrentTasks(ctx context.Context, dto data.GetTasksByUser
 		return paginate.Pagination{}, err
 	}
 
-	return paginate.Pagination{Page: dto.Page, Limit: dto.Limit, Rows: tasks}, nil
+	return paginate.Pagination{Page: dto.Page, Limit: dto.Limit, Rows: tasks, TotalPages: total}, nil
 }
 
 func (t *TaskQuery) GetFinishedTasks(ctx context.Context, dto data.GetTasksByUser, user uint) (paginate.Pagination, error) {
@@ -160,7 +160,7 @@ func (t *TaskQuery) GetFinishedTasks(ctx context.Context, dto data.GetTasksByUse
 		return paginate.Pagination{}, err
 	}
 
-	tasks, err := t.readRepository.GetTasksByUserIDWithStatuses(
+	tasks, total, err := t.readRepository.GetTasksByUserIDWithStatuses(
 		ctx,
 		user,
 		[]uint{statusFinished.ID, statusNotFinished.ID},
@@ -171,5 +171,5 @@ func (t *TaskQuery) GetFinishedTasks(ctx context.Context, dto data.GetTasksByUse
 		return paginate.Pagination{}, err
 	}
 
-	return paginate.Pagination{Page: dto.Page, Limit: dto.Limit, Rows: tasks}, nil
+	return paginate.Pagination{Page: dto.Page, Limit: dto.Limit, Rows: tasks, TotalPages: total}, nil
 }

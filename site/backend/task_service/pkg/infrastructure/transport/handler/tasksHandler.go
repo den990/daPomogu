@@ -242,7 +242,7 @@ func (h *Handler) getOpenedTasks(c *gin.Context) {
 	log.Println("authUser:", authUser)
 	var input data.GetTasksByUser
 	if err := c.BindJSON(&input); err != nil {
-		response.NewErrorResponse(c, http.StatusBadRequest, InvalidInputBodyErr)
+		response.NewErrorResponse(c, http.StatusBadRequest, "invalid input")
 		return
 	}
 	log.Println("input", input)

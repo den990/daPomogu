@@ -25,9 +25,13 @@ type ResponseQuery struct {
 	userquery          userquery.UserQueryInterface
 }
 
-func NewResponseQuery(responseRepository model.ResponseRepositoryReadInterface) *ResponseQuery {
+func NewResponseQuery(
+	responseRepository model.ResponseRepositoryReadInterface,
+	userquery userquery.UserQueryInterface,
+) *ResponseQuery {
 	return &ResponseQuery{
 		responseRepository: responseRepository,
+		userquery:          userquery,
 	}
 }
 
@@ -41,7 +45,7 @@ func (r *ResponseQuery) Show(
 		return nil, errors.New("invalid task id")
 	}
 
-	responses, err := r.responseRepository.Show(ctx, taskId, page, limit)
+	responses, total, err := r.responseRepository.Show(ctx, taskId, page, limit)
 	if err != nil {
 		return nil, err
 	}
@@ -79,9 +83,10 @@ func (r *ResponseQuery) Show(
 	}
 
 	pagination := paginate.Pagination{
-		Limit: limit,
-		Page:  page,
-		Rows:  res,
+		Limit:      limit,
+		Page:       page,
+		Rows:       res,
+		TotalPages: total,
 	}
 
 	return &pagination, nil
