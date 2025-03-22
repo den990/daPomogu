@@ -7,11 +7,16 @@ import (
 
 type TaskUserServiceInterface interface {
 	Add(ctx context.Context, userID, taskID uint, isCoordinator bool) error
+	Create(ctx context.Context, userID, taskID uint, isCoordinator bool) error
 	Delete(ctx context.Context, userID, taskID uint) error
 }
 
 type TaskUserService struct {
 	taskuserrepo model.TaskUserRepositoryInterface
+}
+
+func (tu *TaskUserService) Create(ctx context.Context, userID, taskID uint, isCoordinator bool) error {
+	return tu.taskuserrepo.Create(ctx, userID, taskID, isCoordinator)
 }
 
 func NewTaskUserService(taskuserrepo model.TaskUserRepositoryInterface) *TaskUserService {

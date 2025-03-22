@@ -4,8 +4,11 @@ import (
 	"backend/task_service/pkg/app/response/model"
 	responsequery "backend/task_service/pkg/app/response/query"
 	taskquery "backend/task_service/pkg/app/task/query"
+	taskservice "backend/task_service/pkg/app/task/service"
 	"context"
+	"errors"
 	"fmt"
+	"gorm.io/gorm"
 )
 
 type ResponseServiceInterface interface {
@@ -18,6 +21,7 @@ type ResponseService struct {
 	responseStatusRepository model.ResponseStatusRepositoryInterface
 	responseQuery            responsequery.ResponseQueryInterface
 	taskuserQuery            taskquery.TaskUserQueryInterface
+	taskuserService          taskservice.TaskUserServiceInterface
 	taskQuery                taskquery.TaskQueryInterface
 }
 
@@ -26,6 +30,7 @@ func NewResponseService(responseRepository model.ResponseRepositoryInterface,
 	taskuserQuery taskquery.TaskUserQueryInterface,
 	responseQuery responsequery.ResponseQueryInterface,
 	taskQuery taskquery.TaskQueryInterface,
+	taskuserService taskservice.TaskUserServiceInterface,
 ) ResponseServiceInterface {
 	return &ResponseService{
 		responseRepository:       responseRepository,
@@ -33,11 +38,13 @@ func NewResponseService(responseRepository model.ResponseRepositoryInterface,
 		taskuserQuery:            taskuserQuery,
 		responseQuery:            responseQuery,
 		taskQuery:                taskQuery,
+		taskuserService:          taskuserService,
 	}
 }
 
 func (r *ResponseService) Update(ctx context.Context, id uint, statusName string) error {
 	if statusName == "Принято" {
+		// если статус принято необходимо валидировать на то, что в заявке уже достаточное кол-во учатсников
 		response, err := r.responseRepository.Get(ctx, id)
 		if err != nil {
 			return err
@@ -63,7 +70,13 @@ func (r *ResponseService) Update(ctx context.Context, id uint, statusName string
 		return err
 	}
 
-	return r.responseRepository.Update(ctx, id, status.ID)
+	response, err := r.responseRepository.Update(ctx, id, status.ID)
+	if err != nil {
+		return err
+	}
+	fmt.Println(response)
+
+	return r.taskuserService.Create(ctx, response.UserID, response.TaskID, false)
 }
 
 func (r *ResponseService) Create(ctx context.Context, taskId, userId uint) (uint, error) {
@@ -72,5 +85,21 @@ func (r *ResponseService) Create(ctx context.Context, taskId, userId uint) (uint
 		return 0, err
 	}
 
-	return r.responseRepository.Create(ctx, model.ResponseModel{UserID: userId, TaskID: taskId, StatusID: status.ID})
+	id, err := r.responseRepository.Create(ctx, model.ResponseModel{UserID: userId, TaskID: taskId, StatusID: status.ID})
+	if err != nil {
+		if !errors.Is(err, gorm.ErrDuplicatedKey) {
+			return 0, err
+		}
+		response, err := r.responseRepository.GetByParam(ctx, taskId, userId)
+		if err != nil {
+			return 0, err
+		}
+
+		_, err = r.responseRepository.Update(ctx, response.ID, status.ID)
+		if err != nil {
+			return 0, err
+		}
+	}
+
+	return id, nil
 }
