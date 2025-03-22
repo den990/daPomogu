@@ -1,11 +1,10 @@
 package postgres
 
 import (
-	"backend/notification_service/pkg/app/data"
-	"backend/notification_service/pkg/app/model"
 	"context"
-
 	"gorm.io/gorm"
+
+	"backend/notification_service/pkg/app/model"
 )
 
 type NotificationPostgres struct {
@@ -28,21 +27,16 @@ func (r *NotificationPostgres) GetMessages(ctx context.Context, id uint, page in
 		Order("created_at DESC").
 		Limit(limit).
 		Offset(offset).
-		Find(&notifications).Error; err != nil {
+		Find(&notifications).
+		Error; err != nil {
 		return nil, err
 	}
 
 	return notifications, nil
 }
 
-func (r *NotificationPostgres) CreateMessage(ctx context.Context, notification data.CreateNotification) error {
-	newNotification := model.Notification{
-		UserID:  notification.UserID,
-		Message: notification.Message,
-		IsRead:  false,
-	}
-
-	return r.db.WithContext(ctx).Create(&newNotification).Error
+func (r *NotificationPostgres) CreateMessage(ctx context.Context, notification model.Notification) error {
+	return r.db.WithContext(ctx).Model(&notification).Create(&notification).Error
 }
 
 func (r *NotificationPostgres) SetIsRead(ctx context.Context, id uint) error {

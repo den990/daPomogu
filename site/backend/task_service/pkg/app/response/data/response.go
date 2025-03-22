@@ -1,7 +1,7 @@
 package data
 
 type CreateResponse struct {
-	TaskId uint `json:"task_id"`
+	TaskId uint `json:"task_id"` // todo: рекуаред
 	// userid достаю из токена
 }
 

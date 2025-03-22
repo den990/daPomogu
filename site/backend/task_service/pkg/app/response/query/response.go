@@ -25,9 +25,13 @@ type ResponseQuery struct {
 	userquery          userquery.UserQueryInterface
 }
 
-func NewResponseQuery(responseRepository model.ResponseRepositoryReadInterface) *ResponseQuery {
+func NewResponseQuery(
+	responseRepository model.ResponseRepositoryReadInterface,
+	userquery userquery.UserQueryInterface,
+) *ResponseQuery {
 	return &ResponseQuery{
 		responseRepository: responseRepository,
+		userquery:          userquery,
 	}
 }
 

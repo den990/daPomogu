@@ -1,38 +1,51 @@
 package internalapi
 
 import (
-	pb "backend/proto-functions/notification"
 	"context"
 	"fmt"
 	"google.golang.org/grpc"
 	"log"
 	"net"
+
+	"backend/notification_service/pkg/app/model"
+	"backend/notification_service/pkg/app/service"
+	pb "backend/proto-functions/notification"
 )
 
 type Server struct {
 	pb.UnsafeNotificationServiceServer
+	puller service.PullerInterface
 }
 
 func (s Server) SendNotification(ctx context.Context, request *pb.NotificationRequest) (*pb.NotificationResponse, error) {
-	// todo: получить уведолмения, сохранить, отправить
+	notification := model.Notification{
+		ID:      request.UserID,
+		UserID:  request.UserID,
+		Message: request.Data,
+		IsRead:  false,
+	}
 
-	// записывать в бд с флагом is read false
+	s.puller.SendNotification(ctx, notification)
 
-	return &pb.NotificationResponse{}, nil
+	return &pb.NotificationResponse{
+		Status: "ok",
+	}, nil
 }
 
-func NewServer() *Server {
-	return &Server{}
+func NewServer(puller service.PullerInterface) *Server {
+	return &Server{
+		puller: puller,
+	}
 }
 
-func InitServer(port string) {
+func InitServer(port string, puller service.PullerInterface) {
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
 	if err != nil {
 		log.Fatalf("Error in Listen: %v", err)
 	}
 
 	s := grpc.NewServer()
-	pb.RegisterNotificationServiceServer(s, &Server{})
+	pb.RegisterNotificationServiceServer(s, NewServer(puller))
 	log.Printf("listening at: %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)

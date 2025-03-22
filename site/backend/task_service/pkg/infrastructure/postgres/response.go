@@ -35,7 +35,7 @@ func (r *ResponseRepository) Create(
 		return 0, res.Error
 	}
 
-	return response.ID, res.Error
+	return response.ID, nil
 }
 
 func (r *ResponseRepository) Show(ctx context.Context, taskId uint, page int, limit int) ([]model.ResponseModel, int, error) {
