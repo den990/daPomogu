@@ -37,7 +37,7 @@ func (h *Handler) createTask(c *gin.Context) {
 }
 
 func (h *Handler) updateTask(c *gin.Context) {
-	_, err := auth.GetUserId(c)
+	userId, err := auth.GetUserId(c)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -63,7 +63,7 @@ func (h *Handler) updateTask(c *gin.Context) {
 		return
 	}
 
-	err = h.taskService.Update(c.Request.Context(), &input, uint(taskID))
+	err = h.taskService.Update(c.Request.Context(), &input, uint(taskID), userId)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -73,30 +73,36 @@ func (h *Handler) updateTask(c *gin.Context) {
 }
 
 func (h *Handler) deleteTask(c *gin.Context) {
-	_, err := auth.GetUserId(c)
+	userId, err := auth.GetUserId(c)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	var input data.DeleteTask
+	taskIDParam := c.Param("id")
 
-	if err := c.BindJSON(&input); err != nil {
+	if taskIDParam == "" {
 		response.NewErrorResponse(c, http.StatusBadRequest, InvalidInputBodyErr)
 		return
 	}
 
-	err = h.taskService.Delete(c.Request.Context(), input.ID)
+	taskID, err := strconv.ParseUint(taskIDParam, 10, 64)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusBadRequest, "Invalid task ID")
+		return
+	}
+
+	err = h.taskService.Delete(c.Request.Context(), uint(taskID), userId)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, map[string]interface{}{})
+	c.JSON(http.StatusOK, gin.H{"message": "task deleted"})
 }
 
 func (h *Handler) getTask(c *gin.Context) {
-	_, err := auth.GetUserId(c)
+	userId, err := auth.GetUserId(c)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -140,6 +146,10 @@ func (h *Handler) getTask(c *gin.Context) {
 		return
 	}
 
+	isRecorded, _ := h.taskuserQuery.IsRecorded(c.Request.Context(), task.ID, userId)
+
+	responsed, _ := h.responseQuery.IsResponsed(c.Request.Context(), task.ID, userId)
+
 	userIdsUint64 := make([]uint64, len(userIds))
 	for i, id := range userIds {
 		userIdsUint64[i] = uint64(id)
@@ -167,6 +177,8 @@ func (h *Handler) getTask(c *gin.Context) {
 		UpdatedAt:         task.UpdatedAt,
 		Coordinators:      []model.TaskViewCoordinator{},
 		Categories:        []model.TaskViewCategory{},
+		IsRecorded:        isRecorded,
+		IsResponse:        responsed,
 	}
 
 	for _, category := range taskCategory {
@@ -263,4 +275,33 @@ func (h *Handler) getClosedTasks(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": tasks})
+}
+
+func (h *Handler) completeTask(c *gin.Context) {
+	userId, err := auth.GetUserId(c)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	taskIDParam := c.Param("id")
+
+	if taskIDParam == "" {
+		response.NewErrorResponse(c, http.StatusBadRequest, InvalidInputBodyErr)
+		return
+	}
+
+	taskID, err := strconv.ParseUint(taskIDParam, 10, 64)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusBadRequest, "Invalid task ID")
+		return
+	}
+
+	err = h.taskService.Complete(c.Request.Context(), uint(taskID), userId)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{})
 }

@@ -106,6 +106,7 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 			tasks.POST("/", h.createTask)
 			tasks.PUT("/:id", h.updateTask)
 			tasks.DELETE("/:id", h.deleteTask)
+			tasks.PUT("/complete/:id", h.completeTask)
 		}
 
 		responses := httphands.Group("/responses")

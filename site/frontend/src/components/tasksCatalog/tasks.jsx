@@ -20,7 +20,9 @@ function Tasks({ tasks }) {
                             </div>
     
                             <h3 className="text-lg md:text-xl font-semibold mb-2">
-                                {task.tasks.name}
+                                <Link className="hover:underline" to={`${ROUTES.TASK}/${task.tasks.id}`}>
+                                    {task.tasks.name}
+                                </Link>
                             </h3>
     
                             <p className="text-gray-600 text-sm md:text-base mb-3 md:mb-4 line-clamp-2">

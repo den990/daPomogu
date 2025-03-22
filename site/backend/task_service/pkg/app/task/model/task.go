@@ -18,6 +18,7 @@ type TaskModel struct {
 	ParticipantsCount *int      `gorm:"column:participants_count;type:INTEGER" json:"participants_count"`
 	MaxScore          *int      `gorm:"column:max_score;type:INTEGER" json:"max_score"`
 	StatusID          uint      `gorm:"column:status_id;type:INTEGER;default:1;index" json:"status_id"`
+	IsDeleted         bool      `gorm:"column:is_deleted;type:BOOLEAN;default:false;" json:"is_deleted"`
 	CreatedAt         time.Time `gorm:"column:created_at;type:TIMESTAMP;default:CURRENT_TIMESTAMP;autoCreateTime" json:"created_at"`
 	UpdatedAt         time.Time `gorm:"column:updated_at;type:TIMESTAMP;default:CURRENT_TIMESTAMP;autoUpdateTime" json:"updated_at"`
 }
@@ -38,6 +39,8 @@ type TaskViewModel struct {
 	UpdatedAt         time.Time             `json:"updated_at"`
 	Coordinators      []TaskViewCoordinator `json:"coordinators"`
 	Categories        []TaskViewCategory    `json:"categories"`
+	IsRecorded        bool                  `json:"is_recorded"`
+	IsResponse        bool                  `json:"is_response"`
 }
 
 type TaskViewCoordinator struct {
@@ -103,4 +106,5 @@ type TaskRepositoryInterface interface {
 	Delete(ctx context.Context, id uint) error
 	Update(ctx context.Context, task *data.UpdateTask, id uint) error
 	Create(ctx context.Context, task *data.CreateTask) (uint, error)
+	Complete(ctx context.Context, id, userId uint) error
 }

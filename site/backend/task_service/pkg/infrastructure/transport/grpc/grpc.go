@@ -131,3 +131,13 @@ func (c *Client) GetUsersByIDS(ctx context.Context, userIDS []uint64) ([]usermod
 
 	return users, nil
 }
+
+func (c *Client) IsAdmin(ctx context.Context, userId uint64) (bool, error) {
+	res, err := c.Client.IsUserAdmin(ctx, &pb.UserRequest{Id: userId})
+
+	if err != nil {
+		return false, err
+	}
+
+	return res.IsAdmin, nil
+}

@@ -4,39 +4,68 @@ import (
 	"backend/task_service/pkg/app/organization/query"
 	"backend/task_service/pkg/app/task/data"
 	"backend/task_service/pkg/app/task/model"
+	userquery "backend/task_service/pkg/app/user/query"
 	"context"
+	"errors"
 	"fmt"
 )
 
 type TaskServiceInterface interface {
-	Update(ctx context.Context, task *data.UpdateTask, id uint) error
-	Delete(ctx context.Context, id uint) error
+	Update(ctx context.Context, task *data.UpdateTask, id, userId uint) error
+	Delete(ctx context.Context, id, userId uint) error
 	Create(ctx context.Context, task *data.CreateTask, userId uint) (uint, error)
+	Complete(ctx context.Context, id, userId uint) error
 }
 
 type TaskService struct {
 	taskRepository    model.TaskRepositoryInterface
 	organizationQuery query.OrganizationQueryInterface
+	userQuery         userquery.UserQuery
 }
 
 func NewTaskService(
 	rep model.TaskRepositoryInterface,
 	organizationQuery query.OrganizationQueryInterface,
+	userQuery userquery.UserQuery,
 ) *TaskService {
 	return &TaskService{
 		taskRepository:    rep,
 		organizationQuery: organizationQuery,
+		userQuery:         userQuery,
 	}
 }
 
-func (t *TaskService) Update(ctx context.Context, task *data.UpdateTask, id uint) error {
-	err := t.taskRepository.Update(ctx, task, id)
+func (t *TaskService) Update(ctx context.Context, task *data.UpdateTask, id, userId uint) error {
+	organization, err := t.organizationQuery.GetOrganizationByOwnerUserID(ctx, uint64(userId))
+	if err != nil {
+		return errors.New("Not found organization")
+	}
+	taskRepository, err := t.taskRepository.Get(ctx, id)
+	if organization.ID != taskRepository.OrganizationID {
+		return errors.New("You are not owner this task")
+	}
+	err = t.taskRepository.Update(ctx, task, id)
 
 	return err
 }
 
-func (t *TaskService) Delete(ctx context.Context, id uint) error {
-	err := t.taskRepository.Delete(ctx, id)
+func (t *TaskService) Delete(ctx context.Context, id, userId uint) error {
+	organization, err := t.organizationQuery.GetOrganizationByOwnerUserID(ctx, uint64(userId))
+	if err != nil {
+		return errors.New("Not found organization")
+	}
+	task, err := t.taskRepository.Get(ctx, id)
+	if organization.ID != task.OrganizationID {
+		isAdmin, err := t.userQuery.IsAdmin(ctx, uint64(userId))
+		if err != nil {
+			return errors.New("Not found organization")
+		}
+		if !isAdmin {
+			return errors.New("You are not owner this task")
+		}
+	}
+
+	err = t.taskRepository.Delete(ctx, id)
 	return err
 }
 
@@ -54,4 +83,19 @@ func (t *TaskService) Create(ctx context.Context, task *data.CreateTask, userId 
 	}
 
 	return t.taskRepository.Create(ctx, task)
+}
+
+func (t *TaskService) Complete(ctx context.Context, id, userId uint) error {
+	organization, err := t.organizationQuery.GetOrganizationByOwnerUserID(ctx, uint64(userId))
+	if err != nil {
+		return errors.New("Not found organization")
+	}
+	task, err := t.taskRepository.Get(ctx, id)
+
+	if task.OrganizationID != organization.ID {
+		return errors.New("You are not owner this task")
+	}
+	err = t.taskRepository.Complete(ctx, id, userId)
+
+	return err
 }

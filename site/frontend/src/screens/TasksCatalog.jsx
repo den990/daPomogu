@@ -19,7 +19,7 @@ function TasksCatalog() {
                 .then(data => {
                     setTasks(data.data || []);
                     console.log(data);
-                    setCountOfPages(1)
+                    setCountOfPages(data.total_pages);
                 })
                 .catch(error => {
                     console.error('Ошибка при загрузке всех заданий: ', error);
@@ -32,6 +32,10 @@ function TasksCatalog() {
         fetchTasks(numberOfPage);
     }, [numberOfPage, token]);
 
+    const handlePageChange = (page) => {
+        setNumberOfPage(page);
+    };
+
     return (
         <div className="min-h-screen flex flex-col">
             <RoleHeader />
@@ -43,7 +47,7 @@ function TasksCatalog() {
                             ?
                             <>
                                 <Tasks tasks={tasks} />
-                                <Pagination numberOfPageOut={numberOfPage} countOfPages={countOfPages} />
+                                <Pagination numberOfPageOut={numberOfPage} countOfPages={countOfPages} onPageChange={handlePageChange} />
                             </>
                             :
                             <div className="flex justify-center items-center h-64">

@@ -61,7 +61,7 @@ function App() {
                                 <Route path={ROUTES.EDIT_PASSWORD} element={<EditPassword />} />
                                 <Route path={ROUTES.MY_TASKS} element={<Tasks />} />
                                 <Route path={ROUTES.ACCOUNT_VOLUNTEER} element={<AccountVolunteer />} />
-                                <Route path={ROUTES.TASK} element={<Task />} />
+                                <Route path={`${ROUTES.TASK}/:taskId`} element={<Task />} />
                                 <Route path={ROUTES.CHAT} element={<Chat />} />
                                 <Route path={ROUTES.PHOTO_REPORT} element={<PhotoReport />} />
                                 <Route path={ROUTES.EDIT_VOLUNTEER_PROFILE} element={<EditVolunteerProfile />} />
