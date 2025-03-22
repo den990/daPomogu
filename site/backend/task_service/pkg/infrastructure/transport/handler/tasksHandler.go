@@ -270,3 +270,32 @@ func (h *Handler) getClosedTasks(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"data": tasks})
 }
+
+func (h *Handler) completeTask(c *gin.Context) {
+	userId, err := auth.GetUserId(c)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	taskIDParam := c.Param("id")
+
+	if taskIDParam == "" {
+		response.NewErrorResponse(c, http.StatusBadRequest, InvalidInputBodyErr)
+		return
+	}
+
+	taskID, err := strconv.ParseUint(taskIDParam, 10, 64)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusBadRequest, "Invalid task ID")
+		return
+	}
+
+	err = h.taskService.Complete(c.Request.Context(), uint(taskID), userId)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{})
+}
