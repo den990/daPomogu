@@ -1,27 +1,28 @@
-import Sidebar from "../components/adminDashboard/sidebar.jsx";
-import MainContent from "../components/adminDashboard/mainContent.jsx";
-import RoleHeader from '../components/RoleHeader/RoleHeader.js';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Sidebar from "../components/adminDashboard/sidebar";
+import MainContent from "../components/adminDashboard/mainContent";
+import RoleHeader from "../components/RoleHeader/RoleHeader";
 
 function AdminDashboard() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  return (
-    <>
-        <div className="h-full text-base-content">
+    return (
+        <div className="bg-gray-50 min-h-screen flex flex-col">
             <RoleHeader />
-            <div id="admin-dashboard" className="min-h-screen bg-gray-50">
+            <div className="flex flex-1 relative">
                 <Sidebar 
-                isOpen={isMobileMenuOpen} 
-                onClose={() => setIsMobileMenuOpen(false)}
+                    isOpen={isSidebarOpen} 
+                    setIsOpen={setIsSidebarOpen}
                 />
-                <MainContent 
-                onMenuToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                />
+                <div className="flex-1 md:ml-64 overflow-x-auto">
+                    <MainContent
+                        isSidebarOpen={isSidebarOpen} 
+                        setIsSidebarOpen={setIsSidebarOpen} 
+                    />
+                </div>
             </div>
         </div>
-    </>
-  );
+    );
 }
 
 export default AdminDashboard;

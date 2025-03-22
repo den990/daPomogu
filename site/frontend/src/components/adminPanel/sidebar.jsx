@@ -52,7 +52,7 @@ function Sidebar({ isOpen, setIsOpen }) {
                 <div className="px-6 mb-8 mt-6 md:mt-4">
                     <div className="flex items-center gap-3">
                         <img 
-                            className="w-9 h-9 rounded-lg" 
+                            className="w-5 h-5 rounded-lg" 
                             src={require("../../images/heart_red.svg").default} 
                             alt="Логотип организации" 
                         />
