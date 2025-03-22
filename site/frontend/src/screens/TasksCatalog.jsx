@@ -43,7 +43,7 @@ function TasksCatalog() {
             <main className="flex-grow pt-20 pb-12 bg-gray-50">
                 <div className="container mx-auto px-4">
                     <SearchFilters />
-                    {tasks.length != 0 ? (
+                    {tasks.length !== 0 ? (
                         <>
                             <Tasks tasks={tasks} />
                             <Pagination
