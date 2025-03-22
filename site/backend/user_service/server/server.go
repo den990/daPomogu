@@ -119,3 +119,13 @@ func (s *Server) GetUsersByIDS(ctx context.Context, req *pb.GetUsersByIDsRequest
 		Users: res,
 	}, nil
 }
+
+func (s *Server) IsUserAdmin(ctx context.Context, req *pb.UserRequest) (*pb.UserAdminResponse, error) {
+	id := req.Id
+	isAdmin, err := models.IsAdminWithoutToken(uint(id))
+	if err != nil {
+		return &pb.UserAdminResponse{IsAdmin: false}, err
+	}
+
+	return &pb.UserAdminResponse{IsAdmin: isAdmin}, err
+}

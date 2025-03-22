@@ -256,3 +256,13 @@ func CountUsers() (int, error) {
 
 	return int(count), nil
 }
+
+func IsAdminWithoutToken(userId uint) (bool, error) {
+	var user User
+	if err := db.DB.Select("is_admin").Where("id = ?", userId).First(&user).Error; err != nil {
+		log.Println("Error fetching user role:", err)
+		return false, errors.New("user not found")
+	}
+
+	return user.IsAdmin, nil
+}
