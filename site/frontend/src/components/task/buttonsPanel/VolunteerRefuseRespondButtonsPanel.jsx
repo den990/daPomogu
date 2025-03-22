@@ -15,10 +15,6 @@ function VolunteerRefuseRespondButtonsPanel() {
                         <span className="text-neutral-700">категория и тип задания</span>
                     </div>
                     <div className="flex items-center gap-2 mb-4">
-                        <img style={{ width: 16, height: 16 }} src={ require("../../images/clock_grey.svg").default } alt="icon" />
-                        <span className="text-neutral-700">4 часа</span>
-                    </div>
-                    <div className="flex items-center gap-2 mb-4">
                         <img style={{ width: 20, height: 16 }} src={ require("../../images/people_grey.svg").default } alt="icon" />
                         <span className="text-neutral-700">Нужно 10 волонтеров</span>
                     </div>
