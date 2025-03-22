@@ -139,6 +139,20 @@ function Content({ isSidebarOpen, setIsSidebarOpen }) {
                                             />
                                             <h2 className="text-lg md:text-xl truncate">{organizationDetails.name}</h2>
                                         </div>
+                                        <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto py-2">
+                                            <button
+                                                className="w-full md:w-auto rounded-lg bg-red-600 text-white px-4 py-2 hover:bg-red-800 text-sm md:text-base"
+                                                onClick={() => handleApplyOrganization(selectedOrganization)}
+                                            >
+                                                Принять
+                                            </button>
+                                            <button
+                                                className="w-full md:w-auto rounded-lg border px-4 py-2 text-neutral-700 hover:bg-neutral-50 text-sm md:text-base"
+                                                onClick={() => handleRejectOrganization(selectedOrganization)}
+                                            >
+                                                Отклонить
+                                            </button>
+                                        </div>
                                     </div>
 
                                     <div className="space-y-4">
@@ -172,20 +186,6 @@ function Content({ isSidebarOpen, setIsSidebarOpen }) {
                                                 ))}
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto py-2">
-                                        <button
-                                            className="w-full md:w-auto rounded-lg bg-red-600 text-white px-4 py-2 hover:bg-red-800 text-sm md:text-base"
-                                            onClick={() => handleApplyOrganization(selectedOrganization)}
-                                        >
-                                            Принять
-                                        </button>
-                                        <button
-                                            className="w-full md:w-auto rounded-lg border px-4 py-2 text-neutral-700 hover:bg-neutral-50 text-sm md:text-base"
-                                            onClick={() => handleRejectOrganization(selectedOrganization)}
-                                        >
-                                            Отклонить
-                                        </button>
                                     </div>
                                 </>
                             ) : (
