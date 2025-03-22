@@ -63,7 +63,7 @@ function Tasks({ tasks }) {
                         </div>
 
                         <Link
-                            to={ROUTES.TASK}
+                            to={`${ROUTES.TASK.replace(":taskId", task.tasks.id)}`}
                             className="block w-full py-2 bg-red-600 text-white rounded-lg text-center hover:bg-red-700 text-sm md:text-base"
                         >
                             Принять участие
