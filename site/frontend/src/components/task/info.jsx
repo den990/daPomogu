@@ -1,27 +1,34 @@
-function info() {
+function Info({ task }) {
+
     return (
         <div className="col-span-2">
             <div id="task-header" className="mb-6 md:mb-8">
-                <h1 className="text-xl md:text-3xl mb-4">Помощь в организации благотворительной ярмарки</h1>
+                <h1 className="text-xl md:text-3xl mb-4">{task.name}</h1>
                 <div className="flex flex-wrap items-center gap-2 md:gap-4 mb-4">
                     <div className="flex items-center gap-2">
                         <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&amp;seed=456" 
                              className="w-8 md:w-10 h-8 md:h-10 rounded-full" 
                              alt="organization" />
                         <span className="text-neutral-900 hover:underline cursor-pointer text-sm md:text-base">
-                            Благотворительный фонд "Надежда"
+                            {task.organization_name}
                         </span>
                     </div>
                     <span className="text-neutral-500 hidden md:block">•</span>
-                    <span className="text-neutral-600 text-sm md:text-base">15 марта 2025 14:00</span>
+                    <span className="text-neutral-600 text-sm md:text-base"> 
+                    {new Date(task.task_date).toLocaleString("ru-RU", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit"
+                    })}
+                    </span>
                 </div>
             </div>
 
             <div id="task-description" className="prose max-w-none mb-6 md:mb-8">
                 <p className="text-neutral-700 text-sm md:text-base">
-                    Требуются волонтеры для помощи в организации благотворительной ярмарки. 
-                    Задачи включают установку столов, оформление площадки, помощь продавцам 
-                    и поддержание порядка во время мероприятия.
+                    {task.description}
                 </p>
             </div>
 
@@ -62,4 +69,4 @@ function info() {
     );
 }
 
-export default info;
+export default Info;
