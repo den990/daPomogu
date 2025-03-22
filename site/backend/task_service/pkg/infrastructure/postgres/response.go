@@ -78,7 +78,7 @@ func (r *ResponseRepository) IsResponsed(ctx context.Context, taskId, userId uin
 	var taskUser model.ResponseModel
 	err := r.db.WithContext(ctx).
 		Model(&model.ResponseModel{}).
-		Where("task_id = ? AND user_id = ? AND status_id = ?", taskId, userId, 2).
+		Where("task_id = ? AND user_id = ? AND status_id = ?", taskId, userId, 1).
 		First(&taskUser).Error
 	if err != nil {
 		return false, err
