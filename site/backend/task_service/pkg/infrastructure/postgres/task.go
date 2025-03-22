@@ -7,15 +7,13 @@ import (
 	"backend/task_service/pkg/app/task/model"
 	"context"
 	"errors"
+	"fmt"
 	"gorm.io/gorm"
 	"time"
 )
 
 var (
 	ErrTaskNotFound = errors.New("task not found")
-	ErrUserNotFound = errors.New("user not found")
-	ErrCreateTask   = errors.New("failed to create task")
-	ErrUpdateTask   = errors.New("failed to update task")
 	ErrDeleteTask   = errors.New("failed to delete task")
 )
 
