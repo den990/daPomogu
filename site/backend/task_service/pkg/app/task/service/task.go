@@ -12,6 +12,7 @@ type TaskServiceInterface interface {
 	Update(ctx context.Context, task *data.UpdateTask, id uint) error
 	Delete(ctx context.Context, id uint) error
 	Create(ctx context.Context, task *data.CreateTask, userId uint) (uint, error)
+	Complete(ctx context.Context, id, userId uint) error
 }
 
 type TaskService struct {
@@ -54,4 +55,10 @@ func (t *TaskService) Create(ctx context.Context, task *data.CreateTask, userId 
 	}
 
 	return t.taskRepository.Create(ctx, task)
+}
+
+func (t *TaskService) Complete(ctx context.Context, id, userId uint) error {
+	err := t.taskRepository.Complete(ctx, id, userId)
+
+	return err
 }

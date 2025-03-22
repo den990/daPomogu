@@ -104,4 +104,5 @@ type TaskRepositoryInterface interface {
 	Delete(ctx context.Context, id uint) error
 	Update(ctx context.Context, task *data.UpdateTask, id uint) error
 	Create(ctx context.Context, task *data.CreateTask) (uint, error)
+	Complete(ctx context.Context, id, userId uint) error
 }

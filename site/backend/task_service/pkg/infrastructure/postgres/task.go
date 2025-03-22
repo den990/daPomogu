@@ -1,6 +1,7 @@
 package postgres
 
 import (
+	approvetaskmodel "backend/task_service/pkg/app/approve/model"
 	organizationmodel "backend/task_service/pkg/app/organization/model"
 	"backend/task_service/pkg/app/task/data"
 	"backend/task_service/pkg/app/task/model"
@@ -38,7 +39,7 @@ func (t *TaskRepository) Create(ctx context.Context, task *data.CreateTask) (uin
 		TaskDate:          task.TaskDate,
 		ParticipantsCount: task.ParticipantsCount,
 		MaxScore:          task.MaxScore,
-		StatusID:          1,
+		StatusID:          3,
 	}
 	res := t.db.WithContext(ctx).Create(&taskModel)
 
@@ -158,7 +159,7 @@ func (t *TaskRepository) Delete(ctx context.Context, id uint) error {
 func (t *TaskRepository) Get(ctx context.Context, id uint) (*model.TaskModel, error) {
 	var task model.TaskModel
 
-	res := t.db.WithContext(ctx).First(&task, "id = ? AND is_deleted", id, false)
+	res := t.db.WithContext(ctx).First(&task, "id = ? AND is_deleted = ?", id, false)
 	if res.Error != nil {
 		return nil, ErrTaskNotFound
 	}
@@ -252,4 +253,44 @@ func (t *TaskRepository) GetTasksByUserIDWithStatuses(
 	}
 
 	return tasks, totalPages, nil
+}
+
+func (t *TaskRepository) Complete(ctx context.Context, id, userId uint) error {
+	var task model.TaskModel
+	err := t.db.WithContext(ctx).
+		Where("id = ? AND is_deleted = false", id).
+		First(&task).Error
+	task.StatusID = 1
+	err = t.db.WithContext(ctx).Save(&task).Error
+	if err != nil {
+		return err
+	}
+
+	var taskUsers []model.TaskUser
+	err = t.db.WithContext(ctx).
+		Where("task_id = ? AND is_coordinator = ?", id, false).
+		Find(&taskUsers).Error
+	if err != nil {
+		return err
+	}
+
+	var approveTasks []approvetaskmodel.ApproveTaskModel
+	for _, taskUser := range taskUsers {
+		approveTask := approvetaskmodel.ApproveTaskModel{
+			TaskID:    id,
+			UserID:    taskUser.UserID,
+			StatusID:  1,
+			Score:     0,
+			Approved:  nil,
+			CreatedAt: time.Now(),
+		}
+		approveTasks = append(approveTasks, approveTask)
+	}
+
+	err = t.db.WithContext(ctx).Create(&approveTasks).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
