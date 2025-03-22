@@ -93,8 +93,40 @@ function Content({ isSidebarOpen, toggleSidebar }) {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6">
-                    {/* Детали заявки - первый на мобильных */}
-                    <div className="md:col-span-8 order-1">
+                    <div className="md:col-span-4 order-1">
+                        <div className="rounded-lg border bg-white p-3 md:p-4">
+                            <div className="mb-3 md:mb-4">
+                                <h2 className="text-base md:text-lg font-medium">Заявки</h2>
+                            </div>
+                            <div className="space-y-2 md:space-y-3 max-h-[600px] overflow-y-auto">
+                                {organizations.map((organization) => (
+                                    <div
+                                        key={organization.id}
+                                        className="cursor-pointer rounded-lg border p-2 md:p-3 hover:bg-neutral-50 transition-colors"
+                                        onClick={() => handleOrganizationSelect(organization.id)}
+                                    >
+                                        <div className="flex items-center gap-2 md:gap-3">
+                                            <img
+                                                src={`https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=${organization.id}`}
+                                                className="h-8 w-8 md:h-10 md:w-10 rounded-full flex-shrink-0"
+                                                alt={organization.name}
+                                            />
+                                            <div className="min-w-0 flex-1">
+                                                <p className="text-sm md:text-base truncate font-medium">
+                                                    {organization.name}
+                                                </p>
+                                                <p className="text-xs md:text-sm text-neutral-600 truncate">
+                                                    {organization.date || "Дата не указана"}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div className="md:col-span-8 order-2">
                         <div className="rounded-lg border bg-white p-4 md:p-6">
                             {organizationDetails ? (
                                 <>
@@ -106,20 +138,6 @@ function Content({ isSidebarOpen, toggleSidebar }) {
                                                 alt="Логотип организации"
                                             />
                                             <h2 className="text-lg md:text-xl truncate">{organizationDetails.name}</h2>
-                                        </div>
-                                        <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
-                                            <button
-                                                className="w-full md:w-auto rounded-lg bg-red-600 text-white px-4 py-2 hover:bg-red-800 text-sm md:text-base"
-                                                onClick={() => handleApplyOrganization(selectedOrganization)}
-                                            >
-                                                Принять
-                                            </button>
-                                            <button
-                                                className="w-full md:w-auto rounded-lg border px-4 py-2 text-neutral-700 hover:bg-neutral-50 text-sm md:text-base"
-                                                onClick={() => handleRejectOrganization(selectedOrganization)}
-                                            >
-                                                Отклонить
-                                            </button>
                                         </div>
                                     </div>
 
@@ -155,46 +173,26 @@ function Content({ isSidebarOpen, toggleSidebar }) {
                                             </div>
                                         </div>
                                     </div>
+                                    <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto py-2">
+                                        <button
+                                            className="w-full md:w-auto rounded-lg bg-red-600 text-white px-4 py-2 hover:bg-red-800 text-sm md:text-base"
+                                            onClick={() => handleApplyOrganization(selectedOrganization)}
+                                        >
+                                            Принять
+                                        </button>
+                                        <button
+                                            className="w-full md:w-auto rounded-lg border px-4 py-2 text-neutral-700 hover:bg-neutral-50 text-sm md:text-base"
+                                            onClick={() => handleRejectOrganization(selectedOrganization)}
+                                        >
+                                            Отклонить
+                                        </button>
+                                    </div>
                                 </>
                             ) : (
                                 <div className="text-center p-4 md:p-6 text-neutral-500 text-sm md:text-base">
                                     Выберите организацию, чтобы увидеть подробности
                                 </div>
                             )}
-                        </div>
-                    </div>
-
-                    {/* Список заявок - второй на мобильных */}
-                    <div className="md:col-span-4 order-2">
-                        <div className="rounded-lg border bg-white p-3 md:p-4">
-                            <div className="mb-3 md:mb-4">
-                                <h2 className="text-base md:text-lg font-medium">Заявки</h2>
-                            </div>
-                            <div className="space-y-2 md:space-y-3 max-h-[600px] overflow-y-auto">
-                                {organizations.map((organization) => (
-                                    <div
-                                        key={organization.id}
-                                        className="cursor-pointer rounded-lg border p-2 md:p-3 hover:bg-neutral-50 transition-colors"
-                                        onClick={() => handleOrganizationSelect(organization.id)}
-                                    >
-                                        <div className="flex items-center gap-2 md:gap-3">
-                                            <img
-                                                src={`https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=${organization.id}`}
-                                                className="h-8 w-8 md:h-10 md:w-10 rounded-full flex-shrink-0"
-                                                alt={organization.name}
-                                            />
-                                            <div className="min-w-0 flex-1">
-                                                <p className="text-sm md:text-base truncate font-medium">
-                                                    {organization.name}
-                                                </p>
-                                                <p className="text-xs md:text-sm text-neutral-600 truncate">
-                                                    {organization.date || "Дата не указана"}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
                         </div>
                     </div>
                 </div>

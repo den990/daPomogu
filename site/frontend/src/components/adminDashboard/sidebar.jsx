@@ -1,47 +1,131 @@
 import { Link } from "react-router";
 import ROUTES from "../../constants/routes";
+import { useState, useEffect } from "react";
 
-function Sidebar({ isOpen, onClose }) {
+function Sidebar({ isOpen, setIsOpen }) {
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+    useEffect(() => {
+        const handleResize = () => {
+            const mobile = window.innerWidth < 768;
+            setIsMobile(mobile);
+            if (!mobile) setIsOpen(false);
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, [setIsOpen]);
+
     return (
-      <>
-        <aside 
-          id="sidebar" 
-          className={`fixed inset-y-0 left-0 z-30 w-64 bg-white shadow-lg transform transition-transform duration-200
-            ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}
-        >
-          <div className="p-4 md:p-6">
-            <h2 className="text-xl font-bold text-red-600 flex items-center gap-2">
-                <img style={{ width: 20, height: 20 }} src={require("../../images/heart_red.svg").default} alt="heart" />
-                ДаПомогу-Админ
-            </h2>
-          </div>
-          <nav className="mt-4">
-             <Link to={ROUTES.ADMIN_PANEL} className="flex items-center gap-3 px-4 py-3 md:px-6 text-gray-700 hover:bg-gray-50 rounded-lg mb-1">
-                  <img className="w-4 h-4" src={require("../../images/graphic_dark.svg").default} alt="graphic" />
-                  <span className="ml-3 text-sm md:text-base">Главная</span>
-              </Link>
-              <Link to={ROUTES.ADMIN_DASHBOARD} className="flex items-center gap-3 px-4 py-3 md:px-6 text-red-600 bg-red-50 rounded-lg mb-1">
-                  <img className="w-5 h-4" src={require("../../images/people_red.svg").default} alt="people" />
-                  <span className="ml-3 text-sm md:text-base">Пользователи</span>
-              </Link>
-              <a href="/#" className="flex items-center gap-3 px-4 py-3 md:px-6 text-gray-700 hover:bg-gray-50 rounded-lg mb-1">
-                  <img className="w-4 h-4" src={require("../../images/stats_grey.svg").default} alt="stats" />
-                  <span className="ml-3 text-sm md:text-base">Задания</span>
-              </a>
-              <Link to={ROUTES.ADMIN_REGISTER_ORGANIZATION} className="flex items-center gap-3 px-4 py-3 md:px-6 text-gray-700 hover:bg-gray-50 rounded-lg">
-                  <img style={{width: 18, height: 16}} src={require("../../images/application_grey.svg").default} alt="application" />
-                  <span className="ml-3 text-sm md:text-base">Заявки</span>
-              </Link>
-          </nav>
-        </aside>
-        {isOpen && (
-          <div 
-            className="fixed inset-0 z-20 bg-black/50 md:hidden" 
-            onClick={onClose}
-          />
-        )}
-      </>
+        <>
+            <aside 
+                className={`fixed w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 z-40
+                    ${isOpen || !isMobile ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}
+                style={{ 
+                    top: '64px', 
+                    height: 'calc(100vh - 64px)',
+                    overflowY: 'auto'
+                }}
+            >
+                {isMobile && (
+                    <div className="absolute top-4 right-4">
+                        <button 
+                            onClick={() => setIsOpen(false)}
+                            className="p-2 text-gray-600 hover:text-gray-800 transition-colors"
+                            aria-label="Закрыть меню"
+                        >
+                            <svg 
+                                className="w-6 h-6" 
+                                fill="none" 
+                                stroke="currentColor" 
+                                viewBox="0 0 24 24"
+                            >
+                                <path 
+                                    strokeLinecap="round" 
+                                    strokeLinejoin="round" 
+                                    strokeWidth={2} 
+                                    d="M6 18L18 6M6 6l12 12" 
+                                />
+                            </svg>
+                        </button>
+                    </div>
+                )}
+
+                <div className="px-6 py-6">
+                    <div className="flex items-center gap-3">
+                        <img 
+                            className="w-9 h-9 rounded-lg" 
+                            src={require("../../images/heart_red.svg").default} 
+                            alt="Логотип" 
+                        />
+                        <h1 className="text-xl font-bold text-red-600 break-words">
+                            ДаПомогу-Админ
+                        </h1>
+                    </div>
+                </div>
+
+                <nav className="px-2 space-y-1.5 pb-6">
+                    <Link 
+                        to={ROUTES.ADMIN_PANEL} 
+                        className="flex items-center gap-3 px-4 py-2.5 text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
+                    >
+                        <img 
+                            className="w-6 h-6" 
+                            src={require("../../images/graphic_red.svg").default} 
+                            alt="Статистика" 
+                        />
+                        <span className="text-sm md:text-base">Главная</span>
+                    </Link>
+                    
+                    <Link 
+                        to={ROUTES.ADMIN_DASHBOARD}
+                        className="flex items-center gap-3 px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                    >
+                        <img 
+                            className="w-6 h-6" 
+                            src={require("../../images/people_grey.svg").default} 
+                            alt="Пользователи" 
+                        />
+                        <span className="text-sm md:text-base">Пользователи</span>
+                    </Link>
+                    
+                    <Link 
+                        to="#" 
+                        className="flex items-center gap-3 px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                    >
+                        <img 
+                            className="w-6 h-6" 
+                            src={require("../../images/stats_grey.svg").default} 
+                            alt="Задания" 
+                        />
+                        <span className="text-sm md:text-base">Задания</span>
+                    </Link>
+                    
+                    <Link 
+                        to={ROUTES.ADMIN_REGISTER_ORGANIZATION} 
+                        className="flex items-center gap-3 px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                    >
+                        <img 
+                            className="w-6 h-6" 
+                            src={require("../../images/application_grey.svg").default} 
+                            alt="Заявки" 
+                        />
+                        <span className="text-sm md:text-base">Заявки</span>
+                    </Link>
+                </nav>
+            </aside>
+
+            {isOpen && isMobile && (
+                <div 
+                    className="fixed inset-0 bg-black/30 z-30" 
+                    onClick={() => setIsOpen(false)}
+                    role="button"
+                    tabIndex={0}
+                    aria-label="Закрыть меню"
+                />
+            )}
+        </>
     );
-  }
-  
-  export default Sidebar;
+}
+
+export default Sidebar;
