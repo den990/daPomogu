@@ -39,6 +39,8 @@ type TaskViewModel struct {
 	UpdatedAt         time.Time             `json:"updated_at"`
 	Coordinators      []TaskViewCoordinator `json:"coordinators"`
 	Categories        []TaskViewCategory    `json:"categories"`
+	IsRecorded        bool                  `json:"is_recorded"`
+	IsResponse        bool                  `json:"is_response"`
 }
 
 type TaskViewCoordinator struct {

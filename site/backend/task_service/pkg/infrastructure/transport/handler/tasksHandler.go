@@ -102,7 +102,7 @@ func (h *Handler) deleteTask(c *gin.Context) {
 }
 
 func (h *Handler) getTask(c *gin.Context) {
-	_, err := auth.GetUserId(c)
+	userId, err := auth.GetUserId(c)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -146,6 +146,12 @@ func (h *Handler) getTask(c *gin.Context) {
 		return
 	}
 
+	isRecorded, _ := h.taskuserQuery.IsRecorded(c.Request.Context(), task.ID, userId)
+
+	responsed, err := h.responseQuery.IsResponsed(c.Request.Context(), task.ID, userId)
+	if err != nil {
+		return
+	}
 	userIdsUint64 := make([]uint64, len(userIds))
 	for i, id := range userIds {
 		userIdsUint64[i] = uint64(id)
@@ -173,6 +179,8 @@ func (h *Handler) getTask(c *gin.Context) {
 		UpdatedAt:         task.UpdatedAt,
 		Coordinators:      []model.TaskViewCoordinator{},
 		Categories:        []model.TaskViewCategory{},
+		IsRecorded:        isRecorded,
+		IsResponse:        responsed,
 	}
 
 	for _, category := range taskCategory {
