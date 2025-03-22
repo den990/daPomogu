@@ -1,6 +1,6 @@
 import Footer from '../layouts/Footer.jsx';
 import Info from '../components/task/info.jsx';
-import ButtonsPanel from '../components/task/buttonsPanel.jsx';
+import ButtonsPanel from '../components/task/ButtonsPanel.jsx';
 import RoleHeader from '../components/RoleHeader/RoleHeader.js';
 
 function Task() {
