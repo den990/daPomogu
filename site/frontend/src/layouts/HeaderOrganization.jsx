@@ -34,7 +34,6 @@ function HeaderOrganization() {
                 <nav className="hidden lg:flex lg:items-center lg:space-x-4 lg:space-x-6">
                     <Link to={ROUTES.TASKS_CATALOG} className="text-gray-600 hover:text-red-600">Задания</Link>
                     <Link to={ROUTES.ORGANIZATION_TASKS} className="text-gray-600 hover:text-red-600">Мои задания</Link>
-                    <Link to={ROUTES.ABOUT} className="text-gray-600 hover:text-red-600">О нас</Link>
                 </nav>
                 
                 <div className="flex items-center space-x-2 md:space-x-4">
