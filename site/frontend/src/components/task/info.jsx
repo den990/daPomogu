@@ -1,12 +1,6 @@
 function info() {
     return (
         <div className="col-span-2">
-            <div className="grid grid-cols-1 place-items-center">
-                <div id="task-banner" className="w-full max-w-[500px] md:w-[500px] h-[200px] md:h-[300px] bg-neutral-300 rounded-lg mb-6 flex items-center justify-center">
-                    <span className="text-white">Фото задания</span>
-                </div>
-            </div>
-            
             <div id="task-header" className="mb-6 md:mb-8">
                 <h1 className="text-xl md:text-3xl mb-4">Помощь в организации благотворительной ярмарки</h1>
                 <div className="flex flex-wrap items-center gap-2 md:gap-4 mb-4">

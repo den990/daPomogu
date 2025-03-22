@@ -2,8 +2,12 @@ import Footer from '../layouts/Footer.jsx';
 import Info from '../components/task/info.jsx';
 import ButtonsPanel from '../components/task/buttonsPanel.jsx';
 import RoleHeader from '../components/RoleHeader/RoleHeader.js';
+import { useContext } from 'react';
+import { AuthContext } from '../context/AuthProvider.js';
 
 function Task() {
+    const { token } = useContext(AuthContext);
+    
     return (
         <div className="min-h-screen flex flex-col">
             <RoleHeader />
