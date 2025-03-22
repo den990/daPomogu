@@ -24,10 +24,17 @@ spec:
               value: "dapomogu_password"
             - name: POSTGRES_PORT
               value: "5432"
+            - name: PGDATA
+              value: "/var/lib/postgresql/data/pgdata"
           volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
             - name: init-script
               mountPath: /docker-entrypoint-initdb.d
       volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: postgres-pvc
         - name: init-script
           configMap:
             name: postgres-init-script

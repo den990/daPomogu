@@ -88,7 +88,7 @@ type TaskReadRepositoryInterface interface {
 		isOwner bool,
 		organizations []model.OrganizationModel,
 		page int,
-	) ([]TaskModel, error)
+	) ([]TaskModel, int, error)
 	GetTasksByUserIDWithStatuses(
 		ctx context.Context,
 		userID uint,

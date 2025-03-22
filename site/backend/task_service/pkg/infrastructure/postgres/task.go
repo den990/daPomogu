@@ -158,60 +158,76 @@ func (t *TaskRepository) Get(ctx context.Context, id uint) (*model.TaskModel, er
 	return &task, nil
 }
 
-func (t *TaskRepository) GetAll(ctx context.Context, user uint, isOwner bool, organizations []organizationmodel.OrganizationModel, page int) ([]model.TaskModel, error) {
+func (t *TaskRepository) GetAll(
+	ctx context.Context,
+	user uint,
+	isOwner bool,
+	organizations []organizationmodel.OrganizationModel,
+	page int,
+) ([]model.TaskModel, int, error) {
 	var tasks []*model.TaskModel
 	result := make([]model.TaskModel, 0, len(tasks))
 	limit := 3
 	offset := (page - 1) * limit
+
+	var totalRecords int64
+	var query *gorm.DB
+
 	if !isOwner {
 		var orgIDs []uint
 		for _, org := range organizations {
 			orgIDs = append(orgIDs, org.ID)
 		}
 
-		query := t.db.WithContext(ctx).
+		baseQuery := t.db.WithContext(ctx).
+			Table("task").
 			Joins("JOIN task_type tt on tt.id = task.type_id").
 			Joins("JOIN task_user tu ON tu.task_id = task.id").
-			Where("tu.user_id = ?", user).
-			Limit(limit).
-			Offset(offset)
+			Where("tu.user_id = ?", user)
 
+		countQuery := baseQuery
+		if len(orgIDs) > 0 {
+			countQuery = countQuery.Where("tt.name = 'Открытый' OR (tt.name = 'Закрытый' AND task.organization_id IN ?)", orgIDs)
+		} else {
+			countQuery = countQuery.Where("tt.name = 'Открытый'")
+		}
+		countQuery.Count(&totalRecords)
+
+		query = baseQuery.Limit(limit).Offset(offset)
 		if len(orgIDs) > 0 {
 			query = query.Where("tt.name = 'Открытый' OR (tt.name = 'Закрытый' AND task.organization_id IN ?)", orgIDs)
 		} else {
 			query = query.Where("tt.name = 'Открытый'")
 		}
 
-		res := query.Find(&tasks)
-		if res.Error != nil {
-			return nil, res.Error
-		}
-
-		for _, task := range tasks {
-			result = append(result, *task)
-		}
 	} else {
 		var orgIDs []uint
 		for _, org := range organizations {
 			orgIDs = append(orgIDs, org.ID)
 		}
-		query := t.db.WithContext(ctx).
-			Joins("JOIN task_type tt on tt.id = task.type_id").
-			Limit(limit).
-			Offset(offset)
 
-		res := query.Find(&tasks).Where("tt.name = 'Открытый' OR task.organization_id IN ?", orgIDs)
+		baseQuery := t.db.WithContext(ctx).
+			Table("task").
+			Joins("JOIN task_type tt on tt.id = task.type_id")
 
-		if res.Error != nil {
-			return nil, res.Error
-		}
+		countQuery := baseQuery.Where("tt.name = 'Открытый' OR task.organization_id IN ?", orgIDs)
+		countQuery.Count(&totalRecords)
 
-		for _, task := range tasks {
-			result = append(result, *task)
-		}
+		query = baseQuery.Limit(limit).Offset(offset).Where("tt.name = 'Открытый' OR task.organization_id IN ?", orgIDs)
 	}
 
-	return result, nil
+	res := query.Find(&tasks)
+	if res.Error != nil {
+		return nil, 0, res.Error
+	}
+
+	for _, task := range tasks {
+		result = append(result, *task)
+	}
+
+	totalPages := int((totalRecords + int64(limit) - 1) / int64(limit))
+
+	return result, totalPages, nil
 }
 
 func (t *TaskRepository) GetTasksByUserIDWithStatuses(
