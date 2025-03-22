@@ -3,10 +3,13 @@ import ROUTES from "../../constants/routes";
 import GetRole from "../../utils/GetRole";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthProvider";
+import { taskServiceApi } from "../../utils/api/task_service";
+import { useState } from "react";
 
-function ButtonsPanel({task}) {
+function ButtonsPanel({task: initialTask}) {
     const { token } = useContext(AuthContext);
     let role = GetRole(token);
+    const [task, setTask] = useState(initialTask);
 
     if (!task) {
         return <div>Загрузка...</div>;
@@ -19,6 +22,18 @@ function ButtonsPanel({task}) {
 
     let typeTask = (task.type == 1) ? "Закрытый" : "Открытый";
 
+    const handleResponse = async (e) => {
+        try {
+            await taskServiceApi.postCreateResponse(token, task.id);
+            setTask((prevTask) => ({
+                ...prevTask,
+                is_response: true,
+            }));
+        } catch (error) {
+            console.error("Ошибка в создании отклика")
+        }
+    }
+
     return (
         <>
             <div className="col-span-1">
@@ -26,9 +41,21 @@ function ButtonsPanel({task}) {
                     {
                         (role === "volunteer")
                             ?
-                                <button className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 mb-4">
-                                    Принять участие
-                                </button>
+                                (task.is_response !== true)
+                                    ?
+                                        <button onClick={handleResponse} className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 mb-4">
+                                            Принять участие
+                                        </button>
+                                    :
+                                        (task.is_recorded !== true)
+                                            ?
+                                                <button className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 mb-4">
+                                                    Отменить отклик
+                                                </button>
+                                            :
+                                                <button className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 mb-4">
+                                                    Отказаться от участия
+                                                </button>
                             :
                                 (task.status_id === 3)
                                     ?
