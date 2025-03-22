@@ -121,3 +121,15 @@ func (tu *TaskUserRepository) GetCountUserWithoutCoordinators(ctx context.Contex
 
 	return int(count), nil
 }
+
+func (tu *TaskUserRepository) IsRecorded(ctx context.Context, taskId, userId uint) (bool, error) {
+	var taskUser model.TaskUser
+	err := tu.db.WithContext(ctx).
+		Model(&model.TaskUser{}).
+		Where("task_id = ? AND is_coordinator = ? AND user_id = ?", taskId, false, userId).
+		First(&taskUser).Error
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}

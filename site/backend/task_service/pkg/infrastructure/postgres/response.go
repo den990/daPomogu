@@ -74,3 +74,15 @@ func (r *ResponseRepository) Update(ctx context.Context, id uint, status uint) e
 
 	return nil
 }
+func (r *ResponseRepository) IsResponsed(ctx context.Context, taskId, userId uint) (bool, error) {
+	var taskUser model.ResponseModel
+	err := r.db.WithContext(ctx).
+		Model(&model.ResponseModel{}).
+		Where("task_id = ? AND user_id = ?", taskId, userId).
+		First(&taskUser).Error
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+
+}

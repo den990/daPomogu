@@ -31,6 +31,7 @@ type ResponseRepositoryReadInterface interface {
 		page int,
 		limit int,
 	) ([]ResponseModel, int, error)
+	IsResponsed(ctx context.Context, taskId, userId uint) (bool, error)
 }
 
 type ResponseRepositoryInterface interface {

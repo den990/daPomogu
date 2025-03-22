@@ -15,6 +15,7 @@ type TaskUserQueryInterface interface {
 		isCoordinators *bool,
 	) (*paginate.Pagination, error)
 	GetCountUserWithoutCoordinators(ctx context.Context, taskId uint) (count int, err error)
+	IsRecorded(ctx context.Context, taskId, userId uint) (bool, error)
 }
 
 type TaskUserQuery struct {
@@ -40,4 +41,8 @@ func (tu *TaskUserQuery) GetUsers(
 
 func (tu *TaskUserQuery) GetCountUserWithoutCoordinators(ctx context.Context, taskId uint) (count int, err error) {
 	return tu.repo.GetCountUserWithoutCoordinators(ctx, taskId)
+}
+
+func (tu *TaskUserQuery) IsRecorded(ctx context.Context, taskId, userId uint) (bool, error) {
+	return tu.repo.IsRecorded(ctx, taskId, userId)
 }

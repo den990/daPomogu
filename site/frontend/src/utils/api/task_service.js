@@ -58,6 +58,14 @@ class TaskServiceApi {
             headers: this._headers,
         });
     }
+
+    getTaskById(token, id) {
+        this._updateToken(token);
+        return this._request(`${this._baseUrl}/tasks/${id}`, {
+            method: "GET",
+            headers: this._headers,
+        });
+    }
 }
 
 export const taskServiceApi = new TaskServiceApi(apiSettings);
