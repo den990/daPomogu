@@ -20,7 +20,7 @@ function Tasks({ tasks }) {
                             </div>
     
                             <h3 className="text-lg md:text-xl font-semibold mb-2">
-                                <Link className="hover:underline" to={`${ROUTES.TASK}/${task.tasks.id}`}>
+                                <Link className="hover:underline" to={`${ROUTES.TASK.replace(":taskId", task.tasks.id)}`}>
                                     {task.tasks.name}
                                 </Link>
                             </h3>
