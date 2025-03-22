@@ -12,28 +12,19 @@ function Tasks({ tasks }) {
                     >
                         <div className="p-4 md:p-6">
                             <div className="flex flex-wrap gap-2 mb-3 md:mb-4">
-                                {task === 2 ? (
-                                    <>
-                                        <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs md:text-sm">
-                                            Образование
-                                        </span>
-                                        <span className="px-2 py-1 bg-red-500 text-white rounded-full text-xs md:text-sm whitespace-nowrap">
-                                            Задание организации
-                                        </span>
-                                    </>
-                                ) : (
-                                    <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs md:text-sm">
-                                        {task === 1 ? 'Экология' : 'Помощь пожилым'}
+                                {task.categories.map((category) => (
+                                    <span className="px-2 py-1 bg-red-500 text-white rounded-full text-xs md:text-sm whitespace-nowrap">
+                                        {category.name}
                                     </span>
-                                )}
+                                ))}
                             </div>
     
                             <h3 className="text-lg md:text-xl font-semibold mb-2">
-                                {task.name}
+                                {task.tasks.name}
                             </h3>
     
                             <p className="text-gray-600 text-sm md:text-base mb-3 md:mb-4 line-clamp-2">
-                                {task.description}
+                                {task.tasks.description}
                             </p>
     
                             <div className="flex items-center mb-3 md:mb-4">
@@ -43,7 +34,7 @@ function Tasks({ tasks }) {
                                     alt="Логотип организации" 
                                 />
                                 <span className="text-gray-600 text-sm md:text-base">
-                                    {task.organization_id}
+                                    {task.organization_name}
                                 </span>
                             </div>
     
@@ -55,7 +46,7 @@ function Tasks({ tasks }) {
                                         alt="Дата" 
                                     />
                                     <span>
-                                        {new Date(task.task_date).toLocaleDateString("ru-RU", {
+                                        {new Date(task.tasks.task_date).toLocaleDateString("ru-RU", {
                                             day: "2-digit",
                                             month: "2-digit",
                                             year: "numeric"
@@ -69,7 +60,7 @@ function Tasks({ tasks }) {
                                         alt="Участники" 
                                     />
                                     <span>
-                                        {`0/${task.participants_count}`}
+                                        {`0/${task.tasks.participants_count}`}
                                     </span>
                                 </div>
                             </div>

@@ -10,13 +10,16 @@ import { AuthContext } from "../context/AuthProvider";
 function TasksCatalog() {
     const { token } = useContext(AuthContext);
     const [tasks, setTasks] = useState([]);
+    const [countOfPages, setCountOfPages] = useState(0);
+    const [numberOfPage, setNumberOfPage] = useState(1);
 
-    const fetchTasks = () => {
+    const fetchTasks = (page) => {
         if (token) {
-            taskServiceApi.getAllTasks(token)
+            taskServiceApi.getAllTasks(token, page)
                 .then(data => {
                     setTasks(data.data || []);
-                    console.log(data.data);
+                    console.log(data);
+                    setCountOfPages(1)
                 })
                 .catch(error => {
                     console.error('Ошибка при загрузке всех заданий: ', error);
@@ -26,8 +29,8 @@ function TasksCatalog() {
     };
 
     useEffect(() => {
-        fetchTasks();
-    }, [token]);
+        fetchTasks(numberOfPage);
+    }, [numberOfPage, token]);
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -40,7 +43,7 @@ function TasksCatalog() {
                             ?
                             <>
                                 <Tasks tasks={tasks} />
-                                <Pagination numberOfPageOut={1} countOfPages={3} />
+                                <Pagination numberOfPageOut={numberOfPage} countOfPages={countOfPages} />
                             </>
                             :
                             <div className="flex justify-center items-center h-64">

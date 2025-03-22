@@ -51,9 +51,9 @@ class TaskServiceApi {
         });
     }
 
-    getAllTasks(token) {
+    getAllTasks(token, page) {
         this._updateToken(token);
-        return this._request(`${this._baseUrl}/tasks/page/1`, {
+        return this._request(`${this._baseUrl}/tasks/page/${page}`, {
             method: "GET",
             headers: this._headers,
         });
