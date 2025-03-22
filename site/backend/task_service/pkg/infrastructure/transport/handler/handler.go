@@ -92,8 +92,8 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 
 		tasksUsers := httphands.Group("/tasks-users")
 		{
-			tasksUsers.GET("/byTaskID/:id", h.getTasksUsers) // todo возвращать и структуру пользователей
-			tasksUsers.POST("/add/:id", h.addTasksUsers)     // todo должен вызвыаться сразу после конфирм ресопнс
+			tasksUsers.GET("/byTaskID/:id", h.getTasksUsers)
+			tasksUsers.POST("/add/:id", h.addTasksUsers)
 			tasksUsers.DELETE("/delete", h.deleteTasksUsers)
 		}
 
