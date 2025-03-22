@@ -18,7 +18,7 @@ function ButtonsPanel({task: initialTask}) {
         category += `${cat.name}`
     );
 
-    let typeTask = (task.type == 1) ? "Закрытый" : "Открытый";
+    let typeTask = (task.type === 1) ? "Закрытый" : "Открытый";
 
     const handleResponse = async (e) => {
         try {
