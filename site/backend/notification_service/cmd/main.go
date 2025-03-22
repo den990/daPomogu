@@ -1,19 +1,19 @@
 package cmd
 
 import (
+	"backend/notification_service/pkg/app/service"
+	"backend/task_service/pkg/infrastructure/postgres"
+	"backend/task_service/pkg/infrastructure/server"
 	"fmt"
-	"github.com/TemaStatham/TaskService/taskservice/pkg/infrastructure/db/postgres"
-	"github.com/TemaStatham/TaskService/taskservice/pkg/infrastructure/transport/server"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 
-	"github.com/TemaStatham/TaskService/notificationservice/pkg/app/notification/service"
-	"github.com/TemaStatham/TaskService/notificationservice/pkg/infra/config"
-	postgresnotification "github.com/TemaStatham/TaskService/notificationservice/pkg/infra/db/postgres"
-	grpc "github.com/TemaStatham/TaskService/notificationservice/pkg/infra/transport/internalapi"
-	handler "github.com/TemaStatham/TaskService/notificationservice/pkg/infra/transport/publicapi"
+	"backend/notification_service/pkg/infra/config"
+	postgresnotification "backend/notification_service/pkg/infra/db/postgres"
+	grpc "backend/notification_service/pkg/infra/transport/internalapi"
+	handler "backend/notification_service/pkg/infra/transport/publicapi"
 )
 
 func main() {
@@ -38,7 +38,7 @@ func main() {
 	fmt.Println("Client started")
 	serve := new(server.Server)
 	go func() {
-		if err := serve.Run(cfg.HandlerPort, hnd.Init()); err != nil {
+		if err := serve.Run(cfg.HandlerPort, hnd.Init("")); err != nil {
 			log.Fatal(err)
 		}
 	}()

@@ -95,7 +95,7 @@ type TaskReadRepositoryInterface interface {
 		taskStatus []uint,
 		page int,
 		limit int,
-	) ([]TaskModel, error)
+	) ([]TaskModel, int, error)
 }
 
 type TaskRepositoryInterface interface {

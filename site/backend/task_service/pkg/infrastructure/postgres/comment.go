@@ -42,11 +42,13 @@ func (c *CommentsRepository) Show(ctx context.Context, taskId uint, page int, li
 		return nil, err
 	}
 
+	totalPages := int((total + int64(limit) - 1) / int64(limit))
+
 	offset := (page - 1) * limit
 	if err := query.Offset(offset).Limit(limit).Find(&responses).Error; err != nil {
 		return nil, err
 	}
 
-	pagination := paginate.Pagination{limit, page, responses}
+	pagination := paginate.Pagination{limit, page, responses, totalPages}
 	return &pagination, nil
 }

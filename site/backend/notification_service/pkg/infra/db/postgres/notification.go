@@ -1,10 +1,10 @@
 package postgres
 
 import (
+	"backend/notification_service/pkg/app/data"
+	"backend/notification_service/pkg/app/model"
 	"context"
 
-	"github.com/TemaStatham/TaskService/notificationservice/pkg/app/notification/data"
-	"github.com/TemaStatham/TaskService/notificationservice/pkg/app/notification/model"
 	"gorm.io/gorm"
 )
 

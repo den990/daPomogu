@@ -1,8 +1,8 @@
 package model
 
 import (
+	"backend/notification_service/pkg/app/data"
 	"context"
-	"github.com/TemaStatham/TaskService/notificationservice/pkg/app/notification/data"
 	"time"
 )
 

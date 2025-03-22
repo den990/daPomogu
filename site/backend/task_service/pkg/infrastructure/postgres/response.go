@@ -38,23 +38,23 @@ func (r *ResponseRepository) Create(
 	return response.ID, res.Error
 }
 
-func (r *ResponseRepository) Show(ctx context.Context, taskId uint, page int, limit int) ([]model.ResponseModel, error) {
+func (r *ResponseRepository) Show(ctx context.Context, taskId uint, page int, limit int) ([]model.ResponseModel, int, error) {
 	var responses []model.ResponseModel
 	query := r.db.WithContext(ctx).Where("task_id = ?", taskId)
 
 	var total int64
 	if err := query.Model(&model.ResponseModel{}).Count(&total).Error; err != nil {
-		return nil, err
+		return nil, 0, err
 	}
+
+	totalPages := int((total + int64(limit) - 1) / int64(limit))
 
 	offset := (page - 1) * limit
 	if err := query.Offset(offset).Limit(limit).Find(&responses).Error; err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
-	// пагинация каждый раз по одинаково работает
-	//pagination := paginate.Pagination{limit, page, total, responses}
-	return responses, nil
+	return responses, totalPages, nil
 }
 
 func (r *ResponseRepository) Update(ctx context.Context, id uint, status uint) error {

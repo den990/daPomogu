@@ -30,7 +30,7 @@ type ResponseRepositoryReadInterface interface {
 		taskId uint,
 		page int,
 		limit int,
-	) ([]ResponseModel, error)
+	) ([]ResponseModel, int, error)
 }
 
 type ResponseRepositoryInterface interface {

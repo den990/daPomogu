@@ -236,21 +236,28 @@ func (t *TaskRepository) GetTasksByUserIDWithStatuses(
 	taskStatuses []uint,
 	page int,
 	limit int,
-) ([]model.TaskModel, error) {
+) ([]model.TaskModel, int, error) {
 	tasks := make([]model.TaskModel, 0, limit)
 
 	query := t.db.WithContext(ctx).
 		Model(model.TaskModel{}).
 		Joins("JOIN task_user tu ON tu.task_id = task.id").
 		Where("tu.user_id = ?", userID).
-		Where("task.status_id IN (?)", taskStatuses).
-		Offset((page - 1) * limit).
-		Limit(limit)
+		Where("task.status_id IN (?)", taskStatuses)
 
-	res := query.Find(&tasks)
+	var total int64
+	if err := query.Model(&model.TaskModel{}).Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+	totalPages := int((total + int64(limit) - 1) / int64(limit))
+
+	res := query.
+		Offset((page - 1) * limit).
+		Limit(limit).
+		Find(&tasks)
 	if res.Error != nil {
-		return nil, res.Error
+		return nil, 0, res.Error
 	}
 
-	return tasks, nil
+	return tasks, totalPages, nil
 }

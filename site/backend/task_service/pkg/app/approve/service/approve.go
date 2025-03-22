@@ -56,11 +56,6 @@ func (a *ApproveService) Create(ctx context.Context, dto data.CreateApprove) (ui
 		return 0, err
 	}
 
-	_, err = a.repository.GetByParams(ctx, dto.TaskID, dto.UserID)
-	if err == nil {
-		return 0, errors.New("Подтвеждение уже проверено")
-	}
-
 	approveID, err := a.repository.Create(ctx, dto, status)
 	if err != nil {
 		return 0, err
@@ -133,7 +128,7 @@ func (a *ApproveService) Show(ctx context.Context, dto data.ShowApproves) (pagin
 		return paginate.Pagination{}, err
 	}
 
-	approves, err := a.repository.Show(ctx, dto, status)
+	approves, total, err := a.repository.Show(ctx, dto, status)
 	if err != nil {
 		return paginate.Pagination{}, err
 	}
@@ -170,7 +165,12 @@ func (a *ApproveService) Show(ctx context.Context, dto data.ShowApproves) (pagin
 		})
 	}
 
-	return paginate.Pagination{Limit: int(dto.Limit), Page: int(dto.Page), Rows: res}, err
+	return paginate.Pagination{
+		Limit:      int(dto.Limit),
+		Page:       int(dto.Page),
+		Rows:       res,
+		TotalPages: int(total),
+	}, err
 }
 
 func findUser(users []usermodel.UserModel, id uint) (usermodel.UserModel, error) {

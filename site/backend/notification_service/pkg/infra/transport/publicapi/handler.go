@@ -1,14 +1,14 @@
 package publicapi
 
 import (
+	"backend/notification_service/pkg/app/model"
+	"backend/notification_service/pkg/app/service"
+	"backend/task_service/pkg/infrastructure/middleware/auth"
 	"fmt"
-	"github.com/TemaStatham/TaskService/notificationservice/pkg/app/notification/model"
-	"github.com/TemaStatham/TaskService/notificationservice/pkg/app/notification/service"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"net/http"
-	"strconv"
 	"time"
 )
 
@@ -94,23 +94,29 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-func (h *Handler) Init() *gin.Engine {
+func (h *Handler) Init(jwtSecret string) *gin.Engine {
 	router := gin.New()
 
 	router.Use(cors.Default())
-
+	router.Use(auth.UserIdentity(jwtSecret))
 	router.GET("/notificationsws", func(ctx *gin.Context) {
-		clientIDParam := ctx.Query("roomID")
-
-		if clientIDParam == "" {
-			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "missing token"})
-			return
-		}
-
-		clientID, err := strconv.ParseUint(clientIDParam, 10, 64)
+		authID, err := auth.GetUserId(ctx)
 		if err != nil {
 			ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			return
 		}
+		// при подлкючении нужно сделать выборку в бд
+		//clientIDParam := ctx.Query("roomID")
+
+		/*if clientIDParam == "" {
+			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "missing token"})
+			return
+		}*/
+
+		/*clientID, err := strconv.ParseUint(clientIDParam, 10, 64)
+		if err != nil {
+			ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		}*/
 
 		ws, err := upgrader.Upgrade(ctx.Writer, ctx.Request, nil)
 		if err != nil {
@@ -118,7 +124,7 @@ func (h *Handler) Init() *gin.Engine {
 			return
 		}
 
-		client := NewClient(clientID, ws)
+		client := NewClient(uint64(authID), ws)
 		go client.Read()
 		go client.Write()
 	})

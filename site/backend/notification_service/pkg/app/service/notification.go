@@ -1,11 +1,10 @@
 package service
 
 import (
+	"backend/notification_service/pkg/app/data"
+	"backend/notification_service/pkg/app/model"
 	"context"
 	"errors"
-	"github.com/TemaStatham/TaskService/notificationservice/pkg/app/notification/data"
-
-	"github.com/TemaStatham/TaskService/notificationservice/pkg/app/notification/model"
 )
 
 const (
@@ -25,6 +24,10 @@ type NotificationServiceInterface interface {
 	GetMessages(ctx context.Context, id uint, page int, limit int) ([]model.Notification, error)
 	CreateMessage(ctx context.Context, messType uint32, userID uint64) error
 	SetIsRead(ctx context.Context, id uint) error
+}
+
+type ClientSenderInterface interface {
+	SendNotification(ctx context.Context, notification model.Notification) error
 }
 
 type NotificationService struct {
@@ -107,4 +110,9 @@ func (s *NotificationService) CreateMessage(ctx context.Context, messType uint32
 	}
 
 	return errors.New("invalid params")
+}
+
+func (s *NotificationService) SendNotification(ctx context.Context, notification model.Notification) error {
+
+	return nil
 }

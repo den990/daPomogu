@@ -1,9 +1,9 @@
 package internalapi
 
 import (
+	pb "backend/proto-functions/notification"
 	"context"
 	"fmt"
-	pb "github.com/TemaStatham/TaskService/proto/notification"
 	"google.golang.org/grpc"
 	"log"
 	"net"
@@ -15,6 +15,8 @@ type Server struct {
 
 func (s Server) SendNotification(ctx context.Context, request *pb.NotificationRequest) (*pb.NotificationResponse, error) {
 	// todo: получить уведолмения, сохранить, отправить
+
+	// записывать в бд с флагом is read false
 
 	return &pb.NotificationResponse{}, nil
 }
