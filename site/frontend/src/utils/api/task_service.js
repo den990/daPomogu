@@ -66,6 +66,15 @@ class TaskServiceApi {
             headers: this._headers,
         });
     }
+
+    postCreateResponse(token, task_id) {
+        this._updateToken(token);
+        return this._request(`${this._baseUrl}/responses/create`, {
+            method: "POST",
+            headers: this._headers,
+            body: JSON.stringify({task_id}),
+        });
+    }
 }
 
 export const taskServiceApi = new TaskServiceApi(apiSettings);
