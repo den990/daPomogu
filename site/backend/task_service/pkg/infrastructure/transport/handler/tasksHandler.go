@@ -79,20 +79,26 @@ func (h *Handler) deleteTask(c *gin.Context) {
 		return
 	}
 
-	var input data.DeleteTask
+	taskIDParam := c.Param("id")
 
-	if err := c.BindJSON(&input); err != nil {
+	if taskIDParam == "" {
 		response.NewErrorResponse(c, http.StatusBadRequest, InvalidInputBodyErr)
 		return
 	}
 
-	err = h.taskService.Delete(c.Request.Context(), input.ID)
+	taskID, err := strconv.ParseUint(taskIDParam, 10, 64)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusBadRequest, "Invalid task ID")
+		return
+	}
+
+	err = h.taskService.Delete(c.Request.Context(), uint(taskID))
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, map[string]interface{}{})
+	c.JSON(http.StatusOK, gin.H{"message": "task deleted"})
 }
 
 func (h *Handler) getTask(c *gin.Context) {
