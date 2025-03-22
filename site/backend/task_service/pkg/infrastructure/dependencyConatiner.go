@@ -102,7 +102,13 @@ func NewContainer(config config.Config) *Container {
 	responseRepository := postgres.NewResponsePostgresRepository(db)
 	responseQuery := responsequery.NewResponseQuery(responseRepository)
 	responsestatusRepo := postgres.NewResponseStatusRepository(db)
-	responseService := responseservice.NewResponseService(responseRepository, responsestatusRepo, taskUserQuery)
+	responseService := responseservice.NewResponseService(
+		responseRepository,
+		responsestatusRepo,
+		taskUserQuery,
+		responseQuery,
+		taskQuery,
+	)
 
 	userQuery := userquery.NewUserQuery(grpcClient)
 

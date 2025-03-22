@@ -5,7 +5,6 @@ import (
 	"backend/task_service/pkg/app/task/model"
 	"backend/task_service/pkg/infrastructure/middleware/auth"
 	"backend/task_service/pkg/infrastructure/response"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -201,7 +200,6 @@ func (h *Handler) getTasks(c *gin.Context) {
 	}
 
 	pageStr := c.Param("page")
-	fmt.Println("Страница: " + pageStr)
 	if pageStr == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Empty organization"})
 		return
@@ -213,13 +211,13 @@ func (h *Handler) getTasks(c *gin.Context) {
 		return
 	}
 
-	tasks, err := h.taskQuery.Show(c.Request.Context(), authUser, page)
+	tasks, total, err := h.taskQuery.Show(c.Request.Context(), authUser, page)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": tasks})
+	c.JSON(http.StatusOK, gin.H{"data": tasks, "total_pages": total})
 }
 
 func (h *Handler) getOpenedTasks(c *gin.Context) {

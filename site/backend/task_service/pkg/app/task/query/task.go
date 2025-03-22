@@ -13,7 +13,7 @@ import (
 
 type TaskQueryInterface interface {
 	Get(ctx context.Context, id uint) (*model.TaskModel, error)
-	Show(ctx context.Context, user uint, page int) ([]model.TasksView, error)
+	Show(ctx context.Context, user uint, page int) ([]model.TasksView, int, error)
 	GetCurrentTasks(ctx context.Context, dto data.GetTasksByUser, user uint) (paginate.Pagination, error)
 	GetFinishedTasks(ctx context.Context, dto data.GetTasksByUser, user uint) (paginate.Pagination, error)
 }
@@ -51,11 +51,11 @@ func (t *TaskQuery) Get(ctx context.Context, id uint) (*model.TaskModel, error) 
 	return task, nil
 }
 
-func (t *TaskQuery) Show(ctx context.Context, user uint, page int) ([]model.TasksView, error) {
+func (t *TaskQuery) Show(ctx context.Context, user uint, page int) ([]model.TasksView, int, error) {
 	org, _ := t.organizationQuery.GetOrganizationByOwnerUserID(ctx, uint64(user))
 	var taskView []model.TasksView
 	if org != (organizationmodel.OrganizationModel{}) {
-		tasks, err := t.readRepository.GetAll(ctx, user, true, []organizationmodel.OrganizationModel{org}, page)
+		tasks, total, err := t.readRepository.GetAll(ctx, user, true, []organizationmodel.OrganizationModel{org}, page)
 
 		for _, task := range tasks {
 			organization, err := t.organizationQuery.GetOrganization(ctx, uint64(task.OrganizationID))
@@ -82,22 +82,18 @@ func (t *TaskQuery) Show(ctx context.Context, user uint, page int) ([]model.Task
 			})
 		}
 		if err != nil {
-			return nil, err
+			return nil, 0, err
 		}
 
-		return taskView, nil
+		return taskView, total, nil
 
 	} else {
 		organizations, err := t.organizationQuery.GetOrganizationsByUserID(ctx, uint64(user))
 		if err != nil {
-			return nil, err
+			return nil, 0, err
 		}
 
-		tasks, err := t.readRepository.GetAll(ctx, user, false, organizations, page)
-
-		if err != nil {
-			return nil, err
-		}
+		tasks, total, err := t.readRepository.GetAll(ctx, user, false, organizations, page)
 
 		for _, task := range tasks {
 			organization, err := t.organizationQuery.GetOrganization(ctx, uint64(task.OrganizationID))
@@ -125,10 +121,10 @@ func (t *TaskQuery) Show(ctx context.Context, user uint, page int) ([]model.Task
 			})
 		}
 		if err != nil {
-			return nil, err
+			return nil, 0, err
 		}
 
-		return taskView, nil
+		return taskView, total, nil
 
 	}
 }
