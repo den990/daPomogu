@@ -44,7 +44,6 @@ function Dashboard({ isSidebarOpen, setIsSidebarOpen }) {
 
     return (
         <main className="w-full p-4 sm:p-6 lg:p-8">
-            {/* Заголовок с кнопкой */}
             <div className="mb-6 sm:mb-8 flex justify-between items-center">
                 <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
                     Главная страница

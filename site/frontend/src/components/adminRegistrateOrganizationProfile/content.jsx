@@ -2,7 +2,7 @@ import { useContext, useEffect, useState, useCallback } from "react";
 import { AuthContext } from "../../context/AuthProvider";
 import { userServiceApi } from "../../utils/api/user_service";
 
-function Content({ isSidebarOpen, toggleSidebar }) {
+function Content({ isSidebarOpen, setIsSidebarOpen }) {
     const { token } = useContext(AuthContext);
     const [organizations, setOrganizations] = useState([]);
     const [selectedOrganization, setSelectedOrganization] = useState(null);
@@ -77,7 +77,7 @@ function Content({ isSidebarOpen, toggleSidebar }) {
                 {/* Мобильная кнопка сайдбара */}
                 <div className="md:hidden mb-4 flex justify-end">
                     <button
-                        onClick={toggleSidebar}
+                        onClick={setIsSidebarOpen}
                         className="p-2 bg-white rounded-lg shadow-lg hover:bg-gray-100 transition-colors"
                         aria-label="Открыть меню"
                     >
