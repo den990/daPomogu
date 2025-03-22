@@ -18,6 +18,7 @@ type TaskModel struct {
 	ParticipantsCount *int      `gorm:"column:participants_count;type:INTEGER" json:"participants_count"`
 	MaxScore          *int      `gorm:"column:max_score;type:INTEGER" json:"max_score"`
 	StatusID          uint      `gorm:"column:status_id;type:INTEGER;default:1;index" json:"status_id"`
+	IsDeleted         bool      `gorm:"column:is_deleted;type:BOOLEAN;default:false;" json:"is_deleted"`
 	CreatedAt         time.Time `gorm:"column:created_at;type:TIMESTAMP;default:CURRENT_TIMESTAMP;autoCreateTime" json:"created_at"`
 	UpdatedAt         time.Time `gorm:"column:updated_at;type:TIMESTAMP;default:CURRENT_TIMESTAMP;autoUpdateTime" json:"updated_at"`
 }
