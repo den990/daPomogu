@@ -92,7 +92,7 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 
 		tasksUsers := httphands.Group("/tasks-users")
 		{
-			tasksUsers.GET("/byTaskID/:id", h.getTasksUsers)
+			tasksUsers.GET("/by-task-id/:id", h.getTasksUsers)
 			tasksUsers.POST("/add/:id", h.addTasksUsers)
 			tasksUsers.DELETE("/delete", h.deleteTasksUsers)
 		}
@@ -100,8 +100,8 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 		tasks := httphands.Group("/tasks")
 		{
 			tasks.GET("/page/:page", h.getTasks)
-			tasks.GET("/myOpenedTasks", h.getOpenedTasks)
-			tasks.GET("/myClosedTasks", h.getClosedTasks)
+			tasks.GET("/my-opened-tasks", h.getOpenedTasks)
+			tasks.GET("/my-closed-tasks", h.getClosedTasks)
 			tasks.GET("/:id", h.getTask)
 			tasks.POST("/", h.createTask)
 			tasks.PUT("/:id", h.updateTask)
@@ -127,7 +127,7 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 
 		approves := httphands.Group("/approves")
 		{
-			approves.GET("/allByTaskID/:id", h.getAllByTaskID)
+			approves.GET("/all-by-tas-id/:id", h.getAllByTaskID)
 			approves.POST("/create", h.addApproves)
 			approves.PUT("/reject", h.rejectApproves)
 			approves.PUT("/confirm", h.confirmApproves)
