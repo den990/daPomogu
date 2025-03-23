@@ -29,7 +29,7 @@ function FeaturedProjects() {
                                     Требуется: 5 человек
                                 </div>
                                 <Link
-                                    to={ROUTES.TASK}
+                                    to={`${ROUTES.TASK.replace(":taskId", 1)}`}
                                     className="w-full md:w-3/4 mx-auto block px-4 py-2 bg-red-600 text-white rounded-lg 
                                     hover:bg-red-700 whitespace-nowrap text-center text-sm md:text-base"
                                 >
@@ -55,7 +55,7 @@ function FeaturedProjects() {
                                     Требуется: 15 человек
                                 </div>
                                 <Link
-                                    to={ROUTES.TASK}
+                                    to={`${ROUTES.TASK.replace(":taskId", 1)}`}
                                     className="w-full md:w-3/4 mx-auto block px-4 py-2 bg-red-600 text-white rounded-lg 
                                     hover:bg-red-700 whitespace-nowrap text-center text-sm md:text-base"
                                 >
@@ -81,7 +81,7 @@ function FeaturedProjects() {
                                     Требуется: 3 человека
                                 </div>
                                 <Link
-                                    to={ROUTES.TASK}
+                                    to={`${ROUTES.TASK.replace(":taskId", 1)}`}
                                     className="w-full md:w-3/4 mx-auto block px-4 py-2 bg-red-600 text-white rounded-lg 
                                     hover:bg-red-700 whitespace-nowrap text-center text-sm md:text-base"
                                 >
