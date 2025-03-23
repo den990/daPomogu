@@ -110,6 +110,16 @@ class TaskServiceApi {
             body: JSON.stringify({ task_id, user_id }),
         });
     }
+
+    // http://localhost:8081/api/tasks/my-opened-tasks/1/100
+    getMyOpenedTasks(token, page, limit = 5) {
+        this._updateToken(token);
+        const url = `${this._baseUrl}/tasks/my-opened-tasks/${page}/${limit}`;
+        return this._request(url, {
+            method: "GET",
+            headers: this._headers,
+        });
+    }
 }
 
 export const taskServiceApi = new TaskServiceApi(apiSettings);
