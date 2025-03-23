@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import ROUTES from "../../constants/routes";
 import { Link } from "react-router";
+import { AuthContext } from "../../context/AuthProvider";
 
 function Profile({ profile }) {
+    const { role } = useContext(AuthContext);
+
     return (
         <div id="profile-section" className="md:col-span-1">
             <div className="bg-white rounded-lg shadow p-6">
@@ -29,12 +32,14 @@ function Profile({ profile }) {
                         <div className="text-2xl font-bold text-red-600">47</div>
                         <div className="text-sm text-gray-600">Выполнено заданий</div>
                     </div>
-                    <Link
-                        to={ROUTES.CHAT}
-                        className="w-full mt-4 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700"
-                    >
-                        Написать сообщение
-                    </Link>
+                    {role !== "organization" && (
+                        <Link
+                            to={ROUTES.CHAT}
+                            className="w-full mt-4 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700"
+                        >
+                            Написать сообщение
+                        </Link>
+                    )}
                 </div>
             </div>
         </div>
