@@ -65,7 +65,7 @@ function Content() {
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6">
                     <div id="applications-list" className="md:col-span-4 rounded-lg border bg-white p-3 md:p-4">
                         <div className="mb-3 md:mb-4 flex items-center justify-between">
-                            <h2 className="text-lg">Заявки</h2>
+                            <h2 className="text-lg">Заявки на вступление в организацию</h2>
                         </div>
                         <div className="space-y-2 md:space-y-3">
                             {requests.map((request) => (
@@ -88,7 +88,10 @@ function Content() {
                             ))}
                         </div>
                     </div>
-                    <div id="application-details" className="md:col-span-8 rounded-lg border bg-white p-4 md:p-6 mt-4 md:mt-0">
+                    <div
+                        id="application-details"
+                        className="md:col-span-8 rounded-lg border bg-white p-4 md:p-6 mt-4 md:mt-0"
+                    >
                         {userDetails ? (
                             <>
                                 <div className="mb-4 md:mb-6 flex flex-col md:flex-row md:items-start justify-between gap-4">
@@ -123,23 +126,33 @@ function Content() {
                                         <div className="grid grid-cols-1 gap-4">
                                             <div>
                                                 <p className="text-xs md:text-sm text-neutral-600">Имя</p>
-                                                <p className="text-sm md:text-base">{userDetails.name || "Не указано"}</p>
+                                                <p className="text-sm md:text-base">
+                                                    {userDetails.name || "Не указано"}
+                                                </p>
                                             </div>
                                             <div>
                                                 <p className="text-xs md:text-sm text-neutral-600">Фамилия</p>
-                                                <p className="text-sm md:text-base">{userDetails.surname || "Не указано"}</p>
+                                                <p className="text-sm md:text-base">
+                                                    {userDetails.surname || "Не указано"}
+                                                </p>
                                             </div>
                                             <div>
                                                 <p className="text-xs md:text-sm text-neutral-600">Отчество</p>
-                                                <p className="text-sm md:text-base">{userDetails.patronymic || "Не указано"}</p>
+                                                <p className="text-sm md:text-base">
+                                                    {userDetails.patronymic || "Не указано"}
+                                                </p>
                                             </div>
                                             <div>
                                                 <p className="text-xs md:text-sm text-neutral-600">Дата рождения</p>
-                                                <p className="text-sm md:text-base">{userDetails.date_of_birthday || "Не указано"}</p>
+                                                <p className="text-sm md:text-base">
+                                                    {userDetails.date_of_birthday || "Не указано"}
+                                                </p>
                                             </div>
                                             <div>
                                                 <p className="text-xs md:text-sm text-neutral-600">Адрес регистрации</p>
-                                                <p className="text-sm md:text-base">{userDetails.address || "Не указано"}</p>
+                                                <p className="text-sm md:text-base">
+                                                    {userDetails.address || "Не указано"}
+                                                </p>
                                             </div>
                                         </div>
                                     </div>

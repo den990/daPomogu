@@ -32,6 +32,7 @@ import PublicAccountOrganization from "./screens/PublicAccountOrganization";
 import PublicAccountVolonteer from "./screens/PublicAccountVolunteer";
 import OrganizationTasks from "./screens/OrganizationTasks";
 import ConfirmationsResponses from "./screens/ConfirmationsResponses";
+import ListOrganization from "./screens/ListOrganization";
 
 function App() {
     const { loading } = useContext(AuthContext);
@@ -54,6 +55,7 @@ function App() {
                             <Route path={ROUTES.ERROR} element={<Error />} />
                             <Route path={ROUTES.PUBLIC_ACCOUNT_ORGANIZATION} element={<PublicAccountOrganization />} />
                             <Route path={ROUTES.TEST_AUTH} element={<TestAuth />} />
+                            <Route path={ROUTES.LIST_ORGANIZATION} element={<ListOrganization />} />
 
                             {/* Волонтёр */}
                             <Route element={<PrivateRoute />}>

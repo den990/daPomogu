@@ -1,13 +1,13 @@
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 import LeftPanel from "../components/volunteerRegistration/leftPanel";
 import RegistrationForm from "../components/volunteerRegistration/registrationForm";
 import { useState } from "react";
-import PopUp from '../layouts/popUp/PopUp';
+import PopUp from "../layouts/popUp/PopUp";
 import ROUTES from "../constants/routes";
 
 function VolunteerRegistration() {
     const [isPopUpVisible, setIsPopUpVisible] = useState(false);
-    
+
     return (
         <>
             <motion.div
@@ -24,12 +24,13 @@ function VolunteerRegistration() {
                     </div>
                 </div>
             </motion.div>
-            <PopUp 
+            <PopUp
                 isVisible={isPopUpVisible}
                 onClose={() => setIsPopUpVisible(false)}
                 mainMessage={"Регистрация успешна!"}
                 subMessage={"Добро пожаловать в команду волонтеров"}
-                buttonMessage={"Начать помогать"} link={ROUTES.LOGIN}
+                buttonMessage={"Начать помогать"}
+                link={ROUTES.LOGIN}
             />
         </>
     );

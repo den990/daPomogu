@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import ROUTES from "../../constants/routes";
 import useFormWithValidation from "../../hooks/useFormWithValidation";
 import { useContext, useEffect, useState } from "react";
@@ -8,11 +8,10 @@ import CategoryMultiSelect from "./CategoryMultiSelect";
 import CoordinatorsMultiSelect from "./CoordinatorsMultiSelect";
 import { Alert, Fade } from "@mui/material";
 
-function TaskForm() {
+function TaskForm({ setIsPopUpVisible }) {
     const { values, errors, isValid, handleChange, setValues } = useFormWithValidation();
     const { token } = useContext(AuthContext);
     const [error, setError] = useState("");
-    const navigate = useNavigate();
 
     useEffect(() => {
         if (!values.task_type) setValues({ ...values, task_type: "1" });
@@ -67,10 +66,9 @@ function TaskForm() {
             category_ids: category_ids.map((cat) => cat.ID),
         };
 
-        console.log("Отправляемые данные:", payload);
         try {
             await taskServiceApi.postCreateTask(token, payload);
-            navigate(ROUTES.ACCOUNT_ORGANIZATION);
+            setIsPopUpVisible(true);
         } catch (error) {
             setError("Произошла ошибка при создании задания. Попробуйте снова");
         }

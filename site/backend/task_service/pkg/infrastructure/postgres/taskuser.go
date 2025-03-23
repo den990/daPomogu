@@ -22,7 +22,7 @@ func (tu *TaskUserRepository) GetUsers(
 	page int,
 	limit int,
 	isCoordinators *bool,
-) (*paginate.Pagination, error) {
+) ([]model.TaskUser, int, error) {
 	var taskUsers []model.TaskUser
 	query := tu.db.WithContext(ctx).Where("task_id = ?", taskID)
 
@@ -32,7 +32,7 @@ func (tu *TaskUserRepository) GetUsers(
 
 	var total int64
 	if err := query.Model(&model.TaskUser{}).Count(&total).Error; err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	totalPages := int((total + int64(limit) - 1) / int64(limit))
@@ -48,24 +48,27 @@ func (tu *TaskUserRepository) GetUsers(
 
 	offset := (page - 1) * limit
 	if err := query.Offset(offset).Limit(limit).Find(&taskUsers).Error; err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
-	pagination := paginate.Pagination{limit, page, taskUsers, totalPages}
-	return &pagination, nil
+	return taskUsers, totalPages, nil
 }
 
 func (tu *TaskUserRepository) Add(ctx context.Context, userID, taskID uint, isCoordinator bool) error {
 	if isExist, err := tu.isExist(ctx, userID, taskID); err != nil || !isExist {
 		return err
 	}
+	return tu.Create(ctx, userID, taskID, isCoordinator)
+}
+
+func (tu *TaskUserRepository) Create(ctx context.Context, userID, taskID uint, isCoordinator bool) error {
 	taskuser := model.TaskUser{
 		TaskID:        taskID,
 		UserID:        userID,
 		IsCoordinator: isCoordinator,
 	}
 
-	res := tu.db.WithContext(ctx).Create(&taskuser)
+	res := tu.db.WithContext(ctx).Model(&model.TaskUser{}).Create(&taskuser)
 
 	return res.Error
 }

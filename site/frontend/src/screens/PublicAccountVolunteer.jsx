@@ -7,17 +7,18 @@ import Profile from "../components/publicAccountVolunteer/profile";
 
 function PublicAccountVolonteer() {
     const { volonteerId } = useParams();
-    const {token} = useContext(AuthContext);
+    const { token } = useContext(AuthContext);
     const [profile, setProfile] = useState(null);
 
     useEffect(() => {
         if (token) {
-            userServiceApi.getVolonteerProfileById(token, volonteerId)
-                .then(data => {
+            userServiceApi
+                .getVolonteerProfileById(token, volonteerId)
+                .then((data) => {
                     setProfile(data);
                 })
-                .catch(error => {
-                    console.error('Ошибка при загрузке профиля волонтёра:', error);
+                .catch((error) => {
+                    console.error("Ошибка при загрузке профиля волонтёра:", error);
                 });
         }
     }, [token, volonteerId]);

@@ -125,7 +125,7 @@ function Content({ isSidebarOpen, setIsSidebarOpen }) {
                             </div>
                         </div>
                     </div>
-                    
+
                     <div className="md:col-span-8 order-2">
                         <div className="rounded-lg border bg-white p-4 md:p-6">
                             {organizationDetails ? (
