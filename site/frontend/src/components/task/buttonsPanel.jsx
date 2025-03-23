@@ -16,7 +16,7 @@ function ButtonsPanel({task: initialTask}) {
     let category = "";
     task.categories.map((cat) => (category += `${cat.name}`));
 
-    let typeTask = task.type === 1 ? "Закрытый" : "Открытый";
+    let typeTask = task.type_id === 2 ? "Закрытый" : "Открытый";
 
     const handleResponse = async (e) => {
         try {
