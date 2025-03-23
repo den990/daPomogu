@@ -108,3 +108,27 @@ func (h *Handler) confirmResponse(c *gin.Context) {
 		"status": "success",
 	})
 }
+
+func (h *Handler) deleteResponse(c *gin.Context) {
+	_, err := auth.GetUserId(c)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	var input data.DeleteResponse
+	if err := c.BindJSON(&input); err != nil {
+		response.NewErrorResponse(c, http.StatusBadRequest, InvalidInputBodyErr)
+		return
+	}
+
+	err = h.responseService.Delete(c.Request.Context(), input)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"status": "success",
+	})
+}
