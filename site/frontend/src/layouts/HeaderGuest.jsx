@@ -3,13 +3,13 @@ import ROUTES from '../constants/routes';
 
 function HeaderGuest() {
     return (
-        <header id="header-guest" className="bg-white shadow-sm py-3 sm:py-4">
+        <header id="header-guest" className="bg-white shadow-sm py-4">
             <div className="container mx-auto px-2 sm:px-4">
                 <div className="flex items-center justify-between gap-2">
                     {/* Логотип */}
                     <div className="flex items-center gap-2 min-w-0">
                         <img 
-                            className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" 
+                            className="w-6 h-6 md:w-8 md:h-8 shrink-0" 
                             src={require("../images/heart_red.svg").default} 
                             alt="Логотип" 
                         />
