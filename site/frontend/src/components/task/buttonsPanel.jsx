@@ -47,7 +47,7 @@ function ButtonsPanel({task: initialTask}) {
             <div className="col-span-1">
                 <div id="task-actions" className="bg-white p-6 rounded-lg border sticky top-4">
                     {role === "volunteer" ? (
-                        task.is_response !== true ? (
+                        task.is_response !== true && task.is_recorded !== true ? (
                             <button
                                 onClick={handleResponse}
                                 className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 mb-4"
