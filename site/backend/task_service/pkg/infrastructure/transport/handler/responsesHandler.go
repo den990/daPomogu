@@ -122,6 +122,12 @@ func (h *Handler) deleteResponse(c *gin.Context) {
 		return
 	}
 
+	err = h.responseService.Delete(c.Request.Context(), input)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"status": "success",
 	})
