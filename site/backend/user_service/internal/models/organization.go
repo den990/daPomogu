@@ -35,15 +35,23 @@ type OrganizationRegistration struct {
 	FullNameOwner string `json:"full_name_owner" binding:"required"`
 }
 
+type TasksInProfileResponse struct {
+	Id               uint64 `json:"id"`
+	Name             string `json:"name"`
+	TaskDate         string `json:"task_date"`
+	CountCoordinator uint64 `json:"count_coordinator"`
+}
+
 type OrganizationProfileResponse struct {
-	Id            string `json:"id"`
-	Email         string `json:"email"`
-	Phone         string `json:"phone"`
-	INN           string `json:"inn"`
-	Name          string `json:"name"`
-	ActualAddress string `json:"actual_address"`
-	LegalAddress  string `json:"legal_address"`
-	FullNameOwner string `json:"full_name_owner"`
+	Id                     string                   `json:"id"`
+	Email                  string                   `json:"email"`
+	Phone                  string                   `json:"phone"`
+	INN                    string                   `json:"inn"`
+	Name                   string                   `json:"name"`
+	ActualAddress          string                   `json:"actual_address"`
+	LegalAddress           string                   `json:"legal_address"`
+	FullNameOwner          string                   `json:"full_name_owner"`
+	TasksInProfileResponse []TasksInProfileResponse `json:"tasks"`
 }
 
 type GetProfilesOrganizationResponse struct {

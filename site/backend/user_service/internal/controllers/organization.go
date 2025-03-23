@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"backend/proto-functions/task"
 	"backend/user_service/internal/db"
 	"backend/user_service/internal/models"
 	"backend/user_service/internal/utils"
@@ -18,15 +19,15 @@ const (
 	StatusRejected = 3 // Отклонено
 )
 
-func ApplyOrganization(c *gin.Context) {
-	updateOrganizationStatus(c, StatusAccepted, "Organization approved successfully")
+func (h *Handler) ApplyOrganization(c *gin.Context) {
+	h.updateOrganizationStatus(c, StatusAccepted, "Organization approved successfully")
 }
 
-func RejectOrganization(c *gin.Context) {
-	updateOrganizationStatus(c, StatusRejected, "Organization rejected successfully")
+func (h *Handler) RejectOrganization(c *gin.Context) {
+	h.updateOrganizationStatus(c, StatusRejected, "Organization rejected successfully")
 }
 
-func updateOrganizationStatus(c *gin.Context, newStatus uint, successMessage string) {
+func (h *Handler) updateOrganizationStatus(c *gin.Context, newStatus uint, successMessage string) {
 	isAdmin, err := models.IsAdmin(c)
 	if err != nil || !isAdmin {
 		c.JSON(http.StatusForbidden, gin.H{"message": "Access denied"})
@@ -95,7 +96,7 @@ func updateOrganizationStatus(c *gin.Context, newStatus uint, successMessage str
 	c.JSON(http.StatusOK, gin.H{"message": successMessage})
 }
 
-func GetOrganizationProfileInfo(c *gin.Context) {
+func (h *Handler) GetOrganizationProfileInfo(c *gin.Context) {
 	orgIDParam := c.Param("id")
 	var organizationId uint
 
@@ -120,7 +121,16 @@ func GetOrganizationProfileInfo(c *gin.Context) {
 
 		organizationId = orgData.ID
 	}
-
+	tasks, _ := h.grpcClient.GetTasksByOrganizationId(c.Request.Context(), &task.TaskOrganizationRequest{Id: uint64(organizationId)})
+	var tasksProfile []models.TasksInProfileResponse
+	for _, task := range tasks.TaskViewInProfileOrganization {
+		tasksProfile = append(tasksProfile, models.TasksInProfileResponse{
+			Id:               task.Id,
+			Name:             task.Name,
+			TaskDate:         task.TaskDate,
+			CountCoordinator: task.CountCoordinator,
+		})
+	}
 	isAdmin, _ := models.IsAdmin(c)
 	if !isAdmin {
 		organization, err := models.FindActualOrganizationById(strconv.Itoa(int(organizationId)))
@@ -129,14 +139,15 @@ func GetOrganizationProfileInfo(c *gin.Context) {
 			return
 		} else {
 			response := models.OrganizationProfileResponse{
-				Id:            strconv.Itoa(int(organization.ID)),
-				Email:         organization.Email,
-				Phone:         organization.Phone,
-				Name:          organization.Name,
-				INN:           organization.INN,
-				ActualAddress: organization.ActualAddress,
-				LegalAddress:  organization.LegalAddress,
-				FullNameOwner: organization.FullNameOwner,
+				Id:                     strconv.Itoa(int(organization.ID)),
+				Email:                  organization.Email,
+				Phone:                  organization.Phone,
+				Name:                   organization.Name,
+				INN:                    organization.INN,
+				ActualAddress:          organization.ActualAddress,
+				LegalAddress:           organization.LegalAddress,
+				FullNameOwner:          organization.FullNameOwner,
+				TasksInProfileResponse: tasksProfile,
 			}
 			c.JSON(http.StatusOK, response)
 		}
@@ -147,20 +158,21 @@ func GetOrganizationProfileInfo(c *gin.Context) {
 			return
 		} else {
 			response := models.OrganizationProfileResponse{
-				Email:         organization.Email,
-				Phone:         organization.Phone,
-				Name:          organization.Name,
-				INN:           organization.INN,
-				ActualAddress: organization.ActualAddress,
-				LegalAddress:  organization.LegalAddress,
-				FullNameOwner: organization.FullNameOwner,
+				Email:                  organization.Email,
+				Phone:                  organization.Phone,
+				Name:                   organization.Name,
+				INN:                    organization.INN,
+				ActualAddress:          organization.ActualAddress,
+				LegalAddress:           organization.LegalAddress,
+				FullNameOwner:          organization.FullNameOwner,
+				TasksInProfileResponse: tasksProfile,
 			}
 			c.JSON(http.StatusOK, response)
 		}
 	}
 }
 
-func UpdateOrganization(c *gin.Context) {
+func (h *Handler) UpdateOrganization(c *gin.Context) {
 	userID, err := utils.GetUserIDFromToken(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
@@ -217,7 +229,7 @@ func UpdateOrganization(c *gin.Context) {
 	}
 }
 
-func GetPendingOrganizations(c *gin.Context) {
+func (h *Handler) GetPendingOrganizations(c *gin.Context) {
 	isAdmin, err := models.IsAdmin(c)
 	if err != nil || !isAdmin {
 		c.JSON(http.StatusForbidden, gin.H{"message": "Access denied"})
@@ -247,7 +259,7 @@ func GetPendingOrganizations(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-func GetOrganizationAcceptedList(c *gin.Context) {
+func (h *Handler) GetOrganizationAcceptedList(c *gin.Context) {
 	pageStr := c.Param("page")
 	page, err := strconv.Atoi(pageStr)
 	if err != nil || page <= 0 {
@@ -275,7 +287,7 @@ func GetOrganizationAcceptedList(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-func GetAllOrganizationList(c *gin.Context) {
+func (h *Handler) GetAllOrganizationList(c *gin.Context) {
 	_, err := utils.GetUserIDFromToken(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})

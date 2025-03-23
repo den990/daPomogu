@@ -21,7 +21,7 @@ const (
 	RoleVolunteer    = "volunteer"
 )
 
-func Login(c *gin.Context) {
+func (h *Handler) Login(c *gin.Context) {
 	var req LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid input"})
@@ -64,7 +64,7 @@ func Login(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"token": token})
 }
 
-func RegisterUser(c *gin.Context) {
+func (h *Handler) RegisterUser(c *gin.Context) {
 	var volunteer models.UserRegistration
 	if err := c.ShouldBindJSON(&volunteer); err != nil {
 		c.JSON(400, gin.H{"message": "Invalid input"})
@@ -105,7 +105,7 @@ func RegisterUser(c *gin.Context) {
 	}
 }
 
-func RegisterOrganization(c *gin.Context) {
+func (h *Handler) RegisterOrganization(c *gin.Context) {
 	var orgData models.OrganizationRegistration
 	var user models.User
 	if err := c.ShouldBindJSON(&orgData); err != nil {

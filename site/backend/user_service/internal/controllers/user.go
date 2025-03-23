@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-func GetUserProfileInfo(c *gin.Context) {
+func (h *Handler) GetUserProfileInfo(c *gin.Context) {
 	userIDParam := c.Param("id")
 	var userID uint
 
@@ -65,7 +65,7 @@ func GetUserProfileInfo(c *gin.Context) {
 
 }
 
-func UpdateUser(c *gin.Context) {
+func (h *Handler) UpdateUser(c *gin.Context) {
 	userID, err := utils.GetUserIDFromToken(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
@@ -112,7 +112,7 @@ func UpdateUser(c *gin.Context) {
 	}
 }
 
-func ChangePassword(c *gin.Context) {
+func (h *Handler) ChangePassword(c *gin.Context) {
 	userID, err := utils.GetUserIDFromToken(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
@@ -150,7 +150,7 @@ func ChangePassword(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Password updated successfully"})
 }
 
-func GetAllUsersAndOrganizations(c *gin.Context) {
+func (h *Handler) GetAllUsersAndOrganizations(c *gin.Context) {
 	_, err := models.IsAdmin(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unable to determine user role"})
@@ -208,7 +208,7 @@ func GetAllUsersAndOrganizations(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": result, "total_pages": totalPages})
 }
 
-func BlockUser(c *gin.Context) {
+func (h *Handler) BlockUser(c *gin.Context) {
 	_, err := models.IsAdmin(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unable to determine user role"})
@@ -250,7 +250,7 @@ func BlockUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Block successful"})
 }
 
-func UnblockUser(c *gin.Context) {
+func (h *Handler) UnblockUser(c *gin.Context) {
 	_, err := models.IsAdmin(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unable to determine user role"})
@@ -293,7 +293,7 @@ func UnblockUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Unblock successful"})
 }
 
-func GetRequestsToApply(c *gin.Context) {
+func (h *Handler) GetRequestsToApply(c *gin.Context) {
 	userID, err := utils.GetUserIDFromToken(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})

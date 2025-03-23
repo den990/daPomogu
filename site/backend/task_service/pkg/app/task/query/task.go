@@ -14,6 +14,7 @@ import (
 type TaskQueryInterface interface {
 	Get(ctx context.Context, id uint) (*model.TaskModel, error)
 	Show(ctx context.Context, user uint, page int) ([]model.TasksView, int, error)
+	ShowByOrganizationId(ctx context.Context, orgId uint) ([]model.TaskModel, error)
 	GetCurrentTasks(ctx context.Context, dto data.GetTasksByUser, user uint) (paginate.Pagination, error)
 	GetFinishedTasks(ctx context.Context, dto data.GetTasksByUser, user uint) (paginate.Pagination, error)
 }
@@ -127,6 +128,9 @@ func (t *TaskQuery) Show(ctx context.Context, user uint, page int) ([]model.Task
 		return taskView, total, nil
 
 	}
+}
+func (t *TaskQuery) ShowByOrganizationId(ctx context.Context, orgId uint) ([]model.TaskModel, error) {
+	return t.readRepository.ShowByOrganizationId(ctx, orgId)
 }
 
 func (t *TaskQuery) GetCurrentTasks(ctx context.Context, dto data.GetTasksByUser, user uint) (paginate.Pagination, error) {

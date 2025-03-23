@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+option go_package = "backend/proto/task";
+package functions;
+
+service TaskService {
+  rpc GetTasksByOrganizationId(TaskOrganizationRequest) returns (TasksViewInProfileOrganization) {}
+}
+
+message TaskViewInProfileOrganization {
+  uint64 id = 1;
+  string name = 2;
+  string task_date = 3;
+  uint64 count_coordinator = 4;
+}
+
+message TasksViewInProfileOrganization {
+  repeated TaskViewInProfileOrganization taskViewInProfileOrganization = 1;
+}
+
+message TaskOrganizationRequest {
+  uint64 id = 1;
+}
