@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: user-service
-          image: den990/user_service:1.0.70
+          image: den990/user_service:1.0.71
           ports:
             - name: http
               containerPort: 8080  # HTTP API

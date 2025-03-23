@@ -248,13 +248,16 @@ func GetPendingOrganizations(c *gin.Context) {
 }
 
 func GetOrganizationAcceptedList(c *gin.Context) {
-	_, err := utils.GetUserIDFromToken(c)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
-		return
+	pageStr := c.Param("page")
+	page, err := strconv.Atoi(pageStr)
+	if err != nil || page <= 0 {
+		page = 1
 	}
 
-	organizations, err := models.FindOrganizationsAccepted()
+	limit := 7
+	offset := (page - 1) * limit
+
+	organizations, err := models.FindOrganizationsAccepted(offset, limit)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to fetch organizations"})
 		return

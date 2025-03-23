@@ -1,6 +1,7 @@
 package model
 
 import (
+	"backend/task_service/pkg/app/response/data"
 	"context"
 )
 
@@ -40,6 +41,7 @@ type ResponseRepositoryInterface interface {
 	Create(ctx context.Context, response ResponseModel) (uint, error)
 	Update(ctx context.Context, id uint, status uint) (ResponseModel, error)
 	Get(ctx context.Context, id uint) (*ResponseModel, error)
+	Delete(ctx context.Context, dto data.DeleteResponse) error
 }
 
 type ResponseStatusRepositoryInterface interface {

@@ -1,7 +1,6 @@
 package postgres
 
 import (
-	"backend/task_service/pkg/app/response/data"
 	"backend/task_service/pkg/app/response/model"
 	"context"
 	"gorm.io/gorm"
