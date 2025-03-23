@@ -1,6 +1,6 @@
-import RoleHeader from '../components/RoleHeader/RoleHeader.js';
-import Content from '../components/tasks/Content.jsx';
-import Pagination from '../layouts/pagination/pagination.jsx';
+import RoleHeader from "../components/RoleHeader/RoleHeader.js";
+import Content from "../components/tasks/Content.jsx";
+import Pagination from "../layouts/pagination/pagination.jsx";
 
 function Tasks() {
     return (

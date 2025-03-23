@@ -4,7 +4,7 @@ import Pagination from "../layouts/pagination/pagination.jsx";
 import Footer from "../layouts/Footer.jsx";
 import RoleHeader from "../components/RoleHeader/RoleHeader.js";
 import { taskServiceApi } from "../utils/api/task_service";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import { AuthContext } from "../context/AuthProvider";
 
 function TasksCatalog() {
@@ -13,25 +13,28 @@ function TasksCatalog() {
     const [countOfPages, setCountOfPages] = useState(0);
     const [numberOfPage, setNumberOfPage] = useState(1);
 
-    const fetchTasks = (page) => {
-        if (token) {
-            taskServiceApi
-                .getAllTasks(token, page)
-                .then((data) => {
-                    setTasks(data.data || []);
-                    console.log(data);
-                    setCountOfPages(data.total_pages);
-                })
-                .catch((error) => {
-                    console.error("Ошибка при загрузке всех заданий: ", error);
-                    setTasks([]);
-                });
-        }
-    };
+    const fetchTasks = useCallback(
+        (page) => {
+            if (token) {
+                taskServiceApi
+                    .getAllTasks(token, page)
+                    .then((data) => {
+                        setTasks(data.data || []);
+                        console.log(data);
+                        setCountOfPages(data.total_pages);
+                    })
+                    .catch((error) => {
+                        console.error("Ошибка при загрузке всех заданий: ", error);
+                        setTasks([]);
+                    });
+            }
+        },
+        [token]
+    );
 
     useEffect(() => {
         fetchTasks(numberOfPage);
-    }, [numberOfPage, token]);
+    }, [numberOfPage, fetchTasks]);
 
     const handlePageChange = (page) => {
         setNumberOfPage(page);

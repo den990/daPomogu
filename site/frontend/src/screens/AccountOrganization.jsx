@@ -1,9 +1,8 @@
-import Profile from '../components/accountOrganization/profile.jsx';
-import ActiveTasks from '../components/accountOrganization/activeTasks.jsx';
-import Volunteers from '../components/accountOrganization/volunteers.jsx';
-import Stats from '../components/accountOrganization/stats.jsx';
-import RoleHeader from '../components/RoleHeader/RoleHeader.js';
-
+import Profile from "../components/accountOrganization/profile.jsx";
+import ActiveTasks from "../components/accountOrganization/activeTasks.jsx";
+import Volunteers from "../components/accountOrganization/volunteers.jsx";
+import Stats from "../components/accountOrganization/stats.jsx";
+import RoleHeader from "../components/RoleHeader/RoleHeader.js";
 
 function AccountOrganization() {
     return (

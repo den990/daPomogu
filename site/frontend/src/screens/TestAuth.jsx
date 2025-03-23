@@ -20,6 +20,7 @@ function TestAuth() {
                     videoRef.current.onloadedmetadata = () => {
                         videoRef.current.play();
                         setHasPermission(true);
+                        console.log(hasPermission);
                     };
                 }
             } catch (err) {
@@ -29,7 +30,7 @@ function TestAuth() {
         };
 
         requestCameraAccess();
-    }, []);
+    }, [hasPermission]);
 
     const handleCapture = () => {
         const video = videoRef.current;

@@ -5,7 +5,11 @@ function header() {
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <button className="p-2 hover:bg-neutral-100 rounded-lg">
-                            <img style={{width: 18, height: 20}} src={require("../../images/arrow-back_red.svg").default} alt="arrow-back" />
+                            <img
+                                style={{ width: 18, height: 20 }}
+                                src={require("../../images/arrow-back_red.svg").default}
+                                alt="arrow-back"
+                            />
                         </button>
                         <h1 className="text-xl">Фотоотчет по задаче</h1>
                     </div>
