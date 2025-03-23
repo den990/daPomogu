@@ -73,7 +73,7 @@ func (h *Handler) rejectResponse(c *gin.Context) {
 		return
 	}
 
-	err = h.responseService.Update(c.Request.Context(), input.ID, "Отказано")
+	err = h.responseService.Reject(c.Request.Context(), input.ID)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
