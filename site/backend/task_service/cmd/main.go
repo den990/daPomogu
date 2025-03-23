@@ -1,11 +1,16 @@
 package main
 
 import (
+	pb "backend/proto-functions/task"
 	"backend/task_service/appconfig"
+	"backend/task_service/pkg/app/task/query"
 	"backend/task_service/pkg/infrastructure/jwt"
 	"backend/task_service/pkg/infrastructure/transport/handler"
+	ServerTaskService "backend/task_service/server"
 	"fmt"
+	"google.golang.org/grpc"
 	"log"
+	"net"
 	"os"
 	"os/signal"
 	"syscall"
@@ -41,16 +46,40 @@ func main() {
 	)
 
 	fmt.Println("Client started")
-	serve := new(server.Server)
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+
 	go func() {
+		serve := new(server.Server)
 		if err := serve.Run("8080", hand.Init(appconfig.GetJwtSecretKey())); err != nil {
 			log.Fatal(err)
 		}
 	}()
 
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+	go startGRPCServer(&container.TaskQuery, container.TaskUserQuery)
 	<-quit
 
-	return
+	fmt.Println("Shutting down gracefully...")
+}
+
+func startGRPCServer(taskquery *query.TaskQueryInterface, taskuserquery query.TaskUserQueryInterface) {
+	port, exists := os.LookupEnv("PORT")
+	if !exists {
+		port = "50501"
+	}
+
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
+	if err != nil {
+		log.Fatalf("Error in Listen: %v", err)
+	}
+
+	s := grpc.NewServer()
+	newServer := ServerTaskService.NewServer(*taskquery, taskuserquery)
+	pb.RegisterTaskServiceServer(s, newServer.UnimplementedTaskServiceServer)
+
+	log.Printf("gRPC Server listening at: %v", lis.Addr())
+	if err := s.Serve(lis); err != nil {
+		log.Fatalf("failed to serve gRPC: %v", err)
+	}
 }

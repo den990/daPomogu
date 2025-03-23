@@ -60,6 +60,16 @@ type TasksView struct {
 	Categories       []TaskViewCategory `json:"categories"`
 	CountApplying    int                `json:"count_applying"`
 }
+type TaskViewInProfileOrganization struct {
+	ID               uint      `json:"id"`
+	Name             string    `json:"name"`
+	TaskDate         time.Time `json:"task_date"`
+	CountCoordinator int       `json:"count_coordinator"`
+}
+
+type TasksViewInProfileOrganization struct {
+	Tasks []TaskViewInProfileOrganization
+}
 
 func (TaskModel) TableName() string {
 	return "task"
@@ -99,6 +109,7 @@ type TaskReadRepositoryInterface interface {
 		page int,
 		limit int,
 	) ([]TaskModel, int, error)
+	ShowByOrganizationId(ctx context.Context, orgId uint) ([]TaskModel, error)
 }
 
 type TaskRepositoryInterface interface {

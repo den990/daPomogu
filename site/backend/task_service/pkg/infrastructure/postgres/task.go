@@ -289,3 +289,23 @@ func (t *TaskRepository) Complete(ctx context.Context, id, userId uint) error {
 
 	return nil
 }
+
+func (t *TaskRepository) ShowByOrganizationId(ctx context.Context, orgId uint) ([]model.TaskModel, error) {
+	fmt.Println("f3")
+	var tasks []model.TaskModel
+	fmt.Println("2281337: ")
+	fmt.Println(orgId)
+	err := t.db.WithContext(ctx).
+		Table("task").
+		Joins("JOIN task_type tt ON tt.id = task.type_id").
+		Where("tt.name = 'Открытый'").
+		Where("task.is_deleted = ?", false).
+		Where("task.organization_id = ?", orgId).
+		Find(&tasks).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return tasks, nil
+}
