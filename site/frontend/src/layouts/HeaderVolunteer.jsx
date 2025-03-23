@@ -21,7 +21,7 @@ function HeaderVolunteer() {
     }, []);
 
     return (
-        <header id="header-volunteer" className="bg-white shadow-sm py-4">
+        <header id="header-volunteer" className="bg-white shadow-sm py-3">
             <div className="container mx-auto px-4">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">

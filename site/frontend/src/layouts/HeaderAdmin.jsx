@@ -21,7 +21,7 @@ function HeaderAdmin() {
     }, []);
 
     return (
-        <header id="header-admin" className="bg-white shadow-sm py-4">
+        <header id="header-admin" className="bg-white shadow-sm py-3">
             <div className="container mx-auto px-4">
                 <div className="flex items-center justify-end">
                     <div className="flex items-center space-x-4">

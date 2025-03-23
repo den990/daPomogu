@@ -1,14 +1,12 @@
 import { Link } from "react-router";
 import ROUTES from "../../constants/routes";
-import GetRole from "../../utils/GetRole";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthProvider";
 import { taskServiceApi } from "../../utils/api/task_service";
 import { useState } from "react";
 
-function ButtonsPanel({ task: initialTask }) {
-    const { token } = useContext(AuthContext);
-    let role = GetRole(token);
+function ButtonsPanel({task: initialTask}) {
+    const { token, role } = useContext(AuthContext);
     const [task, setTask] = useState(initialTask);
 
     if (!task) {
