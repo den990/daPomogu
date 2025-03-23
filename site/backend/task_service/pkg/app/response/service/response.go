@@ -116,6 +116,10 @@ func (r *ResponseService) Confirm(ctx context.Context, id uint) error {
 	if err != nil {
 		return err
 	}
-	_, err = r.responseRepository.Update(ctx, id, status.ID)
+	resp, err := r.responseRepository.Update(ctx, id, status.ID)
+	if err != nil {
+		return err
+	}
+	err = r.taskuserService.Create(ctx, resp.TaskID, resp.UserID, false)
 	return err
 }
