@@ -17,6 +17,7 @@ type ResponseServiceInterface interface {
 	Create(ctx context.Context, taskId, userId uint) (uint, error)
 	Delete(ctx context.Context, dto data.DeleteResponse) error
 	Confirm(ctx context.Context, id uint) error
+	Reject(ctx context.Context, id uint) error
 }
 
 type ResponseService struct {
@@ -116,6 +117,20 @@ func (r *ResponseService) Confirm(ctx context.Context, id uint) error {
 	if err != nil {
 		return err
 	}
+	resp, err := r.responseRepository.Update(ctx, id, status.ID)
+	if err != nil {
+		return err
+	}
+	err = r.taskuserService.Create(ctx, resp.TaskID, resp.UserID, false)
+	return err
+}
+
+func (r *ResponseService) Reject(ctx context.Context, id uint) error {
+	status, err := r.responseStatusRepository.GetStatus(ctx, "Отказано")
+	if err != nil {
+		return err
+	}
 	_, err = r.responseRepository.Update(ctx, id, status.ID)
+
 	return err
 }
