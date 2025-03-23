@@ -10,14 +10,19 @@ function Content({ taskId }) {
     const [selectedResponse, setSelectedResponse] = useState(null);
     const [userDetails, setUserDetails] = useState(null);
     const [alert, setAlert] = useState(null);
+    const task_id = Number(taskId);
 
     const fetchResponses = useCallback(() => {
         if (!token) return;
         taskServiceApi
             .getAllResponses(token, taskId)
-            .then((data) => {
-                const list = Array.isArray(data.data) ? data.data : [];
-                setResponses(list);
+            .then((response) => {
+                const rows = response?.data?.rows;
+                if (rows && Array.isArray(rows)) {
+                    setResponses(rows);
+                } else {
+                    setResponses([]);
+                }
             })
             .catch(() => {
                 setAlert({ message: "Ошибка при загрузке откликов", severity: "error" });
@@ -51,10 +56,11 @@ function Content({ taskId }) {
             .catch(() => setAlert({ message: "Ошибка при принятии волонтёра", severity: "error" }));
     };
 
-    const handleRejectResponse = (id) => {
+    const handleRejectResponse = () => {
         if (!token) return;
+        let temp_user_id = 1;
         taskServiceApi
-            .putRejectResponse(token, id)
+            .deleteResponse(token, task_id, temp_user_id)
             .then(() => {
                 fetchResponses();
                 setUserDetails(null);
@@ -76,19 +82,21 @@ function Content({ taskId }) {
                     <div className="rounded-lg border bg-white p-3 md:p-4">
                         <h2 className="text-base md:text-lg mb-3 md:mb-4">Отклики на участие в задании</h2>
                         <div className="space-y-2 md:space-y-3">
-                            {responses.map((item) => (
+                            {responses.map((response) => (
                                 <div
-                                    key={item.id}
+                                    key={response.ID}
                                     className="rounded-lg border p-2 md:p-3 hover:bg-neutral-50 cursor-pointer"
-                                    onClick={() => handleResponseSelect(item.id)}
+                                    onClick={() => handleResponseSelect(response.ID)}
                                 >
                                     <div className="flex items-center gap-2 md:gap-3">
                                         <img
-                                            src={`https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=${item.id}`}
+                                            src={`https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=${response.User.id}`}
                                             className="h-8 w-8 md:h-10 md:w-10 rounded-full"
                                             alt="Фото пользователя"
                                         />
-                                        <p className="text-sm md:text-base">{item.name}</p>
+                                        <p className="text-sm md:text-base">
+                                            {response.User.name + " " + response.User.surname}
+                                        </p>
                                     </div>
                                 </div>
                             ))}
@@ -105,18 +113,21 @@ function Content({ taskId }) {
                                     className="h-12 w-12 md:h-16 md:w-16 rounded-full"
                                     alt="Фото пользователя"
                                 />
-                                <h2 className="text-lg md:text-xl">Иван Петров</h2>
+                                <h2 className="text-lg md:text-xl">
+                                    {`${userDetails?.name || "Не указано"} ${userDetails?.surname || ""}`.trim() ||
+                                        "Не указано"}
+                                </h2>
                             </div>
                             <div className="hidden md:flex gap-2">
                                 <button
                                     className="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-800"
-                                    onClick={() => handleConfirmResponse(selectedResponse)}
+                                    onClick={() => handleConfirmResponse(selectedResponse)} // Правильно
                                 >
                                     Принять
                                 </button>
                                 <button
                                     className="rounded-lg border px-4 py-2 text-neutral-700 hover:bg-neutral-50"
-                                    onClick={() => handleRejectResponse(selectedResponse)}
+                                    onClick={() => handleRejectResponse()}
                                 >
                                     Отклонить
                                 </button>
@@ -153,18 +164,20 @@ function Content({ taskId }) {
                                     </div>
                                 </div>
                                 <div className="md:hidden flex flex-col gap-2 mt-4">
-                                    <button
+                                    {/* <button
                                         className="w-full rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-800"
-                                        onClick={() => handleConfirmResponse(selectedResponse)}
+                                        onClick={() => handleConfirmResponse(selectedResponse.ID)}
                                     >
                                         Принять
                                     </button>
                                     <button
                                         className="w-full rounded-lg border px-4 py-2 text-neutral-700 hover:bg-neutral-50"
-                                        onClick={() => handleRejectResponse(selectedResponse)}
+                                        onClick={() =>
+                                            handleRejectResponse(selectedResponse.TaskID, selectedResponse.User.id)
+                                        }
                                     >
                                         Отклонить
-                                    </button>
+                                    </button> */}
                                 </div>
                             </div>
                         </div>

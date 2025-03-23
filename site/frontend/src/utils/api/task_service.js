@@ -76,19 +76,21 @@ class TaskServiceApi {
         });
     }
 
-    getAllResponses(token, task_id) {
+    getAllResponses(token, task_id, page = 1, limit = 100) {
         this._updateToken(token);
-        return this._request(`${this._baseUrl}/responses/all`, {
+        const url = `${this._baseUrl}/responses/all/${page}/${limit}/${task_id}`;
+        return this._request(url, {
             method: "GET",
             headers: this._headers,
         });
     }
 
-    putConfirmResponse(token) {
+    putConfirmResponse(token, response_id) {
         this._updateToken(token);
         return this._request(`${this._baseUrl}/responses/confirm`, {
             method: "PUT",
             headers: this._headers,
+            body: JSON.stringify({ response_id }),
         });
     }
 
@@ -97,6 +99,15 @@ class TaskServiceApi {
         return this._request(`${this._baseUrl}/responses/reject`, {
             method: "PUT",
             headers: this._headers,
+        });
+    }
+
+    deleteResponse(token, task_id, user_id) {
+        this._updateToken(token);
+        return this._request(`${this._baseUrl}/responses/delete`, {
+            method: "DELETE",
+            headers: this._headers,
+            body: JSON.stringify({ task_id, user_id }),
         });
     }
 }
