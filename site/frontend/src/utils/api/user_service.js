@@ -76,9 +76,6 @@ class UserServiceApi {
         });
     }
 
-    // protected.PUT("/organizations/:id/apply", controllers.ApplyOrganization)               // принять регистрацию организации
-    // protected.PUT("/organizations/:id/reject", controllers.RejectOrganization)             // отказать регистрацию организации
-
     putApplyOrganization(token, id) {
         this._updateToken(token);
         return this._request(`${this._baseUrl}/organizations/${id}/apply`, {
@@ -156,6 +153,14 @@ class UserServiceApi {
         this._updateToken(token);
         return this._request(`${this._baseUrl}/organization/accept/${id}`, {
             method: "PUT",
+            headers: this._headers,
+        });
+    }
+
+    getAcceptedOrganizations(token) {
+        this._updateToken(token);
+        return this._request(`${this._baseUrl}/organizations-accepted-list`, {
+            method: "GET",
             headers: this._headers,
         });
     }
