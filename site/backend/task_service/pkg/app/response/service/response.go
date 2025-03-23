@@ -121,7 +121,7 @@ func (r *ResponseService) Confirm(ctx context.Context, id uint) error {
 	if err != nil {
 		return err
 	}
-	err = r.taskuserService.Create(ctx, resp.TaskID, resp.UserID, false)
+	err = r.taskuserService.Create(ctx, resp.UserID, resp.TaskID, false)
 	return err
 }
 
