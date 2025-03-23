@@ -190,15 +190,11 @@ func (t *TaskRepository) GetAll(
 		Joins("JOIN task_type tt ON tt.id = task.type_id").
 		Where("task.is_deleted = ?", false)
 
-	if !isOwner {
-		baseQuery = baseQuery.Joins("JOIN task_user tu ON tu.task_id = task.id").
-			Where("tu.user_id = ?", user)
-	}
-
-	if len(orgIDs) > 0 {
+	if isOwner {
 		baseQuery = baseQuery.Where("tt.name = 'Открытый' OR (tt.name = 'Закрытый' AND task.organization_id IN ?)", orgIDs)
 	} else {
-		baseQuery = baseQuery.Where("tt.name = 'Открытый'")
+		baseQuery = baseQuery.Joins("JOIN task_user tu ON tu.task_id = task.id").
+			Where("tu.user_id = ? OR tt.name = 'Открытый'", user)
 	}
 
 	countQuery := baseQuery
