@@ -1,6 +1,7 @@
 package postgres
 
 import (
+	"backend/task_service/pkg/app/response/data"
 	"backend/task_service/pkg/app/response/model"
 	"context"
 	"gorm.io/gorm"
@@ -90,4 +91,13 @@ func (r *ResponseRepository) GetByParam(ctx context.Context, taskId, userId uint
 	var response model.ResponseModel
 	err := r.db.WithContext(ctx).Model(&model.ResponseModel{}).Where("task_id = ? AND user_id = ?", taskId, userId).First(&response).Error
 	return response, err
+}
+
+func (r *ResponseRepository) Delete(ctx context.Context, dto data.DeleteResponse) error {
+	response := model.ResponseModel{}
+	res := r.db.WithContext(ctx).Model(&response).Where("task_id = ? AND user_id = ?").Find(&response).Delete(&response).Error
+	if res != nil {
+		return res
+	}
+	return nil
 }

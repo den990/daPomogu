@@ -1,6 +1,7 @@
 package service
 
 import (
+	"backend/task_service/pkg/app/response/data"
 	"backend/task_service/pkg/app/response/model"
 	responsequery "backend/task_service/pkg/app/response/query"
 	taskquery "backend/task_service/pkg/app/task/query"
@@ -14,6 +15,7 @@ import (
 type ResponseServiceInterface interface {
 	Update(ctx context.Context, id uint, statusName string) error
 	Create(ctx context.Context, taskId, userId uint) (uint, error)
+	Delete(ctx context.Context, dto data.DeleteResponse) error
 }
 
 type ResponseService struct {
@@ -102,4 +104,8 @@ func (r *ResponseService) Create(ctx context.Context, taskId, userId uint) (uint
 	}
 
 	return id, nil
+}
+
+func (r *ResponseService) Delete(ctx context.Context, dto data.DeleteResponse) error {
+	return r.responseRepository.Delete(ctx, dto)
 }
