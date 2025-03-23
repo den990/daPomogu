@@ -6,7 +6,7 @@ import { taskServiceApi } from "../../utils/api/task_service";
 import { useState } from "react";
 
 function ButtonsPanel({task: initialTask}) {
-    const { token, role } = useContext(AuthContext);
+    const { token, role, id } = useContext(AuthContext);
     const [task, setTask] = useState(initialTask);
 
     if (!task) {
@@ -38,7 +38,20 @@ function ButtonsPanel({task: initialTask}) {
                 is_response: false,
             }));
         } catch (error) {
-            console.error("Ошибка в создании отклика");
+            console.error("Ошибка в отмене отклика");
+        }
+    };
+
+    const handleCancel = async (e) => {
+        try {
+            console.log(id);
+            await taskServiceApi.deleteCancelResponse(token, task.id, id);
+            setTask((prevTask) => ({
+                ...prevTask,
+                is_recorded: false,
+            }));
+        } catch (error) {
+            console.error("Ошибка в отказе от участия");
         }
     };
 
@@ -62,7 +75,10 @@ function ButtonsPanel({task: initialTask}) {
                                 Отменить отклик
                             </button>
                         ) : (
-                            <button className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 mb-4">
+                            <button
+                                onClick={handleCancel}
+                                className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 mb-4"
+                            >
                                 Отказаться от участия
                             </button>
                         )

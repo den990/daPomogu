@@ -100,6 +100,15 @@ class TaskServiceApi {
             body: JSON.stringify({task_id}),
         });
     }
+
+    deleteCancelResponse(token, task_id, user_id) {
+        this._updateToken(token);
+        return this._request(`${this._baseUrl}/tasks-users/delete`, {
+            method: "DELETE",
+            headers: this._headers,
+            body: JSON.stringify({task_id, user_id}),
+        });
+    }
 }
 
 export const taskServiceApi = new TaskServiceApi(apiSettings);
