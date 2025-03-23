@@ -76,7 +76,7 @@ func startGRPCServer(taskquery *query.TaskQueryInterface, taskuserquery query.Ta
 
 	s := grpc.NewServer()
 	newServer := ServerTaskService.NewServer(*taskquery, taskuserquery)
-	pb.RegisterTaskServiceServer(s, newServer.UnimplementedTaskServiceServer)
+	pb.RegisterTaskServiceServer(s, newServer)
 
 	log.Printf("gRPC Server listening at: %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {

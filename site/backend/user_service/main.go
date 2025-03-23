@@ -42,11 +42,11 @@ func main() {
 
 func startHTTPServer() {
 	grpcClient, err := grpcserver.NewGrpcClient("task-service:50501")
-	h := controllers.NewHandler(*grpcClient)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
+	h := controllers.NewHandler(*grpcClient)
 	r := gin.Default()
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
