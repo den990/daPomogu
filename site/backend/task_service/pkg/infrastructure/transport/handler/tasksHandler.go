@@ -239,12 +239,17 @@ func (h *Handler) getOpenedTasks(c *gin.Context) {
 		return
 	}
 
-	log.Println("authUser:", authUser)
-	var input data.GetTasksByUser
-	if err := c.BindJSON(&input); err != nil {
-		response.NewErrorResponse(c, http.StatusBadRequest, "invalid input")
+	page, err1 := strconv.Atoi(c.Param("page"))
+	limit, err2 := strconv.Atoi(c.Param("limit"))
+	if err1 != nil || err2 != nil {
+		response.NewErrorResponse(c, http.StatusBadRequest, "Invalid page number")
 		return
 	}
+
+	log.Println("authUser:", authUser)
+	var input data.GetTasksByUser
+	input.Page = page
+	input.Limit = limit
 	log.Println("input", input)
 
 	tasks, err := h.taskQuery.GetCurrentTasks(c.Request.Context(), input, authUser)
@@ -262,11 +267,17 @@ func (h *Handler) getClosedTasks(c *gin.Context) {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	var input data.GetTasksByUser
-	if err := c.BindJSON(&input); err != nil {
-		response.NewErrorResponse(c, http.StatusBadRequest, InvalidInputBodyErr)
+	page, err1 := strconv.Atoi(c.Param("page"))
+	limit, err2 := strconv.Atoi(c.Param("limit"))
+	if err1 != nil || err2 != nil {
+		response.NewErrorResponse(c, http.StatusBadRequest, "Invalid page number")
 		return
 	}
+
+	log.Println("authUser:", authUser)
+	var input data.GetTasksByUser
+	input.Page = page
+	input.Limit = limit
 
 	tasks, err := h.taskQuery.GetFinishedTasks(c.Request.Context(), input, authUser)
 	if err != nil {
