@@ -87,7 +87,7 @@ func NewContainer(config config.Config) *Container {
 	organizationQuery := organizationquery.NewOrganization(grpcClient)
 
 	taskUserRepository := postgres.NewTaskUserPostgresRepository(db)
-	taskUserQuery := taskquery.NewTaskUserQuery(taskUserRepository)
+	taskUserQuery := taskquery.NewTaskUserQuery(taskUserRepository, userQuery)
 	taskUserService := taskservice.NewTaskUserService(taskUserRepository)
 
 	taskCategoryRepository := postgres.NewTaskCategoryPostgresRepository(db)
@@ -109,6 +109,7 @@ func NewContainer(config config.Config) *Container {
 		taskUserQuery,
 		responseQuery,
 		taskQuery,
+		taskUserService,
 	)
 
 	commentResponse := postgres.NewCommentsRepository(db)

@@ -2,7 +2,10 @@ package query
 
 import (
 	"backend/task_service/pkg/app/task/model"
+	usermodel "backend/task_service/pkg/app/user/model"
+	userquery "backend/task_service/pkg/app/user/query"
 	"backend/task_service/pkg/infrastructure/lib/paginate"
+	userlib "backend/task_service/pkg/infrastructure/lib/user"
 	"context"
 )
 
@@ -19,12 +22,17 @@ type TaskUserQueryInterface interface {
 }
 
 type TaskUserQuery struct {
-	repo model.TaskUserReadRepositoryInterface
+	repo      model.TaskUserReadRepositoryInterface
+	userquery userquery.UserQueryInterface
 }
 
-func NewTaskUserQuery(repo model.TaskUserReadRepositoryInterface) *TaskUserQuery {
+func NewTaskUserQuery(
+	repo model.TaskUserReadRepositoryInterface,
+	userquery userquery.UserQueryInterface,
+) *TaskUserQuery {
 	return &TaskUserQuery{
-		repo: repo,
+		repo:      repo,
+		userquery: userquery,
 	}
 }
 
@@ -35,8 +43,34 @@ func (tu *TaskUserQuery) GetUsers(
 	limit int,
 	isCoordinators *bool,
 ) (*paginate.Pagination, error) {
+	tasksuseres, total, err := tu.repo.GetUsers(ctx, taskID, page, limit, isCoordinators)
+	if err != nil {
+		return nil, err
+	}
+	usersIDs := make([]uint64, len(tasksuseres))
+	for _, taskuser := range tasksuseres {
+		usersIDs = append(usersIDs, uint64(taskuser.UserID))
+	}
+	users, err := tu.userquery.GetUsersByIDS(ctx, usersIDs)
+	if err != nil {
+		return nil, err
+	}
+	var result []struct {
+		ID   uint
+		User usermodel.UserModel
+	}
+	for _, taskuser := range tasksuseres {
+		user, err := userlib.FindUser(users, taskuser.UserID)
+		if err != nil {
+			return nil, err
+		}
 
-	return tu.repo.GetUsers(ctx, taskID, page, limit, isCoordinators)
+		result = append(result, struct {
+			ID   uint
+			User usermodel.UserModel
+		}{ID: taskuser.ID, User: user})
+	}
+	return &paginate.Pagination{Page: page, Limit: limit, TotalPages: total, Rows: result}, nil
 }
 
 func (tu *TaskUserQuery) GetCountUserWithoutCoordinators(ctx context.Context, taskId uint) (count int, err error) {

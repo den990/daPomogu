@@ -3,7 +3,6 @@ package postgres
 import (
 	"backend/task_service/pkg/app/response/model"
 	"context"
-
 	"gorm.io/gorm"
 )
 
@@ -57,22 +56,22 @@ func (r *ResponseRepository) Show(ctx context.Context, taskId uint, page int, li
 	return responses, totalPages, nil
 }
 
-func (r *ResponseRepository) Update(ctx context.Context, id uint, status uint) error {
+func (r *ResponseRepository) Update(ctx context.Context, id uint, status uint) (model.ResponseModel, error) {
 	var response model.ResponseModel
 
 	res := r.db.WithContext(ctx).Where("id = ?", id).First(&response)
 	if res.Error != nil {
-		return res.Error
+		return model.ResponseModel{}, res.Error
 	}
 
 	response.StatusID = status
 
 	res = r.db.Model(&response).Update("status_id", status)
 	if res.Error != nil {
-		return res.Error
+		return model.ResponseModel{}, res.Error
 	}
 
-	return nil
+	return response, nil
 }
 func (r *ResponseRepository) IsResponsed(ctx context.Context, taskId, userId uint) (bool, error) {
 	var taskUser model.ResponseModel
@@ -85,4 +84,10 @@ func (r *ResponseRepository) IsResponsed(ctx context.Context, taskId, userId uin
 	}
 	return true, nil
 
+}
+
+func (r *ResponseRepository) GetByParam(ctx context.Context, taskId, userId uint) (model.ResponseModel, error) {
+	var response model.ResponseModel
+	err := r.db.WithContext(ctx).Model(&model.ResponseModel{}).Where("task_id = ? AND user_id = ?", taskId, userId).First(&response).Error
+	return response, err
 }

@@ -92,16 +92,16 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 
 		tasksUsers := httphands.Group("/tasks-users")
 		{
-			tasksUsers.GET("/byTaskID/:id", h.getTasksUsers) // todo возвращать и структуру пользователей
-			tasksUsers.POST("/add/:id", h.addTasksUsers)     // todo должен вызвыаться сразу после конфирм ресопнс
+			tasksUsers.GET("/by-task-id/:id", h.getTasksUsers)
+			tasksUsers.POST("/add/:id", h.addTasksUsers)
 			tasksUsers.DELETE("/delete", h.deleteTasksUsers)
 		}
 
 		tasks := httphands.Group("/tasks")
 		{
 			tasks.GET("/page/:page", h.getTasks)
-			tasks.GET("/myOpenedTasks", h.getOpenedTasks)
-			tasks.GET("/myClosedTasks", h.getClosedTasks)
+			tasks.GET("/my-opened-tasks", h.getOpenedTasks)
+			tasks.GET("/my-closed-tasks", h.getClosedTasks)
 			tasks.GET("/:id", h.getTask)
 			tasks.POST("/", h.createTask)
 			tasks.PUT("/:id", h.updateTask)
@@ -113,8 +113,8 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 		{
 			responses.GET("/all", h.getResponses)
 			responses.POST("/create", h.createResponse)
-			responses.PUT("/reject", h.confirmResponse)
-			responses.PUT("/confirm", h.rejectResponse)
+			responses.PUT("/reject", h.rejectResponse)
+			responses.PUT("/confirm", h.confirmResponse)
 		}
 
 		categories := httphands.Group("/category")
@@ -127,7 +127,7 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 
 		approves := httphands.Group("/approves")
 		{
-			approves.GET("/allByTaskID/:id", h.getAllByTaskID)
+			approves.GET("/all-by-tas-id/:id", h.getAllByTaskID)
 			approves.POST("/create", h.addApproves)
 			approves.PUT("/reject", h.rejectApproves)
 			approves.PUT("/confirm", h.confirmApproves)
