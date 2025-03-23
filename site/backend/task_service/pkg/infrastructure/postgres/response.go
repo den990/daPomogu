@@ -95,7 +95,7 @@ func (r *ResponseRepository) GetByParam(ctx context.Context, taskId, userId uint
 
 func (r *ResponseRepository) Delete(ctx context.Context, dto data.DeleteResponse) error {
 	response := model.ResponseModel{}
-	res := r.db.WithContext(ctx).Model(&response).Where("task_id = ? AND user_id = ?").Find(&response).Delete(&response).Error
+	res := r.db.WithContext(ctx).Model(&response).Where("task_id = ? AND user_id = ?", dto.TaskID, dto.UserID).Find(&response).Delete(&response).Error
 	if res != nil {
 		return res
 	}
