@@ -27,10 +27,18 @@ function Content() {
                                     </p>
                                 </div>
                                 <button>
-                                    <img className="w-4 h-4" src={require("../../images/edit_red.svg").default} alt="edit" />
+                                    <img
+                                        className="w-4 h-4"
+                                        src={require("../../images/edit_red.svg").default}
+                                        alt="edit"
+                                    />
                                 </button>
                                 <button>
-                                    <img className="w-4 h-4" src={require("../../images/delete_red.svg").default} alt="delete" />
+                                    <img
+                                        className="w-4 h-4"
+                                        src={require("../../images/delete_red.svg").default}
+                                        alt="delete"
+                                    />
                                 </button>
                             </div>
                         </div>
@@ -38,18 +46,24 @@ function Content() {
                         <div className="border rounded-lg p-3 md:p-4">
                             <div className="flex justify-between items-start gap-3">
                                 <div className="flex-1 min-w-0">
-                                    <h4 className="font-semibold text-base md:text-lg">
-                                        Раздача еды бездомным
-                                    </h4>
+                                    <h4 className="font-semibold text-base md:text-lg">Раздача еды бездомным</h4>
                                     <p className="text-gray-600 text-xs md:text-sm mt-1">
                                         20 марта 2025 • Благотворительный фонд "Надежда"
                                     </p>
                                 </div>
                                 <button>
-                                    <img className="w-4 h-4" src={require("../../images/edit_red.svg").default} alt="edit" />
+                                    <img
+                                        className="w-4 h-4"
+                                        src={require("../../images/edit_red.svg").default}
+                                        alt="edit"
+                                    />
                                 </button>
                                 <button>
-                                    <img className="w-4 h-4" src={require("../../images/delete_red.svg").default} alt="delete" />
+                                    <img
+                                        className="w-4 h-4"
+                                        src={require("../../images/delete_red.svg").default}
+                                        alt="delete"
+                                    />
                                 </button>
                             </div>
                         </div>

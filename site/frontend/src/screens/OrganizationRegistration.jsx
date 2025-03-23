@@ -1,8 +1,8 @@
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 import LeftPanel from "../components/organizationRegistration/leftPanel";
 import RegistrationForm from "../components/organizationRegistration/registrationForm";
 import { useState } from "react";
-import PopUp from '../layouts/popUp/PopUp';
+import PopUp from "../layouts/popUp/PopUp";
 import ROUTES from "../constants/routes";
 
 function OrganizationRegistration() {

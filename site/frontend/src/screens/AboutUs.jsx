@@ -1,8 +1,7 @@
-import Mission from '../components/aboutUs/mission.jsx';
-import Faq from '../components/aboutUs/faq.jsx';
-import Footer from '../layouts/Footer.jsx';
-import RoleHeader from '../components/RoleHeader/RoleHeader.js';
-
+import Mission from "../components/aboutUs/mission.jsx";
+import Faq from "../components/aboutUs/faq.jsx";
+import Footer from "../layouts/Footer.jsx";
+import RoleHeader from "../components/RoleHeader/RoleHeader.js";
 
 function AboutUs() {
     return (
@@ -15,4 +14,4 @@ function AboutUs() {
     );
 }
 
-export default AboutUs
+export default AboutUs;
