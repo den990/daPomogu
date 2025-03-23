@@ -5,15 +5,13 @@ function Header() {
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 md:gap-4">
                         <button className="rounded-lg p-1 md:p-2 hover:bg-neutral-100">
-                            <img 
-                                className="w-4 h-5 md:w-5 md:h-6" 
-                                src={require("../../images/arrow-back_red.svg").default} 
-                                alt="Назад" 
+                            <img
+                                className="w-4 h-5 md:w-5 md:h-6"
+                                src={require("../../images/arrow-back_red.svg").default}
+                                alt="Назад"
                             />
                         </button>
-                        <h1 className="text-base md:text-xl truncate">
-                            Волонтерский центр "Надежда"
-                        </h1>
+                        <h1 className="text-base md:text-xl truncate">Волонтерский центр "Надежда"</h1>
                     </div>
                 </div>
             </div>

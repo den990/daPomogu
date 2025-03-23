@@ -6,21 +6,33 @@ function howItWorks() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div className="text-center">
                         <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <img style={{width: 24, height: 24}} src={require("../../images/registration_red.svg").default} alt="registration" />
+                            <img
+                                style={{ width: 24, height: 24 }}
+                                src={require("../../images/registration_red.svg").default}
+                                alt="registration"
+                            />
                         </div>
                         <h3 className="text-xl font-bold text-gray-900 mb-2">Регистрация</h3>
                         <p className="text-gray-600">Создайте аккаунт волонтера или организации</p>
                     </div>
                     <div className="text-center">
                         <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <img style={{width: 24, height: 24}} src={require("../../images/find_red.svg").default} alt="find" />
+                            <img
+                                style={{ width: 24, height: 24 }}
+                                src={require("../../images/find_red.svg").default}
+                                alt="find"
+                            />
                         </div>
                         <h3 className="text-xl font-bold text-gray-900 mb-2">Поиск</h3>
                         <p className="text-gray-600">Найдите интересующий проект или волонтеров</p>
                     </div>
                     <div className="text-center">
                         <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <img style={{width: 24, height: 24}} src={require("../../images/heart_red.svg").default} alt="heart" />
+                            <img
+                                style={{ width: 24, height: 24 }}
+                                src={require("../../images/heart_red.svg").default}
+                                alt="heart"
+                            />
                         </div>
                         <h3 className="text-xl font-bold text-gray-900 mb-2">Участие</h3>
                         <p className="text-gray-600">Присоединяйтесь к проектам и помогайте другим</p>

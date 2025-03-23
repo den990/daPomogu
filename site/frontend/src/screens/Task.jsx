@@ -1,12 +1,12 @@
-import Footer from '../layouts/Footer.jsx';
-import Info from '../components/task/info.jsx';
-import ButtonsPanel from '../components/task/buttonsPanel.jsx';
-import RoleHeader from '../components/RoleHeader/RoleHeader.js';
-import { useContext } from 'react';
-import { AuthContext } from '../context/AuthProvider.js';
-import { taskServiceApi } from '../utils/api/task_service.js';
+import Footer from "../layouts/Footer.jsx";
+import Info from "../components/task/info.jsx";
+import ButtonsPanel from "../components/task/buttonsPanel.jsx";
+import RoleHeader from "../components/RoleHeader/RoleHeader.js";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthProvider.js";
+import { taskServiceApi } from "../utils/api/task_service.js";
 import { useEffect, useState } from "react";
-import { useParams } from 'react-router';
+import { useParams } from "react-router";
 
 function Task() {
     const { token } = useContext(AuthContext);
@@ -28,11 +28,11 @@ function Task() {
     if (!task) {
         return <div>Загрузка...</div>;
     }
-    
+
     return (
         <div className="min-h-screen flex flex-col">
             <RoleHeader />
-            
+
             <main className="flex-1">
                 <div className="container mx-auto px-4 py-8">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

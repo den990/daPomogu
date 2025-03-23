@@ -9,9 +9,17 @@ function content() {
                 <div id="profile-form" class="bg-white rounded-lg shadow-sm p-6">
                     <div class="mb-8 flex items-center justify-center flex-col">
                         <div class="relative">
-                            <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg" alt="Profile" class="w-32 h-32 rounded-full object-cover" />
+                            <img
+                                src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg"
+                                alt="Profile"
+                                class="w-32 h-32 rounded-full object-cover"
+                            />
                             <button class="absolute bottom-0 right-0 bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition">
-                                <img style={{ width: 16, height: 16 }} src={ require("../../images/camera_white.svg").default } alt="icon" />
+                                <img
+                                    style={{ width: 16, height: 16 }}
+                                    src={require("../../images/camera_white.svg").default}
+                                    alt="icon"
+                                />
                             </button>
                         </div>
                     </div>
@@ -19,36 +27,59 @@ function content() {
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="space-y-2">
                                 <label class="block text-sm font-medium text-gray-700">Юридическое название</label>
-                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" />
+                                <input
+                                    type="text"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                                />
                             </div>
                             <div class="space-y-2">
                                 <label class="block text-sm font-medium text-gray-700">Email</label>
-                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" />
+                                <input
+                                    type="text"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                                />
                             </div>
                             <div class="space-y-2">
                                 <label class="block text-sm font-medium text-gray-700">Телефон</label>
-                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" />
+                                <input
+                                    type="text"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                                />
                             </div>
                             <div class="space-y-2">
                                 <label class="block text-sm font-medium text-gray-700">ИНН</label>
-                                <input type="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" />
+                                <input
+                                    type="email"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                                />
                             </div>
                             <div class="space-y-2">
                                 <label class="block text-sm font-medium text-gray-700">Юридический адрес</label>
-                                <input type="tel" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" />
+                                <input
+                                    type="tel"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                                />
                             </div>
                             <div class="space-y-2">
                                 <label class="block text-sm font-medium text-gray-700">Фактический адрес</label>
-                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" />
+                                <input
+                                    type="text"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                                />
                             </div>
                         </div>
                         <div class="space-y-2">
                             <label class="block text-sm font-medium text-gray-700">Руководитель организации</label>
-                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" />
+                            <input
+                                type="text"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                            />
                         </div>
                         <div className="pt-4">
-                            <Link to={ROUTES.ACCOUNT_ORGANIZATION} 
-                                className="block w-full text-center bg-red-600 text-white py-3 px-4 rounded-md hover:bg-red-700 transition font-medium">
+                            <Link
+                                to={ROUTES.ACCOUNT_ORGANIZATION}
+                                className="block w-full text-center bg-red-600 text-white py-3 px-4 rounded-md hover:bg-red-700 transition font-medium"
+                            >
                                 Отправить заявку
                             </Link>
                         </div>

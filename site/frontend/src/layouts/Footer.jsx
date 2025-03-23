@@ -1,5 +1,5 @@
-import { Link } from 'react-router';
-import ROUTES from '../constants/routes';
+import { Link } from "react-router";
+import ROUTES from "../constants/routes";
 
 function Footer() {
     return (
@@ -14,7 +14,9 @@ function Footer() {
                         <h4 className="text-lg font-bold mb-4">Платформа</h4>
                         <ul className="space-y-2">
                             <li>
-                                <Link to={ROUTES.ABOUT} className="text-gray-400 hover:text-white cursor-pointer">О нас</Link>
+                                <Link to={ROUTES.ABOUT} className="text-gray-400 hover:text-white cursor-pointer">
+                                    О нас
+                                </Link>
                             </li>
                         </ul>
                     </div>
