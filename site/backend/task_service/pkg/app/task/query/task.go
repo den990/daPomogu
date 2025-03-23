@@ -130,7 +130,6 @@ func (t *TaskQuery) Show(ctx context.Context, user uint, page int) ([]model.Task
 	}
 }
 func (t *TaskQuery) ShowByOrganizationId(ctx context.Context, orgId uint) ([]model.TaskModel, error) {
-	fmt.Println("f2")
 	return t.readRepository.ShowByOrganizationId(ctx, orgId)
 }
 

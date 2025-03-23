@@ -5,7 +5,6 @@ import (
 	_ "backend/task_service/pkg/app/task/model"
 	"backend/task_service/pkg/app/task/query"
 	"context"
-	"fmt"
 	_ "fmt"
 	"time"
 )
@@ -25,7 +24,6 @@ func NewServer(taskQuery query.TaskQueryInterface, taskUserQuery query.TaskUserQ
 
 func (s *Server) GetTasksByOrganizationId(ctx context.Context, req *pb.TaskOrganizationRequest) (*pb.TasksViewInProfileOrganization, error) {
 	var response pb.TasksViewInProfileOrganization
-	fmt.Println("f1")
 	tasks, err := s.taskquery.ShowByOrganizationId(ctx, uint(req.Id))
 	if err != nil {
 		return &pb.TasksViewInProfileOrganization{}, err
