@@ -110,7 +110,7 @@ func (h *Handler) confirmResponse(c *gin.Context) {
 }
 
 func (h *Handler) deleteResponse(c *gin.Context) {
-	_, err := auth.GetUserId(c)
+	userID, err := auth.GetUserId(c)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -121,6 +121,8 @@ func (h *Handler) deleteResponse(c *gin.Context) {
 		response.NewErrorResponse(c, http.StatusBadRequest, InvalidInputBodyErr)
 		return
 	}
+
+	input.UserID = userID
 
 	err = h.responseService.Delete(c.Request.Context(), input)
 	if err != nil {
