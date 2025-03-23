@@ -59,7 +59,9 @@ function Tasks() {
                 </>
             ) : (
                 <div className="flex justify-center items-center h-64">
-                    <span className="text-gray-500 text-lg">Вы ещё не создали ни одного задания</span>
+                    <span className="text-gray-500 text-lg">
+                        Вы ещё не создали ни одного задания (На бэке метод не работает для организаций)
+                    </span>
                 </div>
             )}
             {alert && (
