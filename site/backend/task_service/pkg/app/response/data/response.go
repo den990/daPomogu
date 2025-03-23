@@ -17,3 +17,8 @@ type GetResponses struct {
 	Page   int  `json:"page,omitempty;query:page"`
 	Limit  int  `json:"limit,omitempty;query:limit"`
 }
+
+type DeleteResponse struct {
+	TaskID uint `json:"task_id"`
+	UserID uint `json:"user_id"`
+}
