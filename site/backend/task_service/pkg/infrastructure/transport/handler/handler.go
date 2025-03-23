@@ -113,8 +113,8 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 		{
 			responses.GET("/all", h.getResponses)
 			responses.POST("/create", h.createResponse)
-			responses.PUT("/reject", h.confirmResponse)
-			responses.PUT("/confirm", h.rejectResponse)
+			responses.PUT("/reject", h.rejectResponse)
+			responses.PUT("/confirm", h.confirmResponse)
 		}
 
 		categories := httphands.Group("/category")
