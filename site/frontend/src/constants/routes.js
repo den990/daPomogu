@@ -2,7 +2,7 @@ const ROUTES = {
     HOME: "/",
     ABOUT: "/about",
     LOGIN: "/login",
-    TASK: "/task",
+    TASK: "/task/:taskId",
     ACCOUNT_VOLUNTEER: "/account-volunteer",
     ACCOUNT_ORGANIZATION: "/account-organization",
     TASKS_CATALOG: "/tasks-catalog",

@@ -72,7 +72,31 @@ class TaskServiceApi {
         return this._request(`${this._baseUrl}/responses/create`, {
             method: "POST",
             headers: this._headers,
-            body: JSON.stringify({task_id}),
+            body: JSON.stringify({ task_id }),
+        });
+    }
+
+    getAllResponses(token, task_id) {
+        this._updateToken(token);
+        return this._request(`${this._baseUrl}/responses/all`, {
+            method: "GET",
+            headers: this._headers,
+        });
+    }
+
+    putConfirmResponse(token) {
+        this._updateToken(token);
+        return this._request(`${this._baseUrl}/responses/confirm`, {
+            method: "PUT",
+            headers: this._headers,
+        });
+    }
+
+    putRejectResponse(token) {
+        this._updateToken(token);
+        return this._request(`${this._baseUrl}/responses/reject`, {
+            method: "PUT",
+            headers: this._headers,
         });
     }
 }
