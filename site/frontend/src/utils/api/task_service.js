@@ -92,11 +92,12 @@ class TaskServiceApi {
         });
     }
 
-    putRejectResponse(token) {
+    deleteRejectResponse(token, task_id) {
         this._updateToken(token);
-        return this._request(`${this._baseUrl}/responses/reject`, {
-            method: "PUT",
+        return this._request(`${this._baseUrl}/responses/delete`, {
+            method: "DELETE",
             headers: this._headers,
+            body: JSON.stringify({task_id}),
         });
     }
 }

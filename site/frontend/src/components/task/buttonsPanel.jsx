@@ -30,6 +30,18 @@ function ButtonsPanel({task: initialTask}) {
         }
     };
 
+    const handleReject = async (e) => {
+        try {
+            await taskServiceApi.deleteRejectResponse(token, task.id);
+            setTask((prevTask) => ({
+                ...prevTask,
+                is_response: false,
+            }));
+        } catch (error) {
+            console.error("Ошибка в создании отклика");
+        }
+    };
+
     return (
         <>
             <div className="col-span-1">
@@ -43,7 +55,10 @@ function ButtonsPanel({task: initialTask}) {
                                 Принять участие
                             </button>
                         ) : task.is_recorded !== true ? (
-                            <button className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 mb-4">
+                            <button
+                                onClick={handleReject}
+                                className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 mb-4"
+                            >
                                 Отменить отклик
                             </button>
                         ) : (
