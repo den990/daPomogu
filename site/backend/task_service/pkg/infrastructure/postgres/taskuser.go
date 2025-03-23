@@ -74,16 +74,24 @@ func (tu *TaskUserRepository) Create(ctx context.Context, userID, taskID uint, i
 }
 
 func (tu *TaskUserRepository) Delete(ctx context.Context, userID, taskID uint) error {
-	if isExist, err := tu.isExist(ctx, userID, taskID); err != nil || !isExist {
+	isExist, err := tu.isExist(ctx, userID, taskID)
+	if err != nil {
 		return err
 	}
-	taskuser := model.TaskUser{
-		TaskID: taskID,
-		UserID: userID,
+	if !isExist {
+		return nil
 	}
-	res := tu.db.WithContext(ctx).Delete(&taskuser)
 
-	return res.Error
+	res := tu.db.WithContext(ctx).Where("task_id = ? AND user_id = ?", taskID, userID).Delete(&model.TaskUser{})
+	if res.Error != nil {
+		return res.Error
+	}
+
+	if res.RowsAffected == 0 {
+		return errors.New("no rows affected")
+	}
+
+	return nil
 }
 
 func (tu *TaskUserRepository) isExist(ctx context.Context, userID, taskID uint) (bool, error) {
