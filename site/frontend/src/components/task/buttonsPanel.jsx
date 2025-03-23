@@ -14,7 +14,7 @@ function ButtonsPanel({task: initialTask}) {
     }
 
     let category = "";
-    task.categories.map((cat) => (category += `${cat.name}`));
+    task.categories.map((cat) => (category += `${cat.name}, `));
 
     let typeTask = task.type_id === 2 ? "Закрытый" : "Открытый";
 
@@ -87,7 +87,7 @@ function ButtonsPanel({task: initialTask}) {
                                 alt="icon"
                             />
                             <span className="text-neutral-700">
-                                {category}, {typeTask}
+                                {category}{typeTask}
                             </span>
                         </div>
                         <div className="flex items-center gap-2 mb-4">
