@@ -1,4 +1,26 @@
-function Content() {
+import { Link } from "react-router";
+import ROUTES from "../../constants/routes";
+
+function Content({ tasks }) {
+    const statuses = {
+        1: "Выполнено",
+        2: "Не выполнено",
+        3: "В работе",
+    };
+
+    const getStatusClasses = (statusId) => {
+        switch (statusId) {
+            case 1:
+                return "bg-green-100 text-green-600";
+            case 2:
+                return "bg-red-100 text-red-600";
+            case 3:
+                return "bg-yellow-100 text-yellow-600";
+            default:
+                return "bg-gray-100 text-gray-600";
+        }
+    };
+
     return (
         <div id="tasks-section" className="md:col-span-2 mx-2 md:mx-0 md:p-8">
             <div className="bg-white rounded-lg shadow p-4 md:p-6">
@@ -13,47 +35,37 @@ function Content() {
                         </button>
                     </div>
                 </div>
-
                 <div id="current-tasks" className="space-y-6">
-                    <div className="border rounded-lg p-3 md:p-4">
-                        <div className="flex justify-between items-start gap-3">
-                            <div className="flex-1 min-w-0">
-                                <h4 className="font-semibold text-base md:text-lg">
-                                    Помощь в организации благотворительного концерта
-                                </h4>
-                                <p className="text-gray-600 text-xs md:text-sm mt-1">
-                                    15 марта 2025 • Центральный парк
-                                </p>
-                                <div className="mt-2 md:mt-3 flex items-center">
-                                    <span className="bg-green-100 text-green-600 text-xs px-2 py-1 rounded">
-                                        В процессе
-                                    </span>
+                    {tasks.map((task) => (
+                        <div key={task.id} className="border rounded-lg p-3 md:p-4">
+                            <div className="flex justify-between items-center gap-3">
+                                <div className="flex-1 min-w-0">
+                                    <Link
+                                        className="font-semibold text-base md:text-lg hover:underline"
+                                        to={`${ROUTES.TASK.replace(":taskId", task.id)}`}
+                                    >
+                                        {task.name}
+                                    </Link>
+                                    <p className="text-gray-600 text-xs md:text-sm mt-1">{task.location}</p>
+                                    <div className="mt-2 md:mt-3 flex items-center">
+                                        <span
+                                            className={`text-xs px-2 py-1 rounded ${getStatusClasses(task.status_id)}`}
+                                        >
+                                            {statuses[task.status_id] || "Неизвестный статус"}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Link
+                                        className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors"
+                                        to={`${ROUTES.TASK.replace(":taskId", task.id)}`}
+                                    >
+                                        Открыть
+                                    </Link>
                                 </div>
                             </div>
-                            <button className="text-red-600 hover:text-red-700 shrink-0 ml-2">
-                                <i className="text-lg md:text-xl"> </i>
-                            </button>
                         </div>
-                    </div>
-
-                    <div className="border rounded-lg p-3 md:p-4">
-                        <div className="flex justify-between items-start gap-3">
-                            <div className="flex-1 min-w-0">
-                                <h4 className="font-semibold text-base md:text-lg">Раздача еды бездомным</h4>
-                                <p className="text-gray-600 text-xs md:text-sm mt-1">
-                                    20 марта 2025 • Благотворительный фонд "Надежда"
-                                </p>
-                                <div className="mt-2 md:mt-3 flex items-center">
-                                    <span className="bg-yellow-100 text-yellow-600 text-xs px-2 py-1 rounded">
-                                        Ожидает начала
-                                    </span>
-                                </div>
-                            </div>
-                            <button className="text-red-600 hover:text-red-700 shrink-0 ml-2">
-                                <i className="text-lg md:text-xl"> </i>
-                            </button>
-                        </div>
-                    </div>
+                    ))}
                 </div>
             </div>
         </div>
