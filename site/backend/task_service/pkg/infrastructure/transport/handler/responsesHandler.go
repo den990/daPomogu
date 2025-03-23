@@ -98,7 +98,7 @@ func (h *Handler) confirmResponse(c *gin.Context) {
 		return
 	}
 
-	err = h.responseService.Update(c.Request.Context(), input.ID, "Принято")
+	err = h.responseService.Confirm(c.Request.Context(), input.ID)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
