@@ -122,9 +122,9 @@ func FindOrganizationsPending() ([]Organization, error) {
 	return organizations, nil
 }
 
-func FindOrganizationsAccepted() ([]Organization, error) {
+func FindOrganizationsAccepted(offset, limit int) ([]Organization, error) {
 	var organizations []Organization
-	err := db.DB.Where("status_id = ?", 2).Find(&organizations).Error
+	err := db.DB.Where("status_id = ?", 2).Offset(offset).Limit(limit).Find(&organizations).Error
 	if err != nil {
 		return nil, err
 	}

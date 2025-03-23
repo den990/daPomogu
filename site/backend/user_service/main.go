@@ -53,6 +53,7 @@ func startHTTPServer() {
 	r.POST("/register-organization", controllers.RegisterOrganization)
 	r.POST("/login", controllers.Login)
 	r.GET("/profile-organization/:id", controllers.GetOrganizationProfileInfo)
+	r.GET("/organizations-accepted-list/:page", controllers.GetOrganizationAcceptedList)
 
 	protected := r.Group("/api")
 	protected.Use(middleware.AuthMiddleware())
@@ -68,7 +69,6 @@ func startHTTPServer() {
 		protected.PUT("/profile/:id", controllers.UpdateUser)
 		protected.GET("/organization-requests", controllers.GetPendingOrganizations)
 		protected.PUT("/change-password", controllers.ChangePassword)
-		protected.GET("/organizations-accepted-list", controllers.GetOrganizationAcceptedList)
 		protected.GET("/organizations-list", controllers.GetAllOrganizationList)
 		protected.POST("/attach-organization/:id", controllers.AttachUserToOrganization)
 		protected.POST("/detach-organization/:id", controllers.DetachUserToOrganization)
