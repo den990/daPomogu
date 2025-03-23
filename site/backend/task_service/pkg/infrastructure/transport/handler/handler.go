@@ -92,7 +92,7 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 
 		tasksUsers := httphands.Group("/tasks-users")
 		{
-			tasksUsers.GET("/by-task-id/:id", h.getTasksUsers)
+			tasksUsers.GET("/by-task-id/:id/:page/:limit/:is_coordinator", h.getTasksUsers)
 			tasksUsers.POST("/add/:id", h.addTasksUsers)
 			tasksUsers.DELETE("/delete", h.deleteTasksUsers)
 		}
@@ -100,8 +100,8 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 		tasks := httphands.Group("/tasks")
 		{
 			tasks.GET("/page/:page", h.getTasks)
-			tasks.GET("/my-opened-tasks", h.getOpenedTasks)
-			tasks.GET("/my-closed-tasks", h.getClosedTasks)
+			tasks.GET("/my-opened-tasks/:page/:limit", h.getOpenedTasks)
+			tasks.GET("/my-closed-tasks/:page/:limit", h.getClosedTasks)
 			tasks.GET("/:id", h.getTask)
 			tasks.POST("/", h.createTask)
 			tasks.PUT("/:id", h.updateTask)
@@ -111,7 +111,7 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 
 		responses := httphands.Group("/responses")
 		{
-			responses.GET("/all", h.getResponses)
+			responses.GET("/all/:page/:limit/:task_id", h.getResponses)
 			responses.POST("/create", h.createResponse) // баг создание дупликейт валуе
 			responses.PUT("/reject", h.rejectResponse)  //
 			responses.PUT("/confirm", h.confirmResponse)
@@ -128,7 +128,7 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 
 		approves := httphands.Group("/approves")
 		{
-			approves.GET("/all-by-tas-id/:id", h.getAllByTaskID)
+			approves.GET("/all-by-tas-id/:id/:page/:limit", h.getAllByTaskID)
 			approves.POST("/create", h.addApproves)
 			approves.PUT("/reject", h.rejectApproves)
 			approves.PUT("/confirm", h.confirmApproves)
