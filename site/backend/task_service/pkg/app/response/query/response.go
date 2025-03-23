@@ -76,7 +76,7 @@ func (r *ResponseQuery) Show(
 			TaskID uint
 			User   usermodel.UserModel
 		}{
-			ID:     response.UserID,
+			ID:     response.ID,
 			TaskID: response.TaskID,
 			User:   user,
 		}
