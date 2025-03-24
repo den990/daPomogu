@@ -105,7 +105,7 @@ function ButtonsPanel({task: initialTask}) {
                                 src={require("../../images/person_red.svg").default}
                                 alt="icon"
                             />
-                            <Link to={ROUTES.CONFIRMATIONS_RESPONSES} style={{ paddingLeft: 10 }}>
+                            <Link to={ROUTES.CONFIRMATIONS_RESPONSES.replace(":taskId", task.id)} style={{ paddingLeft: 10 }}>
                                 Принять участников
                             </Link>
                         </button>
