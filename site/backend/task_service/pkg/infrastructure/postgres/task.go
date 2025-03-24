@@ -187,6 +187,7 @@ func (t *TaskRepository) GetAll(
 
 	baseQuery := t.db.WithContext(ctx).
 		Table("task").
+		Select("DISTINCT task.*").
 		Joins("JOIN task_type tt ON tt.id = task.type_id").
 		Where("task.is_deleted = ?", false).
 		Order("task.task_date ASC")
