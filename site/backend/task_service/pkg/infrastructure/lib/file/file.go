@@ -1,7 +1,9 @@
 package file
 
 import (
+	"bytes"
 	"context"
+	"fmt"
 	"io"
 	"mime/multipart"
 	"os"
@@ -9,25 +11,34 @@ import (
 )
 
 func SaveInDirectory(ctx context.Context, file multipart.File, saveDir string, fileName string) (string, error) {
-	defer file.Close()
-	//saveDir := fmt.Sprintf("uploads/approves/task_%d", input.TaskID)
-	//savePath := filepath.Join(saveDir, fmt.Sprintf("user_%d.%s", userID, "jpeg"))
-	savePath := filepath.Join(saveDir, fileName)
+	if saveDir == "" {
+		return "", fmt.Errorf("директория для сохранения не указана")
+	}
 
 	err := os.MkdirAll(saveDir, os.ModePerm)
 	if err != nil {
-		return savePath, err
+		return "", fmt.Errorf("ошибка при создании директории: %w", err)
 	}
+
+	savePath := filepath.Join(saveDir, fileName)
+
+	var buf bytes.Buffer
+	_, err = io.Copy(&buf, file)
+	if err != nil {
+		return "", fmt.Errorf("ошибка при копировании файла в буфер: %w", err)
+	}
+
+	fileCopy := bytes.NewReader(buf.Bytes())
 
 	out, err := os.Create(savePath)
 	if err != nil {
-		return savePath, err
+		return "", fmt.Errorf("ошибка при создании файла: %w", err)
 	}
 	defer out.Close()
 
-	_, err = io.Copy(out, file)
+	_, err = io.Copy(out, fileCopy)
 	if err != nil {
-		return savePath, err
+		return "", fmt.Errorf("ошибка при сохранении файла: %w", err)
 	}
 
 	return savePath, nil
