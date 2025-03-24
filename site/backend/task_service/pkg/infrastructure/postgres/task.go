@@ -192,12 +192,6 @@ func (t *TaskRepository) GetAll(
 		Where("task.is_deleted = ?", false).
 		Order("task.task_date ASC")
 
-	fmt.Println("isOwner:")
-	fmt.Println(isOwner)
-	fmt.Println("user_id:")
-	fmt.Println(user)
-	fmt.Println("orgIds:")
-	fmt.Println(orgIDs)
 	if isOwner {
 		baseQuery = baseQuery.Where("tt.name = 'Открытый' OR (tt.name = 'Закрытый' AND task.organization_id IN ?)", orgIDs)
 	} else {
