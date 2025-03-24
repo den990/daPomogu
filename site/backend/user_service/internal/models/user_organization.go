@@ -174,7 +174,7 @@ func FindUserOwnerOrganizationByOrganizationId(orgId string) (*User, error) {
 
 func FindOrganizationsByUserId(userId string) ([]UserOrganization, error) {
 	var userOrganization []UserOrganization
-	if err := db.DB.Where("user_id = ? AND is_owner = ? AND is_accepted", userId, false, true).Find(&userOrganization).Error; err != nil {
+	if err := db.DB.Where("user_id = ? AND is_owner = ? AND is_accepted = ?", userId, false, true).Find(&userOrganization).Error; err != nil {
 		return nil, err
 	}
 
