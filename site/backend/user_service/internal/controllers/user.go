@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	pb "backend/proto-functions/task"
 	"backend/user_service/internal/models"
 	"backend/user_service/internal/utils"
 	"github.com/gin-gonic/gin"
@@ -33,7 +34,7 @@ func (h *Handler) GetUserProfileInfo(c *gin.Context) {
 		}
 
 	}
-
+	countTasks, _ := h.grpcClient.GetCountTasksCompletedByUserId(c.Request.Context(), &pb.TaskUserRequest{Id: uint64(userID)})
 	user, err := models.FindUserById(strconv.Itoa(int(userID)))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "User not found"})
@@ -47,6 +48,7 @@ func (h *Handler) GetUserProfileInfo(c *gin.Context) {
 				Address:        user.Address,
 				Email:          user.Email,
 				Phone:          user.Phone,
+				CountTasks:     strconv.FormatUint(countTasks.Count, 10),
 			}
 
 			c.JSON(http.StatusOK, response)
@@ -57,6 +59,7 @@ func (h *Handler) GetUserProfileInfo(c *gin.Context) {
 				Patronymic:     user.Patronymic,
 				DateOfBirthday: user.DateOfBirthday.Format(time.DateOnly),
 				Address:        user.Address,
+				CountTasks:     strconv.FormatUint(countTasks.Count, 10),
 			}
 
 			c.JSON(http.StatusOK, response)

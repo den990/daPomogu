@@ -308,3 +308,20 @@ func (t *TaskRepository) ShowByOrganizationId(ctx context.Context, orgId uint) (
 
 	return tasks, nil
 }
+
+func (t *TaskRepository) GetCountTasksCompletedByUserId(ctx context.Context, userId uint) (int, error) {
+	var count int64
+	err := t.db.WithContext(ctx).
+		Table("task_user").
+		Joins("JOIN task ON task.id = task_user.task_id").
+		Where("task_user.user_id = ?", userId).
+		Where("task.status_id = 1").
+		Where("task.is_deleted = ?", false).
+		Count(&count).Error
+
+	if err != nil {
+		return 0, err
+	}
+
+	return int(count), nil
+}
