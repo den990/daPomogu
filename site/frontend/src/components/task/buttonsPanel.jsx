@@ -6,7 +6,7 @@ import { taskServiceApi } from "../../utils/api/task_service";
 import { useState } from "react";
 
 function ButtonsPanel({task: initialTask}) {
-    const { token, role } = useContext(AuthContext);
+    const { token, role, id } = useContext(AuthContext);
     const [task, setTask] = useState(initialTask);
 
     if (!task) {
@@ -14,9 +14,9 @@ function ButtonsPanel({task: initialTask}) {
     }
 
     let category = "";
-    task.categories.map((cat) => (category += `${cat.name}`));
+    task.categories.map((cat) => (category += `${cat.name}, `));
 
-    let typeTask = task.type === 1 ? "Закрытый" : "Открытый";
+    let typeTask = task.type_id === 2 ? "Закрытый" : "Открытый";
 
     const handleResponse = async (e) => {
         try {
@@ -30,12 +30,37 @@ function ButtonsPanel({task: initialTask}) {
         }
     };
 
+    const handleReject = async (e) => {
+        try {
+            await taskServiceApi.deleteRejectResponse(token, task.id);
+            setTask((prevTask) => ({
+                ...prevTask,
+                is_response: false,
+            }));
+        } catch (error) {
+            console.error("Ошибка в отмене отклика");
+        }
+    };
+
+    const handleCancel = async (e) => {
+        try {
+            console.log(id);
+            await taskServiceApi.deleteCancelResponse(token, task.id, id);
+            setTask((prevTask) => ({
+                ...prevTask,
+                is_recorded: false,
+            }));
+        } catch (error) {
+            console.error("Ошибка в отказе от участия");
+        }
+    };
+
     return (
         <>
             <div className="col-span-1">
                 <div id="task-actions" className="bg-white p-6 rounded-lg border sticky top-4">
                     {role === "volunteer" ? (
-                        task.is_response !== true ? (
+                        task.is_response !== true && task.is_recorded !== true ? (
                             <button
                                 onClick={handleResponse}
                                 className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 mb-4"
@@ -43,11 +68,17 @@ function ButtonsPanel({task: initialTask}) {
                                 Принять участие
                             </button>
                         ) : task.is_recorded !== true ? (
-                            <button className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 mb-4">
+                            <button
+                                onClick={handleReject}
+                                className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 mb-4"
+                            >
                                 Отменить отклик
                             </button>
                         ) : (
-                            <button className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 mb-4">
+                            <button
+                                onClick={handleCancel}
+                                className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 mb-4"
+                            >
                                 Отказаться от участия
                             </button>
                         )
@@ -74,7 +105,7 @@ function ButtonsPanel({task: initialTask}) {
                                 src={require("../../images/person_red.svg").default}
                                 alt="icon"
                             />
-                            <Link to={ROUTES.CONFIRMATIONS_RESPONSES} style={{ paddingLeft: 10 }}>
+                            <Link to={ROUTES.CONFIRMATIONS_RESPONSES.replace(":taskId", task.id)} style={{ paddingLeft: 10 }}>
                                 Принять участников
                             </Link>
                         </button>
@@ -87,7 +118,7 @@ function ButtonsPanel({task: initialTask}) {
                                 alt="icon"
                             />
                             <span className="text-neutral-700">
-                                {category}, {typeTask}
+                                {category}{typeTask}
                             </span>
                         </div>
                         <div className="flex items-center gap-2 mb-4">

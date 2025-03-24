@@ -132,12 +132,12 @@ func (a *ApproveService) Show(ctx context.Context, dto data.ShowApproves) (pagin
 	if err != nil {
 		return paginate.Pagination{}, err
 	}
-
+	fmt.Println(approves)
 	userIDs := make([]uint64, len(approves))
 	for _, el := range approves {
 		userIDs = append(userIDs, uint64(el.UserID))
 	}
-
+	fmt.Println(userIDs)
 	var res []struct {
 		ID     uint
 		TaskID uint

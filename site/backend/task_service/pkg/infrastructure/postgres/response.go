@@ -57,6 +57,32 @@ func (r *ResponseRepository) Show(ctx context.Context, taskId uint, page int, li
 	return responses, totalPages, nil
 }
 
+func (r *ResponseRepository) ShowNotConfirmed(
+	ctx context.Context,
+	taskId uint,
+	page int,
+	limit int,
+) ([]model.ResponseModel, int, error) {
+	var responses []model.ResponseModel
+	query := r.db.WithContext(ctx).
+		Model(&model.ResponseModel{}).
+		Where("task_id = ? AND status_id = ?", taskId, 1)
+
+	var total int64
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	totalPages := int((total + int64(limit) - 1) / int64(limit))
+
+	offset := (page - 1) * limit
+	if err := query.Offset(offset).Limit(limit).Find(&responses).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return responses, totalPages, nil
+}
+
 func (r *ResponseRepository) Update(ctx context.Context, id uint, status uint) (model.ResponseModel, error) {
 	var response model.ResponseModel
 
@@ -83,8 +109,8 @@ func (r *ResponseRepository) IsResponsed(ctx context.Context, taskId, userId uin
 	if err != nil {
 		return false, err
 	}
-	return true, nil
 
+	return true, nil
 }
 
 func (r *ResponseRepository) GetByParam(ctx context.Context, taskId, userId uint) (model.ResponseModel, error) {
