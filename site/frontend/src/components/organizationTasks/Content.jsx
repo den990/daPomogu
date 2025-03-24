@@ -55,6 +55,14 @@ function Content({ tasks }) {
                                         </span>
                                     </div>
                                 </div>
+                                <div className="flex items-center gap-2">
+                                    <Link
+                                        className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors"
+                                        to={`${ROUTES.TASK.replace(":taskId", task.id)}`}
+                                    >
+                                        Открыть
+                                    </Link>
+                                </div>
                                 <button>
                                     <img
                                         className="w-4 h-4"
@@ -69,14 +77,6 @@ function Content({ tasks }) {
                                         alt="delete"
                                     />
                                 </button>
-                                <div className="flex items-center gap-2">
-                                    <Link
-                                        className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors"
-                                        to={`${ROUTES.TASK.replace(":taskId", task.id)}`}
-                                    >
-                                        Открыть
-                                    </Link>
-                                </div>
                             </div>
                         </div>
                     ))}

@@ -8,12 +8,16 @@ import ActiveTasks from "../components/publicAccountOrganization/activeTasks";
 function PublicAccountOrganization() {
     const { organizationId } = useParams();
     const [profile, setProfile] = useState(null);
+    const [tasks, setTasks] = useState(null);
 
     useEffect(() => {
         userServiceApi
             .getOrganizationProfileById(organizationId)
             .then((data) => {
                 setProfile(data);
+                if (data && data.tasks) {
+                    setTasks(data.tasks);
+                }
             })
             .catch((error) => {
                 console.error("Ошибка при загрузке профиля организации:", error);
@@ -25,7 +29,7 @@ function PublicAccountOrganization() {
             <RoleHeader />
             <main className="max-w-7x1 mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <Profile profile={profile} />
-                <ActiveTasks />
+                <ActiveTasks tasks={tasks} />
             </main>
         </div>
     );
