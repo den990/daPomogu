@@ -22,6 +22,7 @@ function Tasks() {
                         const { rows, totalPages } = response.data;
                         setTasks(rows || []);
                         setCountOfPages(totalPages);
+                        console.log(response.data);
                     })
                     .catch(() => {
                         setAlert({ message: "Ошибка при загрузке заданий", severity: "error" });
