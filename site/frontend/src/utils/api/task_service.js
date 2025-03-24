@@ -120,6 +120,15 @@ class TaskServiceApi {
             headers: this._headers,
         });
     }
+
+    getResponseById(token, response_id) {
+        this._updateToken(token);
+        const url = `${this._baseUrl}/responses/${response_id}`;
+        return this._request(url, {
+            method: "GET",
+            headers: this._headers,
+        });
+    }
 }
 
 export const taskServiceApi = new TaskServiceApi(apiSettings);

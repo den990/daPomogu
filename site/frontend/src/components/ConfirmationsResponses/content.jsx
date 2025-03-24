@@ -8,6 +8,7 @@ function Content({ taskId }) {
     const { token } = useContext(AuthContext);
     const [responses, setResponses] = useState([]);
     const [selectedResponse, setSelectedResponse] = useState(null);
+    const [selectedVolunteerId, setSelectedVolunteerId] = useState(null);
     const [userDetails, setUserDetails] = useState(null);
     const [alert, setAlert] = useState(null);
     const task_id = Number(taskId);
@@ -34,40 +35,56 @@ function Content({ taskId }) {
         fetchResponses();
     }, [fetchResponses]);
 
-    const handleResponseSelect = (id) => {
+    const handleResponseSelect = async (id) => {
         setSelectedResponse(id);
         if (!token) return;
-        userServiceApi
-            .getVolonteerProfileById(token, id)
-            .then(setUserDetails)
-            .catch(() => setAlert({ message: "Ошибка загрузки данных волонтёра", severity: "error" }));
+        try {
+            const response = await taskServiceApi.getResponseById(token, id);
+            const userId = response.data.UserID;
+            setSelectedVolunteerId(userId);
+            try {
+                const profile = await userServiceApi.getVolonteerProfileById(token, userId);
+                setUserDetails(profile);
+            } catch (error) {
+                setAlert({
+                    message: "Ошибка загрузки данных волонтёра",
+                    severity: "error",
+                });
+            }
+        } catch (error) {
+            setAlert({
+                message: "Ошибка загрузки информации о волонтёре",
+                severity: "error",
+            });
+        }
     };
 
-    const handleConfirmResponse = (id) => {
-        if (!token) return;
-        taskServiceApi
-            .putConfirmResponse(token, id)
-            .then(() => {
-                fetchResponses();
-                setUserDetails(null);
-                setSelectedResponse(null);
-                setAlert({ message: "Волонтёр успешно принят в задание!", severity: "success" });
-            })
-            .catch(() => setAlert({ message: "Ошибка при принятии волонтёра", severity: "error" }));
+    const handleConfirmResponse = async () => {
+        if (!token || !selectedResponse) return;
+        try {
+            await taskServiceApi.putConfirmResponse(token, selectedResponse);
+            fetchResponses();
+            setUserDetails(null);
+            setSelectedResponse(null);
+            setSelectedVolunteerId(null);
+            setAlert({ message: "Волонтёр успешно принят в задание!", severity: "success" });
+        } catch (error) {
+            setAlert({ message: "Ошибка при принятии волонтёра", severity: "error" });
+        }
     };
 
-    const handleRejectResponse = () => {
-        if (!token) return;
-        let temp_user_id = 1;
-        taskServiceApi
-            .deleteResponse(token, task_id, temp_user_id)
-            .then(() => {
-                fetchResponses();
-                setUserDetails(null);
-                setSelectedResponse(null);
-                setAlert({ message: "Волонтёр успешно отклонён!", severity: "success" });
-            })
-            .catch(() => setAlert({ message: "Ошибка при отклонении отклика", severity: "error" }));
+    const handleRejectResponse = async () => {
+        if (!token || !selectedVolunteerId) return;
+        try {
+            await taskServiceApi.deleteResponse(token, task_id, selectedVolunteerId);
+            fetchResponses();
+            setUserDetails(null);
+            setSelectedResponse(null);
+            setSelectedVolunteerId(null);
+            setAlert({ message: "Волонтёр успешно отклонён!", severity: "success" });
+        } catch (error) {
+            setAlert({ message: "Ошибка при отклонении отклика", severity: "error" });
+        }
     };
 
     const handleCloseAlert = (event, reason) => {
@@ -121,13 +138,13 @@ function Content({ taskId }) {
                             <div className="hidden md:flex gap-2">
                                 <button
                                     className="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-800"
-                                    onClick={() => handleConfirmResponse(selectedResponse)} // Правильно
+                                    onClick={handleConfirmResponse}
                                 >
                                     Принять
                                 </button>
                                 <button
                                     className="rounded-lg border px-4 py-2 text-neutral-700 hover:bg-neutral-50"
-                                    onClick={() => handleRejectResponse()}
+                                    onClick={handleRejectResponse}
                                 >
                                     Отклонить
                                 </button>

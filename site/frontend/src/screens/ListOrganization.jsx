@@ -16,18 +16,16 @@ function ListOrganization() {
 
     const fetchOrganizations = useCallback(
         (page) => {
-            if (token) {
-                userServiceApi
-                    .getAcceptedOrganizations(token, page)
-                    .then((data) => {
-                        setOrganizations(data || []);
-                        setCountOfPages(data.total_pages);
-                    })
-                    .catch(() => {
-                        setAlert({ message: "Ошибка при загрузке организаций", severity: "error" });
-                        setOrganizations([]);
-                    });
-            }
+            userServiceApi
+                .getAcceptedOrganizations(token, page)
+                .then((data) => {
+                    setOrganizations(data || []);
+                    setCountOfPages(data.total_pages);
+                })
+                .catch(() => {
+                    setAlert({ message: "Ошибка при загрузке организаций", severity: "error" });
+                    setOrganizations([]);
+                });
         },
         [token]
     );
