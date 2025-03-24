@@ -32,7 +32,7 @@ function ButtonsPanel({task: initialTask}) {
 
     const handleReject = async (e) => {
         try {
-            await taskServiceApi.deleteRejectResponse(token, task.id);
+            await taskServiceApi.deleteResponse(token, task.id, id);
             setTask((prevTask) => ({
                 ...prevTask,
                 is_response: false,
@@ -45,7 +45,7 @@ function ButtonsPanel({task: initialTask}) {
     const handleCancel = async (e) => {
         try {
             console.log(id);
-            await taskServiceApi.deleteCancelResponse(token, task.id, id);
+            await taskServiceApi.deleteResponse(token, task.id, id);
             setTask((prevTask) => ({
                 ...prevTask,
                 is_recorded: false,
