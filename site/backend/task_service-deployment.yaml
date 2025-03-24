@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: task-service
-          image: den990/task_service:1.0.110
+          image: den990/task_service:1.0.111
           ports:
             - containerPort: 8080
             - containerPort: 50501  # Добавляем gRPC-порт
