@@ -54,6 +54,8 @@ func (s *Server) GetOrganization(ctx context.Context, req *pb.OrganizationReques
 func (s *Server) GetOrganizationsByUserID(ctx context.Context, req *pb.OrganizationUserRequest) (*pb.OrganizationUserListResponse, error) {
 
 	organization, _ := models.FindOrganizationByUserIdOwner(strconv.FormatUint(req.GetId(), 10))
+	fmt.Println("test organizations")
+	fmt.Println(organization)
 	var organizationUserResponse []*pb.OrganizationUserResponse
 	if organization != nil {
 		organizationUserResponse = []*pb.OrganizationUserResponse{
@@ -64,6 +66,10 @@ func (s *Server) GetOrganizationsByUserID(ctx context.Context, req *pb.Organizat
 		}
 	} else {
 		userOrgs, _ := models.FindOrganizationsByUserId(strconv.FormatUint(req.GetId(), 10))
+		fmt.Println("test userOrgs")
+		fmt.Println(userOrgs)
+		fmt.Println("test req.GetId()")
+		fmt.Println(req.GetId())
 		for _, org := range userOrgs {
 			organizationUserResponse = append(organizationUserResponse, &pb.OrganizationUserResponse{
 				Id:      uint64(org.OrganizationID),
