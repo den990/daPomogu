@@ -1,46 +1,55 @@
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../context/AuthProvider";
+import { userServiceApi } from "../../utils/api/user_service";
+import { Alert, Snackbar } from "@mui/material";
+
 function Dashboard({ isSidebarOpen, setIsSidebarOpen }) {
-    const stats = [
-        {
-            icon: require("../../images/people_red.svg").default,
-            title: "Пользователи",
-            value: "2,453",
-            trend: {
-                icon: require("../../images/up-arrow_green.svg").default,
-                value: "12%",
-                color: "green",
-            },
-        },
-        {
-            icon: require("../../images/stats_red.svg").default,
-            title: "Активные задания",
-            value: "186",
-            trend: {
-                icon: require("../../images/up-arrow_green.svg").default,
-                value: "8%",
-                color: "green",
-            },
-        },
-        {
-            icon: require("../../images/ban_red.svg").default,
-            title: "Заблокированные",
-            value: "23",
-            trend: {
-                icon: require("../../images/down-arrow_red.svg").default,
-                value: "3%",
-                color: "red",
-            },
-        },
-        {
-            icon: require("../../images/circle-check_red.svg").default,
-            title: "Выполнено",
-            value: "1,429",
-            trend: {
-                icon: require("../../images/up-arrow_green.svg").default,
-                value: "15%",
-                color: "green",
-            },
-        },
-    ];
+    const { token, id } = useContext(AuthContext);
+    const [statistics, setStatistics] = useState([]);
+    const [alert, setAlert] = useState(null);
+
+    useEffect(() => {
+        if (!token) return;
+        userServiceApi
+            .getAdminStatistics(token)
+            .then((data) => {
+                setStatistics(data);
+            })
+            .catch(() => {
+                setAlert({ message: "Ошибка при загрузке статистики", severity: "error" });
+                setStatistics([]);
+            });
+    }, [token]);
+
+    const handleCloseAlert = (event, reason) => {
+        if (reason === "clickaway") return;
+        setAlert(null);
+    };
+
+    const stats = statistics?.data
+        ? [
+              {
+                  icon: require("../../images/people_red.svg").default,
+                  title: "Пользователи",
+                  value: statistics.data.count_user,
+              },
+              {
+                  icon: require("../../images/stats_red.svg").default,
+                  title: "Активные задания",
+                  value: statistics.data.count_active_tasks,
+              },
+              {
+                  icon: require("../../images/ban_red.svg").default,
+                  title: "Заблокированные",
+                  value: statistics.data.count_blocked_users,
+              },
+              {
+                  icon: require("../../images/circle-check_red.svg").default,
+                  title: "Выполнено",
+                  value: statistics.data.count_finished_tasks,
+              },
+          ]
+        : [];
 
     return (
         <main className="w-full p-4 sm:p-6 lg:p-8">
@@ -72,16 +81,24 @@ function Dashboard({ isSidebarOpen, setIsSidebarOpen }) {
                             <div className="bg-red-100 p-2 sm:p-3 rounded-lg">
                                 <img className="w-6 h-6" src={stat.icon} alt={stat.title} />
                             </div>
-                            <span className={`text-${stat.trend.color}-500 flex items-center gap-2 text-sm`}>
-                                <img className="w-4 h-4" src={stat.trend.icon} alt="Тренд" />
-                                {stat.trend.value}
-                            </span>
                         </div>
                         <h3 className="text-gray-600 text-sm sm:text-base mb-1 line-clamp-2">{stat.title}</h3>
                         <p className="text-xl sm:text-2xl font-bold text-gray-800">{stat.value}</p>
                     </div>
                 ))}
             </div>
+            {alert && (
+                <Snackbar
+                    open={true}
+                    autoHideDuration={4000}
+                    onClose={handleCloseAlert}
+                    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                >
+                    <Alert onClose={handleCloseAlert} severity={alert.severity} sx={{ width: "100%" }}>
+                        {alert.message}
+                    </Alert>
+                </Snackbar>
+            )}
         </main>
     );
 }
