@@ -224,10 +224,10 @@ func (t *TaskRepository) GetTasksByUserIDWithStatuses(
 	page int,
 	limit int,
 ) ([]model.TaskModel, int, error) {
-	tasks := make([]model.TaskModel, 0, limit)
+	var tasks []model.TaskModel
 
 	query := t.db.WithContext(ctx).
-		Model(model.TaskModel{}).
+		Model(&model.TaskModel{}).
 		Joins("JOIN task_user tu ON tu.task_id = task.id").
 		Where("tu.user_id = ?", userID).
 		Where("task.status_id IN (?)", taskStatuses).

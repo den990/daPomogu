@@ -34,13 +34,13 @@ type ResponseRepositoryReadInterface interface {
 	) ([]ResponseModel, int, error)
 	IsResponsed(ctx context.Context, taskId, userId uint) (bool, error)
 	GetByParam(ctx context.Context, taskId, userId uint) (ResponseModel, error)
+	Get(ctx context.Context, id uint) (*ResponseModel, error)
 }
 
 type ResponseRepositoryInterface interface {
 	ResponseRepositoryReadInterface
 	Create(ctx context.Context, response ResponseModel) (uint, error)
 	Update(ctx context.Context, id uint, status uint) (ResponseModel, error)
-	Get(ctx context.Context, id uint) (*ResponseModel, error)
 	Delete(ctx context.Context, dto data.DeleteResponse) error
 }
 

@@ -8,7 +8,6 @@ import (
 	"backend/task_service/pkg/infrastructure/lib/paginate"
 	"context"
 	"fmt"
-	"log"
 )
 
 type TaskQueryInterface interface {
@@ -138,7 +137,7 @@ func (t *TaskQuery) GetCurrentTasks(ctx context.Context, dto data.GetTasksByUser
 	if err != nil {
 		return paginate.Pagination{}, err
 	}
-	log.Println("status:", status)
+
 	tasks, total, err := t.readRepository.GetTasksByUserIDWithStatuses(
 		ctx,
 		user,
@@ -146,12 +145,16 @@ func (t *TaskQuery) GetCurrentTasks(ctx context.Context, dto data.GetTasksByUser
 		dto.Page,
 		dto.Limit,
 	)
-	log.Println("tasks:", tasks)
 	if err != nil {
 		return paginate.Pagination{}, err
 	}
 
-	return paginate.Pagination{Page: dto.Page, Limit: dto.Limit, Rows: tasks, TotalPages: total}, nil
+	return paginate.Pagination{
+		Page:       dto.Page,
+		Limit:      dto.Limit,
+		Rows:       tasks,
+		TotalPages: total,
+	}, nil
 }
 
 func (t *TaskQuery) GetFinishedTasks(ctx context.Context, dto data.GetTasksByUser, user uint) (paginate.Pagination, error) {

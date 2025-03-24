@@ -112,8 +112,9 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 		responses := httphands.Group("/responses")
 		{
 			responses.GET("/all/:page/:limit/:task_id", h.getResponses)
+			responses.GET("/:id", h.getResponse)
 			responses.POST("/create", h.createResponse) // баг создание дупликейт валуе
-			responses.PUT("/reject", h.rejectResponse)  //
+			//responses.PUT("/reject", h.rejectResponse)  //
 			responses.PUT("/confirm", h.confirmResponse)
 			responses.DELETE("/delete", h.deleteResponse)
 		}
@@ -149,6 +150,7 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 		roomID, err := strconv.ParseUint(roomIDParam, 10, 64)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			return
 		}
 
 		hub.ServeWS(c, uint(roomID), wsHub)
