@@ -4,6 +4,7 @@ import (
 	"backend/task_service/pkg/app/response/data"
 	"backend/task_service/pkg/app/response/model"
 	"context"
+	"fmt"
 	"gorm.io/gorm"
 )
 
@@ -121,9 +122,13 @@ func (r *ResponseRepository) GetByParam(ctx context.Context, taskId, userId uint
 
 func (r *ResponseRepository) Delete(ctx context.Context, dto data.DeleteResponse) error {
 	response := model.ResponseModel{}
-	res := r.db.WithContext(ctx).Model(&response).Where("task_id = ? AND user_id = ?", dto.TaskID, dto.UserID).Find(&response).Delete(&response).Error
-	if res != nil {
-		return res
+	res := r.db.WithContext(ctx).Model(&response).Where("task_id = ? AND user_id = ?", dto.TaskID, dto.UserID).Delete(&response)
+	if res.Error != nil {
+		return res.Error
 	}
+	if res.RowsAffected == 0 {
+		return fmt.Errorf("no record found with task_id = %v and user_id = %v", dto.TaskID, dto.UserID)
+	}
+
 	return nil
 }
