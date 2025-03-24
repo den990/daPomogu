@@ -37,3 +37,12 @@ func (c *Client) GetTasksByOrganizationId(ctx context.Context, req *pb.TaskOrgan
 	}
 	return tasks, nil
 }
+
+func (c *Client) GetCountTasksCompletedByUserId(ctx context.Context, req *pb.TaskUserRequest) (*pb.TasksCompleteCountResponse, error) {
+	count, err := c.Client.GetCountTasksCompletedByUserId(ctx, req)
+	if err != nil {
+		return &pb.TasksCompleteCountResponse{Count: 0}, err
+	}
+
+	return count, err
+}

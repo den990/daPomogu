@@ -103,10 +103,6 @@ func (h *Handler) deleteTask(c *gin.Context) {
 
 func (h *Handler) getTask(c *gin.Context) {
 	userId, err := auth.GetUserId(c)
-	if err != nil {
-		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
-		return
-	}
 
 	taskIDParam := c.Param("id")
 
@@ -146,9 +142,15 @@ func (h *Handler) getTask(c *gin.Context) {
 		return
 	}
 
-	isRecorded, _ := h.taskuserQuery.IsRecorded(c.Request.Context(), task.ID, userId)
-
-	responsed, _ := h.responseQuery.IsResponsed(c.Request.Context(), task.ID, userId)
+	var isRecorded bool
+	var responsed bool
+	if userId == 0 {
+		isRecorded = false
+		responsed = false
+	} else {
+		isRecorded, _ = h.taskuserQuery.IsRecorded(c.Request.Context(), task.ID, userId)
+		responsed, _ = h.responseQuery.IsResponsed(c.Request.Context(), task.ID, userId)
+	}
 
 	userIdsUint64 := make([]uint64, len(userIds))
 	for i, id := range userIds {
@@ -205,11 +207,7 @@ func (h *Handler) getTask(c *gin.Context) {
 }
 
 func (h *Handler) getTasks(c *gin.Context) {
-	authUser, err := auth.GetUserId(c)
-	if err != nil {
-		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
-		return
-	}
+	userId, err := auth.GetUserId(c)
 
 	pageStr := c.Param("page")
 	if pageStr == "" {
@@ -223,7 +221,7 @@ func (h *Handler) getTasks(c *gin.Context) {
 		return
 	}
 
-	tasks, total, err := h.taskQuery.Show(c.Request.Context(), authUser, page)
+	tasks, total, err := h.taskQuery.Show(c.Request.Context(), userId, page)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return

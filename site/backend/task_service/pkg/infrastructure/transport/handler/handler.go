@@ -85,6 +85,8 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 		AllowCredentials: true,
 	}))
 
+	router.GET("/api/tasks/page/:page", h.getTasks)
+	router.GET("/api/tasks/:id", h.getTask)
 	httphands := router.Group("/api")
 	{
 		httphands.Use(auth.UserIdentity(jwtSecret))
@@ -99,10 +101,8 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 
 		tasks := httphands.Group("/tasks")
 		{
-			tasks.GET("/page/:page", h.getTasks)
 			tasks.GET("/my-opened-tasks/:page/:limit", h.getOpenedTasks)
 			tasks.GET("/my-closed-tasks/:page/:limit", h.getClosedTasks)
-			tasks.GET("/:id", h.getTask)
 			tasks.POST("/", h.createTask)
 			tasks.PUT("/:id", h.updateTask)
 			tasks.DELETE("/:id", h.deleteTask)

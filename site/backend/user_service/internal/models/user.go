@@ -62,6 +62,7 @@ type UserProfileOtherResponse struct {
 	Patronymic     string `json:"patronymic,omitempty"`
 	DateOfBirthday string `json:"date_of_birthday,omitempty"`
 	Address        string `json:"address"`
+	CountTasks     string `json:"count_tasks"`
 }
 
 type UserProfileResponse struct {
@@ -72,6 +73,7 @@ type UserProfileResponse struct {
 	Address        string `json:"address"`
 	Email          string `json:"email"`
 	Phone          string `json:"phone"`
+	CountTasks     string `json:"count_tasks"`
 }
 
 func IsAdmin(c *gin.Context) (bool, error) {

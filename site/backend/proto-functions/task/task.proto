@@ -5,6 +5,7 @@ package functions;
 
 service TaskService {
   rpc GetTasksByOrganizationId(TaskOrganizationRequest) returns (TasksViewInProfileOrganization) {}
+  rpc GetCountTasksCompletedByUserId(TaskUserRequest) returns (TasksCompleteCountResponse) {}
 }
 
 message TaskViewInProfileOrganization {
@@ -20,4 +21,12 @@ message TasksViewInProfileOrganization {
 
 message TaskOrganizationRequest {
   uint64 id = 1;
+}
+
+message TaskUserRequest {
+  uint64 id = 1;
+}
+
+message TasksCompleteCountResponse {
+  uint64 count = 1;
 }

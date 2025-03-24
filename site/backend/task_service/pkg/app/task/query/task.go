@@ -17,6 +17,7 @@ type TaskQueryInterface interface {
 	ShowByOrganizationId(ctx context.Context, orgId uint) ([]model.TaskModel, error)
 	GetCurrentTasks(ctx context.Context, dto data.GetTasksByUser, user uint) (paginate.Pagination, error)
 	GetFinishedTasks(ctx context.Context, dto data.GetTasksByUser, user uint) (paginate.Pagination, error)
+	GetCountTasksCompletedByUserId(ctx context.Context, userId uint) (int, error)
 }
 
 type TaskQuery struct {
@@ -176,4 +177,8 @@ func (t *TaskQuery) GetFinishedTasks(ctx context.Context, dto data.GetTasksByUse
 	}
 
 	return paginate.Pagination{Page: dto.Page, Limit: dto.Limit, Rows: tasks, TotalPages: total}, nil
+}
+
+func (t *TaskQuery) GetCountTasksCompletedByUserId(ctx context.Context, userId uint) (int, error) {
+	return t.readRepository.GetCountTasksCompletedByUserId(ctx, userId)
 }
