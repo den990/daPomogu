@@ -1,16 +1,38 @@
-import Footer from "../components/photoReport/footer";
+import { useParams } from "react-router";
+import { motion } from "framer-motion";
+import { useState } from "react";
 import Content from "../components/photoReport/content";
 import RoleHeader from "../components/RoleHeader/RoleHeader";
+import PopUp from "../layouts/popUp/PopUp";
+import ROUTES from "../constants/routes";
 
 function PhotoReport() {
+    const [isPopUpVisible, setIsPopUpVisible] = useState(false);
+    const { taskId } = useParams();
+
     return (
-        <div className="h-full text-base-content">
-            <div className="min-h-screen bg-neutral-50">
-                <RoleHeader />
-                <Content />
-                <Footer />
-            </div>
-        </div>
+        <>
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className={`h-full text-base-content ${isPopUpVisible ? "blurred" : ""}`}
+            >
+                <div className="min-h-screen bg-neutral-50">
+                    <RoleHeader />
+                    <Content taskId={taskId} setIsPopUpVisible={setIsPopUpVisible} />
+                </div>
+            </motion.div>
+            <PopUp
+                isVisible={isPopUpVisible}
+                onClose={() => setIsPopUpVisible(false)}
+                mainMessage={"Вы успешно отправили фотоотчёт!"}
+                subMessage={""}
+                buttonMessage={"Мои задания"}
+                link={ROUTES.MY_TASKS}
+            />
+        </>
     );
 }
 
