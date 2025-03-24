@@ -16,7 +16,7 @@ function Content({ taskId }) {
     const fetchResponses = useCallback(() => {
         if (!token) return;
         taskServiceApi
-            .getAllResponses(token, taskId)
+            .getNotConfirmedResponses(token, taskId)
             .then((response) => {
                 const rows = response?.data?.rows;
                 if (rows && Array.isArray(rows)) {
@@ -122,83 +122,97 @@ function Content({ taskId }) {
                 </div>
 
                 <div className="md:col-span-8 order-2">
-                    <div className="rounded-lg border bg-white p-4 md:p-6">
-                        <div className="flex flex-col md:flex-row items-start justify-between gap-3 md:gap-4 mb-4 md:mb-6">
-                            <div className="flex items-center gap-3 md:gap-4 w-full">
-                                <img
-                                    src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=2"
-                                    className="h-12 w-12 md:h-16 md:w-16 rounded-full"
-                                    alt="Фото пользователя"
-                                />
-                                <h2 className="text-lg md:text-xl">
-                                    {`${userDetails?.name || "Не указано"} ${userDetails?.surname || ""}`.trim() ||
-                                        "Не указано"}
-                                </h2>
-                            </div>
-                            <div className="hidden md:flex gap-2">
-                                <button
-                                    className="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-800"
-                                    onClick={handleConfirmResponse}
-                                >
-                                    Принять
-                                </button>
-                                <button
-                                    className="rounded-lg border px-4 py-2 text-neutral-700 hover:bg-neutral-50"
-                                    onClick={handleRejectResponse}
-                                >
-                                    Отклонить
-                                </button>
-                            </div>
-                        </div>
-
-                        <div className="space-y-4 md:space-y-6">
-                            <div className="rounded-lg border p-3 md:p-4">
-                                <h3 className="mb-3">Данные пользователя</h3>
-                                <div className="grid grid-cols-1 gap-4">
-                                    <div>
-                                        <p className="text-xs md:text-sm text-neutral-600">Имя</p>
-                                        <p className="text-sm md:text-base">{userDetails?.name || "Не указано"}</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-xs md:text-sm text-neutral-600">Фамилия</p>
-                                        <p className="text-sm md:text-base">{userDetails?.surname || "Не указано"}</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-xs md:text-sm text-neutral-600">Отчество</p>
-                                        <p className="text-sm md:text-base">
-                                            {userDetails?.patronymic || "Не указано"}
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <p className="text-xs md:text-sm text-neutral-600">Дата рождения</p>
-                                        <p className="text-sm md:text-base">
-                                            {userDetails?.date_of_birthday || "Не указано"}
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <p className="text-xs md:text-sm text-neutral-600">Адрес регистрации</p>
-                                        <p className="text-sm md:text-base">{userDetails?.address || "Не указано"}</p>
-                                    </div>
+                    {selectedResponse ? (
+                        <div className="rounded-lg border bg-white p-4 md:p-6">
+                            <div className="flex flex-col md:flex-row items-start justify-between gap-3 md:gap-4 mb-4 md:mb-6">
+                                <div className="flex items-center gap-3 md:gap-4 w-full">
+                                    <img
+                                        src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=2"
+                                        className="h-12 w-12 md:h-16 md:w-16 rounded-full"
+                                        alt="Фото пользователя"
+                                    />
+                                    <h2 className="text-lg md:text-xl">
+                                        {`${userDetails?.name || "Не указано"} ${userDetails?.surname || ""}`.trim() ||
+                                            "Не указано"}
+                                    </h2>
                                 </div>
-                                <div className="md:hidden flex flex-col gap-2 mt-4">
-                                    {/* <button
-                                        className="w-full rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-800"
-                                        onClick={() => handleConfirmResponse(selectedResponse.ID)}
+                                <div className="hidden md:flex gap-2">
+                                    <button
+                                        className="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-800"
+                                        onClick={handleConfirmResponse}
                                     >
                                         Принять
                                     </button>
                                     <button
-                                        className="w-full rounded-lg border px-4 py-2 text-neutral-700 hover:bg-neutral-50"
-                                        onClick={() =>
-                                            handleRejectResponse(selectedResponse.TaskID, selectedResponse.User.id)
-                                        }
+                                        className="rounded-lg border px-4 py-2 text-neutral-700 hover:bg-neutral-50"
+                                        onClick={handleRejectResponse}
                                     >
                                         Отклонить
-                                    </button> */}
+                                    </button>
                                 </div>
                             </div>
+
+                            <div className="space-y-4 md:space-y-6">
+                                {userDetails ? (
+                                    <div className="rounded-lg border p-3 md:p-4">
+                                        <h3 className="mb-3">Данные пользователя</h3>
+                                        <div className="grid grid-cols-1 gap-4">
+                                            <div>
+                                                <p className="text-xs md:text-sm text-neutral-600">Имя</p>
+                                                <p className="text-sm md:text-base">
+                                                    {userDetails?.name || "Не указано"}
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <p className="text-xs md:text-sm text-neutral-600">Фамилия</p>
+                                                <p className="text-sm md:text-base">
+                                                    {userDetails?.surname || "Не указано"}
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <p className="text-xs md:text-sm text-neutral-600">Отчество</p>
+                                                <p className="text-sm md:text-base">
+                                                    {userDetails?.patronymic || "Не указано"}
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <p className="text-xs md:text-sm text-neutral-600">Дата рождения</p>
+                                                <p className="text-sm md:text-base">
+                                                    {userDetails?.date_of_birthday || "Не указано"}
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <p className="text-xs md:text-sm text-neutral-600">Адрес регистрации</p>
+                                                <p className="text-sm md:text-base">
+                                                    {userDetails?.address || "Не указано"}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="md:hidden flex flex-col gap-2 mt-4">
+                                            <button
+                                                className="w-full rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-800"
+                                                onClick={handleConfirmResponse}
+                                            >
+                                                Принять
+                                            </button>
+                                            <button
+                                                className="w-full rounded-lg border px-4 py-2 text-neutral-700 hover:bg-neutral-50"
+                                                onClick={handleRejectResponse}
+                                            >
+                                                Отклонить
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <p>Загрузка данных...</p>
+                                )}
+                            </div>
                         </div>
-                    </div>
+                    ) : (
+                        <div className="rounded-lg border bg-white p-4 md:p-6">
+                            <p>Выберите заявку, чтобы увидеть подробности.</p>
+                        </div>
+                    )}
                 </div>
             </div>
             {alert && (

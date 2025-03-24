@@ -99,7 +99,7 @@ class TaskServiceApi {
         return this._request(`${this._baseUrl}/responses/delete`, {
             method: "DELETE",
             headers: this._headers,
-            body: JSON.stringify({task_id}),
+            body: JSON.stringify({ task_id }),
         });
     }
 
@@ -108,7 +108,7 @@ class TaskServiceApi {
         return this._request(`${this._baseUrl}/tasks-users/delete`, {
             method: "DELETE",
             headers: this._headers,
-            body: JSON.stringify({task_id, user_id}),
+            body: JSON.stringify({ task_id, user_id }),
         });
     }
 
@@ -134,6 +134,15 @@ class TaskServiceApi {
     getResponseById(token, response_id) {
         this._updateToken(token);
         const url = `${this._baseUrl}/responses/${response_id}`;
+        return this._request(url, {
+            method: "GET",
+            headers: this._headers,
+        });
+    }
+
+    getNotConfirmedResponses(token, task_id, page = 1, limit = 100) {
+        this._updateToken(token);
+        const url = `${this._baseUrl}/responses/notconfirmed/${page}/${limit}/${task_id}`;
         return this._request(url, {
             method: "GET",
             headers: this._headers,

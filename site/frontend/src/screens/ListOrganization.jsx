@@ -19,8 +19,8 @@ function ListOrganization() {
             userServiceApi
                 .getAcceptedOrganizations(token, page)
                 .then((data) => {
-                    setOrganizations(data || []);
-                    setCountOfPages(data.total_pages);
+                    setOrganizations(data.data || []);
+                    setCountOfPages(data.totalPages);
                 })
                 .catch(() => {
                     setAlert({ message: "Ошибка при загрузке организаций", severity: "error" });
