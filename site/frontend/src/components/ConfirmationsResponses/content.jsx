@@ -16,7 +16,7 @@ function Content({ taskId }) {
     const fetchResponses = useCallback(() => {
         if (!token) return;
         taskServiceApi
-            .getAllResponses(token, taskId)
+            .getNotConfirmedResponses(token, taskId)
             .then((response) => {
                 const rows = response?.data?.rows;
                 if (rows && Array.isArray(rows)) {
