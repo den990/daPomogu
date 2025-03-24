@@ -196,12 +196,14 @@ func (t *TaskRepository) GetAll(
 	fmt.Println(isOwner)
 	fmt.Println("user_id:")
 	fmt.Println(user)
+	fmt.Println("orgIds:")
+	fmt.Println(orgIDs)
 	if isOwner {
 		baseQuery = baseQuery.Where("tt.name = 'Открытый' OR (tt.name = 'Закрытый' AND task.organization_id IN ?)", orgIDs)
 	} else {
 		if user != 0 {
-			baseQuery = baseQuery.Joins("LEFT JOIN task_user tu ON tu.task_id = task.id").
-				Where("tu.user_id = ? OR tt.name = 'Открытый'", user)
+			baseQuery = baseQuery.
+				Where("tt.name = 'Открытый' OR (tt.name = 'Закрытый' AND task.organization_id IN ?)", orgIDs)
 		} else {
 			baseQuery = baseQuery.Where("tt.name = 'Открытый'")
 		}
@@ -303,8 +305,6 @@ func (t *TaskRepository) ShowByOrganizationId(ctx context.Context, orgId uint) (
 	var tasks []model.TaskModel
 	err := t.db.WithContext(ctx).
 		Table("task").
-		Joins("JOIN task_type tt ON tt.id = task.type_id").
-		Where("tt.name = 'Открытый'").
 		Where("task.is_deleted = ?", false).
 		Where("task.organization_id = ?", orgId).
 		Order("task.task_date ASC").
