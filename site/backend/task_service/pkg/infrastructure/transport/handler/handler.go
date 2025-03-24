@@ -85,6 +85,7 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 		AllowCredentials: true,
 	}))
 
+	router.Use(auth.UserMayIdentity(jwtSecret))
 	router.GET("/api/tasks/page/:page", h.getTasks)
 	router.GET("/api/tasks/:id", h.getTask)
 	httphands := router.Group("/api")
