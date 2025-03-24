@@ -148,6 +148,26 @@ class TaskServiceApi {
             headers: this._headers,
         });
     }
+
+    // TaskID uint           `json:"task_id"`
+    // UserID uint           `json:"user_id"`
+    // File   multipart.File `json:"FilePath"`
+
+    postSendPhotoReport(token, task_id, user_id, image) {
+        this._updateToken(token);
+        const formData = new FormData();
+        formData.append("image", image, "photo.png");
+        formData.append("task_id", task_id);
+        formData.append("user_id", user_id);
+
+        return this._request(`${this._baseUrl}/approves/create`, {
+            method: "POST",
+            headers: {
+                Authorization: this._headers.Authorization,
+            },
+            body: formData,
+        });
+    }
 }
 
 export const taskServiceApi = new TaskServiceApi(apiSettings);

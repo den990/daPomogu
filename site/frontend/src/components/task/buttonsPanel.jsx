@@ -5,7 +5,7 @@ import { AuthContext } from "../../context/AuthProvider";
 import { taskServiceApi } from "../../utils/api/task_service";
 import { useState } from "react";
 
-function ButtonsPanel({task: initialTask}) {
+function ButtonsPanel({ task: initialTask }) {
     const { token, role, id } = useContext(AuthContext);
     const [task, setTask] = useState(initialTask);
 
@@ -75,12 +75,21 @@ function ButtonsPanel({task: initialTask}) {
                                 Отменить отклик
                             </button>
                         ) : (
-                            <button
-                                onClick={handleCancel}
-                                className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 mb-4"
-                            >
-                                Отказаться от участия
-                            </button>
+                            <>
+                                <button
+                                    onClick={handleCancel}
+                                    className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 mb-4"
+                                >
+                                    Отказаться от участия
+                                </button>
+                                <Link
+                                    className="w-full border border-neutral-300 px-6 py-3 rounded-lg hover:bg-red-50 flex items-center justify-center"
+                                    to={ROUTES.PHOTO_REPORT.replace(":taskId", task.id)}
+                                    style={{ paddingLeft: 10 }}
+                                >
+                                    Отправить фотоотчёт
+                                </Link>
+                            </>
                         )
                     ) : task.status_id === 3 ? (
                         <>
@@ -105,7 +114,10 @@ function ButtonsPanel({task: initialTask}) {
                                 src={require("../../images/person_red.svg").default}
                                 alt="icon"
                             />
-                            <Link to={ROUTES.CONFIRMATIONS_RESPONSES.replace(":taskId", task.id)} style={{ paddingLeft: 10 }}>
+                            <Link
+                                to={ROUTES.CONFIRMATIONS_RESPONSES.replace(":taskId", task.id)}
+                                style={{ paddingLeft: 10 }}
+                            >
                                 Принять участников
                             </Link>
                         </button>
@@ -118,7 +130,8 @@ function ButtonsPanel({task: initialTask}) {
                                 alt="icon"
                             />
                             <span className="text-neutral-700">
-                                {category}{typeTask}
+                                {category}
+                                {typeTask}
                             </span>
                         </div>
                         <div className="flex items-center gap-2 mb-4">

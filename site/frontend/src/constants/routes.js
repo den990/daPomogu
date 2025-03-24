@@ -3,6 +3,8 @@ const ROUTES = {
     ABOUT: "/about",
     LOGIN: "/login",
     TASK: "/task/:taskId",
+    PHOTO_REPORT: "/task/:taskId/photo-report",
+    CONFIRMATIONS_RESPONSES: "/task/:taskId/confirmations-responses",
     ACCOUNT_VOLUNTEER: "/account-volunteer",
     ACCOUNT_ORGANIZATION: "/account-organization",
     TASKS_CATALOG: "/tasks-catalog",
@@ -12,7 +14,6 @@ const ROUTES = {
     REGISTER_ORGANIZATION: "/registration-organization",
     CHAT: "/chat",
     ATTACHMENTS_ORGANIZATION: "/attachments-to-organization",
-    PHOTO_REPORT: "/photo-report",
     ADMIN_DASHBOARD: "/admin-dashboard",
     EDIT_VOLUNTEER_PROFILE: "/edit-volunteer-profile",
     ADMIN_EDIT_ORGANIZATION: "/admin-edit-organization",
@@ -27,7 +28,6 @@ const ROUTES = {
     ORGANIZATION_TASKS: "/organization-tasks",
 
     LIST_ORGANIZATION: "/organizations",
-    CONFIRMATIONS_RESPONSES: "/task/:taskId/confirmations-responses",
     TEST_AUTH: "/test-auth",
 };
 
