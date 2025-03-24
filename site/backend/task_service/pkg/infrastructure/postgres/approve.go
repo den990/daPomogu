@@ -62,7 +62,8 @@ func (a *ApproveRepository) Show(ctx context.Context, dto data.ShowApproves, sta
 		Select("approve_task.id as id," +
 			" approve_task.task_id as task_id," +
 			" approve_task.user_id as user_id, " +
-			"file.src as src")
+			"file.src as src").
+		Distinct()
 
 	var total int64
 	if err := query.Count(&total).Error; err != nil {
