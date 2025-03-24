@@ -2,9 +2,10 @@ import React, { useContext, useState } from "react";
 import { userServiceApi } from "../../utils/api/user_service";
 import { AuthContext } from "../../context/AuthProvider";
 import { Snackbar, Alert } from "@mui/material";
+import { Link } from "react-router";
 
 function Profile({ profile }) {
-    const { token } = useContext(AuthContext);
+    const { token, role } = useContext(AuthContext);
     const [alert, setAlert] = useState(null);
 
     const handleAttach = () => {
@@ -35,17 +36,19 @@ function Profile({ profile }) {
                 />
                 <div className="flex-1">
                     <h2 className="text-2xl font-bold text-gray-900 mb-4">{profile ? profile.name : "Нет данных"}</h2>
-                    <button
-                        onClick={handleAttach}
-                        className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 flex items-center"
-                    >
-                        <img
-                            style={{ width: 20, height: 16 }}
-                            src={require("../../images/registration_white.svg").default}
-                            alt="registration"
-                        />
-                        <span style={{ paddingLeft: 10 }}>Присоединиться к организации</span>
-                    </button>
+                    {role === "volunteer" && (
+                        <button
+                            onClick={handleAttach}
+                            className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 flex items-center"
+                        >
+                            <img
+                                style={{ width: 20, height: 16 }}
+                                src={require("../../images/registration_white.svg").default}
+                                alt="registration"
+                            />
+                            <span style={{ paddingLeft: 10 }}>Присоединиться к организации</span>
+                        </button>
+                    )}
                 </div>
             </div>
             {alert && (

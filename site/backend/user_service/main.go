@@ -3,6 +3,7 @@ package main
 import (
 	pb "backend/proto-functions/profile"
 	"backend/user_service/config"
+	grpcserver "backend/user_service/grpc"
 	"backend/user_service/internal/controllers"
 	"backend/user_service/internal/db"
 	"backend/user_service/internal/middleware"
@@ -40,6 +41,12 @@ func main() {
 }
 
 func startHTTPServer() {
+	grpcClient, err := grpcserver.NewGrpcClient("task-service:50501")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	h := controllers.NewHandler(*grpcClient)
 	r := gin.Default()
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
@@ -49,35 +56,36 @@ func startHTTPServer() {
 		AllowCredentials: true,
 	}))
 
-	r.POST("/register", controllers.RegisterUser)
-	r.POST("/register-organization", controllers.RegisterOrganization)
-	r.POST("/login", controllers.Login)
-	r.GET("/profile-organization/:id", controllers.GetOrganizationProfileInfo)
-	r.GET("/organizations-accepted-list/:page", controllers.GetOrganizationAcceptedList)
+	r.POST("/register", h.RegisterUser)
+	r.POST("/register-organization", h.RegisterOrganization)
+	r.POST("/login", h.Login)
+	r.GET("/profile-organization/:id", h.GetOrganizationProfileInfo)
+	r.GET("/organizations-accepted-list/:page", h.GetOrganizationAcceptedList)
 
 	protected := r.Group("/api")
 	protected.Use(middleware.AuthMiddleware())
 	{
-		protected.GET("/profile", controllers.GetUserProfileInfo)
-		protected.GET("/profile/:id", controllers.GetUserProfileInfo)
-		protected.GET("/profile-organization", controllers.GetOrganizationProfileInfo)
-		protected.PUT("/organizations/:id/apply", controllers.ApplyOrganization)
-		protected.PUT("/organizations/:id/reject", controllers.RejectOrganization)
-		protected.POST("/profile-organization", controllers.UpdateOrganization)
-		protected.POST("/profile-organization/:id", controllers.UpdateOrganization)
-		protected.PUT("/profile", controllers.UpdateUser)
-		protected.PUT("/profile/:id", controllers.UpdateUser)
-		protected.GET("/organization-requests", controllers.GetPendingOrganizations)
-		protected.PUT("/change-password", controllers.ChangePassword)
-		protected.GET("/organizations-list", controllers.GetAllOrganizationList)
-		protected.POST("/attach-organization/:id", controllers.AttachUserToOrganization)
-		protected.POST("/detach-organization/:id", controllers.DetachUserToOrganization)
-		protected.PUT("/organization/accept/:user_id", controllers.AcceptUserAttachment)
-		protected.GET("/organizations-users-list/:page", controllers.GetAllUsersAndOrganizations)
-		protected.PUT("/block-user/:id", controllers.BlockUser)
-		protected.PUT("/unblock-user/:id", controllers.UnblockUser)
-		protected.GET("/organization/requests-to-apply", controllers.GetRequestsToApply)
-		protected.GET("/organization/users", controllers.GetUsersInOrganization)
+		protected.GET("/profile", h.GetUserProfileInfo)
+		protected.GET("/profile/:id", h.GetUserProfileInfo)
+		protected.GET("/profile-organization", h.GetOrganizationProfileInfo)
+		protected.PUT("/organizations/:id/apply", h.ApplyOrganization)
+		protected.PUT("/organizations/:id/reject", h.RejectOrganization)
+		protected.POST("/profile-organization", h.UpdateOrganization)
+		protected.POST("/profile-organization/:id", h.UpdateOrganization)
+		protected.PUT("/profile", h.UpdateUser)
+		protected.PUT("/profile/:id", h.UpdateUser)
+		protected.GET("/organization-requests", h.GetPendingOrganizations)
+		protected.PUT("/change-password", h.ChangePassword)
+		protected.GET("/organizations-list", h.GetAllOrganizationList)
+		protected.POST("/attach-organization/:id", h.AttachUserToOrganization)
+		protected.POST("/detach-organization/:id", h.DetachUserToOrganization)
+		protected.PUT("/organization/accept/:user_id", h.AcceptUserAttachment)
+		protected.GET("/organizations-users-list/:page", h.GetAllUsersAndOrganizations)
+		protected.PUT("/block-user/:id", h.BlockUser)
+		protected.PUT("/unblock-user/:id", h.UnblockUser)
+		protected.GET("/organization/requests-to-apply", h.GetRequestsToApply)
+		protected.GET("/organization/users", h.GetUsersInOrganization)
+		protected.GET("/admin/statistic", h.GetStatisticForAdmin)
 	}
 
 	log.Println("HTTP Server running on port 8080...")

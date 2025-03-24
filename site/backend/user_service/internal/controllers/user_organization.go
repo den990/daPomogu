@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-func AttachUserToOrganization(c *gin.Context) {
+func (h *Handler) AttachUserToOrganization(c *gin.Context) {
 	userID, err := utils.GetUserIDFromToken(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
@@ -36,7 +36,7 @@ func AttachUserToOrganization(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "User successfully attached to organization"})
 }
 
-func DetachUserToOrganization(c *gin.Context) {
+func (h *Handler) DetachUserToOrganization(c *gin.Context) {
 	userID, err := utils.GetUserIDFromToken(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
@@ -64,7 +64,7 @@ func DetachUserToOrganization(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "User successfully attached to organization"})
 }
 
-func GetRequestsToOrganization(c *gin.Context) {
+func (h *Handler) GetRequestsToOrganization(c *gin.Context) {
 	userID, err := utils.GetUserIDFromToken(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
@@ -97,7 +97,7 @@ func GetRequestsToOrganization(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"requests": users})
 }
 
-func AcceptUserAttachment(c *gin.Context) {
+func (h *Handler) AcceptUserAttachment(c *gin.Context) {
 	userID, err := utils.GetUserIDFromToken(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
@@ -125,7 +125,7 @@ func AcceptUserAttachment(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "User successfully accepted into organization"})
 }
 
-func GetUsersInOrganization(c *gin.Context) {
+func (h *Handler) GetUsersInOrganization(c *gin.Context) {
 	userID, err := utils.GetUserIDFromToken(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})

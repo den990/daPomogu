@@ -17,11 +17,17 @@ func (h *Handler) getAllByTaskID(c *gin.Context) {
 	}
 
 	var input data.ShowApproves
-
-	if err := c.BindJSON(&input); err != nil {
-		response.NewErrorResponse(c, http.StatusBadRequest, InvalidInputBodyErr)
+	page, err1 := strconv.Atoi(c.Param("page"))
+	limit, err2 := strconv.Atoi(c.Param("limit"))
+	taskID, err3 := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err1 != nil || err2 != nil || err3 != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, "Не удалось распарсить параметры")
 		return
 	}
+
+	input.Page = uint(page)
+	input.Limit = uint(limit)
+	input.TaskID = uint(taskID)
 
 	pag, err := h.approveService.Show(c.Request.Context(), input)
 	if err != nil {

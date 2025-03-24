@@ -29,7 +29,7 @@ function Profile({ profile }) {
                 </div>
                 <div className="mt-6 gap-4 text-center flex flex-col justify-center">
                     <div className="bg-red-50 rounded-lg p-4">
-                        <div className="text-2xl font-bold text-red-600">47</div>
+                        <div className="text-2xl font-bold text-red-600">{profile ? profile.count_tasks : "0"}</div>
                         <div className="text-sm text-gray-600">Выполнено заданий</div>
                     </div>
                     {role !== "organization" && (

@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+option go_package = "backend/proto/task";
+package functions;
+
+service TaskService {
+  rpc GetTasksByOrganizationId(TaskOrganizationRequest) returns (TasksViewInProfileOrganization) {}
+  rpc GetCountTasksCompletedByUserId(TaskUserRequest) returns (TasksCompleteCountResponse) {}
+  rpc GetCountTasksCompleted(Empty) returns (TasksCompleteCountResponse) {}
+  rpc GetCountActiveTasks(Empty) returns (TasksCountResponse) {}
+}
+
+message TaskViewInProfileOrganization {
+  uint64 id = 1;
+  string name = 2;
+  string task_date = 3;
+  uint64 count_coordinator = 4;
+}
+
+message TasksViewInProfileOrganization {
+  repeated TaskViewInProfileOrganization taskViewInProfileOrganization = 1;
+}
+
+message TaskOrganizationRequest {
+  uint64 id = 1;
+}
+
+message TaskUserRequest {
+  uint64 id = 1;
+}
+
+message TasksCompleteCountResponse {
+  uint64 count = 1;
+}
+
+message TasksCountResponse {
+  uint64 count = 1;
+}
+
+message Empty {}

@@ -157,9 +157,9 @@ class UserServiceApi {
         });
     }
 
-    getAcceptedOrganizations(token) {
+    getAcceptedOrganizations(token, page) {
         this._updateToken(token);
-        return this._request(`${this._baseUrl}/organizations-accepted-list`, {
+        return this._request(`${this._baseUrlWithoutApi}/organizations-accepted-list/${page}`, {
             method: "GET",
             headers: this._headers,
         });

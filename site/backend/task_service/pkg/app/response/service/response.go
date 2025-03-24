@@ -109,7 +109,11 @@ func (r *ResponseService) Create(ctx context.Context, taskId, userId uint) (uint
 }
 
 func (r *ResponseService) Delete(ctx context.Context, dto data.DeleteResponse) error {
-	return r.responseRepository.Delete(ctx, dto)
+	err := r.responseRepository.Delete(ctx, dto)
+	if err != nil {
+		return err
+	}
+	return r.taskuserService.Delete(ctx, dto.UserID, dto.TaskID)
 }
 
 func (r *ResponseService) Confirm(ctx context.Context, id uint) error {

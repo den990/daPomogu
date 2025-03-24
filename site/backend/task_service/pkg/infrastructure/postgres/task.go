@@ -224,10 +224,10 @@ func (t *TaskRepository) GetTasksByUserIDWithStatuses(
 	page int,
 	limit int,
 ) ([]model.TaskModel, int, error) {
-	tasks := make([]model.TaskModel, 0, limit)
+	var tasks []model.TaskModel
 
 	query := t.db.WithContext(ctx).
-		Model(model.TaskModel{}).
+		Model(&model.TaskModel{}).
 		Joins("JOIN task_user tu ON tu.task_id = task.id").
 		Where("tu.user_id = ?", userID).
 		Where("task.status_id IN (?)", taskStatuses).
@@ -288,4 +288,70 @@ func (t *TaskRepository) Complete(ctx context.Context, id, userId uint) error {
 	}
 
 	return nil
+}
+
+func (t *TaskRepository) ShowByOrganizationId(ctx context.Context, orgId uint) ([]model.TaskModel, error) {
+	var tasks []model.TaskModel
+	err := t.db.WithContext(ctx).
+		Table("task").
+		Joins("JOIN task_type tt ON tt.id = task.type_id").
+		Where("tt.name = 'Открытый'").
+		Where("task.is_deleted = ?", false).
+		Where("task.organization_id = ?", orgId).
+		Order("task.task_date ASC").
+		Limit(5).
+		Find(&tasks).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return tasks, nil
+}
+
+func (t *TaskRepository) GetCountTasksCompletedByUserId(ctx context.Context, userId uint) (int, error) {
+	var count int64
+	err := t.db.WithContext(ctx).
+		Table("task_user").
+		Joins("JOIN task ON task.id = task_user.task_id").
+		Where("task_user.user_id = ?", userId).
+		Where("task.status_id = 1").
+		Where("task.is_deleted = ?", false).
+		Count(&count).Error
+
+	if err != nil {
+		return 0, err
+	}
+
+	return int(count), nil
+}
+
+func (t *TaskRepository) GetCountTasksCompleted(ctx context.Context) (int, error) {
+	var count int64
+	err := t.db.WithContext(ctx).
+		Table("task").
+		Where("task.status_id = 1").
+		Where("task.is_deleted = ?", false).
+		Count(&count).Error
+
+	if err != nil {
+		return 0, err
+	}
+
+	return int(count), nil
+}
+
+func (t *TaskRepository) GetCountActiveTasks(ctx context.Context) (int, error) {
+	var count int64
+	err := t.db.WithContext(ctx).
+		Table("task").
+		Where("task.status_id = 3").
+		Where("task.is_deleted = ?", false).
+		Count(&count).Error
+
+	if err != nil {
+		return 0, err
+	}
+
+	return int(count), nil
 }

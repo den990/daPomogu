@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: task-service
-          image: den990/task_service:1.0.87
+          image: den990/task_service:1.0.106
           ports:
             - containerPort: 8080
             - containerPort: 50501  # Добавляем gRPC-порт
@@ -32,8 +32,13 @@ spec:
   selector:
     app: task-service
   ports:
-    - protocol: TCP
+    - name: http
+      protocol: TCP
       port: 80
       targetPort: 8080
       nodePort: 30081
+    - name: grpc
+      protocol: TCP
+      port: 50501
+      targetPort: 50501
   type: NodePort
