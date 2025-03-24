@@ -46,3 +46,21 @@ func (c *Client) GetCountTasksCompletedByUserId(ctx context.Context, req *pb.Tas
 
 	return count, err
 }
+
+func (c *Client) GetCountTasksCompleted(ctx context.Context, req *pb.Empty) (*pb.TasksCompleteCountResponse, error) {
+	count, err := c.Client.GetCountTasksCompleted(ctx, req)
+	if err != nil {
+		return &pb.TasksCompleteCountResponse{Count: 0}, err
+	}
+
+	return count, err
+}
+
+func (c *Client) GetCountActiveTasks(ctx context.Context, req *pb.Empty) (*pb.TasksCountResponse, error) {
+	count, err := c.Client.GetCountActiveTasks(ctx, req)
+	if err != nil {
+		return &pb.TasksCountResponse{Count: 0}, err
+	}
+
+	return count, err
+}

@@ -21,6 +21,8 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	TaskService_GetTasksByOrganizationId_FullMethodName       = "/functions.TaskService/GetTasksByOrganizationId"
 	TaskService_GetCountTasksCompletedByUserId_FullMethodName = "/functions.TaskService/GetCountTasksCompletedByUserId"
+	TaskService_GetCountTasksCompleted_FullMethodName         = "/functions.TaskService/GetCountTasksCompleted"
+	TaskService_GetCountActiveTasks_FullMethodName            = "/functions.TaskService/GetCountActiveTasks"
 )
 
 // TaskServiceClient is the client API for TaskService service.
@@ -29,6 +31,8 @@ const (
 type TaskServiceClient interface {
 	GetTasksByOrganizationId(ctx context.Context, in *TaskOrganizationRequest, opts ...grpc.CallOption) (*TasksViewInProfileOrganization, error)
 	GetCountTasksCompletedByUserId(ctx context.Context, in *TaskUserRequest, opts ...grpc.CallOption) (*TasksCompleteCountResponse, error)
+	GetCountTasksCompleted(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*TasksCompleteCountResponse, error)
+	GetCountActiveTasks(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*TasksCountResponse, error)
 }
 
 type taskServiceClient struct {
@@ -59,12 +63,34 @@ func (c *taskServiceClient) GetCountTasksCompletedByUserId(ctx context.Context, 
 	return out, nil
 }
 
+func (c *taskServiceClient) GetCountTasksCompleted(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*TasksCompleteCountResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(TasksCompleteCountResponse)
+	err := c.cc.Invoke(ctx, TaskService_GetCountTasksCompleted_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *taskServiceClient) GetCountActiveTasks(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*TasksCountResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(TasksCountResponse)
+	err := c.cc.Invoke(ctx, TaskService_GetCountActiveTasks_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TaskServiceServer is the server API for TaskService service.
 // All implementations must embed UnimplementedTaskServiceServer
 // for forward compatibility.
 type TaskServiceServer interface {
 	GetTasksByOrganizationId(context.Context, *TaskOrganizationRequest) (*TasksViewInProfileOrganization, error)
 	GetCountTasksCompletedByUserId(context.Context, *TaskUserRequest) (*TasksCompleteCountResponse, error)
+	GetCountTasksCompleted(context.Context, *Empty) (*TasksCompleteCountResponse, error)
+	GetCountActiveTasks(context.Context, *Empty) (*TasksCountResponse, error)
 	mustEmbedUnimplementedTaskServiceServer()
 }
 
@@ -80,6 +106,12 @@ func (UnimplementedTaskServiceServer) GetTasksByOrganizationId(context.Context, 
 }
 func (UnimplementedTaskServiceServer) GetCountTasksCompletedByUserId(context.Context, *TaskUserRequest) (*TasksCompleteCountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCountTasksCompletedByUserId not implemented")
+}
+func (UnimplementedTaskServiceServer) GetCountTasksCompleted(context.Context, *Empty) (*TasksCompleteCountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCountTasksCompleted not implemented")
+}
+func (UnimplementedTaskServiceServer) GetCountActiveTasks(context.Context, *Empty) (*TasksCountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCountActiveTasks not implemented")
 }
 func (UnimplementedTaskServiceServer) mustEmbedUnimplementedTaskServiceServer() {}
 func (UnimplementedTaskServiceServer) testEmbeddedByValue()                     {}
@@ -138,6 +170,42 @@ func _TaskService_GetCountTasksCompletedByUserId_Handler(srv interface{}, ctx co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TaskService_GetCountTasksCompleted_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TaskServiceServer).GetCountTasksCompleted(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TaskService_GetCountTasksCompleted_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TaskServiceServer).GetCountTasksCompleted(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TaskService_GetCountActiveTasks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TaskServiceServer).GetCountActiveTasks(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TaskService_GetCountActiveTasks_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TaskServiceServer).GetCountActiveTasks(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TaskService_ServiceDesc is the grpc.ServiceDesc for TaskService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -152,6 +220,14 @@ var TaskService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetCountTasksCompletedByUserId",
 			Handler:    _TaskService_GetCountTasksCompletedByUserId_Handler,
+		},
+		{
+			MethodName: "GetCountTasksCompleted",
+			Handler:    _TaskService_GetCountTasksCompleted_Handler,
+		},
+		{
+			MethodName: "GetCountActiveTasks",
+			Handler:    _TaskService_GetCountActiveTasks_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
