@@ -18,6 +18,7 @@ type ResponseQueryInterface interface {
 		limit int,
 	) (*paginate.Pagination, error)
 	IsResponsed(ctx context.Context, taskId, userId uint) (bool, error)
+	Get(ctx context.Context, id uint) (model.ResponseModel, error)
 }
 
 type ResponseQuery struct {
@@ -94,4 +95,12 @@ func (r *ResponseQuery) Show(
 
 func (r *ResponseQuery) IsResponsed(ctx context.Context, taskId, userId uint) (bool, error) {
 	return r.responseRepository.IsResponsed(ctx, taskId, userId)
+}
+
+func (r *ResponseQuery) Get(ctx context.Context, id uint) (model.ResponseModel, error) {
+	response, err := r.responseRepository.Get(ctx, id)
+	if err != nil {
+		return model.ResponseModel{}, err
+	}
+	return *response, nil
 }

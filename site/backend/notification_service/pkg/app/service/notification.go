@@ -50,8 +50,3 @@ func (s *NotificationService) SetIsRead(ctx context.Context, id uint) error {
 func (s *NotificationService) CreateMessage(ctx context.Context, notification model.Notification) error {
 	return s.repository.CreateMessage(ctx, notification)
 }
-
-func (s *NotificationService) SendNotification(ctx context.Context, notification model.Notification) error {
-
-	return nil
-}

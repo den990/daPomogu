@@ -65,6 +65,30 @@ func (h *Handler) getResponses(c *gin.Context) {
 	})
 }
 
+func (h *Handler) getResponse(c *gin.Context) {
+	_, err := auth.GetUserId(c)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, "Не удалось распарсить параметры")
+		return
+	}
+
+	result, err := h.responseQuery.Get(c.Request.Context(), uint(id))
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"data": result,
+	})
+}
+
 func (h *Handler) rejectResponse(c *gin.Context) {
 	_, err := auth.GetUserId(c)
 	if err != nil {
