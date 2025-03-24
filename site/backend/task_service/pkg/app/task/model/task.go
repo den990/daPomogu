@@ -111,6 +111,8 @@ type TaskReadRepositoryInterface interface {
 	) ([]TaskModel, int, error)
 	ShowByOrganizationId(ctx context.Context, orgId uint) ([]TaskModel, error)
 	GetCountTasksCompletedByUserId(ctx context.Context, userId uint) (int, error)
+	GetCountTasksCompleted(ctx context.Context) (int, error)
+	GetCountActiveTasks(ctx context.Context) (int, error)
 }
 
 type TaskRepositoryInterface interface {

@@ -325,3 +325,33 @@ func (t *TaskRepository) GetCountTasksCompletedByUserId(ctx context.Context, use
 
 	return int(count), nil
 }
+
+func (t *TaskRepository) GetCountTasksCompleted(ctx context.Context) (int, error) {
+	var count int64
+	err := t.db.WithContext(ctx).
+		Table("task").
+		Where("task.status_id = 1").
+		Where("task.is_deleted = ?", false).
+		Count(&count).Error
+
+	if err != nil {
+		return 0, err
+	}
+
+	return int(count), nil
+}
+
+func (t *TaskRepository) GetCountActiveTasks(ctx context.Context) (int, error) {
+	var count int64
+	err := t.db.WithContext(ctx).
+		Table("task").
+		Where("task.status_id = 3").
+		Where("task.is_deleted = ?", false).
+		Count(&count).Error
+
+	if err != nil {
+		return 0, err
+	}
+
+	return int(count), nil
+}

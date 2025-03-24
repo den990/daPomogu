@@ -268,3 +268,18 @@ func IsAdminWithoutToken(userId uint) (bool, error) {
 
 	return user.IsAdmin, nil
 }
+
+func CountBlockedUsers() (int, error) {
+	var count int64
+	err := db.DB.
+		Model(&User{}).
+		Where("is_blocked = ?", true).
+		Count(&count).
+		Error
+
+	if err != nil {
+		return 0, err
+	}
+
+	return int(count), nil
+}

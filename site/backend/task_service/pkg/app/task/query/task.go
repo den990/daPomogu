@@ -17,6 +17,8 @@ type TaskQueryInterface interface {
 	GetCurrentTasks(ctx context.Context, dto data.GetTasksByUser, user uint) (paginate.Pagination, error)
 	GetFinishedTasks(ctx context.Context, dto data.GetTasksByUser, user uint) (paginate.Pagination, error)
 	GetCountTasksCompletedByUserId(ctx context.Context, userId uint) (int, error)
+	GetCountTasksCompleted(ctx context.Context) (int, error)
+	GetCountActiveTasks(ctx context.Context) (int, error)
 }
 
 type TaskQuery struct {
@@ -188,4 +190,11 @@ func (t *TaskQuery) GetFinishedTasks(ctx context.Context, dto data.GetTasksByUse
 
 func (t *TaskQuery) GetCountTasksCompletedByUserId(ctx context.Context, userId uint) (int, error) {
 	return t.readRepository.GetCountTasksCompletedByUserId(ctx, userId)
+}
+func (t *TaskQuery) GetCountTasksCompleted(ctx context.Context) (int, error) {
+	return t.readRepository.GetCountTasksCompleted(ctx)
+}
+
+func (t *TaskQuery) GetCountActiveTasks(ctx context.Context) (int, error) {
+	return t.readRepository.GetCountActiveTasks(ctx)
 }

@@ -50,3 +50,19 @@ func (s *Server) GetCountTasksCompletedByUserId(ctx context.Context, req *pb.Tas
 	}
 	return &pb.TasksCompleteCountResponse{Count: uint64(count)}, nil
 }
+
+func (s *Server) GetCountTasksCompleted(ctx context.Context, req *pb.Empty) (*pb.TasksCompleteCountResponse, error) {
+	count, err := s.taskquery.GetCountTasksCompleted(ctx)
+	if err != nil {
+		return &pb.TasksCompleteCountResponse{Count: 0}, err
+	}
+	return &pb.TasksCompleteCountResponse{Count: uint64(count)}, nil
+}
+
+func (s *Server) GetCountActiveTasks(ctx context.Context, req *pb.Empty) (*pb.TasksCountResponse, error) {
+	count, err := s.taskquery.GetCountActiveTasks(ctx)
+	if err != nil {
+		return &pb.TasksCountResponse{Count: 0}, err
+	}
+	return &pb.TasksCountResponse{Count: uint64(count)}, nil
+}
