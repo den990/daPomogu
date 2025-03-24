@@ -32,6 +32,12 @@ type ResponseRepositoryReadInterface interface {
 		page int,
 		limit int,
 	) ([]ResponseModel, int, error)
+	ShowNotConfirmed(
+		ctx context.Context,
+		taskId uint,
+		page int,
+		limit int,
+	) ([]ResponseModel, int, error)
 	IsResponsed(ctx context.Context, taskId, userId uint) (bool, error)
 	GetByParam(ctx context.Context, taskId, userId uint) (ResponseModel, error)
 	Get(ctx context.Context, id uint) (*ResponseModel, error)

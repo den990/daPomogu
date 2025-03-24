@@ -113,6 +113,7 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 		responses := httphands.Group("/responses")
 		{
 			responses.GET("/all/:page/:limit/:task_id", h.getResponses)
+			responses.GET("/notconfirmed/:page/:limit/:task_id", h.getNotConfirmedResponses)
 			responses.GET("/:id", h.getResponse)
 			responses.POST("/create", h.createResponse) // баг создание дупликейт валуе
 			//responses.PUT("/reject", h.rejectResponse)  //
@@ -130,7 +131,7 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 
 		approves := httphands.Group("/approves")
 		{
-			approves.GET("/all-by-tas-id/:id/:page/:limit", h.getAllByTaskID)
+			approves.GET("/all-by-task-id/:id/:page/:limit", h.getAllByTaskID)
 			approves.POST("/create", h.addApproves)
 			approves.PUT("/reject", h.rejectApproves)
 			approves.PUT("/confirm", h.confirmApproves)
