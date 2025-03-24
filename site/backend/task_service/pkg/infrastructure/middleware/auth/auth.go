@@ -76,10 +76,26 @@ func IsAdmin(c *gin.Context) (bool, error) {
 func UserMayIdentity(jwtSecret string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		header := c.GetHeader(authorizationHeader)
+		if header == "" {
+			c.Set(userCtx, 0)
+			c.Set(roleCtx, "user")
+			return
+		}
 
 		headerParts := strings.Split(header, " ")
+		if len(headerParts) != 2 {
+			c.Set(userCtx, 0)
+			c.Set(roleCtx, "user")
+			return
+		}
 
-		userId, _ := jwt.ValidateToken(headerParts[1], jwtSecret)
+		userId, err := jwt.ValidateToken(headerParts[1], jwtSecret)
+		if err != nil {
+			c.Set(userCtx, 0)
+			c.Set(roleCtx, "user")
+			return
+		}
+
 		c.Set(userCtx, userId.UserID)
 		c.Set(roleCtx, userId.Role)
 	}
