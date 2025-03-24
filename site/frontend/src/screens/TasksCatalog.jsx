@@ -15,19 +15,17 @@ function TasksCatalog() {
 
     const fetchTasks = useCallback(
         (page) => {
-            if (token) {
-                taskServiceApi
-                    .getAllTasks(token, page)
-                    .then((data) => {
-                        setTasks(data.data || []);
-                        console.log(data);
-                        setCountOfPages(data.total_pages);
-                    })
-                    .catch((error) => {
-                        console.error("Ошибка при загрузке всех заданий: ", error);
-                        setTasks([]);
-                    });
-            }
+            taskServiceApi
+                .getAllTasks(token, page)
+                .then((data) => {
+                    setTasks(data.data || []);
+                    console.log(data);
+                    setCountOfPages(data.total_pages);
+                })
+                .catch((error) => {
+                    console.error("Ошибка при загрузке всех заданий: ", error);
+                    setTasks([]);
+                });
         },
         [token]
     );
