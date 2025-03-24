@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"log"
+	"math"
 	"net/http"
 	"strconv"
 	"time"
@@ -269,6 +270,14 @@ func (h *Handler) GetOrganizationAcceptedList(c *gin.Context) {
 	limit := 7
 	offset := (page - 1) * limit
 
+	totalRecords, err := models.CountOrganizationsAccepted()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to fetch total count"})
+		return
+	}
+
+	totalPages := int(math.Ceil(float64(totalRecords) / float64(limit)))
+
 	organizations, err := models.FindOrganizationsAccepted(offset, limit)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to fetch organizations"})
@@ -284,7 +293,11 @@ func (h *Handler) GetOrganizationAcceptedList(c *gin.Context) {
 		})
 	}
 
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, gin.H{
+		"data":        response,
+		"totalPages":  totalPages,
+		"currentPage": page,
+	})
 }
 
 func (h *Handler) GetAllOrganizationList(c *gin.Context) {

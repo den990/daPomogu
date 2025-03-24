@@ -139,6 +139,15 @@ func FindOrganizationsAccepted(offset, limit int) ([]Organization, error) {
 	return organizations, nil
 }
 
+func CountOrganizationsAccepted() (int64, error) {
+	var count int64
+	err := db.DB.Model(&Organization{}).Where("status_id = ?", 2).Count(&count).Error
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
 func FindOrganizationsAll() ([]Organization, error) {
 	var organizations []Organization
 	err := db.DB.Find(&organizations).Error
