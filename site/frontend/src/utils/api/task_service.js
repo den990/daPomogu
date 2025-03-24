@@ -94,24 +94,6 @@ class TaskServiceApi {
         });
     }
 
-    deleteRejectResponse(token, task_id) {
-        this._updateToken(token);
-        return this._request(`${this._baseUrl}/responses/delete`, {
-            method: "DELETE",
-            headers: this._headers,
-            body: JSON.stringify({ task_id }),
-        });
-    }
-
-    deleteCancelResponse(token, task_id, user_id) {
-        this._updateToken(token);
-        return this._request(`${this._baseUrl}/tasks-users/delete`, {
-            method: "DELETE",
-            headers: this._headers,
-            body: JSON.stringify({ task_id, user_id }),
-        });
-    }
-
     deleteResponse(token, task_id, user_id) {
         this._updateToken(token);
         return this._request(`${this._baseUrl}/responses/delete`, {
