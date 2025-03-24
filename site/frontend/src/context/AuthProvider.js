@@ -9,6 +9,7 @@ export const AuthContext = createContext({
     login: () => {},
     logout: () => {},
     updateProfile: () => {},
+    id: null,
 });
 
 export const AuthProvider = ({ children }) => {
@@ -17,6 +18,7 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [profile, setProfile] = useState(null);
     const [role, setRole] = useState(null);
+    const [id, setId] = useState(null);
 
     const login = (newToken) => {
         setToken(newToken);
@@ -24,6 +26,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem("token", newToken);
         try {
             const decoded = jwtDecode(newToken);
+            setId(decoded.user_id);
             setRole(decoded.role);
         } catch (error) {
             console.error("Ошибка при декодировании токена:", error);
@@ -35,6 +38,7 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(false);
         setProfile(null);
         setRole(null);
+        setId(null);
         localStorage.removeItem("token");
     };
 
@@ -50,6 +54,7 @@ export const AuthProvider = ({ children }) => {
             try {
                 const decoded = jwtDecode(storedToken);
                 setRole(decoded.role);
+                setId(decoded.user_id);
             } catch (error) {
                 console.error("Ошибка при декодировании токена:", error);
             }
@@ -85,7 +90,7 @@ export const AuthProvider = ({ children }) => {
     }, [token, role]);
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, token, profile, role, login, logout, updateProfile, loading }}>
+        <AuthContext.Provider value={{ isAuthenticated, token, profile, role, login, logout, updateProfile, loading, id }}>
             {children}
         </AuthContext.Provider>
     );
