@@ -67,12 +67,6 @@ func (a *ApproveService) Create(ctx context.Context, dto data.CreateApprove) (ui
 	if err != nil {
 		return 0, err
 	}
-	fmt.Println("dto.File")
-	fmt.Println(dto.File)
-	fmt.Println("dir")
-	fmt.Println(dir)
-	fmt.Println("path")
-	fmt.Println(path)
 	_, err = filelib.SaveInDirectory(ctx, dto.File, dir, path)
 	if err != nil {
 
