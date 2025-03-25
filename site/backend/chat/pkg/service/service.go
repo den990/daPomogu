@@ -11,10 +11,12 @@ type ChatReposInterface interface {
 	CreateMessage(ctx context.Context, mess model.Message) (model.Message, error)
 	ShowChats(ctx context.Context, userID uint, page, limit uint) ([]model.Chat, int, error)
 	ShowMessages(ctx context.Context, chatID uint, page, limit uint) ([]model.Message, error)
+	GetChat(ctx context.Context, chatID uint) (model.Chat, error)
 }
 
 type ChatService struct {
 	repo ChatReposInterface
+	grpc Grpc
 }
 
 func (c ChatService) CreateChat(ctx context.Context, chat model.Chat) (model.Chat, error) {
@@ -47,18 +49,35 @@ func (c ChatService) ShowChats(ctx context.Context, userID uint, page, limit uin
 }
 
 func (c ChatService) ShowMessages(ctx context.Context, chatID uint, page, limit uint) (paginate.Pagination, error) {
-	chats, err := c.repo.ShowMessages(ctx, chatID, page, limit)
+	chat, err := c.repo.GetChat(ctx, chatID)
 	if err != nil {
 		return paginate.Pagination{}, err
 	}
+
+	messages, err := c.repo.ShowMessages(ctx, chatID, page, limit)
+	if err != nil {
+		return paginate.Pagination{}, err
+	}
+
+	users, err := c.grpc.GetUsersByIDS(ctx, []uint64{uint64(chat.User1ID), uint64(chat.User2ID)})
+	if err != nil {
+		return paginate.Pagination{}, err
+	}
+
 	return paginate.Pagination{
-		Limit:      int(limit),
-		Page:       int(page),
-		Rows:       chats,
+		Limit: int(limit),
+		Page:  int(page),
+		Rows: struct {
+			Messages []model.Message   `json:"messages"`
+			Users    []model.UserModel `json:"users"`
+		}{
+			Messages: messages,
+			Users:    users,
+		},
 		TotalPages: -1,
 	}, nil
 }
 
-func NewChatService(repo ChatReposInterface) ChatServiceInterface {
-	return &ChatService{repo: repo}
+func NewChatService(repo ChatReposInterface, grpc *Grpc) *ChatService {
+	return &ChatService{repo: repo, grpc: *grpc}
 }

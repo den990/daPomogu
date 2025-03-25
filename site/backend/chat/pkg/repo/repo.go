@@ -10,6 +10,12 @@ type ChatRepository struct {
 	gorm *gorm.DB
 }
 
+func NewChatRepository(db *gorm.DB) *ChatRepository {
+	return &ChatRepository{
+		gorm: db,
+	}
+}
+
 func (c *ChatRepository) CreateChat(ctx context.Context, chat model.Chat) (model.Chat, error) {
 	res := c.gorm.WithContext(ctx).Model(&chat).Create(&chat)
 	return chat, res.Error
@@ -54,4 +60,10 @@ func (c *ChatRepository) ShowMessages(ctx context.Context, chatID uint, page, li
 	}
 
 	return messages, nil
+}
+
+func (c *ChatRepository) GetChat(ctx context.Context, chatID uint) (model.Chat, error) {
+	var chat model.Chat
+	err := c.gorm.WithContext(ctx).Model(&chat).Where("id = ?", chatID).First(&chat).Error
+	return chat, err
 }

@@ -2,10 +2,7 @@ package handler
 
 import (
 	"backend/chat/pkg/handler/hub"
-	"backend/chat/pkg/model"
-	"backend/chat/pkg/paginate"
 	"backend/task_service/pkg/infrastructure/jwt"
-	"context"
 	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -13,24 +10,17 @@ import (
 	"strconv"
 )
 
-type ChatServiceInterface interface {
-	CreateChat(ctx context.Context, chat model.Chat) (model.Chat, error)
-	CreateMessage(ctx context.Context, mess model.Message) (model.Message, error)
-	ShowChats(ctx context.Context, userID uint, page, limit uint) (paginate.Pagination, error)
-	ShowMessages(ctx context.Context, chatID uint, page, limit uint) (paginate.Pagination, error)
-}
-
 type ChatHandler struct {
-	service ChatServiceInterface
+	service hub.ChatServiceInterface
 }
 
-func NewChatHandler(service ChatServiceInterface) *ChatHandler {
+func NewChatHandler(service hub.ChatServiceInterface) *ChatHandler {
 	return &ChatHandler{
 		service: service,
 	}
 }
 
-func (h *ChatHandler) Init() {
+func (h *ChatHandler) Init(secret string) *gin.Engine {
 	router := gin.New()
 
 	router.Use(cors.New(cors.Config{
@@ -41,12 +31,12 @@ func (h *ChatHandler) Init() {
 		AllowCredentials: true,
 	}))
 
-	wsHub := hub.NewHub()
+	wsHub := hub.NewHub(h.service)
 	go wsHub.Run()
 
 	router.GET("/ws", func(c *gin.Context) {
 		token := c.Query("token")
-		userId, err := jwt.ValidateToken(token, jwtSecret)
+		userId, err := jwt.ValidateToken(token, secret)
 		if err != nil {
 			fmt.Println(token, "-  token error:", err)
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "missing token"})
@@ -69,4 +59,6 @@ func (h *ChatHandler) Init() {
 
 		hub.ServeWS(c, uint(roomID), userId.UserID, wsHub)
 	})
+
+	return router
 }

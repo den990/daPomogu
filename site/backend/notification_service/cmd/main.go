@@ -33,7 +33,8 @@ func main() {
 
 	rep := postgresnotification.NewNotificationPostgres(db)
 	srv := service.NewNotificationService(rep)
-	puller := service.NewPuller(srv)
+	email := service.NewEmailSender()
+	puller := service.NewPuller(srv, email)
 	go func() {
 		fmt.Println("Puller started")
 		puller.Run()

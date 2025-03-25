@@ -1,8 +1,9 @@
 package hub
 
 import (
-	"backend/chat/pkg/service"
+	"backend/chat/pkg/model"
 	"backend/task_service/pkg/infrastructure/lib/paginate"
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -11,9 +12,16 @@ import (
 	"sync"
 )
 
+type ChatServiceInterface interface {
+	CreateChat(ctx context.Context, chat model.Chat) (model.Chat, error)
+	CreateMessage(ctx context.Context, mess model.Message) (model.Message, error)
+	ShowChats(ctx context.Context, userID uint, page, limit uint) (paginate.Pagination, error)
+	ShowMessages(ctx context.Context, chatID uint, page, limit uint) (paginate.Pagination, error)
+}
+
 type Hub struct {
 	clients     map[uint]map[*Client]bool // userId -> {клиенты}
-	chatservice service.ChatServiceInterface
+	chatservice ChatServiceInterface
 	register    chan *Client
 	unregister  chan *Client
 	broadcast   chan Message
@@ -43,12 +51,12 @@ func ServeWS(ctx *gin.Context, roomID, clientId uint, h *Hub) {
 
 type Message struct {
 	Type   string `json:"type"`
-	TaskID uint   `json:"task_id"`
+	ChatId uint   `json:"task_id"`
 	Data   string `json:"data"`
 	UserID uint   `json:"user_id"` // todo: передать в строке подключения
 }
 
-func NewHub(chatservice service.ChatServiceInterface) *Hub {
+func NewHub(chatservice ChatServiceInterface) *Hub {
 	return &Hub{
 		clients:     make(map[uint]map[*Client]bool),
 		chatservice: chatservice,
@@ -96,54 +104,93 @@ func (h *Hub) RemoveClient(client *Client) {
 func (h *Hub) HandleMessage(message Message) {
 	h.mu.Lock()
 	defer h.mu.Unlock()
-
+	fmt.Println(message)
 	switch message.Type {
-	case "Create":
+	case "CreateMessage":
 		fmt.Println(message.Type)
 
-		//if err != nil {
-		//	h.sendMessageToClients(message.TaskID, "its ok")
-		//	return
-		//}
-
-		h.sendMessageToClients(message.TaskID, "")
-		return
-	case "Get":
-		fmt.Println(message.Type)
-		var pagination paginate.Pagination
-		err := json.Unmarshal([]byte(message.Data), &pagination)
+		chat, err := h.chatservice.CreateMessage(context.Background(), model.Message{
+			UserID: message.UserID,
+			Text:   message.Data,
+		})
 		if err != nil {
-			h.sendMessageToClients(message.TaskID, "its ok")
-			return
+			h.sendMessageToClients(message.ChatId, "its ok")
 		}
 
-		// todo: поправить пагинацию
-
-		//if err != nil {
-		//	h.sendMessageToClients(message.TaskID, "its ok")
-		//	return
-		//}
-
-		h.sendMessageToClients(message.TaskID, "")
+		h.sendMessageToClients(message.ChatId, chat)
 		return
+	case "GetMessages":
+		fmt.Println(message.Type)
+		var pagination struct {
+			Page   uint `json:"page"`
+			Limit  uint `json:"limit"`
+			ChatID uint `json:"chat_id"`
+		}
+		err := json.Unmarshal([]byte(message.Data), &pagination)
+		if err != nil {
+			h.sendMessageToClients(message.ChatId, "its ok")
+			return
+		}
+		messages, err := h.chatservice.ShowMessages(context.Background(), pagination.ChatID, pagination.Page, pagination.Limit)
+		if err != nil {
+			h.sendMessageToClients(message.ChatId, "its ok")
+			return
+		}
+		h.sendMessageToClients(message.ChatId, messages)
+		return
+	case "ShowChats":
+		var pagination struct {
+			Page   uint `json:"page"`
+			Limit  uint `json:"limit"`
+			UserID uint `json:"user_id"`
+		}
+		err := json.Unmarshal([]byte(message.Data), &pagination)
+		if err != nil {
+			h.sendMessageToClients(message.ChatId, "its ok")
+			return
+		}
+		chats, err := h.chatservice.ShowChats(context.Background(), pagination.UserID, pagination.Page, pagination.Limit)
+		if err != nil {
+			h.sendMessageToClients(message.ChatId, "its ok")
+		}
+		h.sendMessageToClients(message.ChatId, chats)
+	case "CreateChat":
+		var data struct {
+			User1ID uint `json:"user1_id"`
+			User2ID uint `json:"user2_id"`
+		}
+		err := json.Unmarshal([]byte(message.Data), &data)
+		if err != nil {
+			h.sendMessageToClients(message.ChatId, "its ok")
+			return
+		}
+		chat, err := h.chatservice.CreateChat(context.Background(), model.Chat{
+			User1ID: data.User1ID,
+			User2ID: data.User2ID,
+		})
+		if err != nil {
+			h.sendMessageToClients(message.ChatId, "its ok")
+			return
+		}
+		h.sendMessageToClients(message.ChatId, chat)
 	default:
 		return
 	}
 }
 
-func (h *Hub) sendMessageToClients(taskID uint, data interface{}) {
+func (h *Hub) sendMessageToClients(chatId uint, data interface{}) {
 	message := Message{
 		Type:   "message",
-		TaskID: taskID,
+		ChatId: chatId,
 		Data:   serializeData(data),
 	}
 
-	for client := range h.clients[taskID] {
+	for client := range h.clients[chatId] {
 		select {
 		case client.send <- message:
 		default:
 			close(client.send)
-			delete(h.clients[taskID], client)
+			delete(h.clients[chatId], client)
 		}
 	}
 }
