@@ -134,6 +134,7 @@ func NewContainer(config config.Config) *Container {
 		approveFileService,
 		organizationQuery,
 		taskQuery,
+		taskUserQuery,
 	)
 
 	categoryRepository := postgres.NewCategoryRepository(db)
