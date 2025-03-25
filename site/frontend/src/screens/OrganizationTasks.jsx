@@ -12,8 +12,9 @@ function Tasks() {
     const [countOfPages, setCountOfPages] = useState(0);
     const [numberOfPage, setNumberOfPage] = useState(1);
     const [alert, setAlert] = useState(null);
+    const [activeTab, setActiveTab] = useState('opened');
 
-    const fetchTasks = useCallback(
+    const fetchOpenedTasks = useCallback(
         (page) => {
             if (token) {
                 taskServiceApi
@@ -33,9 +34,32 @@ function Tasks() {
         [token]
     );
 
+    const fetchClosedTasks = useCallback(
+        (page) => {
+            if (token) {
+                taskServiceApi
+                    .getMyClosedTasks(token, page)
+                    .then((response) => {
+                        const { rows, totalPages } = response.data;
+                        setTasks(rows || []);
+                        setCountOfPages(totalPages);
+                    })
+                    .catch(() => {
+                        setAlert({ message: "Ошибка при загрузке заданий", severity: "error" });
+                        setTasks([]);
+                    });
+            }
+        },
+        [token]
+    );
+
     useEffect(() => {
-        fetchTasks(numberOfPage);
-    }, [numberOfPage, fetchTasks]);
+        if (activeTab === 'opened') {
+            fetchOpenedTasks(numberOfPage);
+        } else {
+            fetchClosedTasks(numberOfPage);
+        }
+    }, [numberOfPage, activeTab, fetchOpenedTasks, fetchClosedTasks]);
 
     const handleCloseAlert = (event, reason) => {
         if (reason === "clickaway") return;
@@ -46,12 +70,27 @@ function Tasks() {
         setNumberOfPage(page);
     };
 
+    const handleOpenedTabClick = () => {
+        setActiveTab('opened');
+        setNumberOfPage(1);
+    };
+
+    const handleClosedTabClick = () => {
+        setActiveTab('closed');
+        setNumberOfPage(1);
+    };
+
     return (
         <div>
             <RoleHeader />
             {tasks.length !== 0 ? (
                 <>
-                    <Content tasks={tasks} />
+                    <Content
+                        tasks={tasks}
+                        activeTab={activeTab}
+                        onOpenedTabClick={handleOpenedTabClick}
+                        onClosedTabClick={handleClosedTabClick}
+                    />
                     <Pagination
                         numberOfPageOut={numberOfPage}
                         countOfPages={countOfPages}
@@ -61,7 +100,9 @@ function Tasks() {
             ) : (
                 <div className="flex justify-center items-center h-64">
                     <span className="text-gray-500 text-lg">
-                        Вы ещё не создали ни одного задания (На бэке метод не работает для организаций)
+                        {activeTab === 'opened' 
+                                ? "Нет текущих заданий" 
+                                : "Нет завершенных заданий"}
                     </span>
                 </div>
             )}
