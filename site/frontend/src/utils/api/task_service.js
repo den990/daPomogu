@@ -209,6 +209,14 @@ class TaskServiceApi {
             }
         });
     }
+
+    putCompleteTask(token, task_id) {
+        this._updateToken(token);
+        return fetch(`${this._baseUrl}/tasks/complete/${task_id}`, {
+            method: "PUT",
+            headers: this._headers,
+        });
+    }
 }
 
 export const taskServiceApi = new TaskServiceApi(apiSettings);
