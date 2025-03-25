@@ -137,13 +137,14 @@ func (t *TaskQuery) ShowByOrganizationId(ctx context.Context, orgId uint) ([]mod
 
 func (t *TaskQuery) GetCurrentTasks(ctx context.Context, dto data.GetTasksByUser, user uint) (paginate.Pagination, error) {
 	status, err := t.taskstatusService.Get(ctx, "В работе")
+	status2, err := t.taskstatusService.Get(ctx, "Не начато")
 	if err != nil {
 		return paginate.Pagination{}, err
 	}
 	org, _ := t.organizationQuery.GetOrganizationByOwnerUserID(ctx, uint64(user))
 
 	if org != (organizationmodel.OrganizationModel{}) {
-		tasks, total, err := t.readRepository.ShowByOrganizationIdWithStatuses(ctx, org.ID, []uint{status.ID}, dto.Page, dto.Limit)
+		tasks, total, err := t.readRepository.ShowByOrganizationIdWithStatuses(ctx, org.ID, []uint{status.ID, status2.ID}, dto.Page, dto.Limit)
 		if err != nil {
 			return paginate.Pagination{}, err
 		}
