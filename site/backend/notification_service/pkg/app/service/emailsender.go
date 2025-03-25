@@ -19,7 +19,7 @@ func NewEmailSender() *EmailSender {
 
 func (e *EmailSender) SendEmail(ctx context.Context, data string) error {
 	from := "skammoshenik@gmail.com"
-	password := "Maun7hax"
+	password := ""
 
 	to := []string{"skammoshenik@gmail.com"}
 
