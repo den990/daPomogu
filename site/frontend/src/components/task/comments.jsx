@@ -1,14 +1,14 @@
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../../context/AuthProvider";
 
-function Comments({ taskId }) {
+function Comments({ task }) {
     const { token, id } = useContext(AuthContext);
     const [socket, setSocket] = useState(null);
     const [messages, setMessages] = useState([]);
     const [comment, setComment] = useState("");
 
     useEffect(() => {
-        const ws = new WebSocket(`ws://localhost:8081/ws?roomID=${taskId}&token=${token}`);
+        const ws = new WebSocket(`ws://localhost:8081/ws?roomID=${task.id}&token=${token}`);
 
         ws.onopen = () => {
             console.log("✅ Соединение установлено");
@@ -25,7 +25,6 @@ function Comments({ taskId }) {
 
         ws.onmessage = (event) => {
             const data = JSON.parse(event.data);
-            console.log("📩 Ответ от сервера:", data);
 
             if (data.type === "message") {
                 try {
@@ -45,13 +44,13 @@ function Comments({ taskId }) {
             }
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [taskId]);
+    }, []);
 
     const sendMessage = () => {
         if (socket && socket.readyState === WebSocket.OPEN) {
             const message = {
                 type: "Create",
-                task_id: Number(taskId),
+                task_id: Number(task.id),
                 data: comment,
                 user_id: Number(id),
             };
@@ -68,7 +67,7 @@ function Comments({ taskId }) {
         if (ws && ws.readyState === WebSocket.OPEN) {
             const message = {
                 type: "Get",
-                task_id: Number(taskId),
+                task_id: Number(task.id),
                 // eslint-disable-next-line no-useless-concat
                 data: "{\n" + '  "limit": 100,\n' + '  "page": 1,\n' + '  "rows": []\n' + "}",
                 user_id: Number(id),
@@ -109,20 +108,22 @@ function Comments({ taskId }) {
                     <p className="text-neutral-500 text-sm">Нет комментариев.</p>
                 )}
             </div>
-            <div className="bg-white p-4 rounded-lg shadow-md border">
-                <textarea
-                    className="w-full border rounded-lg p-3 mb-3 text-sm md:text-base placeholder-neutral-500"
-                    placeholder="Написать комментарий..."
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                ></textarea>
-                <button
-                    className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 text-sm md:text-base"
-                    onClick={sendMessage}
-                >
-                    Отправить
-                </button>
-            </div>
+            {task.role_in_task !== "user" && (
+                <div className="bg-white p-4 rounded-lg shadow-md border">
+                    <textarea
+                        className="w-full border rounded-lg p-3 mb-3 text-sm md:text-base placeholder-neutral-500"
+                        placeholder="Написать комментарий..."
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                    ></textarea>
+                    <button
+                        className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 text-sm md:text-base"
+                        onClick={sendMessage}
+                    >
+                        Отправить
+                    </button>
+                </div>
+            )}
         </div>
     );
 }

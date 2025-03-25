@@ -40,7 +40,7 @@ function Info({ task }) {
                 </div>
             </div>
 
-            <Comments taskId={task.id} />
+            <Comments task={task} />
         </div>
     );
 }
