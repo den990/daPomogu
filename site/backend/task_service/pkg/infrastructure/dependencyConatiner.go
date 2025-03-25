@@ -101,7 +101,7 @@ func NewContainer(config config.Config) *Container {
 	taskstatusRepo := postgres.NewTaskStatus(db)
 	taskstatusService := taskquery.NewTaskStatusService(taskstatusRepo)
 	taskQuery := taskquery.NewTaskQuery(taskRepository, organizationQuery, taskstatusService, *taskCategoryQuery, *taskUserQuery)
-	taskService := taskservice.NewTaskService(taskRepository, organizationQuery, *userQuery)
+	taskService := taskservice.NewTaskService(taskRepository, organizationQuery, *userQuery, *taskUserQuery)
 
 	responseRepository := postgres.NewResponsePostgresRepository(db)
 	responseQuery := responsequery.NewResponseQuery(responseRepository, userQuery)
@@ -116,7 +116,7 @@ func NewContainer(config config.Config) *Container {
 	)
 
 	commentResponse := postgres.NewCommentsRepository(db)
-	commentQuery := commentquery.NewCommentQuery(commentResponse)
+	commentQuery := commentquery.NewCommentQuery(commentResponse, *userQuery)
 	commentService := commentservice.NewCommentService(commentResponse)
 
 	approveRepository := postgres.NewApproveRepository(db)
@@ -133,6 +133,7 @@ func NewContainer(config config.Config) *Container {
 		fileRepo,
 		approveFileService,
 		organizationQuery,
+		taskQuery,
 	)
 
 	categoryRepository := postgres.NewCategoryRepository(db)

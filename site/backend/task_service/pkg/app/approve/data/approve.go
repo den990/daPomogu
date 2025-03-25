@@ -45,8 +45,9 @@ type GetResponseById struct {
 }
 
 type ApproveResponse struct {
-	Id     uint                `json:"id"`
-	User   usermodel.UserModel `json:"user"`
-	File   string              `json:"file"`
-	TaskID uint                `json:"task_id"`
+	Id           uint                `json:"id"`
+	User         usermodel.UserModel `json:"user"`
+	File         string              `json:"file"`
+	TaskID       uint                `json:"task_id"`
+	TaskMaxScore int                 `json:"task_max_score"`
 }

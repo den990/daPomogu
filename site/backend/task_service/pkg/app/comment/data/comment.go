@@ -3,6 +3,7 @@ package data
 type CreateComment struct {
 	TaskID  uint   `json:"task_id"`
 	Comment string `json:"comment"`
+	UserID  uint   `json:"user_id"`
 	// пользователя брать из под токена
 }
 

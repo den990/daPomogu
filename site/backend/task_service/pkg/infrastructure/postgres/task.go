@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"gorm.io/gorm"
+	"log"
 	"time"
 )
 
@@ -256,43 +257,78 @@ func (t *TaskRepository) GetTasksByUserIDWithStatuses(
 }
 
 func (t *TaskRepository) Complete(ctx context.Context, id, userId uint) error {
+	tx := t.db.WithContext(ctx).Begin()
+	if tx.Error != nil {
+		return tx.Error
+	}
+
 	var task model.TaskModel
-	err := t.db.WithContext(ctx).
+	if err := tx.
 		Where("id = ? AND is_deleted = false", id).
-		First(&task).Error
+		First(&task).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
 	task.StatusID = 1
-	err = t.db.WithContext(ctx).Save(&task).Error
-	if err != nil {
+	if err := tx.Save(&task).Error; err != nil {
+		tx.Rollback()
 		return err
 	}
 
 	var taskUsers []model.TaskUser
-	err = t.db.WithContext(ctx).
+	if err := tx.
 		Where("task_id = ? AND is_coordinator = ?", id, false).
-		Find(&taskUsers).Error
-	if err != nil {
+		Find(&taskUsers).Error; err != nil {
+		tx.Rollback()
 		return err
+	}
+	if len(taskUsers) == 0 {
+		log.Println("Нет пользователей для создания записей в approve_task")
+		tx.Commit() // Завершаем транзакцию
+		return nil
+	}
+
+	var existingApproveTasks []uint
+	if err := tx.
+		Model(&approvetaskmodel.ApproveTaskModel{}).
+		Where("task_id = ?", id).
+		Pluck("user_id", &existingApproveTasks).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	existingApproveMap := make(map[uint]bool)
+	for _, userID := range existingApproveTasks {
+		existingApproveMap[userID] = true
 	}
 
 	var approveTasks []approvetaskmodel.ApproveTaskModel
 	for _, taskUser := range taskUsers {
-		approveTask := approvetaskmodel.ApproveTaskModel{
-			TaskID:    id,
-			UserID:    taskUser.UserID,
-			StatusID:  1,
-			Score:     0,
-			Approved:  nil,
-			CreatedAt: time.Now(),
+		if !existingApproveMap[taskUser.UserID] {
+			approveTasks = append(approveTasks, approvetaskmodel.ApproveTaskModel{
+				TaskID:    id,
+				UserID:    taskUser.UserID,
+				StatusID:  1,
+				Score:     0,
+				Approved:  nil,
+				CreatedAt: time.Now(),
+			})
 		}
-		approveTasks = append(approveTasks, approveTask)
 	}
 
-	err = t.db.WithContext(ctx).Create(&approveTasks).Error
-	if err != nil {
+	if len(approveTasks) == 0 {
+		log.Println("Все пользователи уже имеют записи в approve_task, ничего не добавлено")
+		tx.Commit()
+		return nil
+	}
+
+	if err := tx.Create(&approveTasks).Error; err != nil {
+		tx.Rollback()
 		return err
 	}
 
-	return nil
+	return tx.Commit().Error
 }
 
 func (t *TaskRepository) ShowByOrganizationId(ctx context.Context, orgId uint) ([]model.TaskModel, error) {

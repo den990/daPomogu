@@ -32,13 +32,13 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-func ServeWS(ctx *gin.Context, roomID uint, h *Hub) {
+func ServeWS(ctx *gin.Context, roomID, clientId uint, h *Hub) {
 	ws, err := upgrader.Upgrade(ctx.Writer, ctx.Request, nil)
 	if err != nil {
 		fmt.Println("Ошибка WebSocket:", err)
 		return
 	}
-	client := NewClient(roomID, ws, h)
+	client := NewClient(roomID, ws, h, clientId)
 	h.RegisterClient(client)
 
 	go client.Write()
@@ -110,7 +110,7 @@ func (h *Hub) HandleMessage(message Message) {
 		fmt.Println(message.Type)
 		cooment, err := h.commentService.Create(
 			context.Background(),
-			data.CreateComment{Comment: message.Data, TaskID: message.TaskID},
+			data.CreateComment{Comment: message.Data, TaskID: message.TaskID, UserID: message.UserID},
 			message.UserID,
 		)
 
