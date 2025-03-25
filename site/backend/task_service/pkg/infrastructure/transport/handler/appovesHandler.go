@@ -40,6 +40,33 @@ func (h *Handler) getAllByTaskID(c *gin.Context) {
 	})
 }
 
+func (h *Handler) getResponseById(c *gin.Context) {
+	_, err := auth.GetUserId(c)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	var input data.GetResponseById
+	taskID, err3 := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err3 != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, "Не удалось распарсить параметры")
+		return
+	}
+
+	input.Id = uint(taskID)
+
+	approve, err := h.approveService.Get(c.Request.Context(), input.Id)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"approve": approve,
+	})
+}
+
 func (h *Handler) addApproves(c *gin.Context) {
 	userID, err := auth.GetUserId(c)
 	if err != nil {

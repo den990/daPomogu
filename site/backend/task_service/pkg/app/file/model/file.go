@@ -17,6 +17,7 @@ func (FileModel) TableName() string {
 }
 
 type FileModelQueryRepositoryInterface interface {
+	Get(ctx context.Context, id uint) (FileModel, error)
 	GetAll(ctx context.Context, ids []uint) ([]FileModel, error)
 }
 

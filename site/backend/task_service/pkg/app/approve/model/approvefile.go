@@ -18,6 +18,7 @@ func (ApproveFile) TableName() string {
 
 type ApproveFileQueryRepositoryInterface interface {
 	GetAll(ctx context.Context, approveTaskIDs []uint) ([]ApproveFile, error)
+	Get(ctx context.Context, approveTaskId uint) (ApproveFile, error)
 }
 
 type ApproveFileRepositoryInterface interface {

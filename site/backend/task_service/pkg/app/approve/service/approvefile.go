@@ -9,6 +9,7 @@ import (
 type ApproveFileServiceInterface interface {
 	Create(ctx context.Context, dto data.CreateApproveFile) (uint, error)
 	Show(ctx context.Context, approvesIDs []uint) ([]model.ApproveFile, error)
+	Get(ctx context.Context, approveTaskId uint) (model.ApproveFile, error)
 }
 
 type ApproveFileService struct {
@@ -27,4 +28,8 @@ func (s *ApproveFileService) Create(ctx context.Context, dto data.CreateApproveF
 
 func (s *ApproveFileService) Show(ctx context.Context, approvesIDs []uint) ([]model.ApproveFile, error) {
 	return s.repository.GetAll(ctx, approvesIDs)
+}
+
+func (s *ApproveFileService) Get(ctx context.Context, approveTaskId uint) (model.ApproveFile, error) {
+	return s.repository.Get(ctx, approveTaskId)
 }

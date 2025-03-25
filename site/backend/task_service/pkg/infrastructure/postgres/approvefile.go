@@ -32,3 +32,13 @@ func (af *ApproveFileRepository) GetAll(ctx context.Context, approveTaskIDs []ui
 	err := af.db.WithContext(ctx).Where("approve_task_id IN (?)", approveTaskIDs).Error
 	return approveFiles, err
 }
+
+func (af *ApproveFileRepository) Get(ctx context.Context, approveTaskId uint) (model.ApproveFile, error) {
+	approveFile := model.ApproveFile{}
+	err := af.db.WithContext(ctx).
+		Model(&model.ApproveFile{}).
+		Where("approve_task_id = ?", approveTaskId).
+		First(&approveFile).
+		Error
+	return approveFile, err
+}
