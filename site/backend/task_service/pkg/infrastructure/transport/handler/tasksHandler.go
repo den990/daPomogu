@@ -129,7 +129,7 @@ func (h *Handler) getTask(c *gin.Context) {
 		return
 	}
 
-	org, err := h.organizationQuery.GetOrganization(c.Request.Context(), uint64(task.OrganizationID))
+	orgByTaskId, err := h.organizationQuery.GetOrganization(c.Request.Context(), uint64(task.OrganizationID))
 
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
@@ -157,7 +157,7 @@ func (h *Handler) getTask(c *gin.Context) {
 	}
 
 	var roleInTask string
-	org, _ = h.organizationQuery.GetOrganizationByOwnerUserID(c.Request.Context(), uint64(userId))
+	org, _ := h.organizationQuery.GetOrganizationByOwnerUserID(c.Request.Context(), uint64(userId))
 	if org.ID == task.OrganizationID {
 		roleInTask = "owner"
 	} else {
@@ -182,8 +182,8 @@ func (h *Handler) getTask(c *gin.Context) {
 
 	taskViewModel := model.TaskViewModel{
 		ID:                task.ID,
-		OrganizationID:    task.OrganizationID,
-		OrganizationName:  org.Name,
+		OrganizationID:    orgByTaskId.ID,
+		OrganizationName:  orgByTaskId.Name,
 		Name:              task.Name,
 		TypeID:            task.TypeID,
 		Description:       task.Description,
