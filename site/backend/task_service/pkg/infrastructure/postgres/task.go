@@ -312,6 +312,33 @@ func (t *TaskRepository) ShowByOrganizationId(ctx context.Context, orgId uint) (
 	return tasks, nil
 }
 
+func (t *TaskRepository) ShowByOrganizationIdWithStatuses(ctx context.Context, orgId uint, taskStatuses []uint, page, limit int) ([]model.TaskModel, int, error) {
+	var tasks []model.TaskModel
+	query := t.db.WithContext(ctx).
+		Table("task").
+		Joins("JOIN task_type tt ON tt.id = task.type_id").
+		Where("task.is_deleted = ?", false).
+		Where("task.organization_id = ?", orgId).
+		Where("task.status_id IN (?)", taskStatuses).
+		Order("task.task_date ASC")
+
+	var total int64
+	if err := query.Model(&model.TaskModel{}).Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+	totalPages := int((total + int64(limit) - 1) / int64(limit))
+
+	res := query.
+		Offset((page - 1) * limit).
+		Limit(limit).
+		Find(&tasks)
+	if res.Error != nil {
+		return nil, 0, res.Error
+	}
+
+	return tasks, totalPages, nil
+}
+
 func (t *TaskRepository) GetCountTasksCompletedByUserId(ctx context.Context, userId uint) (int, error) {
 	var count int64
 	err := t.db.WithContext(ctx).
