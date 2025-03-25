@@ -21,7 +21,7 @@ func (h *Handler) GetStatisticForAdmin(c *gin.Context) {
 	countBlockedUser, _ := models.CountBlockedUsers()
 	statisticResponse.CountBlockedUsers = uint(countBlockedUser)
 	countFinishedTasks, _ := h.grpcClient.GetCountTasksCompleted(c.Request.Context(), &task.Empty{})
-	statisticResponse.CountActiveTasks = uint(countFinishedTasks.Count)
+	statisticResponse.CountFinishedTasks = uint(countFinishedTasks.Count)
 	countActiveTasks, _ := h.grpcClient.GetCountActiveTasks(c.Request.Context(), &task.Empty{})
 	statisticResponse.CountActiveTasks = uint(countActiveTasks.Count)
 

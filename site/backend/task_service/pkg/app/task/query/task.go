@@ -153,7 +153,7 @@ func (t *TaskQuery) GetCurrentTasks(ctx context.Context, dto data.GetTasksByUser
 	tasks, total, err := t.readRepository.GetTasksByUserIDWithStatuses(
 		ctx,
 		user,
-		[]uint{status.ID},
+		[]uint{status.ID, status2.ID},
 		dto.Page,
 		dto.Limit,
 	)
