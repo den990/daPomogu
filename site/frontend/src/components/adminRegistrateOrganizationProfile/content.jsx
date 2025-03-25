@@ -34,6 +34,7 @@ function Content({ isSidebarOpen, setIsSidebarOpen }) {
                 .getOrganizationProfileById(id)
                 .then((data) => {
                     setOrganizationDetails(data);
+                    console.log(data);
                 })
                 .catch((error) => {
                     console.error("Ошибка при загрузке данных организации:", error);
@@ -114,9 +115,6 @@ function Content({ isSidebarOpen, setIsSidebarOpen }) {
                                             <div className="min-w-0 flex-1">
                                                 <p className="text-sm md:text-base truncate font-medium">
                                                     {organization.name}
-                                                </p>
-                                                <p className="text-xs md:text-sm text-neutral-600 truncate">
-                                                    {organization.date || "Дата не указана"}
                                                 </p>
                                             </div>
                                         </div>

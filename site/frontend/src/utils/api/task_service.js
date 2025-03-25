@@ -113,6 +113,15 @@ class TaskServiceApi {
         });
     }
 
+    getMyClosedTasks(token, page, limit = 5) {
+        this._updateToken(token);
+        const url = `${this._baseUrl}/tasks/my-closed-tasks/${page}/${limit}`;
+        return this._request(url, {
+            method: "GET",
+            headers: this._headers,
+        });
+    }
+
     getResponseById(token, response_id) {
         this._updateToken(token);
         const url = `${this._baseUrl}/responses/${response_id}`;
@@ -198,6 +207,14 @@ class TaskServiceApi {
             } else {
                 return Promise.reject(`Ошибка: ${response.status}/${response.statusText}`);
             }
+        });
+    }
+
+    putCompleteTask(token, task_id) {
+        this._updateToken(token);
+        return fetch(`${this._baseUrl}/tasks/complete/${task_id}`, {
+            method: "PUT",
+            headers: this._headers,
         });
     }
 }

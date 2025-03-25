@@ -27,10 +27,12 @@ function Content({ tasks }) {
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 md:mb-8">
                     <h3 className="text-lg md:text-xl font-semibold">Мои задания</h3>
                     <div className="flex space-x-2 overflow-x-auto pb-2">
-                        <button className="px-3 py-1.5 md:px-4 md:py-2 text-sm md:text-base text-red-600 bg-red-50 rounded-lg hover:bg-red-100 min-w-max">
+                        <button
+                            className="px-3 py-1.5 md:px-4 md:py-2 text-sm md:text-base text-red-600 bg-red-50 rounded-lg hover:bg-red-100 min-w-max">
                             Текущие
                         </button>
-                        <button className="px-3 py-1.5 md:px-4 md:py-2 text-sm md:text-base text-gray-600 bg-gray-50 rounded-lg hover:bg-gray-100 min-w-max">
+                        <button
+                            className="px-3 py-1.5 md:px-4 md:py-2 text-sm md:text-base text-gray-600 bg-gray-50 rounded-lg hover:bg-gray-100 min-w-max">
                             Завершенные
                         </button>
                     </div>
