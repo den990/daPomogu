@@ -13,14 +13,15 @@ const (
 )
 
 type Client struct {
-	RoomID uint // roomid => taskid
-	Conn   *websocket.Conn
-	send   chan Message
-	hub    *Hub
+	RoomID   uint // roomid => taskid
+	ClientID uint
+	Conn     *websocket.Conn
+	send     chan Message
+	hub      *Hub
 }
 
-func NewClient(taskID uint, conn *websocket.Conn, hub *Hub) *Client {
-	return &Client{RoomID: taskID, Conn: conn, send: make(chan Message, 256), hub: hub}
+func NewClient(taskID uint, conn *websocket.Conn, hub *Hub, client uint) *Client {
+	return &Client{RoomID: taskID, Conn: conn, send: make(chan Message, 256), hub: hub, ClientID: client}
 }
 
 func (c *Client) Read() {
@@ -35,6 +36,8 @@ func (c *Client) Read() {
 	for {
 		var msg Message
 		err := c.Conn.ReadJSON(&msg)
+		msg.UserID = c.ClientID
+		fmt.Println(c.ClientID)
 		if err != nil {
 			fmt.Println("Ошибка чтения:", err)
 			break

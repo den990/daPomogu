@@ -32,11 +32,18 @@ func NewHandler(service service.NotificationServiceInterface, puller service.Pul
 func (h *Handler) Init(jwtSecret string) *gin.Engine {
 	router := gin.New()
 
-	router.Use(cors.Default())
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Authorization", "Content-Type"},
+		ExposeHeaders:    []string{"Authorization"},
+		AllowCredentials: true,
+	}))
 	router.Use(auth.UserIdentity(jwtSecret))
 	router.GET("/notificationsws", func(ctx *gin.Context) {
 		authID, err := auth.GetUserId(ctx)
 		if err != nil {
+			fmt.Println("Ошибка WebSocket:", err)
 			ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			return
 		}
@@ -45,6 +52,7 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 		ws, err := upgrader.Upgrade(ctx.Writer, ctx.Request, nil)
 		if err != nil {
 			fmt.Println("Ошибка WebSocket:", err)
+			ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			return
 		}
 
