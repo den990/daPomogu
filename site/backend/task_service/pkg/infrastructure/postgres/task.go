@@ -37,7 +37,7 @@ func (t *TaskRepository) Create(ctx context.Context, task *data.CreateTask) (uin
 		TaskDate:          task.TaskDate,
 		ParticipantsCount: task.ParticipantsCount,
 		MaxScore:          task.MaxScore,
-		StatusID:          3,
+		StatusID:          4,
 	}
 	res := t.db.WithContext(ctx).Create(&taskModel)
 
@@ -375,7 +375,7 @@ func (t *TaskRepository) GetCountActiveTasks(ctx context.Context) (int, error) {
 	var count int64
 	err := t.db.WithContext(ctx).
 		Table("task").
-		Where("task.status_id = 3").
+		Where("task.status_id = 4").
 		Where("task.is_deleted = ?", false).
 		Count(&count).Error
 

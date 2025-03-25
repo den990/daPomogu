@@ -1,0 +1,1 @@
+ALTER TABLE "task" ALTER COLUMN "status_id" SET DEFAULT 4;

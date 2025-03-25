@@ -1,0 +1,1 @@
+DELETE FROM "task_status" WHERE name = 'Не начато';

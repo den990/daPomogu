@@ -9,11 +9,13 @@ import (
 	ServerTaskService "backend/task_service/server"
 	"fmt"
 	"google.golang.org/grpc"
+	"gorm.io/gorm"
 	"log"
 	"net"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"backend/task_service/pkg/infrastructure"
 	"backend/task_service/pkg/infrastructure/config"
@@ -49,6 +51,7 @@ func main() {
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+	go updateTaskStatuses(container.DB)
 
 	go func() {
 		serve := new(server.Server)
@@ -61,6 +64,7 @@ func main() {
 	<-quit
 
 	fmt.Println("Shutting down gracefully...")
+
 }
 
 func startGRPCServer(taskquery *query.TaskQueryInterface, taskuserquery query.TaskUserQueryInterface) {
@@ -81,5 +85,20 @@ func startGRPCServer(taskquery *query.TaskQueryInterface, taskuserquery query.Ta
 	log.Printf("gRPC Server listening at: %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve gRPC: %v", err)
+	}
+}
+
+func updateTaskStatuses(DB *gorm.DB) {
+	for {
+		now := time.Now()
+
+		result := DB.Exec(`UPDATE "task" SET "status_id" = 3 WHERE "task_date" <= ? AND "status_id" = 4`, now)
+		if result.Error != nil {
+			log.Println("Ошибка обновления статусов:", result.Error)
+		} else if result.RowsAffected > 0 {
+			log.Printf("Обновлено задач: %d\n", result.RowsAffected)
+		}
+
+		time.Sleep(1 * time.Minute)
 	}
 }
