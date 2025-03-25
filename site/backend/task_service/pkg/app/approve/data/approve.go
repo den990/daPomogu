@@ -16,8 +16,9 @@ type RejectApprove struct {
 }
 
 type ConfirmApprove struct {
-	ID    uint `json:"id"`
-	Score uint `json:"score"`
+	ID     uint `json:"id"`
+	Score  uint `json:"score"`
+	TaskId uint `json:"task_id"`
 }
 
 type SetStatusApprove struct {

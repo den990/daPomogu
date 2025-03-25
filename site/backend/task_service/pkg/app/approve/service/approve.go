@@ -34,6 +34,7 @@ type ApproveService struct {
 	approvefileService ApproveFileServiceInterface
 	organizationquery  organizationquery.OrganizationQueryInterface
 	taskquery          taskquery.TaskQueryInterface
+	taskuserquery      taskquery.TaskUserQueryInterface
 }
 
 func NewApproveService(
@@ -44,6 +45,7 @@ func NewApproveService(
 	approvefileService ApproveFileServiceInterface,
 	organizationquery organizationquery.OrganizationQueryInterface,
 	taskquery taskquery.TaskQueryInterface,
+	taskuserquery taskquery.TaskUserQueryInterface,
 ) ApproveServiceInterface {
 	return &ApproveService{
 		repository:         repository,
@@ -53,6 +55,7 @@ func NewApproveService(
 		approvefileService: approvefileService,
 		organizationquery:  organizationquery,
 		taskquery:          taskquery,
+		taskuserquery:      taskuserquery,
 	}
 }
 
@@ -105,8 +108,12 @@ func (a *ApproveService) Confirm(ctx context.Context, dto data.ConfirmApprove, u
 	}
 
 	_, err = a.organizationquery.GetOrganizationByOwnerUserID(ctx, uint64(userID))
+
 	if err != nil {
-		return errors.New("Пользователь не является овнером организации")
+		isCoordinator, _ := a.taskuserquery.IsCoordinatorByTaskId(ctx, dto.TaskId, userID)
+		if !isCoordinator {
+			return errors.New("Пользователь не является овнером или координатором организации")
+		}
 	}
 
 	return a.repository.Update(ctx, data.SetStatusApprove{
