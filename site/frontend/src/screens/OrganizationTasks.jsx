@@ -53,6 +53,23 @@ function Tasks() {
         [token]
     );
 
+    const handleDeleteTask = (id) => {
+        if (token) {
+            taskServiceApi
+                .deleteTask(token, id)
+                .then(() => {
+                    if (activeTab === 'opened') {
+                        fetchOpenedTasks(numberOfPage);
+                    } else {
+                        fetchClosedTasks(numberOfPage);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Ошибка при удалении задания", error);
+                });
+        }
+    }
+
     useEffect(() => {
         if (activeTab === 'opened') {
             fetchOpenedTasks(numberOfPage);
@@ -90,6 +107,7 @@ function Tasks() {
                         activeTab={activeTab}
                         onOpenedTabClick={handleOpenedTabClick}
                         onClosedTabClick={handleClosedTabClick}
+                        handleDeleteTask={handleDeleteTask}
                     />
                     <Pagination
                         numberOfPageOut={numberOfPage}

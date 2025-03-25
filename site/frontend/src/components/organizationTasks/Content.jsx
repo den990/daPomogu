@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import ROUTES from "../../constants/routes";
 
-function Content({ tasks, activeTab, onOpenedTabClick, onClosedTabClick }) {
+function Content({ tasks, activeTab, onOpenedTabClick, onClosedTabClick, handleDeleteTask }) {
     const statuses = {
         1: "Выполнено",
         2: "Не выполнено",
@@ -83,7 +83,7 @@ function Content({ tasks, activeTab, onOpenedTabClick, onClosedTabClick }) {
                                         alt="edit"
                                     />
                                 </button>
-                                <button>
+                                <button onClick={() => handleDeleteTask(task.id)}>
                                     <img
                                         className="w-4 h-4"
                                         src={require("../../images/delete_red.svg").default}
