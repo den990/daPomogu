@@ -217,6 +217,14 @@ class TaskServiceApi {
             headers: this._headers,
         });
     }
+    
+    deleteTask(token, task_id) {
+        this._updateToken(token);
+        return fetch(`${this._baseUrl}/tasks/${task_id}`, {
+            method: "DELETE",
+            headers: this._headers,
+        });
+    }
 }
 
 export const taskServiceApi = new TaskServiceApi(apiSettings);

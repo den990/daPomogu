@@ -18,12 +18,10 @@ function Sidebar({ isOpen, setIsOpen }) {
 
     return (
         <>
-            {/* Сайдбар */}
             <aside
                 className={`fixed h-full w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 z-40
                     ${isOpen || !isMobile ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
             >
-                {/* Кнопка закрытия для мобильных */}
                 {isMobile && (
                     <div className="absolute top-4 right-4">
                         <button
@@ -43,7 +41,6 @@ function Sidebar({ isOpen, setIsOpen }) {
                     </div>
                 )}
 
-                {/* Логотип */}
                 <div className="px-6 mb-8 mt-6 md:mt-4">
                     <div className="flex items-center gap-3">
                         <img
@@ -55,7 +52,6 @@ function Sidebar({ isOpen, setIsOpen }) {
                     </div>
                 </div>
 
-                {/* Навигация */}
                 <nav className="px-2 space-y-1.5">
                     <Link
                         to={ROUTES.ADMIN_PANEL}
@@ -79,18 +75,6 @@ function Sidebar({ isOpen, setIsOpen }) {
                             alt="Иконка пользователей"
                         />
                         <span className="text-sm md:text-base">Пользователи</span>
-                    </Link>
-
-                    <Link
-                        to="#"
-                        className="flex items-center gap-3 px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
-                    >
-                        <img
-                            className="w-6 h-6"
-                            src={require("../../images/stats_grey.svg").default}
-                            alt="Иконка заданий"
-                        />
-                        <span className="text-sm md:text-base">Задания</span>
                     </Link>
 
                     <Link

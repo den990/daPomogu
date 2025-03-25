@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import ROUTES from "../../constants/routes";
 
-function Content({ tasks, activeTab, onOpenedTabClick, onClosedTabClick }) {
+function Content({ tasks, activeTab, onOpenedTabClick, onClosedTabClick, handleDeleteTask }) {
     const statuses = {
         1: "Выполнено",
         2: "Не выполнено",
@@ -49,7 +49,7 @@ function Content({ tasks, activeTab, onOpenedTabClick, onClosedTabClick }) {
                     </div>
                 </div>
                 <div id="current-tasks" className="space-y-6">
-                    {tasks.map((task) => (
+                    {tasks.length !== 0 ? tasks.map((task) => (
                         <div key={task.id} className="border rounded-lg p-3 md:p-4">
                             <div className="flex justify-between items-center gap-3">
                                 <div className="flex-1 min-w-0">
@@ -83,7 +83,7 @@ function Content({ tasks, activeTab, onOpenedTabClick, onClosedTabClick }) {
                                         alt="edit"
                                     />
                                 </button>
-                                <button>
+                                <button onClick={() => handleDeleteTask(task.id)}>
                                     <img
                                         className="w-4 h-4"
                                         src={require("../../images/delete_red.svg").default}
@@ -92,7 +92,13 @@ function Content({ tasks, activeTab, onOpenedTabClick, onClosedTabClick }) {
                                 </button>
                             </div>
                         </div>
-                    ))}
+                    )) : <div className="flex justify-center items-center h-64">
+                    <span className="text-gray-500 text-lg">
+                        {activeTab === 'opened' 
+                                ? "Нет текущих заданий" 
+                                : "Нет завершенных заданий"}
+                    </span>
+                </div>}
                 </div>
             </div>
         </div>
