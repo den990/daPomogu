@@ -178,12 +178,12 @@ class TaskServiceApi {
         });
     }
 
-    putConfirmApprove(token, approve_id, score) {
+    putConfirmApprove(token, approve_id, score, task_id) {
         this._updateToken(token);
         return this._request(`${this._baseUrl}/approves/confirm`, {
             method: "PUT",
             headers: this._headers,
-            body: JSON.stringify({ id: approve_id, score: score }),
+            body: JSON.stringify({ id: approve_id, score: score, task_id: task_id }),
         });
     }
 

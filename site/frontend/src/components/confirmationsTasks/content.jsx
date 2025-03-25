@@ -82,7 +82,7 @@ function Content({ taskId }) {
             return;
         }
         try {
-            await taskServiceApi.putConfirmApprove(token, selectedApprove, numericScore);
+            await taskServiceApi.putConfirmApprove(token, selectedApprove, numericScore, task_id);
             fetchApproves();
             setApproveDetails(null);
             setSelectedApprove(null);

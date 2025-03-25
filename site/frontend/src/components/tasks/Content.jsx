@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import ROUTES from "../../constants/routes";
 
-function Content({ tasks }) {
+function Content({ tasks, activeTab, onOpenedTabClick, onClosedTabClick }) {
     const statuses = {
         1: "Выполнено",
         2: "Не выполнено",
@@ -28,11 +28,21 @@ function Content({ tasks }) {
                     <h3 className="text-lg md:text-xl font-semibold">Мои задания</h3>
                     <div className="flex space-x-2 overflow-x-auto pb-2">
                         <button
-                            className="px-3 py-1.5 md:px-4 md:py-2 text-sm md:text-base text-red-600 bg-red-50 rounded-lg hover:bg-red-100 min-w-max">
+                            onClick={onOpenedTabClick}
+                            className={`px-3 py-1.5 md:px-4 md:py-2 text-sm md:text-base rounded-lg hover:bg-red-100 min-w-max ${
+                                activeTab === 'opened'
+                                    ? 'text-red-600 bg-red-50'
+                                    : 'text-gray-600 bg-gray-50 hover:bg-gray-100'
+                            }`}>
                             Текущие
                         </button>
                         <button
-                            className="px-3 py-1.5 md:px-4 md:py-2 text-sm md:text-base text-gray-600 bg-gray-50 rounded-lg hover:bg-gray-100 min-w-max">
+                            onClick={onClosedTabClick}
+                            className={`px-3 py-1.5 md:px-4 md:py-2 text-sm md:text-base rounded-lg hover:bg-gray-100 min-w-max ${
+                                activeTab === 'closed'
+                                    ? 'text-red-600 bg-red-50'
+                                    : 'text-gray-600 bg-gray-50 hover:bg-gray-100'
+                            }`}>
                             Завершенные
                         </button>
                     </div>
