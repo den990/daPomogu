@@ -4,6 +4,7 @@ import (
 	"backend/task_service/pkg/app/organization/query"
 	"backend/task_service/pkg/app/task/data"
 	"backend/task_service/pkg/app/task/model"
+	taskuser "backend/task_service/pkg/app/task/query"
 	userquery "backend/task_service/pkg/app/user/query"
 	"context"
 	"errors"
@@ -21,17 +22,20 @@ type TaskService struct {
 	taskRepository    model.TaskRepositoryInterface
 	organizationQuery query.OrganizationQueryInterface
 	userQuery         userquery.UserQuery
+	taskuserQuery     taskuser.TaskUserQuery
 }
 
 func NewTaskService(
 	rep model.TaskRepositoryInterface,
 	organizationQuery query.OrganizationQueryInterface,
 	userQuery userquery.UserQuery,
+	taskuserQuery taskuser.TaskUserQuery,
 ) *TaskService {
 	return &TaskService{
 		taskRepository:    rep,
 		organizationQuery: organizationQuery,
 		userQuery:         userQuery,
+		taskuserQuery:     taskuserQuery,
 	}
 }
 
@@ -86,15 +90,17 @@ func (t *TaskService) Create(ctx context.Context, task *data.CreateTask, userId 
 }
 
 func (t *TaskService) Complete(ctx context.Context, id, userId uint) error {
+	task, err := t.taskRepository.Get(ctx, id)
 	organization, err := t.organizationQuery.GetOrganizationByOwnerUserID(ctx, uint64(userId))
 	if err != nil {
-		return errors.New("Not found organization")
+		if task.OrganizationID != organization.ID {
+			isCoordinator, _ := t.taskuserQuery.IsCoordinatorByTaskId(ctx, id, userId)
+			if !isCoordinator {
+				return errors.New("You are not coordinator or ownerr this task")
+			}
+		}
 	}
-	task, err := t.taskRepository.Get(ctx, id)
 
-	if task.OrganizationID != organization.ID {
-		return errors.New("You are not owner this task")
-	}
 	err = t.taskRepository.Complete(ctx, id, userId)
 
 	return err
