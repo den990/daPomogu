@@ -8,9 +8,8 @@ service NotificationService {
 }
 
 message NotificationRequest {
-  uint32 type = 1;
-  uint64 userID = 2;
-  string data = 3;
+  uint64 userID = 1;
+  string data = 2;
 }
 
 message NotificationResponse {

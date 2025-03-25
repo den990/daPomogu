@@ -20,6 +20,7 @@ type TaskUserQueryInterface interface {
 	GetCountUserWithoutCoordinators(ctx context.Context, taskId uint) (count int, err error)
 	IsRecorded(ctx context.Context, taskId, userId uint) (bool, error)
 	IsCoordinatorByTaskId(ctx context.Context, taskId, userId uint) (bool, error)
+	GetByParams(ctx context.Context, taskId, userId uint) (model.TaskUser, error)
 }
 
 type TaskUserQuery struct {
@@ -84,4 +85,8 @@ func (tu *TaskUserQuery) IsRecorded(ctx context.Context, taskId, userId uint) (b
 
 func (tu *TaskUserQuery) IsCoordinatorByTaskId(ctx context.Context, taskId, userId uint) (bool, error) {
 	return tu.repo.IsCoordinatorByTaskId(ctx, taskId, userId)
+}
+
+func (tu *TaskUserQuery) GetByParams(ctx context.Context, taskId, userId uint) (model.TaskUser, error) {
+	return tu.repo.GetByParams(ctx, taskId, userId)
 }

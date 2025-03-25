@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"fmt"
@@ -9,16 +9,16 @@ import (
 
 	"backend/notification_service/pkg/app/service"
 	"backend/notification_service/pkg/infra/config"
+	"backend/notification_service/pkg/infra/db/postgres"
 	postgresnotification "backend/notification_service/pkg/infra/db/postgres"
+	"backend/notification_service/pkg/infra/server"
 	grpc "backend/notification_service/pkg/infra/transport/internalapi"
 	handler "backend/notification_service/pkg/infra/transport/publicapi"
-	"backend/task_service/pkg/infrastructure/postgres"
-	"backend/task_service/pkg/infrastructure/server"
 )
 
 func main() {
 	cfg := config.NewConfig()
-
+	fmt.Println("Starting notification service", cfg)
 	db, err := postgres.NewPostgresGormDB(postgres.Config{
 		Host:     cfg.DBConfig.Host,
 		Port:     cfg.DBConfig.Port,
@@ -33,14 +33,17 @@ func main() {
 
 	rep := postgresnotification.NewNotificationPostgres(db)
 	srv := service.NewNotificationService(rep)
-	puller := service.NewPuller(srv)
+	email := service.NewEmailSender()
+	puller := service.NewPuller(srv, email)
 	go func() {
+		fmt.Println("Puller started")
 		puller.Run()
 	}()
 
 	hnd := handler.NewHandler(srv, puller)
 
-	// запустить вебсокет севрер который принимает что уведомление прочитано и отдает уведомления не прочитанные
+	// запустить вебсокет севрер который принимает
+	//		что уведомление прочитано и отдает уведомления не прочитанные
 	// запустить грпс сервер принимающий новые уведомления отдает их в пулер
 	// запустить пуллер сообщений который смотрит клиентов
 	//		которые к нему подключились по вебсокет соединению ищет тех
@@ -49,12 +52,14 @@ func main() {
 	fmt.Println("Client started")
 	serve := new(server.Server)
 	go func() {
+		fmt.Println("Serve started", cfg.HandlerPort)
 		if err := serve.Run(cfg.HandlerPort, hnd.Init(cfg.JWTSecret)); err != nil {
 			log.Fatal(err)
 		}
 	}()
 
 	go func() {
+		fmt.Println("Server started")
 		grpc.InitServer(cfg.ServerPort, puller)
 	}()
 

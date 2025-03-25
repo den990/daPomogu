@@ -93,7 +93,7 @@ func (a *ApproveRepository) Update(ctx context.Context, dto data.SetStatusApprov
 	approve.Score = dto.Score
 	approve.Approved = &dto.Approved
 
-	if err := a.db.WithContext(ctx).Save(approve).Error; err != nil {
+	if err := a.db.WithContext(ctx).Model(approve).Updates(approve).Error; err != nil {
 		return err
 	}
 

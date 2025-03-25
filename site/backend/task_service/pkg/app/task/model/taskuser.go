@@ -26,6 +26,7 @@ type TaskUserReadRepositoryInterface interface {
 	GetCountUserWithoutCoordinators(ctx context.Context, taskId uint) (count int, err error)
 	IsRecorded(ctx context.Context, taskId, userId uint) (bool, error)
 	IsCoordinatorByTaskId(ctx context.Context, taskId, userId uint) (bool, error)
+	GetByParams(ctx context.Context, taskId, userId uint) (TaskUser, error)
 }
 
 type TaskUserRepositoryInterface interface {

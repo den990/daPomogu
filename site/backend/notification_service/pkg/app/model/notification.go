@@ -13,6 +13,10 @@ type Notification struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
+func (Notification) TableName() string {
+	return "notification"
+}
+
 type NotificationRepositoryInterface interface {
 	GetMessages(ctx context.Context, id uint, page int, limit int) ([]Notification, error)
 	CreateMessage(ctx context.Context, notification Notification) error

@@ -15,6 +15,7 @@ type PullerInterface interface {
 	SendNotification(ctx context.Context, n model.Notification)
 	RegisterClient(client ClientInterface)
 	UnregisterClient(client ClientInterface)
+	SetIsRead(ctx context.Context, n model.Notification)
 }
 
 type ClientInterface interface {
@@ -34,9 +35,13 @@ type Puller struct {
 	clients             map[uint]ClientInterface
 	mu                  sync.Mutex
 	notificationservice NotificationServiceInterface
+	emailSender         *EmailSender
 }
 
-func NewPuller(notificationservice NotificationServiceInterface) *Puller {
+func NewPuller(
+	notificationservice NotificationServiceInterface,
+	emailSender *EmailSender,
+) *Puller {
 	return &Puller{
 		Getter:              make(chan model.Notification, bufferSize),
 		Sender:              make(chan model.Notification, bufferSize),
@@ -44,6 +49,7 @@ func NewPuller(notificationservice NotificationServiceInterface) *Puller {
 		Unregister:          make(chan ClientInterface, bufferSize),
 		clients:             make(map[uint]ClientInterface),
 		notificationservice: notificationservice,
+		emailSender:         emailSender,
 	}
 }
 
@@ -113,7 +119,16 @@ func (p *Puller) send(n model.Notification) {
 		return
 	}
 
+	err = p.emailSender.SendEmail(context.Background(), n.Message)
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	if client, ok := p.clients[uint(n.UserID)]; ok {
 		client.SendNotification(context.Background(), n)
 	}
+}
+
+func (p *Puller) SetIsRead(ctx context.Context, n model.Notification) {
+	p.notificationservice.SetIsRead(ctx, uint(n.ID))
 }

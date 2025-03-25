@@ -10,8 +10,8 @@
 <button onclick="sendMessage()">Отправить сообщение</button>
 
 <script>
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJyb2xlIjoiIiwiZXhwIjoxNzQyOTgwOTM3fQ.napaaiUTomPoVhxpHY4x7KQIiRiY4A78UrSkEXwpHbk";
-    const socket = new WebSocket(`ws://localhost:8085/notificationsws?token=${token}`);
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJyb2xlIjoiIiwiZXhwIjoxNzQyOTkxNjgwfQ.YlPWMjzSEcHy_fEH5m71xJqK_Tuq_tTZnq4okr-jL7w";
+    const socket = new WebSocket(`ws://localhost:8084/ws?roomID=1&token=${token}`);
 
     socket.onopen = () => {
         console.log("✅ Соединение установлено");
@@ -28,15 +28,14 @@
     function sendMessage() {
         if (socket.readyState === WebSocket.OPEN) {
             const message = {
-                type: "Get",
+                type: "Create",
                 task_id: 1,
                 data: "{\n" +
-                    "  \"limit\": 10,\n" +
+                    "  \"limit\": 100,\n" +
                     "  \"page\": 1,\n" +
                     "  \"rows\": []\n" +
                     "}",
-                user_id: 1
-            };  
+            };
             socket.send(JSON.stringify(message));
             console.log("📤 Сообщение отправлено:", message);
         } else {

@@ -24,6 +24,7 @@ func (r *NotificationPostgres) GetMessages(ctx context.Context, id uint, page in
 
 	if err := r.db.WithContext(ctx).
 		Where("user_id = ?", id).
+		Where("is_read = ?", false).
 		Order("created_at DESC").
 		Limit(limit).
 		Offset(offset).
