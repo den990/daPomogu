@@ -11,8 +11,10 @@ import (
 	responseservice "backend/task_service/pkg/app/response/service"
 	taskquery "backend/task_service/pkg/app/task/query"
 	taskservice "backend/task_service/pkg/app/task/service"
+	"backend/task_service/pkg/infrastructure/jwt"
 	"backend/task_service/pkg/infrastructure/middleware/auth"
 	"backend/task_service/pkg/infrastructure/transport/handler/hub"
+	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -143,20 +145,29 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 	go wsHub.Run()
 
 	router.GET("/ws", func(c *gin.Context) {
+		token := c.Query("token")
+		userId, err := jwt.ValidateToken(token, jwtSecret)
+		if err != nil {
+			fmt.Println(token, "-  token error:", err)
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "missing token"})
+			return
+		}
 		roomIDParam := c.Query("roomID")
 
 		if roomIDParam == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "missing token"})
+			fmt.Println("room error:", err)
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "missing room"})
 			return
 		}
 
 		roomID, err := strconv.ParseUint(roomIDParam, 10, 64)
 		if err != nil {
+			fmt.Println("roomID error:", err)
 			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			return
 		}
 
-		hub.ServeWS(c, uint(roomID), wsHub)
+		hub.ServeWS(c, uint(roomID), userId.UserID, wsHub)
 	})
 
 	return router

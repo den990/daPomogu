@@ -113,7 +113,7 @@ func NewContainer(config config.Config) *Container {
 	)
 
 	commentResponse := postgres.NewCommentsRepository(db)
-	commentQuery := commentquery.NewCommentQuery(commentResponse)
+	commentQuery := commentquery.NewCommentQuery(commentResponse, *userQuery)
 	commentService := commentservice.NewCommentService(commentResponse)
 
 	approveRepository := postgres.NewApproveRepository(db)
@@ -130,6 +130,7 @@ func NewContainer(config config.Config) *Container {
 		fileRepo,
 		approveFileService,
 		organizationQuery,
+		taskQuery,
 	)
 
 	categoryRepository := postgres.NewCategoryRepository(db)

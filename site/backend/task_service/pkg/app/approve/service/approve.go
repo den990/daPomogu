@@ -6,6 +6,7 @@ import (
 	filedata "backend/task_service/pkg/app/file/data"
 	fileservice "backend/task_service/pkg/app/file/service"
 	organizationquery "backend/task_service/pkg/app/organization/query"
+	taskquery "backend/task_service/pkg/app/task/query"
 	usermodel "backend/task_service/pkg/app/user/model"
 	userquery "backend/task_service/pkg/app/user/query"
 	filelib "backend/task_service/pkg/infrastructure/lib/file"
@@ -32,6 +33,7 @@ type ApproveService struct {
 	fileservice        fileservice.FileServiceInterface
 	approvefileService ApproveFileServiceInterface
 	organizationquery  organizationquery.OrganizationQueryInterface
+	taskquery          taskquery.TaskQueryInterface
 }
 
 func NewApproveService(
@@ -41,6 +43,7 @@ func NewApproveService(
 	fileservice fileservice.FileServiceInterface,
 	approvefileService ApproveFileServiceInterface,
 	organizationquery organizationquery.OrganizationQueryInterface,
+	taskquery taskquery.TaskQueryInterface,
 ) ApproveServiceInterface {
 	return &ApproveService{
 		repository:         repository,
@@ -49,6 +52,7 @@ func NewApproveService(
 		fileservice:        fileservice,
 		approvefileService: approvefileService,
 		organizationquery:  organizationquery,
+		taskquery:          taskquery,
 	}
 }
 
@@ -207,6 +211,11 @@ func (a *ApproveService) Get(ctx context.Context, id uint) (data.ApproveResponse
 		return data.ApproveResponse{}, err
 	}
 
+	task, err := a.taskquery.Get(ctx, approve.TaskID)
+	if err != nil {
+		return data.ApproveResponse{}, err
+	}
+
 	user, err := a.userquery.GetUser(ctx, uint64(approve.UserID))
 	if err != nil {
 		return data.ApproveResponse{}, err
@@ -222,10 +231,16 @@ func (a *ApproveService) Get(ctx context.Context, id uint) (data.ApproveResponse
 		return data.ApproveResponse{}, err
 	}
 
+	maxScore := 0
+	if task.MaxScore != nil {
+		maxScore = int(*task.MaxScore)
+	}
+
 	return data.ApproveResponse{
-		Id:     approve.ID,
-		User:   user,
-		File:   file.SRC,
-		TaskID: approve.TaskID,
+		Id:           approve.ID,
+		User:         user,
+		File:         file.SRC,
+		TaskID:       approve.TaskID,
+		TaskMaxScore: maxScore,
 	}, nil
 }

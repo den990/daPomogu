@@ -2,7 +2,6 @@ package model
 
 import (
 	"backend/task_service/pkg/app/comment/data"
-	"backend/task_service/pkg/infrastructure/lib/paginate"
 	"context"
 	"time"
 )
@@ -25,7 +24,7 @@ type CommentReadRepositoryInterface interface {
 		taskId uint,
 		page int,
 		limit int,
-	) (*paginate.Pagination, error)
+	) ([]CommentModel, int, error)
 }
 
 type CommentRepositoryInterface interface {
