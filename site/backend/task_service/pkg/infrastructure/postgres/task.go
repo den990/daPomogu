@@ -191,7 +191,8 @@ func (t *TaskRepository) GetAll(
 		Select("DISTINCT task.*").
 		Joins("JOIN task_type tt ON tt.id = task.type_id").
 		Where("task.is_deleted = ?", false).
-		Order("task.task_date ASC")
+		Order("task.task_date ASC").
+		Where("task.status_id = ?", 4)
 
 	if isOwner {
 		baseQuery = baseQuery.Where("tt.name = 'Открытый' OR (tt.name = 'Закрытый' AND task.organization_id IN ?)", orgIDs)
