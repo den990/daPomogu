@@ -59,7 +59,6 @@ function Content({ tasks, activeTab, onOpenedTabClick, onClosedTabClick, handleD
                                     >
                                         {task.name}
                                     </Link>
-                                    <p className="text-gray-600 text-xs md:text-sm mt-1">{task.location}</p>
                                     <div className="mt-2 md:mt-3 flex items-center">
                                         <span
                                             className={`text-xs px-2 py-1 rounded ${getStatusClasses(task.status_id)}`}

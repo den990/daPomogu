@@ -23,6 +23,28 @@ function ActiveTasks() {
         }
     }, [profile, setTasks]);
 
+    const handleDeleteTask = (id) => {
+        if (token) {
+            taskServiceApi
+                .deleteTask(token, id)
+                .then(() => {
+                    taskServiceApi
+                        .getMyOpenedTasks(token, 1)
+                        .then((response) => {
+                            const { rows } = response.data;
+                            setTasks(rows || []);
+                            console.log(response.data);
+                        })
+                        .catch(() => {
+                            setTasks([]);
+                        });
+                })
+                .catch((error) => {
+                    console.error("Ошибка при удалении задания", error);
+                });
+        }
+    }
+
     if (!profile) {
         return <div>Загрузка...</div>;
     }
@@ -67,7 +89,7 @@ function ActiveTasks() {
                                             alt="edit"
                                         />
                                     </button>
-                                    <button>
+                                    <button onClick={() => handleDeleteTask(task.id)}>
                                         <img
                                             className="w-4 h-4"
                                             src={require("../../images/delete_red.svg").default}
