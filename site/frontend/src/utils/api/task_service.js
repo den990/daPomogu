@@ -150,6 +150,56 @@ class TaskServiceApi {
             body: formData,
         });
     }
+
+    getAllApproves(token, task_id, page = 1, limit = 100) {
+        this._updateToken(token);
+        const url = `${this._baseUrl}/approves/all-by-task-id/${task_id}/${page}/${limit}`;
+        return this._request(url, {
+            method: "GET",
+            headers: this._headers,
+        });
+    }
+
+    getApproveById(token, approve_id) {
+        this._updateToken(token);
+        const url = `${this._baseUrl}/approves/by-id/${approve_id}`;
+        return this._request(url, {
+            method: "GET",
+            headers: this._headers,
+        });
+    }
+
+    putConfirmApprove(token, approve_id, score) {
+        this._updateToken(token);
+        return this._request(`${this._baseUrl}/approves/confirm`, {
+            method: "PUT",
+            headers: this._headers,
+            body: JSON.stringify({ id: approve_id, score: score }),
+        });
+    }
+
+    putRejectApprove(token, approve_id) {
+        this._updateToken(token);
+        return this._request(`${this._baseUrl}/approves/reject`, {
+            method: "PUT",
+            headers: this._headers,
+            body: JSON.stringify({ id: approve_id }),
+        });
+    }
+
+    getImageForConfirmation(token, file_url) {
+        this._updateToken(token);
+        return fetch(`${this._baseUrl}/${file_url}`, {
+            method: "GET",
+            headers: this._headers,
+        }).then((response) => {
+            if (response.ok) {
+                return response.blob();
+            } else {
+                return Promise.reject(`Ошибка: ${response.status}/${response.statusText}`);
+            }
+        });
+    }
 }
 
 export const taskServiceApi = new TaskServiceApi(apiSettings);
