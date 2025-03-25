@@ -28,3 +28,9 @@ func (f *FileRepository) GetAll(ctx context.Context, ids []uint) ([]model.FileMo
 	err := f.db.WithContext(ctx).Find(&files, ids).Error
 	return files, err
 }
+
+func (f *FileRepository) Get(ctx context.Context, id uint) (model.FileModel, error) {
+	file := model.FileModel{}
+	err := f.db.WithContext(ctx).Model(&model.FileModel{}).Where("id = ?", id).First(&file).Error
+	return file, err
+}

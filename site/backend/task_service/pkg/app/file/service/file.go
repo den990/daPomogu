@@ -7,6 +7,7 @@ import (
 )
 
 type FileServiceInterface interface {
+	Get(ctx context.Context, id uint) (model.FileModel, error)
 	Create(ctx context.Context, dto data.CreateFileModel) (uint, error)
 	GetAll(ctx context.Context, ids []uint) ([]model.FileModel, error)
 }
@@ -27,4 +28,8 @@ func (f *FileService) Create(ctx context.Context, dto data.CreateFileModel) (uin
 
 func (f *FileService) GetAll(ctx context.Context, approvesIDs []uint) ([]model.FileModel, error) {
 	return f.filerepo.GetAll(ctx, approvesIDs)
+}
+
+func (f *FileService) Get(ctx context.Context, id uint) (model.FileModel, error) {
+	return f.filerepo.Get(ctx, id)
 }

@@ -132,6 +132,7 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 		approves := httphands.Group("/approves")
 		{
 			approves.GET("/all-by-task-id/:id/:page/:limit", h.getAllByTaskID)
+			approves.GET("by-id/:id", h.getResponseById)
 			approves.POST("/create", h.addApproves)
 			approves.PUT("/reject", h.rejectApproves)
 			approves.PUT("/confirm", h.confirmApproves)

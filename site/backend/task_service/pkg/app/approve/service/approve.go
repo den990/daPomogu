@@ -13,6 +13,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"gorm.io/gorm"
 	"path/filepath"
 )
 
@@ -21,6 +22,7 @@ type ApproveServiceInterface interface {
 	Confirm(ctx context.Context, dto data.ConfirmApprove, userID uint) error
 	Reject(ctx context.Context, dto data.RejectApprove, userID uint) error
 	Show(ctx context.Context, dto data.ShowApproves) (paginate.Pagination, error)
+	Get(ctx context.Context, id uint) (data.ApproveResponse, error)
 }
 
 type ApproveService struct {
@@ -54,6 +56,13 @@ func (a *ApproveService) Create(ctx context.Context, dto data.CreateApprove) (ui
 	status, err := a.approvestatusrepo.Get(ctx, "На рассмотрении")
 	if err != nil {
 		return 0, err
+	}
+
+	_, err = a.repository.GetByParams(ctx, dto.TaskID, dto.UserID)
+	if err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return 0, err
+		}
 	}
 
 	approveID, err := a.repository.Create(ctx, dto, status)
@@ -191,3 +200,32 @@ func findUser(users []usermodel.UserModel, id uint) (usermodel.UserModel, error)
 	}
 	return filemodel.FileModel{}, fmt.Errorf("Пользователь не найден")
 }*/
+
+func (a *ApproveService) Get(ctx context.Context, id uint) (data.ApproveResponse, error) {
+	approve, err := a.repository.Get(ctx, id)
+	if err != nil {
+		return data.ApproveResponse{}, err
+	}
+
+	user, err := a.userquery.GetUser(ctx, uint64(approve.UserID))
+	if err != nil {
+		return data.ApproveResponse{}, err
+	}
+
+	approveFile, err := a.approvefileService.Get(ctx, approve.ID)
+	if err != nil {
+		return data.ApproveResponse{}, err
+	}
+
+	file, err := a.fileservice.Get(ctx, approveFile.FileID)
+	if err != nil {
+		return data.ApproveResponse{}, err
+	}
+
+	return data.ApproveResponse{
+		Id:     approve.ID,
+		User:   user,
+		File:   file.SRC,
+		TaskID: approve.TaskID,
+	}, nil
+}

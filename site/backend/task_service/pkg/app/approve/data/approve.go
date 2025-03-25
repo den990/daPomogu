@@ -1,6 +1,9 @@
 package data
 
-import "mime/multipart"
+import (
+	usermodel "backend/task_service/pkg/app/user/model"
+	"mime/multipart"
+)
 
 type CreateApprove struct {
 	TaskID uint           `json:"task_id"`
@@ -35,4 +38,15 @@ type ShowApproves struct {
 type ShowApprovesResponse struct {
 	UserID uint `json:"userID"`
 	Score  uint `json:"score"`
+}
+
+type GetResponseById struct {
+	Id uint `json:"id"`
+}
+
+type ApproveResponse struct {
+	Id     uint                `json:"id"`
+	User   usermodel.UserModel `json:"user"`
+	File   string              `json:"file"`
+	TaskID uint                `json:"task_id"`
 }
