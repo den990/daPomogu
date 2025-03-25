@@ -1,3 +1,5 @@
+import Comments from "./comments";
+
 function Info({ task }) {
     return (
         <div className="col-span-2">
@@ -38,36 +40,7 @@ function Info({ task }) {
                 </div>
             </div>
 
-            <div id="task-comments" className="mb-6 md:mb-8">
-                <h2 className="text-lg md:text-xl mb-4">Комментарии</h2>
-                <div className="space-y-4 mb-4">
-                    <div className="bg-white p-3 md:p-4 rounded-lg border">
-                        <div className="flex items-center gap-3 mb-2">
-                            <img
-                                src="https://api.dicebear.com/7.x/notionists/svg?scale=200&amp;seed=789"
-                                className="w-6 md:w-8 h-6 md:h-8 rounded-full"
-                                alt="person"
-                            />
-                            <div>
-                                <div className="text-sm md:text-base">Анна Петрова</div>
-                                <div className="text-xs md:text-sm text-neutral-500">10 марта 2025</div>
-                            </div>
-                        </div>
-                        <p className="text-neutral-700 text-sm md:text-base">
-                            Участвовала в подобном мероприятии в прошлом году. Было очень здорово!
-                        </p>
-                    </div>
-                </div>
-                <div className="bg-white p-3 md:p-4 rounded-lg border">
-                    <textarea
-                        className="w-full border rounded-lg p-2 md:p-3 mb-3 text-sm md:text-base"
-                        placeholder="Написать комментарий..."
-                    ></textarea>
-                    <button className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 text-sm md:text-base">
-                        Отправить
-                    </button>
-                </div>
-            </div>
+            <Comments taskId={task.id} />
         </div>
     );
 }
