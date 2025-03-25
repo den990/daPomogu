@@ -56,7 +56,6 @@ function Dashboard({ isSidebarOpen, setIsSidebarOpen }) {
             <div className="mb-6 sm:mb-8 flex justify-between items-center">
                 <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Главная страница</h2>
 
-                {/* Кнопка меню для мобильных */}
                 <button
                     onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                     className="md:hidden p-2 bg-white rounded-lg shadow-lg hover:scale-105 transition-transform"
@@ -73,7 +72,6 @@ function Dashboard({ isSidebarOpen, setIsSidebarOpen }) {
                 </button>
             </div>
 
-            {/* Статистика */}
             <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 {stats.map((stat, index) => (
                     <div key={index} className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-200">
