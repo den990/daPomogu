@@ -166,7 +166,7 @@ func (h *Handler) GetAllUsersAndOrganizations(c *gin.Context) {
 		page = 1
 	}
 
-	limit := 7
+	limit := 5
 	offset := (page - 1) * limit
 
 	countAllUsers, _ := models.CountUsers()

@@ -180,6 +180,8 @@ func (h *Handler) getTask(c *gin.Context) {
 		return
 	}
 
+	recordedCount, err := h.taskuserQuery.GetCountUserWithoutCoordinators(c.Request.Context(), task.ID)
+
 	taskViewModel := model.TaskViewModel{
 		ID:                task.ID,
 		OrganizationID:    orgByTaskId.ID,
@@ -199,6 +201,7 @@ func (h *Handler) getTask(c *gin.Context) {
 		IsRecorded:        isRecorded,
 		IsResponse:        responsed,
 		RoleInTask:        roleInTask,
+		RecordedCount:     recordedCount,
 	}
 
 	for _, category := range taskCategory {
