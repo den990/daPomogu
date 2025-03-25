@@ -156,3 +156,15 @@ func (tu *TaskUserRepository) IsCoordinatorByTaskId(ctx context.Context, taskId,
 	}
 	return true, nil
 }
+
+func (tu *TaskUserRepository) GetByParams(ctx context.Context, taskId, userId uint) (model.TaskUser, error) {
+	var taskUser model.TaskUser
+	err := tu.db.WithContext(ctx).
+		Model(&model.TaskUser{}).
+		Where("task_id = ? AND user_id = ?", taskId, userId).
+		First(&taskUser).Error
+	if err != nil {
+		return model.TaskUser{}, err
+	}
+	return taskUser, nil
+}
