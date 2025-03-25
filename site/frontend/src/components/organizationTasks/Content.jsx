@@ -49,7 +49,7 @@ function Content({ tasks, activeTab, onOpenedTabClick, onClosedTabClick, handleD
                     </div>
                 </div>
                 <div id="current-tasks" className="space-y-6">
-                    {tasks.map((task) => (
+                    {tasks.length !== 0 ? tasks.map((task) => (
                         <div key={task.id} className="border rounded-lg p-3 md:p-4">
                             <div className="flex justify-between items-center gap-3">
                                 <div className="flex-1 min-w-0">
@@ -92,7 +92,13 @@ function Content({ tasks, activeTab, onOpenedTabClick, onClosedTabClick, handleD
                                 </button>
                             </div>
                         </div>
-                    ))}
+                    )) : <div className="flex justify-center items-center h-64">
+                    <span className="text-gray-500 text-lg">
+                        {activeTab === 'opened' 
+                                ? "Нет текущих заданий" 
+                                : "Нет завершенных заданий"}
+                    </span>
+                </div>}
                 </div>
             </div>
         </div>
