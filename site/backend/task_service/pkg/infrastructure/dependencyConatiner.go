@@ -8,6 +8,7 @@ import (
 	responsequery "backend/task_service/pkg/app/response/query"
 	responseservice "backend/task_service/pkg/app/response/service"
 	"backend/task_service/pkg/infrastructure/transport/grpc"
+	"gorm.io/gorm"
 
 	taskmodel "backend/task_service/pkg/app/task/model"
 	taskquery "backend/task_service/pkg/app/task/query"
@@ -28,6 +29,8 @@ import (
 )
 
 type Container struct {
+	DB *gorm.DB
+
 	taskReadRepository taskmodel.TaskReadRepositoryInterface
 	taskRepository     taskmodel.TaskRepositoryInterface
 	TaskQuery          taskquery.TaskQueryInterface
@@ -137,6 +140,7 @@ func NewContainer(config config.Config) *Container {
 	categoryService := categoryservice.NewCategoryService(categoryRepository)
 
 	return &Container{
+		DB:                 db,
 		taskReadRepository: taskRepository,
 		taskRepository:     taskRepository,
 		TaskQuery:          taskQuery,

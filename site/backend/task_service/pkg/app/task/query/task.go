@@ -165,10 +165,6 @@ func (t *TaskQuery) GetCurrentTasks(ctx context.Context, dto data.GetTasksByUser
 }
 
 func (t *TaskQuery) GetFinishedTasks(ctx context.Context, dto data.GetTasksByUser, user uint) (paginate.Pagination, error) {
-	statusNotFinished, err := t.taskstatusService.Get(ctx, "Не выполнено")
-	if err != nil {
-		return paginate.Pagination{}, err
-	}
 	statusFinished, err := t.taskstatusService.Get(ctx, "Выполнено")
 	if err != nil {
 		return paginate.Pagination{}, err
@@ -176,7 +172,7 @@ func (t *TaskQuery) GetFinishedTasks(ctx context.Context, dto data.GetTasksByUse
 	org, _ := t.organizationQuery.GetOrganizationByOwnerUserID(ctx, uint64(user))
 
 	if org != (organizationmodel.OrganizationModel{}) {
-		tasks, total, err := t.readRepository.ShowByOrganizationIdWithStatuses(ctx, org.ID, []uint{statusFinished.ID, statusNotFinished.ID}, dto.Page, dto.Limit)
+		tasks, total, err := t.readRepository.ShowByOrganizationIdWithStatuses(ctx, org.ID, []uint{statusFinished.ID}, dto.Page, dto.Limit)
 		if err != nil {
 			return paginate.Pagination{}, err
 		}
@@ -185,7 +181,7 @@ func (t *TaskQuery) GetFinishedTasks(ctx context.Context, dto data.GetTasksByUse
 	tasks, total, err := t.readRepository.GetTasksByUserIDWithStatuses(
 		ctx,
 		user,
-		[]uint{statusFinished.ID, statusNotFinished.ID},
+		[]uint{statusFinished.ID},
 		dto.Page,
 		dto.Limit,
 	)
