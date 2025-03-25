@@ -88,9 +88,9 @@ function Content({ taskId }) {
             setSelectedApprove(null);
             setImageUrl(null);
             setScore("");
-            setAlert({ message: "Волонтёр успешно принят в задание!", severity: "success" });
+            setAlert({ message: "Фотоотчёт успешно принят!", severity: "success" });
         } catch (error) {
-            setAlert({ message: "Ошибка при принятии волонтёра", severity: "error" });
+            setAlert({ message: "Ошибка при принятии фотоотчёта", severity: "error" });
         }
     };
 
@@ -103,9 +103,9 @@ function Content({ taskId }) {
             setSelectedApprove(null);
             setImageUrl(null);
             setScore("");
-            setAlert({ message: "Волонтёр успешно отклонён!", severity: "success" });
+            setAlert({ message: "Фотоотчёт успешно отклонён!", severity: "success" });
         } catch (error) {
-            setAlert({ message: "Ошибка при отклонении отклика", severity: "error" });
+            setAlert({ message: "Ошибка при отклонении фотоотчёта", severity: "error" });
         }
     };
 

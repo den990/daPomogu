@@ -132,16 +132,6 @@ function TaskForm({ setIsPopUpVisible }) {
                             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-200 focus:border-blue-200"
                             placeholder="Введите адрес"
                         />
-                        <button
-                            type="button"
-                            className="px-4 py-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200"
-                        >
-                            <img
-                                style={{ width: 12, height: 16 }}
-                                src={require("../../images/placemark_grey.svg").default}
-                                alt="placemark"
-                            />
-                        </button>
                     </div>
                     {errors.location && <span className="text-red-600 text-xs">{errors.location}</span>}
                 </div>

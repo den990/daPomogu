@@ -220,7 +220,7 @@ function ButtonsPanel({ task: initialTask }) {
                                         src={require("../../images/people_grey.svg").default}
                                         alt="icon"
                                     />
-                                    <span className="text-neutral-700">Нужно {task.participants_count} волонтеров</span>
+                                    <span className="text-neutral-700">Нужно {task.participants_count - task.recorded_count} волонтеров</span>
                                 </div>
                             :   <></>
                         }
