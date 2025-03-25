@@ -2,21 +2,25 @@ import { Link } from "react-router";
 import ROUTES from "../../constants/routes";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthProvider";
-import { userServiceApi } from "../../utils/api/user_service";
+import { taskServiceApi } from "../../utils/api/task_service.js";
 
 function ActiveTasks() {
-    const { profile } = useContext(AuthContext);
+    const { profile, token } = useContext(AuthContext);
     const [tasks, setTasks] = useState([]);
     useEffect(() => {
         if (!profile) return;
-        userServiceApi
-            .getOrganizationProfileById(profile.id)
-            .then((data) => {
-                setTasks(data.tasks);
-            })
-            .catch((error) => {
-                console.error("Ошибка при загрузке заданий", error);
-            });
+        if (token) {
+            taskServiceApi
+                .getMyOpenedTasks(token, 1)
+                .then((response) => {
+                    const { rows } = response.data;
+                    setTasks(rows || []);
+                    console.log(response.data);
+                })
+                .catch(() => {
+                  setTasks([]);
+                });
+        }
     }, [profile, setTasks]);
 
     if (!profile) {

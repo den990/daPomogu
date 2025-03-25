@@ -9,8 +9,29 @@ function Tasks() {
     const { token } = useContext(AuthContext);
     const [tasks, setTasks] = useState([]);
     const [alert, setAlert] = useState(null);
+    const [activeTab, setActiveTab] = useState('opened');
+    const [numberOfPage, setNumberOfPage] = useState(1);
 
-    const fetchTasks = useCallback(
+    const statuses = {
+        1: "Выполнено",
+        2: "Не выполнено",
+        3: "В работе",
+    };
+
+    const getStatusClasses = (statusId) => {
+        switch (statusId) {
+            case 1:
+                return "bg-green-100 text-green-600";
+            case 2:
+                return "bg-red-100 text-red-600";
+            case 3:
+                return "bg-yellow-100 text-yellow-600";
+            default:
+                return "bg-gray-100 text-gray-600";
+        }
+    };
+
+    const fetchOpenedTasks = useCallback(
         (page) => {
             if (token) {
                 taskServiceApi
@@ -29,13 +50,45 @@ function Tasks() {
         [token]
     );
 
+    const fetchClosedTasks = useCallback(
+        (page) => {
+            if (token) {
+                taskServiceApi
+                    .getMyClosedTasks(token, page)
+                    .then((response) => {
+                        const { rows } = response.data;
+                        setTasks(rows || []);
+                    })
+                    .catch(() => {
+                        setAlert({ message: "Ошибка при загрузке заданий", severity: "error" });
+                        setTasks([]);
+                    });
+            }
+        },
+        [token]
+    );
+
     useEffect(() => {
-        fetchTasks(1);
-    }, [fetchTasks]);
+        if (activeTab === 'opened') {
+            fetchOpenedTasks(numberOfPage);
+        } else {
+            fetchClosedTasks(numberOfPage);
+        }
+    }, [activeTab, numberOfPage, fetchOpenedTasks, fetchClosedTasks]);
 
     const handleCloseAlert = (event, reason) => {
         if (reason === "clickaway") return;
         setAlert(null);
+    };
+
+    const handleOpenedTabClick = () => {
+        setActiveTab('opened');
+        setNumberOfPage(1);
+    };
+
+    const handleClosedTabClick = () => {
+        setActiveTab('closed');
+        setNumberOfPage(1);
     };
 
     return (
@@ -44,10 +97,22 @@ function Tasks() {
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 md:mb-8">
                     <h3 className="text-lg md:text-xl font-semibold">Мои задания</h3>
                     <div className="flex space-x-2 overflow-x-auto pb-2">
-                        <button className="px-3 py-1.5 md:px-4 md:py-2 text-sm md:text-base text-red-600 bg-red-50 rounded-lg hover:bg-red-100 min-w-max">
+                        <button
+                            onClick={handleOpenedTabClick}
+                            className={`px-3 py-1.5 md:px-4 md:py-2 text-sm md:text-base rounded-lg hover:bg-red-100 min-w-max ${
+                                activeTab === 'opened'
+                                    ? 'text-red-600 bg-red-50'
+                                    : 'text-gray-600 bg-gray-50 hover:bg-gray-100'
+                            }`}>
                             Текущие
                         </button>
-                        <button className="px-3 py-1.5 md:px-4 md:py-2 text-sm md:text-base text-gray-600 bg-gray-50 rounded-lg hover:bg-gray-100 min-w-max">
+                        <button
+                            onClick={handleClosedTabClick}
+                            className={`px-3 py-1.5 md:px-4 md:py-2 text-sm md:text-base rounded-lg hover:bg-gray-100 min-w-max ${
+                                activeTab === 'closed'
+                                    ? 'text-red-600 bg-red-50'
+                                    : 'text-gray-600 bg-gray-50 hover:bg-gray-100'
+                            }`}>
                             Завершенные
                         </button>
                     </div>
@@ -72,8 +137,8 @@ function Tasks() {
                                             })} • {task.location}
                                             </p>
                                             <div className="mt-2 md:mt-3 flex items-center">
-                                                <span className="bg-yellow-100 text-yellow-600 text-xs px-2 py-1 rounded">
-                                                    В процессе
+                                                <span className={`text-xs px-2 py-1 rounded ${getStatusClasses(task.status_id)}`}>
+                                                    {statuses[task.status_id] || "Неизвестный статус"}
                                                 </span>
                                             </div>
                                         </div>
@@ -106,7 +171,7 @@ function Tasks() {
                         {alert.message}
                     </Alert>
                 </Snackbar>
-            )}
+                )}
             </div>
         </div>
     );
