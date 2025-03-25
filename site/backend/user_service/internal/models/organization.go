@@ -52,6 +52,9 @@ type OrganizationProfileResponse struct {
 	LegalAddress           string                   `json:"legal_address"`
 	FullNameOwner          string                   `json:"full_name_owner"`
 	TasksInProfileResponse []TasksInProfileResponse `json:"tasks"`
+	CountFinishedTasks     int                      `json:"count_finished_tasks"`
+	CountVolunteers        int                      `json:"count_volunteers"`
+	CountDays              int                      `json:"count_days"`
 }
 
 type GetProfilesOrganizationResponse struct {

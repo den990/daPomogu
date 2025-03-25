@@ -204,3 +204,16 @@ func FindUsersByOrganizationId(orgId string) ([]User, error) {
 
 	return users, nil
 }
+
+func CountVolunteers(orgId string) (int64, error) {
+	var count int64
+	err := db.DB.Model(&UserOrganization{}).
+		Where("organization_id = ? AND is_owner = ?", orgId, false).
+		Count(&count).Error
+
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}

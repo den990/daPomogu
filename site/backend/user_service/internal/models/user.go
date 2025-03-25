@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgconn"
 	"log"
+	"strconv"
 	"time"
 )
 
@@ -282,4 +283,14 @@ func CountBlockedUsers() (int, error) {
 	}
 
 	return int(count), nil
+}
+
+func GetCountDaysByOrgID(orgId uint) (int, error) {
+	user, err := FindUserOwnerOrganizationByOrganizationId(strconv.Itoa(int(orgId)))
+	if err != nil {
+		return 0, err
+	}
+
+	days := int(time.Since(user.CreatedAt).Hours() / 24)
+	return days, nil
 }

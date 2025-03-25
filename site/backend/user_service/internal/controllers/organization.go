@@ -132,6 +132,9 @@ func (h *Handler) GetOrganizationProfileInfo(c *gin.Context) {
 			CountCoordinator: task.CountCoordinator,
 		})
 	}
+	countFinishedTasks, _ := h.grpcClient.GetCountTasksCompleted(c.Request.Context(), &task.Empty{})
+	countVolunteers, _ := models.CountVolunteers(strconv.Itoa(int(organizationId)))
+	countDays, _ := models.GetCountDaysByOrgID(organizationId)
 	isAdmin, _ := models.IsAdmin(c)
 	if !isAdmin {
 		organization, err := models.FindActualOrganizationById(strconv.Itoa(int(organizationId)))
@@ -149,6 +152,9 @@ func (h *Handler) GetOrganizationProfileInfo(c *gin.Context) {
 				LegalAddress:           organization.LegalAddress,
 				FullNameOwner:          organization.FullNameOwner,
 				TasksInProfileResponse: tasksProfile,
+				CountFinishedTasks:     int(countFinishedTasks.Count),
+				CountVolunteers:        int(countVolunteers),
+				CountDays:              countDays,
 			}
 			c.JSON(http.StatusOK, response)
 		}
@@ -167,6 +173,7 @@ func (h *Handler) GetOrganizationProfileInfo(c *gin.Context) {
 				LegalAddress:           organization.LegalAddress,
 				FullNameOwner:          organization.FullNameOwner,
 				TasksInProfileResponse: tasksProfile,
+				CountFinishedTasks:     int(countFinishedTasks.Count),
 			}
 			c.JSON(http.StatusOK, response)
 		}
