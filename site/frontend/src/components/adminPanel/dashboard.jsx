@@ -4,7 +4,7 @@ import { userServiceApi } from "../../utils/api/user_service";
 import { Alert, Snackbar } from "@mui/material";
 
 function Dashboard({ isSidebarOpen, setIsSidebarOpen }) {
-    const { token, id } = useContext(AuthContext);
+    const { token } = useContext(AuthContext);
     const [statistics, setStatistics] = useState([]);
     const [alert, setAlert] = useState(null);
 
