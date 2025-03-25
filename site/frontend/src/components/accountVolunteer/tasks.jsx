@@ -16,6 +16,7 @@ function Tasks() {
         1: "Выполнено",
         2: "Не выполнено",
         3: "В работе",
+        4: "Не начато"
     };
 
     const getStatusClasses = (statusId) => {
@@ -134,7 +135,7 @@ function Tasks() {
                                                 year: "numeric",
                                                 hour: "2-digit",
                                                 minute: "2-digit",
-                                            })} • {task.location}
+                                            })}
                                             </p>
                                             <div className="mt-2 md:mt-3 flex items-center">
                                                 <span className={`text-xs px-2 py-1 rounded ${getStatusClasses(task.status_id)}`}>

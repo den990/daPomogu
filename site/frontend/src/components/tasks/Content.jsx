@@ -6,6 +6,7 @@ function Content({ tasks, activeTab, onOpenedTabClick, onClosedTabClick }) {
         1: "Выполнено",
         2: "Не выполнено",
         3: "В работе",
+        4: "Не начато"
     };
 
     const getStatusClasses = (statusId) => {
@@ -48,7 +49,7 @@ function Content({ tasks, activeTab, onOpenedTabClick, onClosedTabClick }) {
                     </div>
                 </div>
                 <div id="current-tasks" className="space-y-6">
-                    {tasks.map((task) => (
+                    {tasks.length !== 0 ? tasks.map((task) => (
                         <div key={task.id} className="border rounded-lg p-3 md:p-4">
                             <div className="flex justify-between items-center gap-3">
                                 <div className="flex-1 min-w-0">
@@ -58,7 +59,6 @@ function Content({ tasks, activeTab, onOpenedTabClick, onClosedTabClick }) {
                                     >
                                         {task.name}
                                     </Link>
-                                    <p className="text-gray-600 text-xs md:text-sm mt-1">{task.location}</p>
                                     <div className="mt-2 md:mt-3 flex items-center">
                                         <span
                                             className={`text-xs px-2 py-1 rounded ${getStatusClasses(task.status_id)}`}
@@ -77,7 +77,13 @@ function Content({ tasks, activeTab, onOpenedTabClick, onClosedTabClick }) {
                                 </div>
                             </div>
                         </div>
-                    ))}
+                    )) : <div className="flex justify-center items-center h-64">
+                    <span className="text-gray-500 text-lg">
+                        {activeTab === 'opened' 
+                                ? "Нет текущих заданий" 
+                                : "Нет завершенных заданий"}
+                    </span>
+                </div>}
                 </div>
             </div>
         </div>

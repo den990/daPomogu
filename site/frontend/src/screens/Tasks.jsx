@@ -82,29 +82,21 @@ function Tasks() {
     return (
         <div>
             <RoleHeader />
+            <Content
+                tasks={tasks}
+                activeTab={activeTab}
+                onOpenedTabClick={handleOpenedTabClick}
+                onClosedTabClick={handleClosedTabClick}
+            />
             {tasks.length !== 0 ? (
                 <>
-                    <Content
-                        tasks={tasks}
-                        activeTab={activeTab}
-                        onOpenedTabClick={handleOpenedTabClick}
-                        onClosedTabClick={handleClosedTabClick}
-                    />
                     <Pagination
                         numberOfPageOut={numberOfPage}
                         countOfPages={countOfPages}
                         onPageChange={handlePageChange}
                     />
                 </>
-            ) : (
-                <div className="flex justify-center items-center h-64">
-                    <span className="text-gray-500 text-lg">
-                        {activeTab === 'opened' 
-                            ? "Нет текущих заданий" 
-                            : "Нет завершенных заданий"}
-                    </span>
-                </div>
-            )}
+            ) : <></>}
             {alert && (
                 <Snackbar
                     open={true}
