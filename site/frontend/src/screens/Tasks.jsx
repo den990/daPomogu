@@ -12,8 +12,9 @@ function Tasks() {
     const [countOfPages, setCountOfPages] = useState(0);
     const [numberOfPage, setNumberOfPage] = useState(1);
     const [alert, setAlert] = useState(null);
+    const [isOpened, setIsOpened] = useState(0);
 
-    const fetchTasks = useCallback(
+    const fetchOpenedTasks = useCallback(
         (page) => {
             if (token) {
                 taskServiceApi
@@ -32,9 +33,28 @@ function Tasks() {
         [token]
     );
 
+    const fetchClosedTasks = useCallback(
+        (page) => {
+            if (token) {
+                taskServiceApi
+                    .getMyClosedTasks(token, page)
+                    .then((response) => {
+                        const { rows, totalPages } = response.data;
+                        setTasks(rows || []);
+                        setCountOfPages(totalPages);
+                    })
+                    .catch(() => {
+                        setAlert({ message: "Ошибка при загрузке заданий", severity: "error" });
+                        setTasks([]);
+                    });
+            }
+        },
+        [token]
+    );
+
     useEffect(() => {
-        fetchTasks(numberOfPage);
-    }, [numberOfPage, fetchTasks]);
+        fetchOpenedTasks(numberOfPage);
+    }, [numberOfPage, fetchOpenedTasks]);
 
     const handleCloseAlert = (event, reason) => {
         if (reason === "clickaway") return;

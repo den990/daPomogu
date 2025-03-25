@@ -107,6 +107,15 @@ func (a *ApproveService) Confirm(ctx context.Context, dto data.ConfirmApprove, u
 		return err
 	}
 
+	_, err = a.organizationquery.GetOrganizationByOwnerUserID(ctx, uint64(userID))
+
+	if err != nil {
+		isCoordinator, _ := a.taskuserquery.IsCoordinatorByTaskId(ctx, dto.TaskId, userID)
+		if !isCoordinator {
+			return errors.New("Пользователь не является овнером или координатором организации")
+		}
+	}
+
 	return a.repository.Update(ctx, data.SetStatusApprove{
 		ID:       dto.ID,
 		Score:    dto.Score,
@@ -119,6 +128,11 @@ func (a *ApproveService) Reject(ctx context.Context, dto data.RejectApprove, use
 	status, err := a.approvestatusrepo.Get(ctx, "Отказано")
 	if err != nil {
 		return err
+	}
+
+	_, err = a.organizationquery.GetOrganizationByOwnerUserID(ctx, uint64(userID))
+	if err != nil {
+		return errors.New("Пользователь не является овнером организации")
 	}
 
 	return a.repository.Update(ctx, data.SetStatusApprove{

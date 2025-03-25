@@ -6,6 +6,7 @@ function Content({ tasks }) {
         1: "Выполнено",
         2: "Не выполнено",
         3: "В работе",
+        4: "Не начато",
     };
 
     const getStatusClasses = (statusId) => {

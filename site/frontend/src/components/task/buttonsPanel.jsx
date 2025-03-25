@@ -6,7 +6,7 @@ import { taskServiceApi } from "../../utils/api/task_service";
 import { useState } from "react";
 
 function ButtonsPanel({ task: initialTask }) {
-    const { token, role, id } = useContext(AuthContext);
+    const { token, id } = useContext(AuthContext);
     const [task, setTask] = useState(initialTask);
 
     if (!task) {
@@ -17,6 +17,8 @@ function ButtonsPanel({ task: initialTask }) {
     task.categories.map((cat) => (category += `${cat.name}, `));
 
     let typeTask = task.type_id === 2 ? "Закрытый" : "Открытый";
+    let taskRole = task.role_in_task;
+    console.log(taskRole);
 
     const handleResponse = async (e) => {
         try {
@@ -55,76 +57,148 @@ function ButtonsPanel({ task: initialTask }) {
         }
     };
 
+    const handleCompleteTask = async (e) => {
+        try {
+            console.log(id);
+            await taskServiceApi.putCompleteTask(token, task.id);
+            setTask((prevTask) => ({
+                ...prevTask,
+                status_id: 1,
+            }));
+        } catch (error) {
+            console.error("Ошибка в завершении задания");
+        }
+    };
+
     return (
         <>
             <div className="col-span-1">
                 <div id="task-actions" className="bg-white p-6 rounded-lg border sticky top-4">
-                    {role === "volunteer" ? (
-                        task.is_response !== true && task.is_recorded !== true ? (
-                            <button
-                                onClick={handleResponse}
-                                className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 mb-4"
-                            >
-                                Принять участие
-                            </button>
-                        ) : task.is_recorded !== true ? (
-                            <button
-                                onClick={handleReject}
-                                className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 mb-4"
-                            >
-                                Отменить отклик
-                            </button>
-                        ) : (
-                            <>
-                                <button
-                                    onClick={handleCancel}
-                                    className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 mb-4"
-                                >
-                                    Отказаться от участия
-                                </button>
-                                <Link
-                                    className="w-full border border-neutral-300 px-6 py-3 rounded-lg hover:bg-red-50 flex items-center justify-center"
-                                    to={ROUTES.PHOTO_REPORT.replace(":taskId", task.id)}
-                                    style={{ paddingLeft: 10 }}
-                                >
-                                    Отправить фотоотчёт
-                                </Link>
-                            </>
+                    {taskRole === "user" || taskRole === "participant"
+                    ?
+                        (
+                            task.is_response !== true && task.is_recorded !== true 
+                            ? 
+                                (
+                                    <button
+                                        onClick={handleResponse}
+                                        className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 mb-4"
+                                    >
+                                        Принять участие
+                                    </button>
+                                ) 
+                            :   task.is_recorded !== true
+                                ?
+                                    (
+                                        <button
+                                            onClick={handleReject}
+                                            className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 mb-4"
+                                        >
+                                            Отменить отклик
+                                        </button>
+                                    ) 
+                                :
+                                    (
+                                        (task.status_id === 4) 
+                                        ?
+                                            <button
+                                                onClick={handleCancel}
+                                                className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 mb-4"
+                                            >
+                                                Отказаться от участия
+                                            </button>
+                                        : 
+                                            <Link
+                                                className="w-full border border-neutral-300 px-6 py-3 rounded-lg hover:bg-red-50 flex items-center justify-center"
+                                                to={ROUTES.PHOTO_REPORT.replace(":taskId", task.id)}
+                                                style={{ paddingLeft: 10 }}
+                                            >
+                                                <img className="w-4 h-4" src={require("../../images/camera_red.svg").default} alt="camera" />
+                                                <span style={{paddingLeft: 10}}>Отправить фотоотчёт</span>
+                                            </Link>
+                                    )
                         )
-                    ) : task.status_id === 3 ? (
-                        <>
-                            <button className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 mb-4">
-                                Завершить задание
-                            </button>
-                            <button className="w-full border border-neutral-300 px-6 py-3 rounded-lg hover:bg-red-50 flex items-center justify-center">
-                                <img
-                                    style={{ width: 16, height: 16 }}
-                                    src={require("../../images/person_red.svg").default}
-                                    alt="icon"
-                                />
-                                <Link
-                                    to={ROUTES.CONFIRMATIONS_TASKS.replace(":taskId", task.id)}
-                                    style={{ paddingLeft: 10 }}
-                                >
-                                    Проверить выполнение
-                                </Link>
-                            </button>
-                        </>
-                    ) : (
-                        <button className="w-full border border-neutral-300 px-6 py-3 rounded-lg hover:bg-red-50 flex items-center justify-center">
-                            <img
-                                style={{ width: 16, height: 16 }}
-                                src={require("../../images/person_red.svg").default}
-                                alt="icon"
-                            />
-                            <Link
-                                to={ROUTES.CONFIRMATIONS_RESPONSES.replace(":taskId", task.id)}
-                                style={{ paddingLeft: 10 }}
-                            >
-                                Принять участников
-                            </Link>
-                        </button>
-                    )}
+                    :
+                        task.status_id === 3 || task.status_id === 1
+                        ?
+                            taskRole === "owner"
+                            ?
+                                (
+                                    <>
+                                        <Link
+                                            className="w-full border border-neutral-300 px-6 py-3 rounded-lg hover:bg-red-50 flex items-center justify-center"
+                                            to={ROUTES.CONFIRMATIONS_TASKS.replace(":taskId", task.id)}
+                                        >
+                                            <img
+                                                style={{ width: 16, height: 16 }}
+                                                src={require("../../images/person_red.svg").default}
+                                                alt="icon"
+                                            />
+                                            <span
+                                                style={{ paddingLeft: 10 }}
+                                            >
+                                                Проверить выполнение
+                                            </span>
+                                        </Link>
+                                    </>
+                                )
+                            :
+                                (
+                                
+                                    (task.status_id !== 1)
+                                    ?
+                                        <button
+                                            className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 mb-4"
+                                            onClick={handleCompleteTask}
+                                        >
+                                            Завершить задание
+                                        </button>
+                                    :   
+                                        <Link
+                                            to={ROUTES.CONFIRMATIONS_TASKS.replace(":taskId", task.id)}
+                                            className="w-full border border-neutral-300 px-6 py-3 rounded-lg hover:bg-red-50 flex items-center justify-center"
+                                        >
+                                            <img
+                                                style={{ width: 16, height: 16 }}
+                                                src={require("../../images/person_red.svg").default}
+                                                alt="icon"
+                                            />
+                                            <span
+                                                style={{ paddingLeft: 10 }}
+                                            >
+                                                Проверить выполнение
+                                            </span>
+                                        </Link>
+                                )
+                        :
+                            (
+                                <>
+                                    {
+                                        (taskRole === "owner")
+                                        ? 
+                                            <button className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 mb-4">
+                                                Редактировать задание
+                                            </button>
+                                        :   <></>
+                                    }
+                                    <Link
+                                        to={ROUTES.CONFIRMATIONS_RESPONSES.replace(":taskId", task.id)}
+                                        className="w-full border border-neutral-300 px-6 py-3 rounded-lg hover:bg-red-50 flex items-center justify-center"
+                                    >
+                                        <img
+                                            style={{ width: 16, height: 16 }}
+                                            src={require("../../images/person_red.svg").default}
+                                            alt="icon"
+                                        />
+                                        <span
+                                            style={{ paddingLeft: 10 }}
+                                        >
+                                            Принять участников
+                                        </span>
+                                    </Link>
+                                </>
+                            )
+                    }
                     <div className="pt-6 border-t">
                         <div className="flex items-center gap-2 mb-4">
                             <img
@@ -137,14 +211,19 @@ function ButtonsPanel({ task: initialTask }) {
                                 {typeTask}
                             </span>
                         </div>
-                        <div className="flex items-center gap-2 mb-4">
-                            <img
-                                style={{ width: 20, height: 16 }}
-                                src={require("../../images/people_grey.svg").default}
-                                alt="icon"
-                            />
-                            <span className="text-neutral-700">Нужно {task.participants_count} волонтеров</span>
-                        </div>
+                        {
+                            (task.status_id === 4)
+                            ?    
+                                <div className="flex items-center gap-2 mb-4">
+                                    <img
+                                        style={{ width: 20, height: 16 }}
+                                        src={require("../../images/people_grey.svg").default}
+                                        alt="icon"
+                                    />
+                                    <span className="text-neutral-700">Нужно {task.participants_count} волонтеров</span>
+                                </div>
+                            :   <></>
+                        }
                         <div className="flex items-center gap-2">
                             <img
                                 style={{ width: 12, height: 16 }}
