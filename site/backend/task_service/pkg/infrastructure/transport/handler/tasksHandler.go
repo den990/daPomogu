@@ -156,6 +156,24 @@ func (h *Handler) getTask(c *gin.Context) {
 		userIdsUint64[i] = uint64(id)
 	}
 
+	var roleInTask string
+	org, _ = h.organizationQuery.GetOrganizationByOwnerUserID(c.Request.Context(), uint64(userId))
+	if org.ID == task.OrganizationID {
+		roleInTask = "owner"
+	} else {
+		isCoordinator, _ := h.taskuserQuery.IsCoordinatorByTaskId(c.Request.Context(), task.ID, userId)
+		if isCoordinator {
+			roleInTask = "coordinator"
+		} else {
+			isParticipant, _ := h.taskuserQuery.IsRecorded(c.Request.Context(), task.ID, userId)
+			if isParticipant {
+				roleInTask = "participant"
+			} else {
+				roleInTask = "user"
+			}
+		}
+	}
+
 	userOrganization, err := h.taskcategoryQuery.GetUsersByIDS(c.Request.Context(), userIdsUint64)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
@@ -180,6 +198,7 @@ func (h *Handler) getTask(c *gin.Context) {
 		Categories:        []model.TaskViewCategory{},
 		IsRecorded:        isRecorded,
 		IsResponse:        responsed,
+		RoleInTask:        roleInTask,
 	}
 
 	for _, category := range taskCategory {
