@@ -41,6 +41,7 @@ type TaskViewModel struct {
 	Categories        []TaskViewCategory    `json:"categories"`
 	IsRecorded        bool                  `json:"is_recorded"`
 	IsResponse        bool                  `json:"is_response"`
+	RoleInTask        string                `json:"role_in_task"`
 }
 
 type TaskViewCoordinator struct {

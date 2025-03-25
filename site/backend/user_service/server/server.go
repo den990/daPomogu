@@ -84,9 +84,6 @@ func (s *Server) GetOrganizationsByUserID(ctx context.Context, req *pb.Organizat
 }
 
 func (s *Server) GetOrganizationByOwnerUserID(ctx context.Context, req *pb.OrganizationUserRequest) (*pb.OrganizationResponse, error) {
-	log.Printf("Получен запрос: ID = %d", req.GetId())
-	log.Printf("formatted Получен запрос: ID = %s", strconv.FormatUint(req.GetId(), 10))
-
 	res, err := models.FindOrganizationByUserIdOwner(strconv.FormatUint(req.GetId(), 10))
 	if err != nil {
 		log.Printf("Ошибка получения организаций пользователя: %v", err)

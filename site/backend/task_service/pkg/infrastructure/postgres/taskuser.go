@@ -144,3 +144,15 @@ func (tu *TaskUserRepository) IsRecorded(ctx context.Context, taskId, userId uin
 	}
 	return true, nil
 }
+
+func (tu *TaskUserRepository) IsCoordinatorByTaskId(ctx context.Context, taskId, userId uint) (bool, error) {
+	var taskUser model.TaskUser
+	err := tu.db.WithContext(ctx).
+		Model(&model.TaskUser{}).
+		Where("task_id = ? AND is_coordinator = ? AND user_id = ?", taskId, true, userId).
+		First(&taskUser).Error
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
