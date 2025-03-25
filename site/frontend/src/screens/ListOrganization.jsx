@@ -1,6 +1,5 @@
 import Pagination from "../layouts/pagination/pagination.jsx";
 import Organizations from "../components/listOrganization/organizations.jsx";
-import Search from "../components/listOrganization/search.jsx";
 import RoleHeader from "../components/RoleHeader/RoleHeader.js";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthProvider.js";
@@ -48,7 +47,6 @@ function ListOrganization() {
             <RoleHeader />
             <main className="flex-grow  bg-gray-50">
                 <div className="container mx-auto px-4">
-                    <Search />
                     {organizations.length !== 0 ? (
                         <>
                             <Organizations organizations={organizations} />
