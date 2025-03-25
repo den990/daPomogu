@@ -229,14 +229,8 @@ func (a *ApproveService) Get(ctx context.Context, id uint) (data.ApproveResponse
 	}
 
 	approveFile, err := a.approvefileService.Get(ctx, approve.ID)
-	if err != nil {
-		return data.ApproveResponse{}, err
-	}
 
 	file, err := a.fileservice.Get(ctx, approveFile.FileID)
-	if err != nil {
-		return data.ApproveResponse{}, err
-	}
 
 	maxScore := 0
 	if task.MaxScore != nil {
