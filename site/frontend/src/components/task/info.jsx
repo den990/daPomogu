@@ -1,6 +1,9 @@
 import Comments from "./comments";
+import MapComponent from "./MapComponent";
 
 function Info({ task }) {
+    const location = task.location;
+    const [latitude, longitude] = location.split(",").map((coord) => parseFloat(coord.trim()));
     return (
         <div className="col-span-2">
             <div id="task-header" className="mb-6 md:mb-8">
@@ -28,19 +31,18 @@ function Info({ task }) {
                     </span>
                 </div>
             </div>
-
             <div id="task-description" className="prose max-w-none mb-6 md:mb-8">
                 <p className="text-neutral-700 text-sm md:text-base">{task.description}</p>
             </div>
-
             <div id="task-location" className="mb-6 md:mb-8">
                 <h2 className="text-lg md:text-xl mb-4">Местоположение</h2>
                 <div className="w-full h-[200px] md:h-[300px] bg-neutral-200 rounded-lg flex items-center justify-center">
-                    <span className="text-neutral-600">Карта местоположения</span>
+                    <MapComponent latitude={latitude} longitude={longitude} />
                 </div>
             </div>
-
-            <Comments task={task} />
+            <div className="mt-20">
+                <Comments task={task} />
+            </div>
         </div>
     );
 }

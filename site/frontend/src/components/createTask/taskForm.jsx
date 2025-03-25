@@ -7,11 +7,14 @@ import { AuthContext } from "../../context/AuthProvider";
 import CategoryMultiSelect from "./CategoryMultiSelect";
 import CoordinatorsMultiSelect from "./CoordinatorsMultiSelect";
 import { Alert, Fade } from "@mui/material";
+import { AddressSuggestions } from "react-dadata";
+import "react-dadata/dist/react-dadata.css";
 
 function TaskForm({ setIsPopUpVisible }) {
     const { values, errors, isValid, handleChange, setValues } = useFormWithValidation();
     const { token } = useContext(AuthContext);
     const [error, setError] = useState("");
+    const [address, setAddress] = useState("");
 
     useEffect(() => {
         if (!values.task_type) setValues({ ...values, task_type: "1" });
@@ -33,7 +36,6 @@ function TaskForm({ setIsPopUpVisible }) {
             name,
             task_type,
             description,
-            location,
             date,
             time,
             participants_count,
@@ -41,6 +43,10 @@ function TaskForm({ setIsPopUpVisible }) {
             coordinate_ids,
             category_ids,
         } = values;
+
+        const latitude = address.data.geo_lat;
+        const longitude = address.data.geo_lon;
+        const location = `${latitude}, ${longitude}`;
 
         const task_date = date && time ? new Date(`${date}T${time}`) : null;
 
@@ -122,26 +128,18 @@ function TaskForm({ setIsPopUpVisible }) {
 
                 <div id="location-field" className="form-group">
                     <label className="block text-sm font-medium text-gray-700 mb-2">Местоположение</label>
-                    <div className="flex space-x-4">
-                        <input
+                    <div className="w-full space-x-4">
+                        <AddressSuggestions
+                            token="4851105aa090b15531d01ede553fc2339ebd218f"
                             type="text"
                             name="location"
                             required
-                            value={values?.location || ""}
-                            onChange={handleChange}
+                            value={address}
+                            onChange={setAddress}
                             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-200 focus:border-blue-200"
                             placeholder="Введите адрес"
+                            delay={300}
                         />
-                        <button
-                            type="button"
-                            className="px-4 py-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200"
-                        >
-                            <img
-                                style={{ width: 12, height: 16 }}
-                                src={require("../../images/placemark_grey.svg").default}
-                                alt="placemark"
-                            />
-                        </button>
                     </div>
                     {errors.location && <span className="text-red-600 text-xs">{errors.location}</span>}
                 </div>
