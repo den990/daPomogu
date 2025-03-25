@@ -1,13 +1,13 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthProvider.js";
 import { taskServiceApi } from "../../utils/api/task_service.js";
+import { Link } from "react-router";
+import ROUTES from "../../constants/routes";
 import { Alert, Snackbar } from "@mui/material";
 
 function Tasks() {
     const { token } = useContext(AuthContext);
     const [tasks, setTasks] = useState([]);
-    const [countOfPages, setCountOfPages] = useState(0);
-    const [numberOfPage, setNumberOfPage] = useState(1);
     const [alert, setAlert] = useState(null);
 
     const fetchTasks = useCallback(
@@ -30,8 +30,8 @@ function Tasks() {
     );
 
     useEffect(() => {
-        fetchTasks(numberOfPage);
-    }, [numberOfPage, fetchTasks]);
+        fetchTasks(1);
+    }, [fetchTasks]);
 
     const handleCloseAlert = (event, reason) => {
         if (reason === "clickaway") return;
@@ -77,9 +77,14 @@ function Tasks() {
                                                 </span>
                                             </div>
                                         </div>
-                                        <button className="text-red-600 hover:text-red-700 shrink-0 ml-2">
-                                            <i className="text-lg md:text-xl"> </i>
-                                        </button>
+                                        <div className="flex items-center gap-2">
+                                    <Link
+                                        className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors"
+                                        to={`${ROUTES.TASK.replace(":taskId", task.id)}`}
+                                    >
+                                        Открыть
+                                    </Link>
+                                </div>
                                     </div>
                                 </div>
                             )}
@@ -89,9 +94,19 @@ function Tasks() {
                     <div className="flex justify-center items-center h-64">
                         <span className="text-gray-500 text-lg">Нет заданий, в которых вы участвуете</span>
                     </div>
-                )
-
-                }
+                )}
+                {alert && (
+                <Snackbar
+                    open={true}
+                    autoHideDuration={4000}
+                    onClose={handleCloseAlert}
+                    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                >
+                    <Alert onClose={handleCloseAlert} severity={alert.severity} sx={{ width: "100%" }}>
+                        {alert.message}
+                    </Alert>
+                </Snackbar>
+            )}
             </div>
         </div>
     );
