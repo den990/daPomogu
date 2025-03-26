@@ -18,7 +18,7 @@ type Message struct {
 	ID        uint      `gorm:"id" json:"id"`
 	ChatID    uint      `gorm:"chat_id" json:"chat_id"`
 	UserID    uint      `gorm:"user_id" json:"user_id"`
-	Text      string    `gorm:"message" json:"message"`
+	Message   string    `gorm:"message" json:"message"`
 	IsRead    bool      `gorm:"is_read" json:"is_read"`
 	CreatedAt time.Time `gorm:"created_at" json:"created_at"`
 }

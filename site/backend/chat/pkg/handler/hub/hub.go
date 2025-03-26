@@ -51,7 +51,7 @@ func ServeWS(ctx *gin.Context, roomID, clientId uint, h *Hub) {
 
 type Message struct {
 	Type   string `json:"type"`
-	ChatId uint   `json:"task_id"`
+	ChatId uint   `json:"chat_id"`
 	Data   string `json:"data"`
 	UserID uint   `json:"user_id"` // todo: передать в строке подключения
 }
@@ -109,10 +109,13 @@ func (h *Hub) HandleMessage(message Message) {
 	case "CreateMessage":
 		fmt.Println(message.Type)
 
-		chat, err := h.chatservice.CreateMessage(context.Background(), model.Message{
-			UserID: message.UserID,
-			Text:   message.Data,
-		})
+		chat, err := h.chatservice.CreateMessage(
+			context.Background(),
+			model.Message{
+				UserID:  message.UserID,
+				Message: message.Data,
+				ChatID:  message.ChatId,
+			})
 		if err != nil {
 			h.sendMessageToClients(message.ChatId, "its ok")
 		}
@@ -159,6 +162,7 @@ func (h *Hub) HandleMessage(message Message) {
 			User1ID uint `json:"user1_id"`
 			User2ID uint `json:"user2_id"`
 		}
+		fmt.Println(data)
 		err := json.Unmarshal([]byte(message.Data), &data)
 		if err != nil {
 			h.sendMessageToClients(message.ChatId, "its ok")
