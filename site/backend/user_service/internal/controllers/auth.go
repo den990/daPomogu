@@ -100,18 +100,17 @@ func (h *Handler) RegisterUser(c *gin.Context) {
 
 	err = models.SaveUser(&user)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "Failed register"})
-		h.notificationClient.Send(c.Request.Context(), notificationmodel.Notification{
-			UserId: user.ID,
-			Data:   "User registered successfully",
-		})
-	} else {
-		c.JSON(http.StatusOK, gin.H{"message": "Register successful"})
-		c.JSON(http.StatusBadRequest, gin.H{"message": "Failed register"})
 		h.notificationClient.Send(c.Request.Context(), notificationmodel.Notification{
 			UserId: user.ID,
 			Data:   "User registered failed",
 		})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Failed register"})
+	} else {
+		h.notificationClient.Send(c.Request.Context(), notificationmodel.Notification{
+			UserId: user.ID,
+			Data:   "User registered successful",
+		})
+		c.JSON(http.StatusOK, gin.H{"message": "Register successful"})
 	}
 }
 

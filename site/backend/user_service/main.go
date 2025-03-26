@@ -46,7 +46,7 @@ func startHTTPServer() {
 		fmt.Println(err)
 		return
 	}
-	notGrpc, err := grpcserver.NewNotificationServiceClient("notification_service:50501")
+	notGrpc, err := grpcserver.NewNotificationServiceClient("notification-service:50501")
 	if err != nil {
 		fmt.Println(err)
 		return
