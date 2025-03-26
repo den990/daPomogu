@@ -4,15 +4,16 @@ import (
 	categorymodel "backend/task_service/pkg/app/category/model"
 	categoryquery "backend/task_service/pkg/app/category/query"
 	categoryservice "backend/task_service/pkg/app/category/service"
+	notificationservice "backend/task_service/pkg/app/notification/service"
 	responsemodel "backend/task_service/pkg/app/response/model"
 	responsequery "backend/task_service/pkg/app/response/query"
 	responseservice "backend/task_service/pkg/app/response/service"
-	"backend/task_service/pkg/infrastructure/transport/grpc"
-	"gorm.io/gorm"
-
 	taskmodel "backend/task_service/pkg/app/task/model"
 	taskquery "backend/task_service/pkg/app/task/query"
 	taskservice "backend/task_service/pkg/app/task/service"
+	"backend/task_service/pkg/infrastructure/transport/grpc"
+	notificationclient "backend/task_service/pkg/infrastructure/transport/grpc"
+	"gorm.io/gorm"
 
 	organizationquery "backend/task_service/pkg/app/organization/query"
 
@@ -89,12 +90,12 @@ func NewContainer(config config.Config) *Container {
 	organizationQuery := organizationquery.NewOrganization(grpcClient)
 
 	//fmt.Println(config.NotificationAddress)
-	//notificationClient, err := notificationclient.NewNotificationServiceClient(config.NotificationAddress)
+	notificationClient, err := notificationclient.NewNotificationServiceClient(config.NotificationAddress)
 	if err != nil {
 		panic(err)
 	}
 
-	//notificationService := notificationservice.NewNotificationService(notificationClient)
+	notificationService := notificationservice.NewNotificationService(notificationClient)
 
 	taskUserRepository := postgres.NewTaskUserPostgresRepository(db)
 	taskUserQuery := taskquery.NewTaskUserQuery(taskUserRepository, userQuery)
@@ -120,7 +121,7 @@ func NewContainer(config config.Config) *Container {
 		responseQuery,
 		taskQuery,
 		taskUserService,
-		//notificationService,
+		notificationService,
 	)
 
 	commentResponse := postgres.NewCommentsRepository(db)

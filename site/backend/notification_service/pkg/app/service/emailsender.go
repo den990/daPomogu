@@ -21,9 +21,12 @@ func NewEmailSender() *EmailSender {
 
 // xsmtpsib-46a985a24c017ea0f3ae60f4ede6a4733eb4eab3818a79c9dd4373f1fe168c73-0fSTzsWG1KVpXtRq
 func (e *EmailSender) SendEmail(ctx context.Context, data string, user usermodel.UserModel) error {
-	key := "xsmtpsib-46a985a24c017ea0f3ae60f4ede6a4733eb4eab3818a79c9dd4373f1fe168c73-0fSTzsWG1KVpXtRq"
-	from := "88e54e001@smtp-brevo.com"
-	host := "smtp-relay.brevo.com"
+	from := "skammoshenik@gmail.com"
+	key := "kbxdvwynsbnaptqp"
+
+	//key := "xsmtpsib-46a985a24c017ea0f3ae60f4ede6a4733eb4eab3818a79c9dd4373f1fe168c73-sD3hyrZSL6OX9MAn"
+	//from := "88e54e002@smtp-brevo.com"
+	host := "smtp.gmail.com"
 	port := 587
 
 	to := user.Email
@@ -35,10 +38,21 @@ func (e *EmailSender) SendEmail(ctx context.Context, data string, user usermodel
 	msg.SetBody("text/plain", data)
 
 	n := gomail.NewDialer(host, port, from, key)
-	n.TLSConfig = &tls.Config{InsecureSkipVerify: true}
-	if err := n.DialAndSend(msg); err != nil {
+	n.TLSConfig = &tls.Config{InsecureSkipVerify: false, ServerName: host}
+	sender, err := n.Dial()
+	if err != nil {
+		fmt.Println("Ошибка при соединении с SMTP: %v", err)
 		return err
 	}
+
+	if err := gomail.Send(sender, msg); err != nil {
+		fmt.Println("Ошибка при отправке email: %v", err)
+		return err
+	}
+	/*if err := n.DialAndSend(msg); err != nil {
+		fmt.Println("Ошибка", err)
+		return err
+	}*/
 
 	fmt.Println("Email sent to", user.Email)
 
