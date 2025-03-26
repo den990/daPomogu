@@ -18,10 +18,6 @@ function Profile() {
                     <h2 className="text-xl md:text-2xl font-bold text-gray-900">
                         {loading ? "Загрузка..." : profile ? profile.name : "Нет данных"}
                     </h2>
-                    <p className="text-gray-600 text-sm md:text-base">
-                        Описание организации и её миссии. Мы помогаем людям и делаем мир лучше через волонтерскую
-                        деятельность.
-                    </p>
                     <div className="flex flex-col md:flex-row gap-3 md:gap-4">
                         <Link
                             to={ROUTES.ATTACHMENTS_ORGANIZATION}
