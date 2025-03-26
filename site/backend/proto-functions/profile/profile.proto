@@ -36,6 +36,7 @@ message UserResponse {
     string name = 1;
     string surname = 2;
     bool is_admin = 3;
+    string email = 4;
 }
 
 message OrganizationRequest {

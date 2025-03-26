@@ -35,6 +35,7 @@ type ApproveService struct {
 	organizationquery  organizationquery.OrganizationQueryInterface
 	taskquery          taskquery.TaskQueryInterface
 	taskuserquery      taskquery.TaskUserQueryInterface
+	//notificationService notificationservice.NotificationServiceInterface
 }
 
 func NewApproveService(
@@ -46,6 +47,7 @@ func NewApproveService(
 	organizationquery organizationquery.OrganizationQueryInterface,
 	taskquery taskquery.TaskQueryInterface,
 	taskuserquery taskquery.TaskUserQueryInterface,
+	// notificationService notificationservice.NotificationServiceInterface,
 ) ApproveServiceInterface {
 	return &ApproveService{
 		repository:         repository,
@@ -56,6 +58,7 @@ func NewApproveService(
 		organizationquery:  organizationquery,
 		taskquery:          taskquery,
 		taskuserquery:      taskuserquery,
+		//notificationService: notificationService,
 	}
 }
 
