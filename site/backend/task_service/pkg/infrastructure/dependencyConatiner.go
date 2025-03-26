@@ -144,6 +144,7 @@ func NewContainer(config config.Config) *Container {
 		organizationQuery,
 		taskQuery,
 		taskUserQuery,
+		notificationService,
 	)
 
 	categoryRepository := postgres.NewCategoryRepository(db)

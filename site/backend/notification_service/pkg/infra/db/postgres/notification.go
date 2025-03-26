@@ -37,6 +37,7 @@ func (r *NotificationPostgres) GetMessages(ctx context.Context, id uint, page in
 }
 
 func (r *NotificationPostgres) CreateMessage(ctx context.Context, notification model.Notification) error {
+	notification.ID = 0
 	return r.db.WithContext(ctx).Model(&notification).Create(&notification).Error
 }
 

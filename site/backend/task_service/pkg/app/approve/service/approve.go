@@ -5,6 +5,8 @@ import (
 	"backend/task_service/pkg/app/approve/model"
 	filedata "backend/task_service/pkg/app/file/data"
 	fileservice "backend/task_service/pkg/app/file/service"
+	notificationmodel "backend/task_service/pkg/app/notification/model"
+	notificationservice "backend/task_service/pkg/app/notification/service"
 	organizationquery "backend/task_service/pkg/app/organization/query"
 	taskquery "backend/task_service/pkg/app/task/query"
 	usermodel "backend/task_service/pkg/app/user/model"
@@ -27,15 +29,15 @@ type ApproveServiceInterface interface {
 }
 
 type ApproveService struct {
-	repository         model.ApproveRepositoryInterface
-	approvestatusrepo  model.ApproveTaskStatusReadRepositoryInterface
-	userquery          userquery.UserQueryInterface
-	fileservice        fileservice.FileServiceInterface
-	approvefileService ApproveFileServiceInterface
-	organizationquery  organizationquery.OrganizationQueryInterface
-	taskquery          taskquery.TaskQueryInterface
-	taskuserquery      taskquery.TaskUserQueryInterface
-	//notificationService notificationservice.NotificationServiceInterface
+	repository          model.ApproveRepositoryInterface
+	approvestatusrepo   model.ApproveTaskStatusReadRepositoryInterface
+	userquery           userquery.UserQueryInterface
+	fileservice         fileservice.FileServiceInterface
+	approvefileService  ApproveFileServiceInterface
+	organizationquery   organizationquery.OrganizationQueryInterface
+	taskquery           taskquery.TaskQueryInterface
+	taskuserquery       taskquery.TaskUserQueryInterface
+	notificationService notificationservice.NotificationServiceInterface
 }
 
 func NewApproveService(
@@ -47,18 +49,18 @@ func NewApproveService(
 	organizationquery organizationquery.OrganizationQueryInterface,
 	taskquery taskquery.TaskQueryInterface,
 	taskuserquery taskquery.TaskUserQueryInterface,
-	// notificationService notificationservice.NotificationServiceInterface,
+	notificationService notificationservice.NotificationServiceInterface,
 ) ApproveServiceInterface {
 	return &ApproveService{
-		repository:         repository,
-		userquery:          userquery,
-		approvestatusrepo:  approvestatusrepo,
-		fileservice:        fileservice,
-		approvefileService: approvefileService,
-		organizationquery:  organizationquery,
-		taskquery:          taskquery,
-		taskuserquery:      taskuserquery,
-		//notificationService: notificationService,
+		repository:          repository,
+		userquery:           userquery,
+		approvestatusrepo:   approvestatusrepo,
+		fileservice:         fileservice,
+		approvefileService:  approvefileService,
+		organizationquery:   organizationquery,
+		taskquery:           taskquery,
+		taskuserquery:       taskuserquery,
+		notificationService: notificationService,
 	}
 }
 
@@ -119,6 +121,16 @@ func (a *ApproveService) Confirm(ctx context.Context, dto data.ConfirmApprove, u
 		}
 	}
 
+	approve, err := a.repository.Get(ctx, dto.ID)
+	if err != nil {
+		return err
+	}
+
+	err = a.notificationService.Send(ctx, notificationmodel.Notification{
+		UserId: approve.UserID,
+		Data:   "Ваш фотоотчёт подтвержден",
+	})
+
 	return a.repository.Update(ctx, data.SetStatusApprove{
 		ID:       dto.ID,
 		Score:    dto.Score,
@@ -137,6 +149,16 @@ func (a *ApproveService) Reject(ctx context.Context, dto data.RejectApprove, use
 	if err != nil {
 		return errors.New("Пользователь не является овнером организации")
 	}
+
+	approve, err := a.repository.Get(ctx, dto.ID)
+	if err != nil {
+		return err
+	}
+
+	err = a.notificationService.Send(ctx, notificationmodel.Notification{
+		UserId: approve.UserID,
+		Data:   "Ваш фотоотчёт отклонён",
+	})
 
 	return a.repository.Update(ctx, data.SetStatusApprove{
 		ID:       dto.ID,

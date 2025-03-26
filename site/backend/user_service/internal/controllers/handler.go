@@ -5,11 +5,13 @@ import (
 )
 
 type Handler struct {
-	grpcClient grpc.Client
+	grpcClient         grpc.Client
+	notificationClient grpc.NotificationServiceClient
 }
 
-func NewHandler(grpcClient grpc.Client) *Handler {
+func NewHandler(grpcClient grpc.Client, notificationClient grpc.NotificationServiceClient) *Handler {
 	return &Handler{
-		grpcClient: grpcClient,
+		grpcClient:         grpcClient,
+		notificationClient: notificationClient,
 	}
 }

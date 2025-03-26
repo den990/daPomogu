@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	notificationmodel "backend/task_service/pkg/app/notification/model"
 	"backend/user_service/internal/db"
 	"backend/user_service/internal/models"
 	"backend/user_service/internal/utils"
@@ -100,8 +101,17 @@ func (h *Handler) RegisterUser(c *gin.Context) {
 	err = models.SaveUser(&user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Failed register"})
+		h.notificationClient.Send(c.Request.Context(), notificationmodel.Notification{
+			UserId: user.ID,
+			Data:   "User registered successfully",
+		})
 	} else {
 		c.JSON(http.StatusOK, gin.H{"message": "Register successful"})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Failed register"})
+		h.notificationClient.Send(c.Request.Context(), notificationmodel.Notification{
+			UserId: user.ID,
+			Data:   "User registered failed",
+		})
 	}
 }
 
@@ -134,6 +144,11 @@ func (h *Handler) RegisterOrganization(c *gin.Context) {
 		c.JSON(500, gin.H{"message": "Failed to register organization"})
 		return
 	}
+
+	h.notificationClient.Send(c.Request.Context(), notificationmodel.Notification{
+		UserId: user.ID,
+		Data:   "Organization registered successfully",
+	})
 
 	c.JSON(200, gin.H{"message": "Organization registered successfully"})
 }
