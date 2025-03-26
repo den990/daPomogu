@@ -13,7 +13,7 @@ RUN go mod tidy
 COPY . .
 
 # Собираем приложение
-RUN CGO_ENABLED=0 GOOS=linux go build -o main ./notification_service/cmd
+RUN CGO_ENABLED=0 GOOS=linux go build -o main ./chat/cmd
 
 # Загружаем и устанавливаем migrate
 RUN wget -O migrate.tar.gz https://github.com/golang-migrate/migrate/releases/download/v4.14.1/migrate.linux-amd64.tar.gz && \
@@ -33,9 +33,9 @@ WORKDIR /app
 # Копируем бинарники из стадии сборки
 COPY --from=builder /app/main .
 COPY --from=builder /app/migrate .
-COPY notification_service/.env /app/.env
-COPY notification_service/migration /app/migrations
-
+COPY chat/.env /app/.env
+COPY chat/migrations /app/migrations
+COPY chat/config.yaml /app/config.yaml
 # Разрешаем выполнение файлов
 RUN chmod +x ./main ./migrate
 
@@ -43,4 +43,4 @@ RUN chmod +x ./main ./migrate
 EXPOSE 8080
 
 # Запускаем миграции перед запуском приложения
-CMD ./migrate -path /app/migrations -database "postgresql://postgres:dapomogu_password@postgres-service:5432/dapomogu_notification_db?sslmode=disable" up && ./main
+CMD sh -c "./migrate -path /app/migrations -database 'postgresql://postgres:dapomogu_password@postgres-service:5432/dapomogu_chat_db?sslmode=disable' up && ./main --config=./config.yaml"

@@ -46,7 +46,12 @@ func startHTTPServer() {
 		fmt.Println(err)
 		return
 	}
-	h := controllers.NewHandler(*grpcClient)
+	notGrpc, err := grpcserver.NewNotificationServiceClient("notification-service:50501")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	h := controllers.NewHandler(*grpcClient, *notGrpc)
 	r := gin.Default()
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},

@@ -1,6 +1,8 @@
 package service
 
 import (
+	notificationmodel "backend/task_service/pkg/app/notification/model"
+	notificationservice "backend/task_service/pkg/app/notification/service"
 	"backend/task_service/pkg/app/response/data"
 	"backend/task_service/pkg/app/response/model"
 	responsequery "backend/task_service/pkg/app/response/query"
@@ -27,7 +29,7 @@ type ResponseService struct {
 	taskuserQuery            taskquery.TaskUserQueryInterface
 	taskuserService          taskservice.TaskUserServiceInterface
 	taskQuery                taskquery.TaskQueryInterface
-	//notificationService      notificationservice.NotificationServiceInterface
+	notificationService      notificationservice.NotificationServiceInterface
 }
 
 func NewResponseService(responseRepository model.ResponseRepositoryInterface,
@@ -36,7 +38,7 @@ func NewResponseService(responseRepository model.ResponseRepositoryInterface,
 	responseQuery responsequery.ResponseQueryInterface,
 	taskQuery taskquery.TaskQueryInterface,
 	taskuserService taskservice.TaskUserServiceInterface,
-	// notificationService notificationservice.NotificationServiceInterface,
+	notificationService notificationservice.NotificationServiceInterface,
 ) ResponseServiceInterface {
 	return &ResponseService{
 		responseRepository:       responseRepository,
@@ -45,7 +47,7 @@ func NewResponseService(responseRepository model.ResponseRepositoryInterface,
 		responseQuery:            responseQuery,
 		taskQuery:                taskQuery,
 		taskuserService:          taskuserService,
-		//notificationService:      notificationService,
+		notificationService:      notificationService,
 	}
 }
 
@@ -132,10 +134,10 @@ func (r *ResponseService) Confirm(ctx context.Context, id uint) error {
 	if err != nil {
 		return err
 	}
-	//err = r.notificationService.Send(ctx, notificationmodel.Notification{
-	//	resp.UserID,
-	//	"Еу твой отклик подтрежден еу это мочилова ёу",
-	//})
+	err = r.notificationService.Send(ctx, notificationmodel.Notification{
+		resp.UserID,
+		"Отклик принят",
+	})
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -148,14 +150,14 @@ func (r *ResponseService) Reject(ctx context.Context, id uint) error {
 	if err != nil {
 		return err
 	}
-	_, err = r.responseRepository.Update(ctx, id, status.ID)
+	resp, err := r.responseRepository.Update(ctx, id, status.ID)
 	if err != nil {
 		return err
 	}
-	//err = r.notificationService.Send(ctx, notificationmodel.Notification{
-	//	resp.UserID,
-	//	"Еу твой отклик отвергнут еу это мочилова ёу",
-	//})
+	err = r.notificationService.Send(ctx, notificationmodel.Notification{
+		resp.UserID,
+		"Отклик отклонен",
+	})
 	if err != nil {
 		fmt.Println(err)
 		return nil
