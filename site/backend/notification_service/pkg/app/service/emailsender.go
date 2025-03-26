@@ -1,9 +1,10 @@
 package service
 
 import (
+	usermodel "backend/notification_service/pkg/app/model"
 	"context"
 	"fmt"
-	"net/smtp"
+	gomail "gopkg.in/gomail.v2"
 )
 
 type EmailSenderInterface interface {
@@ -17,23 +18,27 @@ func NewEmailSender() *EmailSender {
 	return &EmailSender{}
 }
 
-func (e *EmailSender) SendEmail(ctx context.Context, data string) error {
-	from := "skammoshenik@gmail.com"
-	password := "Maun7hax"
+// xsmtpsib-46a985a24c017ea0f3ae60f4ede6a4733eb4eab3818a79c9dd4373f1fe168c73-0fSTzsWG1KVpXtRq
+func (e *EmailSender) SendEmail(ctx context.Context, data string, user usermodel.UserModel) error {
+	key := "xsmtpsib-46a985a24c017ea0f3ae60f4ede6a4733eb4eab3818a79c9dd4373f1fe168c73-0fSTzsWG1KVpXtRq"
+	from := "88e54e001@smtp-brevo.com"
+	host := "smtp-relay.brevo.com"
+	port := 587
 
-	to := []string{"skammoshenik@gmail.com"}
+	to := user.Email
 
-	smtpHost := "smtp.gmail.com"
-	smtpPort := "587"
+	msg := gomail.NewMessage()
+	msg.SetHeader("From", from)
+	msg.SetHeader("To", to)
+	msg.SetHeader("Subject", "Уведомление")
+	msg.SetBody("text/plain", data)
 
-	message := []byte("Subject: Тестовое сообщение\n\nТестовое сообщение через Go.")
-
-	auth := smtp.PlainAuth("", from, password, smtpHost)
-
-	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, message)
-	if err != nil {
-		fmt.Println(err)
+	n := gomail.NewDialer(host, port, from, key)
+	if err := n.DialAndSend(msg); err != nil {
 		return err
 	}
+
+	fmt.Println("Email sent to", user.Email)
+
 	return nil
 }

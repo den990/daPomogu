@@ -1,6 +1,7 @@
 package publicapi
 
 import (
+	_interface "backend/notification_service/pkg/app/interface"
 	"context"
 	"fmt"
 	"github.com/gorilla/websocket"
@@ -8,7 +9,6 @@ import (
 	"time"
 
 	"backend/notification_service/pkg/app/model"
-	"backend/notification_service/pkg/app/service"
 )
 
 var upgrader = websocket.Upgrader{
@@ -23,10 +23,10 @@ type Client struct {
 	ClientID uint64
 	Conn     *websocket.Conn
 	send     chan model.Notification
-	puller   service.PullerInterface
+	puller   _interface.PullerInterface
 }
 
-func NewClient(clientID uint64, puller service.PullerInterface, conn *websocket.Conn) *Client {
+func NewClient(clientID uint64, puller _interface.PullerInterface, conn *websocket.Conn) *Client {
 	return &Client{
 		ClientID: clientID,
 		Conn:     conn,
