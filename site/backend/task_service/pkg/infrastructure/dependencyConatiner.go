@@ -89,8 +89,7 @@ func NewContainer(config config.Config) *Container {
 
 	organizationQuery := organizationquery.NewOrganization(grpcClient)
 
-	//fmt.Println(config.NotificationAddress)
-	notificationClient, err := notificationclient.NewNotificationServiceClient(config.NotificationAddress)
+	notificationClient, err := notificationclient.NewNotificationServiceClient("notification-service:50501")
 	if err != nil {
 		panic(err)
 	}
