@@ -1,6 +1,7 @@
 package publicapi
 
 import (
+	_interface "backend/notification_service/pkg/app/interface"
 	"backend/task_service/pkg/infrastructure/jwt"
 	"fmt"
 	"github.com/gin-contrib/cors"
@@ -19,10 +20,10 @@ const (
 
 type Handler struct {
 	service service.NotificationServiceInterface
-	puller  service.PullerInterface
+	puller  _interface.PullerInterface
 }
 
-func NewHandler(service service.NotificationServiceInterface, puller service.PullerInterface) *Handler {
+func NewHandler(service service.NotificationServiceInterface, puller _interface.PullerInterface) *Handler {
 	return &Handler{
 		service: service,
 		puller:  puller,

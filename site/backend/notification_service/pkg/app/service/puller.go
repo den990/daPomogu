@@ -1,6 +1,8 @@
 package service
 
 import (
+	_interface "backend/notification_service/pkg/app/interface"
+	"backend/notification_service/pkg/infra/transport/internalapi"
 	"context"
 	"fmt"
 	"sync"
@@ -10,19 +12,6 @@ import (
 
 const bufferSize = 20
 
-type PullerInterface interface {
-	GetNotifications(ctx context.Context, n model.Notification)
-	SendNotification(ctx context.Context, n model.Notification)
-	RegisterClient(client ClientInterface)
-	UnregisterClient(client ClientInterface)
-	SetIsRead(ctx context.Context, n model.Notification)
-}
-
-type ClientInterface interface {
-	SendNotification(ctx context.Context, n model.Notification)
-	GetID() uint
-}
-
 type PullerStarter interface {
 	Run()
 }
@@ -30,26 +19,34 @@ type PullerStarter interface {
 type Puller struct {
 	Getter              chan model.Notification
 	Sender              chan model.Notification
-	Register            chan ClientInterface
-	Unregister          chan ClientInterface
-	clients             map[uint]ClientInterface
+	Register            chan _interface.ClientInterface
+	Unregister          chan _interface.ClientInterface
+	clients             map[uint]_interface.ClientInterface
 	mu                  sync.Mutex
 	notificationservice NotificationServiceInterface
 	emailSender         *EmailSender
+	client              *internalapi.Client
 }
 
 func NewPuller(
 	notificationservice NotificationServiceInterface,
 	emailSender *EmailSender,
+	addr string,
 ) *Puller {
+	client, err := internalapi.NewGrpcClient(addr)
+	if err != nil {
+		return nil
+	}
+
 	return &Puller{
 		Getter:              make(chan model.Notification, bufferSize),
 		Sender:              make(chan model.Notification, bufferSize),
-		Register:            make(chan ClientInterface, bufferSize),
-		Unregister:          make(chan ClientInterface, bufferSize),
-		clients:             make(map[uint]ClientInterface),
+		Register:            make(chan _interface.ClientInterface, bufferSize),
+		Unregister:          make(chan _interface.ClientInterface, bufferSize),
+		clients:             make(map[uint]_interface.ClientInterface),
 		notificationservice: notificationservice,
 		emailSender:         emailSender,
+		client:              client,
 	}
 }
 
@@ -68,11 +65,11 @@ func (p *Puller) Run() {
 	}
 }
 
-func (p *Puller) RegisterClient(client ClientInterface) {
+func (p *Puller) RegisterClient(client _interface.ClientInterface) {
 	p.Register <- client
 }
 
-func (p *Puller) UnregisterClient(client ClientInterface) {
+func (p *Puller) UnregisterClient(client _interface.ClientInterface) {
 	p.Unregister <- client
 }
 
@@ -84,7 +81,7 @@ func (p *Puller) SendNotification(ctx context.Context, n model.Notification) {
 	p.Sender <- n
 }
 
-func (p *Puller) reg(clientID ClientInterface) {
+func (p *Puller) reg(clientID _interface.ClientInterface) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
@@ -93,7 +90,7 @@ func (p *Puller) reg(clientID ClientInterface) {
 	fmt.Println("Клиент подключился:", clientID.GetID())
 }
 
-func (p *Puller) unreg(clientID ClientInterface) {
+func (p *Puller) unreg(clientID _interface.ClientInterface) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
@@ -119,7 +116,12 @@ func (p *Puller) send(n model.Notification) {
 		return
 	}
 
-	err = p.emailSender.SendEmail(context.Background(), n.Message)
+	user, err := p.client.GetUser(context.Background(), n.UserID)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	err = p.emailSender.SendEmail(context.Background(), n.Message, user)
 	if err != nil {
 		fmt.Println(err)
 	}

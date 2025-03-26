@@ -1,6 +1,7 @@
 package internalapi
 
 import (
+	_interface "backend/notification_service/pkg/app/interface"
 	"context"
 	"fmt"
 	"google.golang.org/grpc"
@@ -8,13 +9,12 @@ import (
 	"net"
 
 	"backend/notification_service/pkg/app/model"
-	"backend/notification_service/pkg/app/service"
 	pb "backend/proto-functions/notification"
 )
 
 type Server struct {
 	pb.UnsafeNotificationServiceServer
-	puller service.PullerInterface
+	puller _interface.PullerInterface
 }
 
 func (s Server) SendNotification(ctx context.Context, request *pb.NotificationRequest) (*pb.NotificationResponse, error) {
@@ -32,13 +32,13 @@ func (s Server) SendNotification(ctx context.Context, request *pb.NotificationRe
 	}, nil
 }
 
-func NewServer(puller service.PullerInterface) *Server {
+func NewServer(puller _interface.PullerInterface) *Server {
 	return &Server{
 		puller: puller,
 	}
 }
 
-func InitServer(port string, puller service.PullerInterface) {
+func InitServer(port string, puller _interface.PullerInterface) {
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
 	if err != nil {
 		log.Fatalf("Error in Listen: %v", err)

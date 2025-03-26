@@ -23,6 +23,7 @@ func (s *Server) GetUser(ctx context.Context, req *pb.UserRequest) (*pb.UserResp
 		Name:    user.Name,
 		Surname: user.Surname,
 		IsAdmin: user.IsAdmin,
+		Email:   user.Email,
 	}
 
 	return userResponse, nil
