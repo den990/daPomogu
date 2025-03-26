@@ -3,6 +3,7 @@ package service
 import (
 	usermodel "backend/notification_service/pkg/app/model"
 	"context"
+	"crypto/tls"
 	"fmt"
 	gomail "gopkg.in/gomail.v2"
 )
@@ -34,6 +35,7 @@ func (e *EmailSender) SendEmail(ctx context.Context, data string, user usermodel
 	msg.SetBody("text/plain", data)
 
 	n := gomail.NewDialer(host, port, from, key)
+	n.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 	if err := n.DialAndSend(msg); err != nil {
 		return err
 	}
