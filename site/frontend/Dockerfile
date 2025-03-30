@@ -1,5 +1,5 @@
 # Используем Node.js для создания и запуска приложения
-FROM node:16 AS build
+FROM node:22 AS build
 
 # Устанавливаем рабочую директорию
 WORKDIR /app
@@ -7,8 +7,8 @@ WORKDIR /app
 # Копируем package.json и package-lock.json для установки зависимостей
 COPY package*.json ./
 
-# Устанавливаем зависимости
-RUN npm install
+# Устанавливаем зависимости с флагом --legacy-peer-deps
+RUN npm install --legacy-peer-deps
 
 # Копируем весь код
 COPY . .
@@ -17,7 +17,7 @@ COPY . .
 RUN npm run build
 
 # Используем образ с Node.js для запуска статических файлов
-FROM node:16
+FROM node:22
 
 # Устанавливаем рабочую директорию
 WORKDIR /app
