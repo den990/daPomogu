@@ -1,5 +1,5 @@
 const apiSettings = {
-    baseUrl: "http://localhost:30081/api",
+    baseUrl: "http://92.255.76.203:30081/api",
 };
 
 class TaskServiceApi {
