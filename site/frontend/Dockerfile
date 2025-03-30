@@ -1,10 +1,35 @@
-FROM nginx:alpine
+# Используем Node.js для создания и запуска приложения
+FROM node:22 AS build
 
-# Копируем собранные файлы в директорию Nginx для статики
-COPY build /usr/share/nginx/html
+# Устанавливаем рабочую директорию
+WORKDIR /app
 
-# Открываем порт 80 для сервера
-EXPOSE 80
+# Копируем package.json и package-lock.json для установки зависимостей
+COPY package*.json ./
 
-# Запускаем Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Устанавливаем зависимости с флагом --legacy-peer-deps
+RUN npm install --legacy-peer-deps
+
+# Копируем весь код
+COPY . .
+
+# Строим приложение
+RUN npm run build
+
+# Используем образ с Node.js для запуска статических файлов
+FROM node:22
+
+# Устанавливаем рабочую директорию
+WORKDIR /app
+
+# Копируем скомпилированные файлы из предыдущего этапа
+COPY --from=build /app/build /app
+
+# Устанавливаем простой HTTP сервер для обслуживания файлов
+RUN npm install -g serve
+
+# Открываем порт 5000 для веб-сервера
+EXPOSE 5000
+
+# Запускаем сервер
+CMD ["serve", "-s", "build", "-l", "5000"]
