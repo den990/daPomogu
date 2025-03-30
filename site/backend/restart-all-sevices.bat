@@ -15,7 +15,7 @@ kubectl delete deployment notification-service
 
 echo Применение новых конфигураций...
 kubectl apply -f postgres-pv.yaml
-kubectl apply -f postgres-pvc.yamlmini
+kubectl apply -f postgres-pvc.yaml
 kubectl apply -f postgres-init-configmap.yaml
 kubectl apply -f postgres-service.yaml
 kubectl apply -f postgres_service-deployment.yaml
