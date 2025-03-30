@@ -1,23 +1,29 @@
-# Этап сборки (build)
-FROM node:22 AS build
+# Используем официальный Node.js образ для сборки
+FROM node:16 AS build
 
+# Устанавливаем рабочую директорию
 WORKDIR /app
+
+# Копируем package.json и package-lock.json
 COPY package*.json ./
-RUN npm install --legacy-peer-deps
+
+# Устанавливаем зависимости
+RUN npm install
+
+# Копируем все файлы проекта в контейнер
 COPY . .
+
+# Сборка React-приложения для продакшн
 RUN npm run build
 
-# Этап продакшена с Nginx
-FROM nginx:latest
+# Используем более легкий образ для запуска приложения
+FROM nginx:alpine
 
-# Копируем скомпилированные файлы в Nginx
+# Копируем сборку из предыдущего этапа в директорию, используемую Nginx
 COPY --from=build /app/build /usr/share/nginx/html
 
-# Копируем кастомный конфиг Nginx
-COPY nginx.conf /etc/nginx/nginx.conf
-
-# Открываем порт 80
+# Открываем порт для Nginx
 EXPOSE 80
 
-# Запускаем Nginx
+# Запускаем Nginx сервер
 CMD ["nginx", "-g", "daemon off;"]
