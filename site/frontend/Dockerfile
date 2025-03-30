@@ -5,7 +5,7 @@ FROM node:22 AS build
 WORKDIR /app
 
 # Копируем package.json и package-lock.json для установки зависимостей
-COPY package*.json ./
+COPY package.json ./
 
 # Устанавливаем зависимости с флагом --legacy-peer-deps
 RUN npm install --legacy-peer-deps
@@ -29,7 +29,7 @@ COPY --from=build /app/build /app
 RUN npm install -g serve
 
 # Открываем порт 5000 для веб-сервера
-EXPOSE 5000
+EXPOSE 80
 
 # Запускаем сервер
-CMD ["serve", "-s", "build", "-l", "5000"]
+CMD ["serve", "-s", "build", "-l", "80"]
