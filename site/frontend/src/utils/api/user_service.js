@@ -1,6 +1,6 @@
 const apiSettings = {
-    baseUrl: "http://localhost:8080/api",
-    baseUrlWithoutApi: "http://localhost:8080",
+    baseUrl: "http://localhost:30080/api",
+    baseUrlWithoutApi: "http://localhost:30080",
 };
 
 class UserServiceApi {
