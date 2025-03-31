@@ -21,7 +21,7 @@ function ActiveTasks() {
                   setTasks([]);
                 });
         }
-    }, [profile, setTasks]);
+    }, [profile, setTasks, token]);
 
     const handleDeleteTask = (id) => {
         if (token) {
