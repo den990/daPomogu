@@ -20,8 +20,6 @@ ALTER TABLE "response"
 ALTER TABLE "comment"
     ADD FOREIGN KEY ("task_id") REFERENCES "task" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "message"
-    ADD FOREIGN KEY ("chat_id") REFERENCES "chat" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "approve_task"
     ADD FOREIGN KEY ("task_id") REFERENCES "task" ("id") ON DELETE CASCADE,

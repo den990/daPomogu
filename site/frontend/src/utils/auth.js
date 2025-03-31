@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8080";
+const BASE_URL = "http://92.255.76.203:30080";
 
 function checkResponse(res) {
     if (res.ok) {

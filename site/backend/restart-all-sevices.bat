@@ -12,6 +12,7 @@ kubectl delete deployment chat-service
 kubectl delete service notification-service
 kubectl delete deployment notification-service
 
+
 echo Применение новых конфигураций...
 kubectl apply -f postgres-pv.yaml
 kubectl apply -f postgres-pvc.yaml
