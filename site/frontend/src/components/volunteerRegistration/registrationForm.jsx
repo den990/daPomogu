@@ -8,6 +8,19 @@ function RegistrationForm({ setIsPopUpVisible }) {
     const { values, errors, isValid, handleChange } = useFormWithValidation();
     const [error, setError] = useState("");
 
+    const isAdult = (dateString) => {
+        const birthDate = new Date(dateString);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        
+        return age >= 18;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
@@ -19,6 +32,11 @@ function RegistrationForm({ setIsPopUpVisible }) {
 
         if (!values.terms) {
             setError("Вы должны согласиться с условиями использования и политикой конфиденциальности");
+            return;
+        }
+
+        if (!values.date_of_birthday || !isAdult(values.date_of_birthday)) {
+            setError("Вы должны быть старше 18 лет для регистрации");
             return;
         }
 
@@ -130,6 +148,9 @@ function RegistrationForm({ setIsPopUpVisible }) {
                                 onChange={handleChange}
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500"
                             />
+                            {values.date_of_birthday && !isAdult(values.date_of_birthday) && (
+                                <span className="text-red-600 text-xs">Вы должны быть старше 18 лет</span>
+                            )}
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700" htmlFor="registration_address">

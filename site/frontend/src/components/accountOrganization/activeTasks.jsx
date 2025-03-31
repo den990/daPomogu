@@ -21,7 +21,7 @@ function ActiveTasks() {
                   setTasks([]);
                 });
         }
-    }, [profile, setTasks]);
+    }, [profile, setTasks, token]);
 
     const handleDeleteTask = (id) => {
         if (token) {
@@ -82,13 +82,6 @@ function ActiveTasks() {
                                     >
                                         Открыть
                                     </Link>
-                                    <button>
-                                        <img
-                                            className="w-4 h-4"
-                                            src={require("../../images/edit_red.svg").default}
-                                            alt="edit"
-                                        />
-                                    </button>
                                     <button onClick={() => handleDeleteTask(task.id)}>
                                         <img
                                             className="w-4 h-4"
