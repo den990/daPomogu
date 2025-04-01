@@ -4,7 +4,12 @@ metadata:
   name: frontend-ingress
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: letsencrypt-prod  # Указываем наш ClusterIssuer
 spec:
+  tls:
+    - hosts:
+        - dapomogu.tw1.su  # Ваш домен
+      secretName: dapomogu-tls  # Это имя секрета, где будет храниться сертификат
   rules:
     - host: dapomogu.tw1.su
       http:
@@ -13,6 +18,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: frontend-service  # Название твоей службы
+                name: frontend-service
                 port:
                   number: 80
