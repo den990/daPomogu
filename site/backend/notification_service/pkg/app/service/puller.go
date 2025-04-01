@@ -3,6 +3,7 @@ package service
 import (
 	_interface "backend/notification_service/pkg/app/interface"
 	"backend/notification_service/pkg/infra/transport/internalapi"
+	"backend/proto-functions/profile"
 	"context"
 	"fmt"
 	"sync"
@@ -116,7 +117,7 @@ func (p *Puller) send(n model.Notification) {
 		return
 	}
 
-	user, err := p.client.GetUser(context.Background(), n.UserID)
+	user, err := p.client.GetUser(context.Background(), &profile.UserRequest{Id: n.UserID})
 	if err != nil {
 		fmt.Println(err)
 		return
