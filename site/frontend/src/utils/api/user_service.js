@@ -1,6 +1,6 @@
 const apiSettings = {
-    baseUrl: "https://user-service.dapomogu.tw1.su//api",
-    baseUrlWithoutApi: "https://user-service.dapomogu.tw1.su/",
+    baseUrl: "https://user-service.dapomogu.tw1.su/api",
+    baseUrlWithoutApi: "https://user-service.dapomogu.tw1.su",
 };
 
 class UserServiceApi {

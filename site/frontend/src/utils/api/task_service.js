@@ -1,5 +1,5 @@
 const apiSettings = {
-    baseUrl: "https://task-service.dapomogu.tw1.su//api",
+    baseUrl: "https://task-service.dapomogu.tw1.su/api",
 };
 
 class TaskServiceApi {
