@@ -16,10 +16,10 @@ spec:
         paths:
           # Сначала обрабатываем запросы для acme challenge
           - path: /.well-known/acme-challenge/
-            pathType: Prefix
+            pathType: Exact
             backend:
               service:
-                name: cm-acme-http-solver-8dzn8
+                name: cm-acme-http-solver-wh5gj
                 port:
                   number: 80
           # Затем обрабатываем все остальные запросы
