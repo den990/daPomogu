@@ -91,6 +91,8 @@ func startHTTPServer() {
 		protected.GET("/organization/requests-to-apply", h.GetRequestsToApply)
 		protected.GET("/organization/users", h.GetUsersInOrganization)
 		protected.GET("/admin/statistic", h.GetStatisticForAdmin)
+		protected.GET("/user/avatar", h.GetAvatar)
+		protected.GET("/user/avatar/:id", h.GetAvatar)
 	}
 
 	log.Println("HTTP Server running on port 8080...")
