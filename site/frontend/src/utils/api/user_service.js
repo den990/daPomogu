@@ -172,6 +172,33 @@ class UserServiceApi {
             headers: this._headers,
         });
     }
+
+    getMyAvatar(token) {
+        this._updateToken(token);
+        return fetch(`${this._baseUrlWithoutApi}/user/avatar`, {
+            method: "GET",
+            headers: this._headers,
+        }).then((response) => {
+            if (response.ok) {
+                return response.blob();
+            } else {
+                return Promise.reject(`Ошибка: ${response.status}/${response.statusText}`);
+            }
+        });
+    }
+
+    getAvatarByID(id) {
+        return fetch(`${this._baseUrlWithoutApi}/user/avatar/${id}`, {
+            method: "GET",
+            headers: this._headers,
+        }).then((response) => {
+            if (response.ok) {
+                return response.blob();
+            } else {
+                return Promise.reject(`Ошибка: ${response.status}/${response.statusText}`);
+            }
+        });
+    }
 }
 
 export const userServiceApi = new UserServiceApi(apiSettings);

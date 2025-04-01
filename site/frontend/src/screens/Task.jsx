@@ -6,12 +6,14 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthProvider.js";
 import { taskServiceApi } from "../utils/api/task_service.js";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { data, useParams } from "react-router";
+import { userServiceApi } from "../utils/api/user_service.js";
 
 function Task() {
     const { token } = useContext(AuthContext);
     const [task, setTask] = useState(null);
     const { taskId } = useParams();
+    const [imageUrl, setImageUrl] = useState(null);
 
     useEffect(() => {
         taskServiceApi
@@ -22,6 +24,14 @@ function Task() {
             })
             .catch((error) => {
                 console.error("Ошибка при загрузке задания:", error);
+            });
+        userServiceApi.getAvatarByID(data.organization_id)
+            .then((blob) => {
+                const url = URL.createObjectURL(blob);
+                setImageUrl(url);
+            })
+            .catch(() => {
+                console.log({ message: "Ошибка при загрузке фото пользователя", severity: "error" });
             });
     }, [token, taskId]);
 
@@ -37,7 +47,7 @@ function Task() {
                 <div className="container mx-auto px-4 py-8">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         <div className="lg:col-span-2">
-                            <Info task={task} />
+                            <Info task={task} imageUrl={imageUrl} />
                         </div>
                         <div className="lg:col-span-1">
                             <ButtonsPanel task={task} />

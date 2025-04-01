@@ -1,7 +1,7 @@
 import Comments from "./comments";
 import MapComponent from "./MapComponent";
 
-function Info({ task }) {
+function Info({ task, imageUrl }) {
     const location = task.location;
     const [latitude, longitude] = location.split(",").map((coord) => parseFloat(coord.trim()));
     return (
@@ -10,11 +10,19 @@ function Info({ task }) {
                 <h1 className="text-xl md:text-3xl mb-4">{task.name}</h1>
                 <div className="flex flex-wrap items-center gap-2 md:gap-4 mb-4">
                     <div className="flex items-center gap-2">
-                        <img
-                            src="https://api.dicebear.com/7.x/notionists/svg?scale=200&amp;seed=456"
-                            className="w-8 md:w-10 h-8 md:h-10 rounded-full"
-                            alt="organization"
-                        />
+                        {imageUrl ? (
+                            <img
+                                src={imageUrl}
+                                className="w-8 md:w-10 h-8 md:h-10 rounded-full"
+                                alt="humanitarian organization logo with volunteers in red and white colors"
+                            />
+                        ) : (
+                            <div className="w-8 md:w-10 h-8 md:h-10 rounded-full bg-gray-300 flex items-center justify-center">
+                                <span className="text-gray-500 text-xs">
+                                    {task.organization_name?.charAt(0) || 'A'}
+                                </span>
+                            </div>
+                        )}
                         <span className="text-neutral-900 hover:underline cursor-pointer text-sm md:text-base">
                             {task.organization_name}
                         </span>

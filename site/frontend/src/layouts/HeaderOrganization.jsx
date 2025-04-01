@@ -9,7 +9,7 @@ import arrowDownGreyIcon from "../images/arrow-down_grey.svg";
 function HeaderOrganization() {
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef(null);
-    const { logout, profile, loading } = useContext(AuthContext);
+    const { logout, profile, loading, imageUrl } = useContext(AuthContext);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -72,11 +72,19 @@ function HeaderOrganization() {
                                 onClick={() => setIsOpen(!isOpen)}
                                 className="flex items-center hover:bg-gray-50 rounded-md px-1 py-2"
                             >
-                                <img
-                                    src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg"
-                                    className="w-8 h-8 rounded-full"
-                                    alt="Organization"
-                                />
+                                {imageUrl ? (
+                                        <img
+                                            src={imageUrl}
+                                            className="w-8 h-8 rounded-full"
+                                            alt="Organization"
+                                        />
+                                    ) : (
+                                        <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
+                                            <span className="text-gray-500 text-xs">
+                                                {profile?.name?.charAt(0) || 'A'}
+                                            </span>
+                                        </div>
+                                    )}
                                 <span className="hidden md:inline pl-2 pr-1 whitespace-nowrap">
                                     {loading ? "Загрузка..." : profile ? profile.name : "Неизвестно"}
                                 </span>

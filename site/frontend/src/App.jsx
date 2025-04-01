@@ -33,9 +33,11 @@ import PublicAccountVolonteer from "./screens/PublicAccountVolunteer";
 import OrganizationTasks from "./screens/OrganizationTasks";
 import ConfirmationsResponses from "./screens/ConfirmationsResponses";
 import ListOrganization from "./screens/ListOrganization";
+import { ProtectedRoute } from "./routes/ProtectedRoute";
+import { GuestRoute } from "./routes/GuestRoute";
 
 function App() {
-    const { loading } = useContext(AuthContext);
+    const { loading, isAuthenticated } = useContext(AuthContext);
     if (loading) {
         return <div>Application Loading...</div>;
     }
@@ -45,43 +47,44 @@ function App() {
                 <div className="h-100 d-flex flex-column">
                     <div className="App flex-grow-1">
                         <Routes>
-                            {/* Гость */}
+                            {/* Публичные маршруты */}
                             <Route path={ROUTES.HOME} element={<Main />} />
                             <Route path={ROUTES.ABOUT} element={<AboutUs />} />
-                            <Route path={ROUTES.LOGIN} element={<Login />} />
                             <Route path={ROUTES.TASKS_CATALOG} element={<TasksCatalog />} />
-                            <Route path={ROUTES.REGISTER_VOLUNTEER} element={<VolunteerRegistration />} />
-                            <Route path={ROUTES.REGISTER_ORGANIZATION} element={<OrganizationRegistration />} />
                             <Route path={ROUTES.ERROR} element={<Error />} />
                             <Route path={ROUTES.PUBLIC_ACCOUNT_ORGANIZATION} element={<PublicAccountOrganization />} />
                             <Route path={ROUTES.TEST_AUTH} element={<TestAuth />} />
                             <Route path={ROUTES.LIST_ORGANIZATION} element={<ListOrganization />} />
 
-                            {/* Волонтёр */}
-                            <Route element={<PrivateRoute />}>
+                            {/* Только для авторизованных */}
+                            <Route element={<ProtectedRoute allowedRoles={["volunteer", "organization", "admin"]} />}>
+                                <Route path={ROUTES.TASK} element={<Task />} />
+                                <Route path={ROUTES.CONFIRMATIONS_RESPONSES} element={<ConfirmationsResponses />} />
+                            </Route>
+
+                            {/* Только для волонтёров */}
+                            <Route element={<ProtectedRoute allowedRoles={["volunteer"]} redirectPath="/" />}>
                                 <Route path={ROUTES.PUBLIC_ACCOUNT_VOLUNTEER} element={<PublicAccountVolonteer />} />
                                 <Route path={ROUTES.EDIT_PASSWORD} element={<EditPassword />} />
                                 <Route path={ROUTES.MY_TASKS} element={<Tasks />} />
                                 <Route path={ROUTES.ACCOUNT_VOLUNTEER} element={<AccountVolunteer />} />
-                                <Route path={ROUTES.TASK} element={<Task />} />
                                 <Route path={ROUTES.CHAT} element={<Chat />} />
                                 <Route path={ROUTES.PHOTO_REPORT} element={<PhotoReport />} />
                                 <Route path={ROUTES.EDIT_VOLUNTEER_PROFILE} element={<EditVolunteerProfile />} />
                             </Route>
 
-                            {/* Организация */}
-                            <Route element={<PrivateRoute />}>
+                            {/* Только для организаций */}
+                            <Route element={<ProtectedRoute allowedRoles={["organization"]} redirectPath="/" />}>
                                 <Route path={ROUTES.ACCOUNT_ORGANIZATION} element={<AccountOrganization />} />
                                 <Route path={ROUTES.CREATE_TASK} element={<CreateTask />} />
                                 <Route path={ROUTES.ATTACHMENTS_ORGANIZATION} element={<AttachmentsToOrganization />} />
                                 <Route path={ROUTES.EDIT_ORGANIZATION_PROFILE} element={<EditOrganizationProfile />} />
                                 <Route path={ROUTES.CONFIRMATIONS_TASKS} element={<ConfirmationsTasks />} />
                                 <Route path={ROUTES.ORGANIZATION_TASKS} element={<OrganizationTasks />} />
-                                <Route path={ROUTES.CONFIRMATIONS_RESPONSES} element={<ConfirmationsResponses />} />
                             </Route>
 
-                            {/* Администратор */}
-                            <Route element={<PrivateRoute />}>
+                            {/* Только для админов */}
+                            <Route element={<ProtectedRoute allowedRoles={["admin"]} redirectPath="/" />}>
                                 <Route path={ROUTES.ADMIN_PANEL} element={<AdminPanel />} />
                                 <Route path={ROUTES.ADMIN_DASHBOARD} element={<AdminDashboard />} />
                                 <Route
@@ -92,6 +95,13 @@ function App() {
                                     path={ROUTES.ADMIN_REGISTER_ORGANIZATION}
                                     element={<AdminRegistrateOrganizationProfile />}
                                 />
+                            </Route>
+
+                            {/* Только для НЕавторизованных */}
+                            <Route element={<GuestRoute />}>
+                                <Route path={ROUTES.REGISTER_VOLUNTEER} element={<VolunteerRegistration />} />
+                                <Route path={ROUTES.REGISTER_ORGANIZATION} element={<OrganizationRegistration />} />
+                                <Route path={ROUTES.LOGIN} element={<Login />} />
                             </Route>
 
                             <Route path="*" element={<Error />} />

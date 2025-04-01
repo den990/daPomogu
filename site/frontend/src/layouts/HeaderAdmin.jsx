@@ -6,7 +6,7 @@ import { AuthContext } from "../context/AuthProvider";
 function HeaderAdmin() {
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef(null);
-    const { logout, profile, loading } = useContext(AuthContext);
+    const { logout, profile, loading, imageUrl } = useContext(AuthContext);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -33,11 +33,19 @@ function HeaderAdmin() {
                                     className="px-4 py-2 hover:bg-gray-50 rounded-md"
                                 >
                                     <div className="flex items-center">
-                                        <img
-                                            src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg"
-                                            className="w-8 h-8 rounded-full"
-                                            alt="Admin"
-                                        />
+                                        {imageUrl ? (
+                                                <img
+                                                    src={imageUrl}
+                                                    className="w-8 h-8 rounded-full"
+                                                    alt="Admin"
+                                                />
+                                            ) : (
+                                                <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
+                                                    <span className="text-gray-500 text-xs">
+                                                        {profile?.name?.charAt(0) || 'A'}
+                                                    </span>
+                                                </div>
+                                            )}
                                         <span style={{ paddingRight: 10, paddingLeft: 12 }}>
                                             {loading ? "Загрузка..." : profile ? profile.name : "Неизвестно"}
                                         </span>
@@ -51,15 +59,16 @@ function HeaderAdmin() {
 
                                 {isOpen && (
                                     <div className="absolute right-0 mt-2 w-40 bg-white text-black rounded-md shadow-lg overflow-hidden z-50">
-                                        <button className="block w-full px-4 py-2 text-left hover:bg-gray-50">
-                                            <Link to={ROUTES.ADMIN_PANEL}>Мой аккаунт</Link>
-                                        </button>
-                                        <button
+                                        <Link to={ROUTES.ADMIN_PANEL} className="block w-full px-4 py-2 text-left hover:bg-gray-50">
+                                            Мой аккаунт
+                                        </Link>
+                                        <Link
+                                            to={ROUTES.HOME}
                                             onClick={logout}
                                             className="block w-full px-4 py-2 text-left hover:bg-gray-50"
                                         >
-                                            <Link to={ROUTES.HOME}>Выйти</Link>
-                                        </button>
+                                            Выйти
+                                        </Link>
                                     </div>
                                 )}
                             </div>

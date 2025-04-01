@@ -4,7 +4,7 @@ import { AuthContext } from "../../context/AuthProvider";
 import { Snackbar, Alert } from "@mui/material";
 import { Link } from "react-router";
 
-function Profile({ profile }) {
+function Profile({ profile, imageUrl }) {
     const { token, role } = useContext(AuthContext);
     const [alert, setAlert] = useState(null);
 
@@ -29,11 +29,19 @@ function Profile({ profile }) {
     return (
         <section id="org-profile" className="bg-white rounded-lg shadow-sm p-6 mb-8">
             <div className="flex items-start space-x-6">
-                <img
-                    className="w-48 h-48 rounded-lg object-cover"
-                    src="https://storage.googleapis.com/uxpilot-auth.appspot.com/cb61e8f45a-5ee863536d744c529bb2.png"
-                    alt="humanitarian organization logo with volunteers in red and white colors"
-                />
+                {imageUrl ? (
+                        <img
+                            src={imageUrl}
+                            className="w-48 h-48 rounded-lg object-cover"
+                            alt="humanitarian organization logo with volunteers in red and white colors"
+                        />
+                    ) : (
+                        <div className="w-48 h-48 rounded-full bg-gray-300 flex items-center justify-center">
+                            <span className="text-gray-500 text-xs">
+                                {profile?.name?.charAt(0) || 'A'}
+                            </span>
+                        </div>
+                    )}
                 <div className="flex-1">
                     <h2 className="text-2xl font-bold text-gray-900 mb-4">{profile ? profile.name : "Нет данных"}</h2>
                     {role === "volunteer" && (
