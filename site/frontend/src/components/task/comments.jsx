@@ -8,7 +8,7 @@ function Comments({ task }) {
     const [comment, setComment] = useState("");
 
     useEffect(() => {
-        const ws = new WebSocket(`ws://92.255.76.203:30081/ws?roomID=${task.id}&token=${token}`);
+        const ws = new WebSocket(`ws://task-service.dapomogu.tw1.su/ws?roomID=${task.id}&token=${token}`);
 
         ws.onopen = () => {
             console.log("✅ Соединение установлено");
