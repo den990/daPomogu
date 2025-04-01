@@ -1,7 +1,6 @@
 package internalapi
 
 import (
-	"backend/notification_service/pkg/app/model"
 	pb "backend/proto-functions/profile"
 	"context"
 	"google.golang.org/grpc"
@@ -32,16 +31,15 @@ func (c *Client) Close() {
 	}
 }
 
-func (c *Client) GetUser(ctx context.Context, userID uint64) (model.UserModel, error) {
-	res, err := c.Client.GetUser(ctx, &pb.UserRequest{Id: userID})
+func (c *Client) GetUser(ctx context.Context, req *pb.UserRequest) (*pb.UserResponse, error) {
+	res, err := c.Client.GetUser(ctx, req)
 	if err != nil {
 		log.Printf("Ошибка получения пользователя: %v", err)
-		return model.UserModel{}, err
+		return &pb.UserResponse{}, err
 	}
 
 	log.Printf("Пользователь: %s %s, Админ: %v", res.Name, res.Surname, res.IsAdmin)
-	return model.UserModel{
-		ID:    uint(userID),
+	return &pb.UserResponse{
 		Email: res.Email,
 	}, nil
 }
