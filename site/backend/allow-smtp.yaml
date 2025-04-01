@@ -12,7 +12,7 @@ spec:
   egress:
     - to:
         - ipBlock:
-            cidr: 142.250.102.0/24
+            cidr: 142.250.0.0/16
       ports:
         - protocol: TCP
           port: 587
