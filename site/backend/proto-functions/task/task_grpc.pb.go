@@ -23,6 +23,8 @@ const (
 	TaskService_GetCountTasksCompletedByUserId_FullMethodName = "/functions.TaskService/GetCountTasksCompletedByUserId"
 	TaskService_GetCountTasksCompleted_FullMethodName         = "/functions.TaskService/GetCountTasksCompleted"
 	TaskService_GetCountActiveTasks_FullMethodName            = "/functions.TaskService/GetCountActiveTasks"
+	TaskService_UploadImage_FullMethodName                    = "/functions.TaskService/UploadImage"
+	TaskService_GetAvatarImage_FullMethodName                 = "/functions.TaskService/GetAvatarImage"
 )
 
 // TaskServiceClient is the client API for TaskService service.
@@ -33,6 +35,8 @@ type TaskServiceClient interface {
 	GetCountTasksCompletedByUserId(ctx context.Context, in *TaskUserRequest, opts ...grpc.CallOption) (*TasksCompleteCountResponse, error)
 	GetCountTasksCompleted(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*TasksCompleteCountResponse, error)
 	GetCountActiveTasks(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*TasksCountResponse, error)
+	UploadImage(ctx context.Context, in *ImageChunk, opts ...grpc.CallOption) (*UploadStatus, error)
+	GetAvatarImage(ctx context.Context, in *DownloadImageRequest, opts ...grpc.CallOption) (*DownloadImageResponse, error)
 }
 
 type taskServiceClient struct {
@@ -83,6 +87,26 @@ func (c *taskServiceClient) GetCountActiveTasks(ctx context.Context, in *Empty, 
 	return out, nil
 }
 
+func (c *taskServiceClient) UploadImage(ctx context.Context, in *ImageChunk, opts ...grpc.CallOption) (*UploadStatus, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UploadStatus)
+	err := c.cc.Invoke(ctx, TaskService_UploadImage_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *taskServiceClient) GetAvatarImage(ctx context.Context, in *DownloadImageRequest, opts ...grpc.CallOption) (*DownloadImageResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DownloadImageResponse)
+	err := c.cc.Invoke(ctx, TaskService_GetAvatarImage_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TaskServiceServer is the server API for TaskService service.
 // All implementations must embed UnimplementedTaskServiceServer
 // for forward compatibility.
@@ -91,6 +115,8 @@ type TaskServiceServer interface {
 	GetCountTasksCompletedByUserId(context.Context, *TaskUserRequest) (*TasksCompleteCountResponse, error)
 	GetCountTasksCompleted(context.Context, *Empty) (*TasksCompleteCountResponse, error)
 	GetCountActiveTasks(context.Context, *Empty) (*TasksCountResponse, error)
+	UploadImage(context.Context, *ImageChunk) (*UploadStatus, error)
+	GetAvatarImage(context.Context, *DownloadImageRequest) (*DownloadImageResponse, error)
 	mustEmbedUnimplementedTaskServiceServer()
 }
 
@@ -112,6 +138,12 @@ func (UnimplementedTaskServiceServer) GetCountTasksCompleted(context.Context, *E
 }
 func (UnimplementedTaskServiceServer) GetCountActiveTasks(context.Context, *Empty) (*TasksCountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCountActiveTasks not implemented")
+}
+func (UnimplementedTaskServiceServer) UploadImage(context.Context, *ImageChunk) (*UploadStatus, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UploadImage not implemented")
+}
+func (UnimplementedTaskServiceServer) GetAvatarImage(context.Context, *DownloadImageRequest) (*DownloadImageResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAvatarImage not implemented")
 }
 func (UnimplementedTaskServiceServer) mustEmbedUnimplementedTaskServiceServer() {}
 func (UnimplementedTaskServiceServer) testEmbeddedByValue()                     {}
@@ -206,6 +238,42 @@ func _TaskService_GetCountActiveTasks_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TaskService_UploadImage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ImageChunk)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TaskServiceServer).UploadImage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TaskService_UploadImage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TaskServiceServer).UploadImage(ctx, req.(*ImageChunk))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TaskService_GetAvatarImage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DownloadImageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TaskServiceServer).GetAvatarImage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TaskService_GetAvatarImage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TaskServiceServer).GetAvatarImage(ctx, req.(*DownloadImageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TaskService_ServiceDesc is the grpc.ServiceDesc for TaskService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -228,6 +296,14 @@ var TaskService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetCountActiveTasks",
 			Handler:    _TaskService_GetCountActiveTasks_Handler,
+		},
+		{
+			MethodName: "UploadImage",
+			Handler:    _TaskService_UploadImage_Handler,
+		},
+		{
+			MethodName: "GetAvatarImage",
+			Handler:    _TaskService_GetAvatarImage_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

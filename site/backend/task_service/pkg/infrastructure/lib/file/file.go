@@ -43,3 +43,35 @@ func SaveInDirectory(ctx context.Context, file multipart.File, saveDir string, f
 
 	return savePath, nil
 }
+
+func SaveInDirectoryBytes(ctx context.Context, data []byte, saveDir string, fileName string) (string, error) {
+	if saveDir == "" {
+		return "", fmt.Errorf("директория для сохранения не указана")
+	}
+
+	err := os.MkdirAll(saveDir, os.ModePerm)
+	if err != nil {
+		return "", fmt.Errorf("ошибка при создании директории: %w", err)
+	}
+
+	savePath := filepath.Join(saveDir, fileName)
+
+	var buf bytes.Buffer
+	_, err = buf.Write(data)
+	if err != nil {
+		return "", fmt.Errorf("ошибка при записи данных в буфер: %w", err)
+	}
+
+	out, err := os.Create(savePath)
+	if err != nil {
+		return "", fmt.Errorf("ошибка при создании файла: %w", err)
+	}
+	defer out.Close()
+
+	_, err = io.Copy(out, bytes.NewReader(buf.Bytes()))
+	if err != nil {
+		return "", fmt.Errorf("ошибка при сохранении файла: %w", err)
+	}
+
+	return savePath, nil
+}

@@ -64,3 +64,20 @@ func (c *Client) GetCountActiveTasks(ctx context.Context, req *pb.Empty) (*pb.Ta
 
 	return count, err
 }
+
+func (c *Client) UploadImage(ctx context.Context, req *pb.ImageChunk) (*pb.UploadStatus, error) {
+	uploadStatus, err := c.Client.UploadImage(ctx, req)
+	if err != nil {
+		return &pb.UploadStatus{Success: false, Message: err.Error(), FileId: 0}, err
+	}
+	return uploadStatus, err
+}
+
+func (c *Client) GetAvatarImage(ctx context.Context, req *pb.DownloadImageRequest) (*pb.DownloadImageResponse, error) {
+	imageData, err := c.Client.GetAvatarImage(ctx, req)
+	if err != nil {
+		return &pb.DownloadImageResponse{ImageData: nil}, err
+	}
+
+	return imageData, err
+}
