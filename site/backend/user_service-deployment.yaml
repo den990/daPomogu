@@ -18,6 +18,8 @@ spec:
           ports:
             - name: http
               containerPort: 8080  # HTTP API
+            - name: https
+              containerPort: 443
             - name: grpc
               containerPort: 50501 # gRPC API
           env:
@@ -41,6 +43,10 @@ spec:
       port: 80
       targetPort: 8080
       nodePort: 30080
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: 443
     - name: grpc
       protocol: TCP
       port: 50501
