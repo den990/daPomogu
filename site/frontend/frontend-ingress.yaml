@@ -4,21 +4,13 @@ metadata:
   name: frontend-ingress
   namespace: default
   annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
-  ingressClassName: traefik
   rules:
-    - host: dapomogu.tw1.su
+    - host: "dapomogu.tw1.su"
       http:
         paths:
-          - path: /.well-known/acme-challenge/
-            pathType: Prefix
-            backend:
-              service:
-                name: cm-acme-http-solver-xxxxx  # это будет обновлено после того, как cert-manager создаст сервис
-                port:
-                  number: 80
-          - path: /
+          - path: "/"
             pathType: Prefix
             backend:
               service:
@@ -27,5 +19,5 @@ spec:
                   number: 80
   tls:
     - hosts:
-        - dapomogu.tw1.su
+        - "dapomogu.tw1.su"
       secretName: dapomogu-tls
