@@ -2,27 +2,22 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: frontend-ingress
+  namespace: default
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-    cert-manager.io/cluster-issuer: letsencrypt-prod  # Указываем наш ClusterIssuer
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
-  tls:
-    - hosts:
-        - dapomogu.tw1.su  # Ваш домен
-      secretName: dapomogu-tls  # Это имя секрета, где будет храниться сертификат
+  ingressClassName: traefik
   rules:
     - host: dapomogu.tw1.su
       http:
         paths:
-          # Сначала обрабатываем запросы для acme challenge
           - path: /.well-known/acme-challenge/
-            pathType: Exact
+            pathType: Prefix
             backend:
               service:
-                name: cm-acme-http-solver-wh5gj
+                name: cm-acme-http-solver-xxxxx
                 port:
                   number: 80
-          # Затем обрабатываем все остальные запросы
           - path: /
             pathType: Prefix
             backend:
@@ -30,3 +25,7 @@ spec:
                 name: frontend-service
                 port:
                   number: 80
+  tls:
+    - hosts:
+        - dapomogu.tw1.su
+      secretName: dapomogu-tls
