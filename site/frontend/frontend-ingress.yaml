@@ -14,10 +14,19 @@ spec:
     - host: dapomogu.tw1.su
       http:
         paths:
+          # Путь для основного трафика
           - path: /
             pathType: Prefix
             backend:
               service:
                 name: frontend-service
+                port:
+                  number: 80
+          # Путь для ACME challenge
+          - path: /.well-known/acme-challenge/
+            pathType: Prefix
+            backend:
+              service:
+                name: cm-acme-http-solver-8dzn8  # Указываем сервис для ACME проверки
                 port:
                   number: 80
