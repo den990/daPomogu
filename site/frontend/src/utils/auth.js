@@ -1,4 +1,4 @@
-const BASE_URL = "https://user-service.dapomogu.tw1.su/";
+const BASE_URL = "https://user-service.dapomogu.tw1.su";
 
 function checkResponse(res) {
     if (res.ok) {
