@@ -15,7 +15,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: cm-acme-http-solver-xxxxx
+                name: cm-acme-http-solver-lzppm
                 port:
                   number: 80
           - path: /
