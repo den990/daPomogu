@@ -66,6 +66,8 @@ func startHTTPServer() {
 	r.POST("/login", h.Login)
 	r.GET("/profile-organization/:id", h.GetOrganizationProfileInfo)
 	r.GET("/organizations-accepted-list/:page", h.GetOrganizationAcceptedList)
+	r.GET("/user/avatar", h.GetAvatar)
+	r.GET("/user/avatar/:id", h.GetAvatar)
 
 	protected := r.Group("/api")
 	protected.Use(middleware.AuthMiddleware())
@@ -91,8 +93,6 @@ func startHTTPServer() {
 		protected.GET("/organization/requests-to-apply", h.GetRequestsToApply)
 		protected.GET("/organization/users", h.GetUsersInOrganization)
 		protected.GET("/admin/statistic", h.GetStatisticForAdmin)
-		protected.GET("/user/avatar", h.GetAvatar)
-		protected.GET("/user/avatar/:id", h.GetAvatar)
 	}
 
 	log.Println("HTTP Server running on port 8080...")
