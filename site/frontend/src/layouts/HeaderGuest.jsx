@@ -18,7 +18,6 @@ function HeaderGuest() {
                         </Link>
                     </div>
 
-                    {/* Навигация (только для десктопа) */}
                     <nav className="hidden md:flex flex-1 justify-center gap-4 mx-4">
                         <Link
                             to={ROUTES.TASKS_CATALOG}
@@ -37,7 +36,6 @@ function HeaderGuest() {
                         </Link>
                     </nav>
 
-                    {/* Кнопки авторизации */}
                     <div className="flex items-center gap-1 sm:gap-3 min-w-max">
                         <Link
                             to={ROUTES.LOGIN}

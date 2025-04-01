@@ -19,6 +19,7 @@ export const AuthProvider = ({ children }) => {
     const [profile, setProfile] = useState(null);
     const [role, setRole] = useState(null);
     const [id, setId] = useState(null);
+    const [imageUrl, setImageUrl] = useState(null);
 
     const login = (newToken) => {
         setToken(newToken);
@@ -63,34 +64,41 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
-        if (token && role) {
-            if (role === "organization") {
-                userServiceApi
-                    .getMyOrganizationProfile(token)
-                    .then((data) => setProfile(data))
-                    .catch((error) => {
-                        console.error("Ошибка при получении профиля организации:", error);
-                    });
-            } else if (role === "volunteer") {
-                userServiceApi
-                    .getMyVolonteerProfile(token)
-                    .then((data) => setProfile(data))
-                    .catch((error) => {
-                        console.error("Ошибка при получении профиля волонтёра:", error);
-                    });
-            } else if (role === "admin") {
-                userServiceApi
-                    .getMyVolonteerProfile(token)
-                    .then((data) => setProfile(data))
-                    .catch((error) => {
-                        console.error("Ошибка при получении профиля админа:", error);
-                    });
-            }
+        if (!(token && role)) return;
+        userServiceApi.getMyAvatar(token)
+            .then((blob) => {
+                const url = URL.createObjectURL(blob);
+                setImageUrl(url);
+            })
+            .catch(() => {
+                console.log({ message: "Ошибка при загрузке фото пользователя", severity: "error" });
+            });
+        if (role === "organization") {
+            userServiceApi
+                .getMyOrganizationProfile(token)
+                .then((data) => setProfile(data))
+                .catch((error) => {
+                    console.error("Ошибка при получении профиля организации:", error);
+                });
+        } else if (role === "volunteer") {
+            userServiceApi
+                .getMyVolonteerProfile(token)
+                .then((data) => setProfile(data))
+                .catch((error) => {
+                    console.error("Ошибка при получении профиля волонтёра:", error);
+                });
+        } else if (role === "admin") {
+            userServiceApi
+                .getMyVolonteerProfile(token)
+                .then((data) => setProfile(data))
+                .catch((error) => {
+                    console.error("Ошибка при получении профиля админа:", error);
+                });
         }
     }, [token, role]);
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, token, profile, role, login, logout, updateProfile, loading, id }}>
+        <AuthContext.Provider value={{ isAuthenticated, token, profile, role, login, logout, updateProfile, loading, id, imageUrl }}>
             {children}
         </AuthContext.Provider>
     );

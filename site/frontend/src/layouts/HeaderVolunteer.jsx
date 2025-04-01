@@ -8,7 +8,7 @@ import arrowDownGreyIcon from "../images/arrow-down_grey.svg";
 function HeaderVolunteer() {
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef(null);
-    const { logout, profile, loading } = useContext(AuthContext);
+    const { logout, profile, loading, imageUrl } = useContext(AuthContext);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -25,7 +25,6 @@ function HeaderVolunteer() {
     return (
         <header className="bg-white shadow-sm py-3 px-4">
             <div className="container mx-auto flex items-center justify-between">
-                {/* Логотип - одинаковый на всех разрешениях */}
                 <div className="flex items-center space-x-2">
                     <img className="w-6 h-6" src={heartRedIcon} alt="icon" />
                     <Link to={ROUTES.HOME} className="text-lg font-bold text-red-600 whitespace-nowrap">
@@ -33,7 +32,6 @@ function HeaderVolunteer() {
                     </Link>
                 </div>
 
-                {/* Навигация - скрыта на мобильных */}
                 <nav className="hidden md:flex space-x-4 lg:space-x-6">
                     <Link to={ROUTES.TASKS_CATALOG} className="text-gray-600 hover:text-red-600 whitespace-nowrap">
                         Задания
@@ -54,11 +52,19 @@ function HeaderVolunteer() {
                             onClick={() => setIsOpen(!isOpen)}
                             className="flex items-center hover:bg-gray-50 rounded-md p-1"
                         >
-                            <img
-                                src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg"
-                                className="w-8 h-8 rounded-full"
-                                alt="Profile"
-                            />
+                            {imageUrl ? (
+                                    <img
+                                        src={imageUrl}
+                                        className="w-8 h-8 rounded-full"
+                                        alt="volunteer"
+                                    />
+                                ) : (
+                                    <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
+                                        <span className="text-gray-500 text-xs">
+                                            {profile?.name?.charAt(0) || 'A'}
+                                        </span>
+                                    </div>
+                                )}
                             <span className="hidden md:inline pl-2 pr-1 whitespace-nowrap">
                                 {loading ? "Загрузка..." : profile ? profile.name : "Неизвестно"}
                             </span>

@@ -3,18 +3,26 @@ import ROUTES from "../../constants/routes";
 import { Link } from "react-router";
 import { AuthContext } from "../../context/AuthProvider";
 
-function Profile({ profile }) {
+function Profile({ profile, imageUrl }) {
     const { role } = useContext(AuthContext);
 
     return (
         <div id="profile-section" className="md:col-span-1">
             <div className="bg-white rounded-lg shadow p-6">
                 <div className="flex flex-col items-center">
-                    <img
-                        src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg"
-                        className="w-32 h-32 rounded-full"
-                        alt="Profile"
-                    />
+                    {imageUrl ? (
+                        <img
+                            src={imageUrl}
+                            className="w-32 h-32 rounded-full"
+                            alt="humanitarian organization logo with volunteers in red and white colors"
+                        />
+                    ) : (
+                        <div className="w-32 h-32 rounded-full bg-gray-300 flex items-center justify-center">
+                            <span className="text-gray-500 text-xs">
+                                {profile?.name?.charAt(0) || 'A'}
+                            </span>
+                        </div>
+                    )}
                     <h2 className="mt-4 text-xl font-semibold">
                         {profile ? `${profile.name} ${profile.surname}` : "Нет данных"}
                     </h2>

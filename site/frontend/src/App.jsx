@@ -58,7 +58,8 @@ function App() {
 
                             {/* Только для авторизованных */}
                             <Route element={<ProtectedRoute allowedRoles={["volunteer", "organization", "admin"]} />}>
-                                
+                                <Route path={ROUTES.TASK} element={<Task />} />
+                                <Route path={ROUTES.CONFIRMATIONS_RESPONSES} element={<ConfirmationsResponses />} />
                             </Route>
 
                             {/* Только для волонтёров */}
@@ -67,7 +68,6 @@ function App() {
                                 <Route path={ROUTES.EDIT_PASSWORD} element={<EditPassword />} />
                                 <Route path={ROUTES.MY_TASKS} element={<Tasks />} />
                                 <Route path={ROUTES.ACCOUNT_VOLUNTEER} element={<AccountVolunteer />} />
-                                <Route path={ROUTES.TASK} element={<Task />} />
                                 <Route path={ROUTES.CHAT} element={<Chat />} />
                                 <Route path={ROUTES.PHOTO_REPORT} element={<PhotoReport />} />
                                 <Route path={ROUTES.EDIT_VOLUNTEER_PROFILE} element={<EditVolunteerProfile />} />
@@ -81,7 +81,6 @@ function App() {
                                 <Route path={ROUTES.EDIT_ORGANIZATION_PROFILE} element={<EditOrganizationProfile />} />
                                 <Route path={ROUTES.CONFIRMATIONS_TASKS} element={<ConfirmationsTasks />} />
                                 <Route path={ROUTES.ORGANIZATION_TASKS} element={<OrganizationTasks />} />
-                                <Route path={ROUTES.CONFIRMATIONS_RESPONSES} element={<ConfirmationsResponses />} />
                             </Route>
 
                             {/* Только для админов */}
