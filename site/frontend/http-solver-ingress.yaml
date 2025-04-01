@@ -7,13 +7,13 @@ metadata:
     cert-manager.io/acme-challenge-type: http01
 spec:
   rules:
-  - host: "dapomogu.tw1.su"
-    http:
-      paths:
-      - path: "/.well-known/acme-challenge/*"
-        pathType: Prefix
-        backend:
-          service:
-            name: cm-acme-http-solver
-            port:
-              number: 8089
+    - host: "dapomogu.tw1.su"
+      http:
+        paths:
+          - path: "/.well-known/acme-challenge/*"
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: cm-acme-http-solver
+                port:
+                  number: 8089
