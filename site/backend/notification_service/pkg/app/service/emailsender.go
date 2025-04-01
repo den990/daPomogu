@@ -21,8 +21,8 @@ func NewEmailSender() *EmailSender {
 
 // xsmtpsib-46a985a24c017ea0f3ae60f4ede6a4733eb4eab3818a79c9dd4373f1fe168c73-0fSTzsWG1KVpXtRq
 func (e *EmailSender) SendEmail(ctx context.Context, data string, user usermodel.UserModel) error {
-	from := "skammoshenik@gmail.com"
-	key := "kbxdvwynsbnaptqp"
+	from := "koldyrev03@gmail.com"
+	key := "lpkhhnmyyywnakbl"
 
 	//key := "xsmtpsib-46a985a24c017ea0f3ae60f4ede6a4733eb4eab3818a79c9dd4373f1fe168c73-sD3hyrZSL6OX9MAn"
 	//from := "88e54e002@smtp-brevo.com"
