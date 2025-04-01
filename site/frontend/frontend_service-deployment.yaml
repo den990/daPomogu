@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: den990/dapomogu_frontend:1.0.33
+        image: den990/dapomogu_frontend:1.0.34
         ports:
         - containerPort: 80
 

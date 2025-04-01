@@ -1,6 +1,6 @@
 const apiSettings = {
-    baseUrl: "http://92.255.76.203:30080/api",
-    baseUrlWithoutApi: "http://92.255.76.203:30080",
+    baseUrl: "https://user-service.dapomogu.tw1.su//api",
+    baseUrlWithoutApi: "https://user-service.dapomogu.tw1.su/",
 };
 
 class UserServiceApi {

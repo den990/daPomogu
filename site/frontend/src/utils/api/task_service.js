@@ -1,5 +1,5 @@
 const apiSettings = {
-    baseUrl: "http://92.255.76.203:30081/api",
+    baseUrl: "https://task-service.dapomogu.tw1.su//api",
 };
 
 class TaskServiceApi {

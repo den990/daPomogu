@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: user-service-ingress
+  namespace: default
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"  # Указание на Issuer для сертификатов
+spec:
+  rules:
+    - host: task-service.dapomogu.tw1.su  # Новый поддомен для вашего API
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: task-service  # Название вашего сервиса
+                port:
+                  number: 80  # Порт на котором доступен сервис (не забудьте, что в вашем сервисе он настроен на 80)
+  tls:
+    - hosts:
+        - task-service.dapomogu.tw1.su  # Указываем тот же поддомен для TLS
+      secretName: dapomogu-task-service-tls  # Название секрета для сертификата
