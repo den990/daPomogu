@@ -8,6 +8,8 @@ service TaskService {
   rpc GetCountTasksCompletedByUserId(TaskUserRequest) returns (TasksCompleteCountResponse) {}
   rpc GetCountTasksCompleted(Empty) returns (TasksCompleteCountResponse) {}
   rpc GetCountActiveTasks(Empty) returns (TasksCountResponse) {}
+  rpc UploadImage(ImageChunk) returns (UploadStatus) {}
+  rpc GetAvatarImage(DownloadImageRequest) returns (DownloadImageResponse) {}
 }
 
 message TaskViewInProfileOrganization {
@@ -38,3 +40,22 @@ message TasksCountResponse {
 }
 
 message Empty {}
+
+message ImageChunk {
+  bytes chunk = 1;
+  uint64 user_id = 2;
+}
+
+message UploadStatus {
+  bool success = 1;
+  uint64 file_id = 2;
+  string message = 3;
+}
+
+message DownloadImageRequest {
+  uint64 user_id = 1;
+}
+
+message DownloadImageResponse {
+  bytes image_data = 1;
+}

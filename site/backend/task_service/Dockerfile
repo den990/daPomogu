@@ -26,6 +26,7 @@ COPY --from=builder /app/migrate .
 COPY task_service/.env /app/.env
 COPY task_service/config.yaml /app/config.yaml
 COPY task_service/migrations /app/migrations
+COPY task_service/no-avatar.jpg /app/uploads/user/no-avatar.jpg
 
 # Разрешаем выполнение файлов
 RUN chmod +x ./main ./migrate

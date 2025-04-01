@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgconn"
 	"log"
+	"mime/multipart"
 	"strconv"
 	"time"
 )
@@ -25,6 +26,7 @@ type User struct {
 	IsBlocked      bool   `gorm:"default:false"`
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
+	AvatarID       uint `gorm:"index;null" json:"avatar_id"`
 }
 
 func (User) TableName() string {
@@ -43,13 +45,15 @@ type UserRegistration struct {
 }
 
 type UserUpdate struct {
-	Email          string `json:"email" binding:"required,email"`
-	Phone          string `json:"phone" binding:"required"`
-	Name           string `json:"name"  binding:"required"`
-	Surname        string `json:"surname"`
-	Patronymic     string `json:"patronymic"`
-	DateOfBirthday string `json:"date_of_birthday"`
-	Address        string `json:"registration_address"`
+	Email          string                `json:"email" binding:"required,email"`
+	Phone          string                `json:"phone" binding:"required"`
+	Name           string                `json:"name"  binding:"required"`
+	Surname        string                `json:"surname"`
+	Patronymic     string                `json:"patronymic"`
+	DateOfBirthday string                `json:"date_of_birthday"`
+	Address        string                `json:"registration_address"`
+	Avatar         *multipart.FileHeader `json:"avatar"`
+	AvatarId       uint                  `json:"avatar_id"`
 }
 
 type UserPasswordUpdate struct {
@@ -146,6 +150,9 @@ func UpdateUser(id string, userForm UserUpdate) error {
 	user.DateOfBirthday = birthday
 	user.Address = userForm.Address
 	user.UpdatedAt = time.Now()
+	if &userForm.AvatarId != nil {
+		user.AvatarID = userForm.AvatarId
+	}
 
 	if err := db.DB.Save(&user).Error; err != nil {
 		return errors.New("Failed to update organization")

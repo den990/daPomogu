@@ -6,6 +6,7 @@ import (
 	"backend/user_service/internal/utils"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
+	"io/ioutil"
 	"math"
 	"net/http"
 	"sort"
@@ -89,7 +90,7 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 
 	userIDParam := c.Param("id")
 	if userIDParam != "" {
-		_, err := strconv.ParseUint(userIDParam, 10, 32)
+		userIdParamUint, err := strconv.ParseUint(userIDParam, 10, 32)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid user ID"})
 			return
@@ -99,6 +100,27 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 			c.JSON(http.StatusForbidden, gin.H{"message": "Access denied"})
 			return
 		}
+		if userData.Avatar != nil {
+			file, err := userData.Avatar.Open()
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"message": "Unable to open avatar file"})
+				return
+			}
+			defer file.Close()
+
+			fileBytes, err := ioutil.ReadAll(file)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"message": "Unable to read avatar file"})
+				return
+			}
+
+			uploadStatus, error := h.grpcClient.UploadImage(c.Request.Context(), &pb.ImageChunk{UserId: userIdParamUint, Chunk: fileBytes})
+			if error != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to upload image", "error": err.Error()})
+				return
+			}
+			userData.AvatarId = uint(uploadStatus.FileId)
+		}
 
 		if err := models.UpdateUser(userIDParam, userData); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
@@ -106,6 +128,28 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 		}
 		c.JSON(http.StatusOK, gin.H{"message": "User updated successfully"})
 	} else {
+		if userData.Avatar != nil {
+			file, err := userData.Avatar.Open()
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"message": "Unable to open avatar file"})
+				return
+			}
+			defer file.Close()
+
+			fileBytes, err := ioutil.ReadAll(file)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"message": "Unable to read avatar file"})
+				return
+			}
+
+			uploadStatus, error := h.grpcClient.UploadImage(c.Request.Context(), &pb.ImageChunk{UserId: uint64(userID), Chunk: fileBytes})
+			if error != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to upload image", "error": err.Error()})
+				return
+			}
+			userData.AvatarId = uint(uploadStatus.FileId)
+		}
+
 		if err := models.UpdateUser(strconv.Itoa(int(userID)), userData); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 			return
@@ -340,4 +384,42 @@ func (h *Handler) GetRequestsToApply(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": result})
+}
+
+func (h *Handler) GetAvatar(c *gin.Context) {
+	userIDParam := c.Param("id")
+	userID, err := utils.GetUserIDFromToken(c)
+	if userIDParam == "" && err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
+		return
+	}
+
+	var avatarData []byte
+	if userIDParam == "" {
+		avatarResponse, err := h.grpcClient.GetAvatarImage(c.Request.Context(), &pb.DownloadImageRequest{UserId: uint64(userID)})
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to retrieve avatar", "error": err.Error()})
+			return
+		}
+		avatarData = avatarResponse.ImageData
+	} else {
+		parsedID, err := strconv.ParseUint(userIDParam, 10, 32)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid user ID"})
+			return
+		}
+		avatarResponse, err := h.grpcClient.GetAvatarImage(c.Request.Context(), &pb.DownloadImageRequest{UserId: parsedID})
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to retrieve avatar", "error": err.Error()})
+			return
+		}
+		avatarData = avatarResponse.ImageData
+	}
+
+	if avatarData == nil || len(avatarData) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"message": "Avatar not found"})
+		return
+	}
+
+	c.Data(http.StatusOK, "image/jpeg", avatarData)
 }
