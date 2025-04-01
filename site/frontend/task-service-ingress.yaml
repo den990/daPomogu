@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: user-service-ingress
+  name: task-service-ingress
   namespace: default
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"  # Указание на Issuer для сертификатов
