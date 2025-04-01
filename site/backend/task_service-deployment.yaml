@@ -16,8 +16,12 @@ spec:
         - name: task-service
           image: den990/task_service:1.0.161
           ports:
-            - containerPort: 8080
-            - containerPort: 50501  # Добавляем gRPC-порт
+            - name: http
+              containerPort: 8080  # HTTP API
+            - name: https
+              containerPort: 443
+            - name: grpc
+              containerPort: 50501 # gRPC API
           env:
             - name: DATABASE_URL
               value: "postgresql://postgres:dapomogu_password@postgres-service:5432/dapomogu_task_db"
@@ -39,6 +43,10 @@ spec:
       port: 80
       targetPort: 8080
       nodePort: 30081
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: 443
     - name: grpc
       protocol: TCP
       port: 50501
