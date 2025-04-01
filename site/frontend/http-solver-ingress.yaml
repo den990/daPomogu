@@ -16,4 +16,4 @@ spec:
               service:
                 name: cm-acme-http-solver
                 port:
-                  number: 8089
+                  number: 80
