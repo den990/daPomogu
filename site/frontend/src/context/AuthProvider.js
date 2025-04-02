@@ -41,6 +41,7 @@ export const AuthProvider = ({ children }) => {
         setRole(null);
         setId(null);
         localStorage.removeItem("token");
+        return Promise.resolve();
     };
 
     const updateProfile = (newProfile) => {
