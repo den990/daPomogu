@@ -62,6 +62,11 @@ function App() {
                                 <Route path={ROUTES.CONFIRMATIONS_RESPONSES} element={<ConfirmationsResponses />} />
                             </Route>
 
+                            {/* Только для организаций и админов */}
+                            <Route element={<ProtectedRoute allowedRoles={["organization", "admin"]} />}>
+                                <Route path={ROUTES.CONFIRMATIONS_TASKS} element={<ConfirmationsTasks />} />
+                            </Route>
+
                             {/* Только для волонтёров */}
                             <Route element={<ProtectedRoute allowedRoles={["volunteer"]} redirectPath="/" />}>
                                 <Route path={ROUTES.PUBLIC_ACCOUNT_VOLUNTEER} element={<PublicAccountVolonteer />} />
@@ -79,7 +84,6 @@ function App() {
                                 <Route path={ROUTES.CREATE_TASK} element={<CreateTask />} />
                                 <Route path={ROUTES.ATTACHMENTS_ORGANIZATION} element={<AttachmentsToOrganization />} />
                                 <Route path={ROUTES.EDIT_ORGANIZATION_PROFILE} element={<EditOrganizationProfile />} />
-                                <Route path={ROUTES.CONFIRMATIONS_TASKS} element={<ConfirmationsTasks />} />
                                 <Route path={ROUTES.ORGANIZATION_TASKS} element={<OrganizationTasks />} />
                             </Route>
 

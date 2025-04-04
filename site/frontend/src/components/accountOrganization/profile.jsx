@@ -4,16 +4,24 @@ import { useContext } from "react";
 import ROUTES from "../../constants/routes";
 
 function Profile() {
-    const { profile, loading } = useContext(AuthContext);
+    const { profile, loading, imageUrl } = useContext(AuthContext);
 
     return (
         <section className="bg-white rounded-lg shadow-sm p-4 md:p-6 mb-6 md:mb-8">
             <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-6">
-                <img
-                    className="w-full md:w-48  h-48 rounded-lg object-cover self-center"
-                    src="https://storage.googleapis.com/uxpilot-auth.appspot.com/cb61e8f45a-5ee863536d744c529bb2.png"
-                    alt="Логотип организации"
-                />
+                {imageUrl ? (
+                        <img
+                            src={imageUrl}
+                            className="w-full md:w-48  h-48 rounded-lg object-cover self-center"
+                            alt="volunteer"
+                        />
+                    ) : (
+                        <div className="w-full md:w-48  h-48 rounded-lg object-cover self-center bg-gray-300 flex items-center justify-center">
+                            <span className="text-gray-500 text-xs">
+                                {profile?.name?.charAt(0) || 'A'}
+                            </span>
+                        </div>
+                    )}
                 <div className="flex-1 space-y-4">
                     <h2 className="text-xl md:text-2xl font-bold text-gray-900">
                         {loading ? "Загрузка..." : profile ? profile.name : "Нет данных"}

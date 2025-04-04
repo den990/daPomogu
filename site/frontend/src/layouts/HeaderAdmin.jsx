@@ -2,11 +2,13 @@ import { Link } from "react-router";
 import ROUTES from "../constants/routes";
 import { useState, useRef, useEffect, useContext } from "react";
 import { AuthContext } from "../context/AuthProvider";
+import { useNavigate } from "react-router";
 
 function HeaderAdmin() {
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef(null);
     const { logout, profile, loading, imageUrl } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -19,6 +21,11 @@ function HeaderAdmin() {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
+
+    const handleLogout = async () => {
+        await logout();
+        navigate(ROUTES.HOME);
+    };
 
     return (
         <header id="header-admin" className="bg-white shadow-sm py-3">
@@ -62,13 +69,12 @@ function HeaderAdmin() {
                                         <Link to={ROUTES.ADMIN_PANEL} className="block w-full px-4 py-2 text-left hover:bg-gray-50">
                                             Мой аккаунт
                                         </Link>
-                                        <Link
-                                            to={ROUTES.HOME}
-                                            onClick={logout}
+                                        <button
+                                            onClick={handleLogout}
                                             className="block w-full px-4 py-2 text-left hover:bg-gray-50"
                                         >
                                             Выйти
-                                        </Link>
+                                        </button>
                                     </div>
                                 )}
                             </div>

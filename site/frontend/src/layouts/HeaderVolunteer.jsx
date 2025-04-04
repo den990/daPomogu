@@ -4,11 +4,13 @@ import { useState, useRef, useEffect, useContext } from "react";
 import { AuthContext } from "../context/AuthProvider";
 import heartRedIcon from "../images/heart_red.svg";
 import arrowDownGreyIcon from "../images/arrow-down_grey.svg";
+import { useNavigate } from "react-router";
 
 function HeaderVolunteer() {
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef(null);
     const { logout, profile, loading, imageUrl } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -21,6 +23,11 @@ function HeaderVolunteer() {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
+
+    const handleLogout = async () => {
+        await logout();
+        navigate(ROUTES.HOME);
+    };
 
     return (
         <header className="bg-white shadow-sm py-3 px-4">
@@ -84,7 +91,8 @@ function HeaderVolunteer() {
                                     Мой аккаунт
                                 </Link>
                                 <button
-                                    onClick={logout}
+                                    to={ROUTES.HOME}
+                                    onClick={handleLogout}
                                     className="block w-full text-left px-4 py-2 hover:bg-gray-50 whitespace-nowrap"
                                 >
                                     Выйти
