@@ -3,9 +3,11 @@ const BASE_URL = "https://user-service.dapomogu.tw1.su";
 function checkResponse(res) {
     if (res.ok) {
         return res.json();
-    } else {
-        return Promise.reject(`Ошибка: ${res.status}/${res.statusText}`);
     }
+
+    return res.json().then(err => {
+        throw new Error(err.message || 'Что-то пошло не так');
+    });
 }
 
 // Email          string `json:"email" binding:"required,email"`

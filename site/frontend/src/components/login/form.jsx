@@ -24,7 +24,14 @@ function LoginForm() {
                     navigate(ROUTES.HOME);
                 }
             })
-            .catch((err) => setError("Неверный логин или пароль"));
+            .catch((err) =>{ 
+                // Если сервер возвращает { message: "Текст ошибки" }, используем его
+            const errorMessage = err.message || "Неверный email или пароль";
+            setError(errorMessage);
+            
+            // Для отладки можно вывести ошибку в консоль
+            console.error("Ошибка авторизации:", err);
+            });
     };
 
     return (
@@ -63,23 +70,6 @@ function LoginForm() {
                                 className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
                             />
                             {errors.password && <span className="text-red-600 text-xs">{errors.password}</span>}
-                        </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                            <input
-                                name="remember-me"
-                                type="checkbox"
-                                className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
-                            />
-                            <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                                Запомнить меня
-                            </label>
-                        </div>
-                        <div className="text-sm">
-                            <a href="/#" className="font-medium text-red-600 hover:text-red-500">
-                                Забыли пароль?
-                            </a>
                         </div>
                     </div>
                     {error && <p className="mt-4 text-center text-sm text-red-600">{error}</p>}
