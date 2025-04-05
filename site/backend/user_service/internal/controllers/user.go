@@ -386,7 +386,7 @@ func (h *Handler) GetRequestsToApply(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": result})
 }
 
-func (h *Handler) GetAvatar(c *gin.Context) {
+func (h *Handler) GetUserAvatar(c *gin.Context) {
 	userIDParam := c.Param("id")
 	userID, err := utils.GetUserIDFromToken(c)
 	if userIDParam == "" && err != nil {

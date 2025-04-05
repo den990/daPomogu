@@ -217,3 +217,16 @@ func CountVolunteers(orgId string) (int64, error) {
 
 	return count, nil
 }
+
+func UserIsAttachedToOrganization(userId, orgId string) bool {
+	var count int64
+	err := db.DB.Model(&UserOrganization{}).
+		Where("user_id = ? AND organization_id = ? AND is_accepted = ?", userId, orgId, true).
+		Count(&count).Error
+
+	if err != nil {
+		return false
+	}
+
+	return count > 0
+}

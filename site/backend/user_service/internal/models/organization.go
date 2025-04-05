@@ -3,6 +3,7 @@ package models
 import (
 	"backend/user_service/internal/db"
 	"errors"
+	"mime/multipart"
 	"time"
 )
 
@@ -19,6 +20,7 @@ type Organization struct {
 	IsBlocked     bool   `gorm:"default:false"`
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
+	AvatarID      uint `gorm:"index;null;default:null" json:"avatar_id"`
 }
 
 func (Organization) TableName() string {
@@ -33,6 +35,18 @@ type OrganizationRegistration struct {
 	LegalAddress  string `json:"legal_address" binding:"required"`
 	ActualAddress string `json:"actual_address" binding:"required"`
 	FullNameOwner string `json:"full_name_owner" binding:"required"`
+}
+
+type OrganizationUpdate struct {
+	Email         string                `form:"email" binding:"required,email"`
+	Phone         string                `form:"phone" binding:"required"`
+	INN           string                `form:"inn" binding:"required"`
+	Name          string                `form:"name" binding:"required"`
+	LegalAddress  string                `form:"legal_address" binding:"required"`
+	ActualAddress string                `form:"actual_address" binding:"required"`
+	FullNameOwner string                `form:"full_name_owner" binding:"required"`
+	Avatar        *multipart.FileHeader `form:"avatar"`
+	AvatarId      uint                  `form:"avatar_id"`
 }
 
 type TasksInProfileResponse struct {
@@ -55,6 +69,7 @@ type OrganizationProfileResponse struct {
 	CountFinishedTasks     int                      `json:"count_finished_tasks"`
 	CountVolunteers        int                      `json:"count_volunteers"`
 	CountDays              int                      `json:"count_days"`
+	IsAttached             bool                     `json:"is_attached"`
 }
 
 type GetProfilesOrganizationResponse struct {
@@ -92,21 +107,24 @@ func FindOrganizationById(id string) (*Organization, error) {
 	return &organization, nil
 }
 
-func UpdateOrganization(id string, registration OrganizationRegistration) error {
+func UpdateOrganization(id string, orgUpdate OrganizationUpdate) error {
 	var organization Organization
 
 	if err := db.DB.First(&organization, id).Error; err != nil {
 		return errors.New("Organization not found")
 	}
 
-	organization.Email = registration.Email
-	organization.Phone = registration.Phone
-	organization.INN = registration.INN
-	organization.Name = registration.Name
-	organization.LegalAddress = registration.LegalAddress
-	organization.ActualAddress = registration.ActualAddress
-	organization.FullNameOwner = registration.FullNameOwner
+	organization.Email = orgUpdate.Email
+	organization.Phone = orgUpdate.Phone
+	organization.INN = orgUpdate.INN
+	organization.Name = orgUpdate.Name
+	organization.LegalAddress = orgUpdate.LegalAddress
+	organization.ActualAddress = orgUpdate.ActualAddress
+	organization.FullNameOwner = orgUpdate.FullNameOwner
 	organization.UpdatedAt = time.Now()
+	if &orgUpdate.AvatarId != nil {
+		organization.AvatarID = orgUpdate.AvatarId
+	}
 
 	if err := db.DB.Save(&organization).Error; err != nil {
 		return errors.New("Failed to update organization")

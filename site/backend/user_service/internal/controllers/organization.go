@@ -7,6 +7,7 @@ import (
 	"backend/user_service/internal/utils"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
+	"io/ioutil"
 	"log"
 	"math"
 	"net/http"
@@ -132,6 +133,14 @@ func (h *Handler) GetOrganizationProfileInfo(c *gin.Context) {
 			CountCoordinator: task.CountCoordinator,
 		})
 	}
+	var isAttached bool
+	userID, err := utils.GetUserIDFromToken(c)
+	if err != nil {
+		isAttached = false
+	} else {
+		isAttached = models.UserIsAttachedToOrganization(strconv.Itoa(int(userID)), strconv.Itoa(int(organizationId)))
+	}
+
 	countFinishedTasks, _ := h.grpcClient.GetCountTasksCompleted(c.Request.Context(), &task.Empty{})
 	countVolunteers, _ := models.CountVolunteers(strconv.Itoa(int(organizationId)))
 	countDays, _ := models.GetCountDaysByOrgID(organizationId)
@@ -155,6 +164,7 @@ func (h *Handler) GetOrganizationProfileInfo(c *gin.Context) {
 				CountFinishedTasks:     int(countFinishedTasks.Count),
 				CountVolunteers:        int(countVolunteers),
 				CountDays:              countDays,
+				IsAttached:             isAttached,
 			}
 			c.JSON(http.StatusOK, response)
 		}
@@ -174,6 +184,7 @@ func (h *Handler) GetOrganizationProfileInfo(c *gin.Context) {
 				FullNameOwner:          organization.FullNameOwner,
 				TasksInProfileResponse: tasksProfile,
 				CountFinishedTasks:     int(countFinishedTasks.Count),
+				IsAttached:             isAttached,
 			}
 			c.JSON(http.StatusOK, response)
 		}
@@ -187,7 +198,7 @@ func (h *Handler) UpdateOrganization(c *gin.Context) {
 		return
 	}
 
-	var orgData models.OrganizationRegistration
+	var orgData models.OrganizationUpdate
 	if err := c.ShouldBindJSON(&orgData); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid input", "error": err.Error()})
 		return
@@ -201,7 +212,7 @@ func (h *Handler) UpdateOrganization(c *gin.Context) {
 
 	orgIDParam := c.Param("id")
 	if orgIDParam != "" {
-		_, err := strconv.ParseUint(orgIDParam, 10, 32)
+		orgIDParamUint, err := strconv.ParseUint(orgIDParam, 10, 32)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid organization ID"})
 			return
@@ -210,6 +221,28 @@ func (h *Handler) UpdateOrganization(c *gin.Context) {
 		if !isAdmin {
 			c.JSON(http.StatusForbidden, gin.H{"message": "Access denied"})
 			return
+		}
+
+		if orgData.Avatar != nil {
+			file, err := orgData.Avatar.Open()
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"message": "Unable to open avatar file"})
+				return
+			}
+			defer file.Close()
+
+			fileBytes, err := ioutil.ReadAll(file)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"message": "Unable to read avatar file"})
+				return
+			}
+
+			uploadStatus, err2 := h.grpcClient.UploadImage(c.Request.Context(), &task.ImageChunk{OrganizationId: orgIDParamUint, Chunk: fileBytes})
+			if err2 != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to upload image", "error": err.Error()})
+				return
+			}
+			orgData.AvatarId = uint(uploadStatus.FileId)
 		}
 
 		if err := models.UpdateOrganization(orgIDParam, orgData); err != nil {
@@ -227,6 +260,28 @@ func (h *Handler) UpdateOrganization(c *gin.Context) {
 		if org == nil {
 			c.JSON(http.StatusForbidden, gin.H{"message": "No organization found"})
 			return
+		}
+
+		if orgData.Avatar != nil {
+			file, err := orgData.Avatar.Open()
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"message": "Unable to open avatar file"})
+				return
+			}
+			defer file.Close()
+
+			fileBytes, err := ioutil.ReadAll(file)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"message": "Unable to read avatar file"})
+				return
+			}
+
+			uploadStatus, err2 := h.grpcClient.UploadImage(c.Request.Context(), &task.ImageChunk{OrganizationId: uint64(org.ID), Chunk: fileBytes})
+			if err2 != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to upload image", "error": err.Error()})
+				return
+			}
+			orgData.AvatarId = uint(uploadStatus.FileId)
 		}
 
 		if err := models.UpdateOrganization(strconv.Itoa(int(org.ID)), orgData); err != nil {
@@ -330,4 +385,42 @@ func (h *Handler) GetAllOrganizationList(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response)
+}
+
+func (h *Handler) GetOrganizationAvatar(c *gin.Context) {
+	orgIdParam := c.Param("id")
+	var orgIdParamUint uint64
+	if orgIdParam == "" {
+		userID, err := utils.GetUserIDFromToken(c)
+		if err != nil {
+			org, err := models.FindOrganizationByUserIdOwner(strconv.Itoa(int(userID)))
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"message": "Your not owner organization"})
+				return
+			}
+			orgIdParamUint = uint64(org.ID)
+		}
+	} else {
+		var err error
+		orgIdParamUint, err = strconv.ParseUint(orgIdParam, 10, 32)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid user ID"})
+			return
+		}
+	}
+
+	var avatarData []byte
+	avatarResponse, err := h.grpcClient.GetAvatarImage(c.Request.Context(), &task.DownloadImageRequest{OrganizationId: orgIdParamUint})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to retrieve avatar", "error": err.Error()})
+		return
+	}
+	avatarData = avatarResponse.ImageData
+
+	if avatarData == nil || len(avatarData) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"message": "Avatar not found"})
+		return
+	}
+
+	c.Data(http.StatusOK, "image/jpeg", avatarData)
 }
