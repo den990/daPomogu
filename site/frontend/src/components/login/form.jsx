@@ -6,7 +6,7 @@ import useFormWithValidation from "../../hooks/useFormWithValidation";
 import { AuthContext } from "../../context/AuthProvider";
 
 function LoginForm() {
-    const { values, errors, isValid, handleChange } = useFormWithValidation();
+    const { values, errors, isValid, handleChange } = useFormWithValidation("login");
     const { login } = useContext(AuthContext);
     const [error, setError] = useState(null);
     const navigate = useNavigate();

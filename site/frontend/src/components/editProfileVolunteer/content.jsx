@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router";
 import ROUTES from "../../constants/routes";
 import { userServiceApi } from "../../utils/api/user_service";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react"; // Добавили useRef
 import useFormWithValidation from "../../hooks/useFormWithValidation";
 import { AuthContext } from "../../context/AuthProvider";
 
@@ -10,6 +10,9 @@ function Content() {
     const { token, updateProfile } = useContext(AuthContext);
     const [profileData, setProfileData] = useState(null);
     const [error, setError] = useState("");
+    const [avatarFile, setAvatarFile] = useState(null); // Состояние для файла аватара
+    const [avatarPreview, setAvatarPreview] = useState(null); // Для предпросмотра
+    const fileInputRef = useRef(null); // Реф для input type="file"
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -23,6 +26,10 @@ function Content() {
                     };
                     setProfileData(transformedData);
                     resetForm(transformedData, {}, true);
+                    // Устанавливаем превью аватара если он есть
+                    if (data.avatar_url) {
+                        setAvatarPreview(data.avatar_url);
+                    }
                 })
                 .catch((error) => {
                     console.error("Ошибка при загрузке профиля:", error);
@@ -30,27 +37,50 @@ function Content() {
         }
     }, [token, resetForm]);
 
+    const handleAvatarChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setAvatarFile(file);
+            // Создаем URL для предпросмотра
+            setAvatarPreview(URL.createObjectURL(file));
+        }
+    };
+
+    const triggerFileInput = () => {
+        fileInputRef.current.click();
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
 
-        const { name, surname, patronymic, date_of_birthday, registration_address, email, phone } = values;
+        const formData = new FormData();
+        
+        // Добавляем текстовые данные
+        formData.append('name', values.name);
+        formData.append('surname', values.surname);
+        formData.append('patronymic', values.patronymic);
+        formData.append('date_of_birthday', values.date_of_birthday);
+        formData.append('registration_address', values.registration_address);
+        formData.append('email', values.email);
+        formData.append('phone', values.phone);
+        
+        // Добавляем файл аватара, если он был выбран
+        if (avatarFile) {
+            formData.append('avatar', avatarFile);
+        }
 
         try {
-            await userServiceApi.putEditVolonteer(
-                token,
-                name,
-                surname,
-                patronymic,
-                date_of_birthday,
-                registration_address,
-                email,
-                phone
-            );
-            updateProfile({ ...values, address: registration_address });
+            const response = await userServiceApi.putEditVolonteer(token, formData);
+            updateProfile({ 
+                ...values, 
+                address: values.registration_address,
+                avatar_url: avatarPreview // Обновляем аватар в контексте
+            });
             navigate(ROUTES.ACCOUNT_VOLUNTEER);
         } catch (error) {
-            console.error("Ошибка при загрузке профиля:", error);
+            console.error("Ошибка при обновлении профиля:", error);
+            setError("Произошла ошибка при обновлении профиля");
         }
     };
 
@@ -66,17 +96,28 @@ function Content() {
                     <div className="mb-8 flex items-center justify-center flex-col">
                         <div className="relative">
                             <img
-                                src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg"
+                                src={avatarPreview || "https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg"}
                                 alt="Profile"
                                 className="w-32 h-32 rounded-full object-cover"
                             />
-                            <button className="absolute bottom-0 right-0 bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition">
+                            <button 
+                                type="button"
+                                onClick={triggerFileInput}
+                                className="absolute bottom-0 right-0 bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition"
+                            >
                                 <img
                                     style={{ width: 16, height: 16 }}
                                     src={require("../../images/camera_white.svg").default}
                                     alt="icon"
                                 />
                             </button>
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleAvatarChange}
+                                accept="image/*"
+                                className="hidden"
+                            />
                         </div>
                     </div>
                     <div className="space-y-6">

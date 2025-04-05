@@ -92,12 +92,18 @@ class UserServiceApi {
         });
     }
 
-    putEditVolonteer(token, name, surname, patronymic, date_of_birthday, registration_address, email, phone) {
-        this._updateToken(token);
+    putEditVolonteer(token, formData) {
+        this._updateToken(token);   
+         
+        const headers = {
+            'Authorization': `Bearer ${token}`
+            // Не устанавливаем Content-Type - браузер сделает это автоматически с правильным boundary
+        };
+        
         return this._request(`${this._baseUrl}/profile`, {
             method: "PUT",
-            headers: this._headers,
-            body: JSON.stringify({ name, surname, patronymic, date_of_birthday, registration_address, email, phone }),
+            headers,
+            body: formData, // FormData передается как есть
         });
     }
 

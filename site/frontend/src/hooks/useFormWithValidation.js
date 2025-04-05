@@ -143,7 +143,7 @@ export default function useFormWithValidation(formType = 'volunteer') {
                 values.password_confirmation && !errors.password_confirmation &&
                 values.terms
             );
-        } else {
+        } else if (type === 'organization') {
             return (
                 values.name && !errors.name &&
                 values.email && !errors.email &&
@@ -152,6 +152,10 @@ export default function useFormWithValidation(formType = 'volunteer') {
                 values.legal_address && !errors.legal_address &&
                 values.actual_address && !errors.actual_address &&
                 values.full_name_owner && !errors.full_name_owner
+            );
+        } else {
+            return (
+                values.email && values.password
             );
         }
     };
