@@ -175,14 +175,6 @@ function ButtonsPanel({ task: initialTask }) {
                                 :
                                     (
                                         <>
-                                            {
-                                                (taskRole === "owner")
-                                                ? 
-                                                    <button className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 mb-4">
-                                                        Редактировать задание
-                                                    </button>
-                                                :   <></>
-                                            }
                                             <Link
                                                 to={ROUTES.CONFIRMATIONS_RESPONSES.replace(":taskId", task.id)}
                                                 className="w-full border border-neutral-300 px-6 py-3 rounded-lg hover:bg-red-50 flex items-center justify-center"

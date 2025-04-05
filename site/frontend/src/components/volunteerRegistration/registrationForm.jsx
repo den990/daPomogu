@@ -5,38 +5,15 @@ import ROUTES from "../../constants/routes";
 import useFormWithValidation from "../../hooks/useFormWithValidation";
 
 function RegistrationForm({ setIsPopUpVisible }) {
-    const { values, errors, isValid, handleChange } = useFormWithValidation();
+    const { values, errors, isValid, handleChange } = useFormWithValidation("volunteer");
     const [error, setError] = useState("");
-
-    const isAdult = (dateString) => {
-        const birthDate = new Date(dateString);
-        const today = new Date();
-        let age = today.getFullYear() - birthDate.getFullYear();
-        const monthDiff = today.getMonth() - birthDate.getMonth();
-        
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
-        }
-        
-        return age >= 18;
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
 
-        if (values.password !== values.password_confirmation) {
-            setError("Пароли не совпадают");
-            return;
-        }
-
         if (!values.terms) {
             setError("Вы должны согласиться с условиями использования и политикой конфиденциальности");
-            return;
-        }
-
-        if (!values.date_of_birthday || !isAdult(values.date_of_birthday)) {
-            setError("Вы должны быть старше 18 лет для регистрации");
             return;
         }
 
@@ -71,19 +48,21 @@ function RegistrationForm({ setIsPopUpVisible }) {
                     <div className="space-y-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700" htmlFor="surname">
-                                Фамилия
+                                Фамилия*
                             </label>
                             <input
                                 type="text"
                                 name="surname"
                                 value={values?.surname || ""}
                                 onChange={handleChange}
+                                required
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500"
                             />
+                            {errors.surname && <span className="text-red-600 text-xs">{errors.surname}</span>}
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700" htmlFor="name">
-                                Имя
+                                Имя*
                             </label>
                             <input
                                 type="text"
@@ -106,10 +85,11 @@ function RegistrationForm({ setIsPopUpVisible }) {
                                 onChange={handleChange}
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500"
                             />
+                            {errors.patronymic && <span className="text-red-600 text-xs">{errors.patronymic}</span>}
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700" htmlFor="email">
-                                Email
+                                Email*
                             </label>
                             <input
                                 type="email"
@@ -119,19 +99,17 @@ function RegistrationForm({ setIsPopUpVisible }) {
                                 required
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500"
                             />
+                            {errors.email && <span className="text-red-600 text-xs">{errors.email}</span>}
                         </div>
-                        {errors.email && <span className="text-red-600 text-xs">{errors.email}</span>}
                         <div>
                             <label className="block text-sm font-medium text-gray-700" htmlFor="phone">
-                                Телефон
+                                Телефон*
                             </label>
                             <input
                                 type="tel"
                                 name="phone"
                                 value={values?.phone || ""}
                                 onChange={handleChange}
-                                pattern="^\+?[1-9]\d{1,14}$"
-                                title="Введите номер телефона в международном формате, например: +1234567890"
                                 required
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500"
                             />
@@ -139,34 +117,35 @@ function RegistrationForm({ setIsPopUpVisible }) {
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700" htmlFor="date_of_birthday">
-                                Дата рождения
+                                Дата рождения*
                             </label>
                             <input
                                 type="date"
                                 name="date_of_birthday"
                                 value={values?.date_of_birthday || ""}
                                 onChange={handleChange}
+                                required
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500"
                             />
-                            {values.date_of_birthday && !isAdult(values.date_of_birthday) && (
-                                <span className="text-red-600 text-xs">Вы должны быть старше 18 лет</span>
-                            )}
+                            {errors.date_of_birthday && <span className="text-red-600 text-xs">{errors.date_of_birthday}</span>}
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700" htmlFor="registration_address">
-                                Адрес регистрации
+                                Адрес регистрации*
                             </label>
                             <textarea
                                 name="registration_address"
                                 value={values?.registration_address || ""}
                                 onChange={handleChange}
                                 rows="3"
+                                required
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500"
                             ></textarea>
+                            {errors.registration_address && <span className="text-red-600 text-xs">{errors.registration_address}</span>}
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700" htmlFor="password">
-                                Пароль
+                                Пароль*
                             </label>
                             <input
                                 type="password"
@@ -181,7 +160,7 @@ function RegistrationForm({ setIsPopUpVisible }) {
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700" htmlFor="password_confirmation">
-                                Подтверждение пароля
+                                Подтверждение пароля*
                             </label>
                             <input
                                 type="password"
@@ -192,10 +171,10 @@ function RegistrationForm({ setIsPopUpVisible }) {
                                 minLength={6}
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500"
                             />
+                            {errors.password_confirmation && (
+                                <span className="text-red-600 text-xs">{errors.password_confirmation}</span>
+                            )}
                         </div>
-                        {errors.password_confirmation && (
-                            <span className="text-red-600 text-xs">{errors.password_confirmation}</span>
-                        )}
                     </div>
                     <div className="flex items-center">
                         <input
@@ -204,9 +183,10 @@ function RegistrationForm({ setIsPopUpVisible }) {
                             checked={values.terms || false}
                             onChange={handleChange}
                             className="h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-500"
+                            required
                         />
                         <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
-                            Я согласен с условиями использования и политикой конфиденциальности
+                            Я согласен с условиями использования и политикой конфиденциальности*
                         </label>
                     </div>
                     {error && <div className="text-red-600 text-sm text-center my-4">{error}</div>}
