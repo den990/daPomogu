@@ -34,8 +34,8 @@ func (e *EmailSender) SendEmail(ctx context.Context, data string, user *profile.
 	msg := gomail.NewMessage()
 	msg.SetHeader("From", from)
 	msg.SetHeader("To", to)
-	msg.SetHeader("Subject", "Уведомление")
-	msg.SetBody("text/plain", data)
+	msg.SetHeader("Subject", "Информация от платформы «ДаПомогу»")
+	msg.SetBody("text/html", "<h2>"+data+"</h2>")
 
 	n := gomail.NewDialer(host, port, from, key)
 	n.TLSConfig = &tls.Config{InsecureSkipVerify: false, ServerName: host}
