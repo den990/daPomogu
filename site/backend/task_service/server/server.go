@@ -75,8 +75,15 @@ func (s *Server) GetCountActiveTasks(ctx context.Context, req *pb.Empty) (*pb.Ta
 }
 
 func (s *Server) UploadImage(ctx context.Context, req *pb.ImageChunk) (*pb.UploadStatus, error) {
-	dir := fmt.Sprintf("uploads/avatars/user_%d", req.UserId)
-	path := fmt.Sprintf("user_%d.%s", req.UserId, "jpeg")
+	var dir, path string
+	if &req.UserId != nil {
+		dir = fmt.Sprintf("uploads/avatars/user_%d", req.UserId)
+		path = fmt.Sprintf("user_%d.%s", req.UserId, "jpeg")
+	}
+	if &req.OrganizationId != nil {
+		dir = fmt.Sprintf("uploads/avatars/organization_%d", req.OrganizationId)
+		path = fmt.Sprintf("organization_%d.%s", req.OrganizationId, "jpeg")
+	}
 	fileID, err := s.filequery.Create(ctx, filedata.CreateFileModel{SRC: filepath.Join(dir, path)})
 	if err != nil {
 		return nil, err
@@ -94,7 +101,13 @@ func (s *Server) UploadImage(ctx context.Context, req *pb.ImageChunk) (*pb.Uploa
 }
 
 func (s *Server) GetAvatarImage(ctx context.Context, req *pb.DownloadImageRequest) (*pb.DownloadImageResponse, error) {
-	imagePath := fmt.Sprintf("uploads/avatars/user_%d/user_%d.jpeg", req.UserId, req.UserId)
+	var imagePath string
+	if &req.UserId != nil {
+		imagePath = fmt.Sprintf("uploads/avatars/user_%d/user_%d.jpeg", req.UserId, req.UserId)
+	}
+	if &req.OrganizationId != nil {
+		imagePath = fmt.Sprintf("uploads/avatars/organization_%d/organization_%d.jpeg", req.OrganizationId, req.OrganizationId)
+	}
 
 	fileData, err := ioutil.ReadFile(imagePath)
 	if err != nil {

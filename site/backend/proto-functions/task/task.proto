@@ -44,6 +44,7 @@ message Empty {}
 message ImageChunk {
   bytes chunk = 1;
   uint64 user_id = 2;
+  uint64 organization_id = 3;
 }
 
 message UploadStatus {
@@ -54,6 +55,7 @@ message UploadStatus {
 
 message DownloadImageRequest {
   uint64 user_id = 1;
+  uint64 organization_id = 2;
 }
 
 message DownloadImageResponse {

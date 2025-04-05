@@ -66,8 +66,10 @@ func startHTTPServer() {
 	r.POST("/login", h.Login)
 	r.GET("/profile-organization/:id", h.GetOrganizationProfileInfo)
 	r.GET("/organizations-accepted-list/:page", h.GetOrganizationAcceptedList)
-	r.GET("/user/avatar", h.GetAvatar)
-	r.GET("/user/avatar/:id", h.GetAvatar)
+	r.GET("/user/avatar", h.GetUserAvatar)
+	r.GET("/user/avatar/:id", h.GetUserAvatar)
+	r.GET("/organization/avatar", h.GetOrganizationAvatar)
+	r.GET("/organization/avatar/:id", h.GetOrganizationAvatar)
 
 	protected := r.Group("/api")
 	protected.Use(middleware.AuthMiddleware())
