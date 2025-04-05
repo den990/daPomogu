@@ -4,6 +4,7 @@ import (
 	categorymodel "backend/task_service/pkg/app/category/model"
 	categoryquery "backend/task_service/pkg/app/category/query"
 	categoryservice "backend/task_service/pkg/app/category/service"
+	"backend/task_service/pkg/app/file/model"
 	notificationservice "backend/task_service/pkg/app/notification/service"
 	responsemodel "backend/task_service/pkg/app/response/model"
 	responsequery "backend/task_service/pkg/app/response/query"
@@ -66,6 +67,8 @@ type Container struct {
 	categoryRepository categorymodel.CategoryRepositoryInterface
 	CategoryQuery      categoryquery.CategoryQueryInterface
 	CategoryService    categoryservice.CategoryServiceInterface
+
+	FileQuery model.FileModelRepositoryInterface
 }
 
 func NewContainer(config config.Config) *Container {
@@ -150,6 +153,8 @@ func NewContainer(config config.Config) *Container {
 	categoryQuery := categoryquery.NewCategoryQuery(categoryRepository)
 	categoryService := categoryservice.NewCategoryService(categoryRepository)
 
+	fileQuery := postgres.NewFileRepository(db)
+
 	return &Container{
 		DB:                 db,
 		taskReadRepository: taskRepository,
@@ -187,5 +192,7 @@ func NewContainer(config config.Config) *Container {
 		categoryRepository: categoryRepository,
 		CategoryQuery:      categoryQuery,
 		CategoryService:    categoryService,
+
+		FileQuery: fileQuery,
 	}
 }

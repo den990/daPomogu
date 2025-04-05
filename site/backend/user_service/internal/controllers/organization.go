@@ -237,7 +237,7 @@ func (h *Handler) UpdateOrganization(c *gin.Context) {
 				return
 			}
 
-			uploadStatus, err2 := h.grpcClient.UploadImage(c.Request.Context(), &task.ImageChunk{OrganizationId: orgIDParamUint, Chunk: fileBytes})
+			uploadStatus, err2 := h.grpcClient.UploadImage(c.Request.Context(), &task.ImageChunk{Chunk: fileBytes, Target: &task.ImageChunk_OrganizationId{OrganizationId: orgIDParamUint}})
 			if err2 != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to upload image", "error": err.Error()})
 				return
@@ -276,7 +276,7 @@ func (h *Handler) UpdateOrganization(c *gin.Context) {
 				return
 			}
 
-			uploadStatus, err2 := h.grpcClient.UploadImage(c.Request.Context(), &task.ImageChunk{OrganizationId: uint64(org.ID), Chunk: fileBytes})
+			uploadStatus, err2 := h.grpcClient.UploadImage(c.Request.Context(), &task.ImageChunk{Chunk: fileBytes, Target: &task.ImageChunk_OrganizationId{OrganizationId: uint64(org.ID)}})
 			if err2 != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to upload image", "error": err.Error()})
 				return
@@ -410,7 +410,7 @@ func (h *Handler) GetOrganizationAvatar(c *gin.Context) {
 	}
 
 	var avatarData []byte
-	avatarResponse, err := h.grpcClient.GetAvatarImage(c.Request.Context(), &task.DownloadImageRequest{OrganizationId: orgIdParamUint})
+	avatarResponse, err := h.grpcClient.GetAvatarImage(c.Request.Context(), &task.DownloadImageRequest{Target: &task.DownloadImageRequest_OrganizationId{OrganizationId: orgIdParamUint}})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to retrieve avatar", "error": err.Error()})
 		return

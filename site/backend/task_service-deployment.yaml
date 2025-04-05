@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: task-service
-          image: den990/task_service:1.0.163
+          image: den990/task_service:1.0.167
           ports:
             - name: http
               containerPort: 8080  # HTTP API
