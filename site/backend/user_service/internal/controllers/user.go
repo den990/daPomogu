@@ -114,7 +114,7 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 				return
 			}
 
-			uploadStatus, error := h.grpcClient.UploadImage(c.Request.Context(), &pb.ImageChunk{UserId: userIdParamUint, Chunk: fileBytes})
+			uploadStatus, error := h.grpcClient.UploadImage(c.Request.Context(), &pb.ImageChunk{Chunk: fileBytes, Target: &pb.ImageChunk_UserId{UserId: userIdParamUint}})
 			if error != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to upload image", "error": err.Error()})
 				return
@@ -142,7 +142,7 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 				return
 			}
 
-			uploadStatus, error := h.grpcClient.UploadImage(c.Request.Context(), &pb.ImageChunk{UserId: uint64(userID), Chunk: fileBytes})
+			uploadStatus, error := h.grpcClient.UploadImage(c.Request.Context(), &pb.ImageChunk{Chunk: fileBytes, Target: &pb.ImageChunk_UserId{UserId: uint64(userID)}})
 			if error != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to upload image", "error": err.Error()})
 				return
@@ -396,7 +396,7 @@ func (h *Handler) GetUserAvatar(c *gin.Context) {
 
 	var avatarData []byte
 	if userIDParam == "" {
-		avatarResponse, err := h.grpcClient.GetAvatarImage(c.Request.Context(), &pb.DownloadImageRequest{UserId: uint64(userID)})
+		avatarResponse, err := h.grpcClient.GetAvatarImage(c.Request.Context(), &pb.DownloadImageRequest{Target: &pb.DownloadImageRequest_UserId{UserId: uint64(userID)}})
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to retrieve avatar", "error": err.Error()})
 			return
@@ -408,7 +408,7 @@ func (h *Handler) GetUserAvatar(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid user ID"})
 			return
 		}
-		avatarResponse, err := h.grpcClient.GetAvatarImage(c.Request.Context(), &pb.DownloadImageRequest{UserId: parsedID})
+		avatarResponse, err := h.grpcClient.GetAvatarImage(c.Request.Context(), &pb.DownloadImageRequest{Target: &pb.DownloadImageRequest_UserId{UserId: parsedID}})
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to retrieve avatar", "error": err.Error()})
 			return

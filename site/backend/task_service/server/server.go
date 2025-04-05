@@ -22,10 +22,11 @@ type Server struct {
 	filequery     model.FileModelRepositoryInterface
 }
 
-func NewServer(taskQuery query.TaskQueryInterface, taskUserQuery query.TaskUserQueryInterface) *Server {
+func NewServer(taskQuery query.TaskQueryInterface, taskUserQuery query.TaskUserQueryInterface, fileQuery model.FileModelRepositoryInterface) *Server {
 	return &Server{
 		taskquery:     taskQuery,
 		taskuserquery: taskUserQuery,
+		filequery:     fileQuery,
 	}
 }
 
@@ -75,19 +76,29 @@ func (s *Server) GetCountActiveTasks(ctx context.Context, req *pb.Empty) (*pb.Ta
 }
 
 func (s *Server) UploadImage(ctx context.Context, req *pb.ImageChunk) (*pb.UploadStatus, error) {
+	if req == nil || req.Target == nil {
+		return nil, fmt.Errorf("не передан пользователь или организация для сохранения изображения")
+	}
+
 	var dir, path string
-	if &req.UserId != nil {
-		dir = fmt.Sprintf("uploads/avatars/user_%d", req.UserId)
-		path = fmt.Sprintf("user_%d.%s", req.UserId, "jpeg")
+	fmt.Printf("UploadImage: получен запрос с target = %#v\n", req.Target)
+
+	switch target := req.Target.(type) {
+	case *pb.ImageChunk_UserId:
+		dir = fmt.Sprintf("uploads/avatars/user_%d", target.UserId)
+		path = fmt.Sprintf("user_%d.jpeg", target.UserId)
+	case *pb.ImageChunk_OrganizationId:
+		dir = fmt.Sprintf("uploads/avatars/organization_%d", target.OrganizationId)
+		path = fmt.Sprintf("organization_%d.jpeg", target.OrganizationId)
+	default:
+		return nil, fmt.Errorf("должен быть указан либо user_id, либо organization_id")
 	}
-	if &req.OrganizationId != nil {
-		dir = fmt.Sprintf("uploads/avatars/organization_%d", req.OrganizationId)
-		path = fmt.Sprintf("organization_%d.%s", req.OrganizationId, "jpeg")
-	}
+
 	fileID, err := s.filequery.Create(ctx, filedata.CreateFileModel{SRC: filepath.Join(dir, path)})
 	if err != nil {
 		return nil, err
 	}
+
 	_, err = filelib.SaveInDirectoryBytes(ctx, req.Chunk, dir, path)
 	if err != nil {
 		return nil, fmt.Errorf("не удалось сохранить файл: %v", err)
@@ -102,11 +113,14 @@ func (s *Server) UploadImage(ctx context.Context, req *pb.ImageChunk) (*pb.Uploa
 
 func (s *Server) GetAvatarImage(ctx context.Context, req *pb.DownloadImageRequest) (*pb.DownloadImageResponse, error) {
 	var imagePath string
-	if &req.UserId != nil {
-		imagePath = fmt.Sprintf("uploads/avatars/user_%d/user_%d.jpeg", req.UserId, req.UserId)
-	}
-	if &req.OrganizationId != nil {
-		imagePath = fmt.Sprintf("uploads/avatars/organization_%d/organization_%d.jpeg", req.OrganizationId, req.OrganizationId)
+
+	switch target := req.Target.(type) {
+	case *pb.DownloadImageRequest_UserId:
+		imagePath = fmt.Sprintf("uploads/avatars/user_%d/user_%d.jpeg", target.UserId, target.UserId)
+	case *pb.DownloadImageRequest_OrganizationId:
+		imagePath = fmt.Sprintf("uploads/avatars/organization_%d/organization_%d.jpeg", target.OrganizationId, target.OrganizationId)
+	default:
+		return nil, fmt.Errorf("должен быть указан либо user_id, либо organization_id")
 	}
 
 	fileData, err := ioutil.ReadFile(imagePath)
@@ -114,7 +128,7 @@ func (s *Server) GetAvatarImage(ctx context.Context, req *pb.DownloadImageReques
 		defaultImagePath := "/app/uploads/user/no-avatar.jpg"
 		fileData, err = ioutil.ReadFile(defaultImagePath)
 		if err != nil {
-			return nil, fmt.Errorf("не удалось прочитать дефолтное изображение для пользователя %d: %w", req.UserId, err)
+			return nil, fmt.Errorf("не удалось прочитать дефолтное изображение: %w", err)
 		}
 	}
 

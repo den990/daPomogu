@@ -3,6 +3,7 @@ package main
 import (
 	pb "backend/proto-functions/task"
 	"backend/task_service/appconfig"
+	"backend/task_service/pkg/app/file/model"
 	"backend/task_service/pkg/app/task/query"
 	"backend/task_service/pkg/infrastructure/jwt"
 	"backend/task_service/pkg/infrastructure/transport/handler"
@@ -60,14 +61,14 @@ func main() {
 		}
 	}()
 
-	go startGRPCServer(&container.TaskQuery, container.TaskUserQuery)
+	go startGRPCServer(&container.TaskQuery, container.TaskUserQuery, container.FileQuery)
 	<-quit
 
 	fmt.Println("Shutting down gracefully...")
 
 }
 
-func startGRPCServer(taskquery *query.TaskQueryInterface, taskuserquery query.TaskUserQueryInterface) {
+func startGRPCServer(taskquery *query.TaskQueryInterface, taskuserquery query.TaskUserQueryInterface, filequery model.FileModelRepositoryInterface) {
 	port, exists := os.LookupEnv("PORT")
 	if !exists {
 		port = "50501"
@@ -79,7 +80,7 @@ func startGRPCServer(taskquery *query.TaskQueryInterface, taskuserquery query.Ta
 	}
 
 	s := grpc.NewServer()
-	newServer := ServerTaskService.NewServer(*taskquery, taskuserquery)
+	newServer := ServerTaskService.NewServer(*taskquery, taskuserquery, filequery)
 	pb.RegisterTaskServiceServer(s, newServer)
 
 	log.Printf("gRPC Server listening at: %v", lis.Addr())
