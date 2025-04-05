@@ -77,7 +77,7 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 	}
 
 	var userData models.UserUpdate
-	if err := c.ShouldBindJSON(&userData); err != nil {
+	if err := c.ShouldBind(&userData); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid input", "error": err.Error()})
 		return
 	}
