@@ -45,15 +45,15 @@ type UserRegistration struct {
 }
 
 type UserUpdate struct {
-	Email          string                `json:"email" binding:"required,email"`
-	Phone          string                `json:"phone" binding:"required"`
-	Name           string                `json:"name"  binding:"required"`
-	Surname        string                `json:"surname"`
-	Patronymic     string                `json:"patronymic"`
-	DateOfBirthday string                `json:"date_of_birthday"`
-	Address        string                `json:"registration_address"`
-	Avatar         *multipart.FileHeader `json:"avatar"`
-	AvatarId       uint                  `json:"avatar_id"`
+	Email          string                `form:"email" binding:"required,email"`
+	Phone          string                `form:"phone" binding:"required"`
+	Name           string                `form:"name"  binding:"required"`
+	Surname        string                `form:"surname"`
+	Patronymic     string                `form:"patronymic"`
+	DateOfBirthday string                `form:"date_of_birthday"`
+	Address        string                `form:"registration_address"`
+	Avatar         *multipart.FileHeader `form:"avatar"`
+	AvatarId       uint                  `form:"avatar_id"`
 }
 
 type UserPasswordUpdate struct {
