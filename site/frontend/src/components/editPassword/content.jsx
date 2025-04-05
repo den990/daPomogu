@@ -16,6 +16,11 @@ function Content() {
         e.preventDefault();
         setError("");
 
+        if (values.oldPassword === values.newPassword) {
+            setError("Нельзя изменить пароль на тот же самый.");
+            return;
+        }
+            
         if (values.newPassword !== values.confirmPassword) {
             setError("Новый пароль и подтверждение не совпадают.");
             return;

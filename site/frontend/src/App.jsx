@@ -67,10 +67,14 @@ function App() {
                                 <Route path={ROUTES.CONFIRMATIONS_TASKS} element={<ConfirmationsTasks />} />
                             </Route>
 
+                            {/* Только для организаций и волонтеров */}
+                            <Route element={<ProtectedRoute allowedRoles={["organization", "volunteer"]} />}>
+                                <Route path={ROUTES.EDIT_PASSWORD} element={<EditPassword />} />
+                            </Route>
+
                             {/* Только для волонтёров */}
                             <Route element={<ProtectedRoute allowedRoles={["volunteer"]} redirectPath="/" />}>
                                 <Route path={ROUTES.PUBLIC_ACCOUNT_VOLUNTEER} element={<PublicAccountVolonteer />} />
-                                <Route path={ROUTES.EDIT_PASSWORD} element={<EditPassword />} />
                                 <Route path={ROUTES.MY_TASKS} element={<Tasks />} />
                                 <Route path={ROUTES.ACCOUNT_VOLUNTEER} element={<AccountVolunteer />} />
                                 <Route path={ROUTES.CHAT} element={<Chat />} />

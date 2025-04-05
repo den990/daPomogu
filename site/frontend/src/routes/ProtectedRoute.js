@@ -10,6 +10,16 @@ export const ProtectedRoute = ({ allowedRoles, redirectPath = "/login", children
         return <div>Загрузка...</div>; // Можно добавить спиннер
     }
 
+    console.log(role);
+
+    if (role === null) {
+        return <Navigate
+                    to={ROUTES.ERROR}
+                    state={{ errorCode: 401, errorMessage: "Для посещения этой страницы Вам нужно авторизоваться." }}
+                    replace
+                />;
+    }
+
     // Если не авторизован или роль не подходит
     if (!isAuthenticated || (allowedRoles && !allowedRoles.includes(role))) {
         return <Navigate

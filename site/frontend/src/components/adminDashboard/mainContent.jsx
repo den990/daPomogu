@@ -38,7 +38,7 @@ function MainContent({ isSidebarOpen, setIsSidebarOpen }) {
         if (token) {
             userServiceApi
                 .putBlockUser(token, id)
-                .then(() => fetchUsersAndOrganizations())
+                .then(() => fetchUsersAndOrganizations(numberOfPage))
                 .catch((error) => {
                     console.error("Ошибка при блокировке пользователя", error);
                 });
@@ -49,7 +49,7 @@ function MainContent({ isSidebarOpen, setIsSidebarOpen }) {
         if (token) {
             userServiceApi
                 .putUnblockUser(token, id)
-                .then(() => fetchUsersAndOrganizations())
+                .then(() => fetchUsersAndOrganizations(numberOfPage))
                 .catch((error) => {
                     console.error("Ошибка при разблокировке пользователя", error);
                 });
@@ -76,21 +76,6 @@ function MainContent({ isSidebarOpen, setIsSidebarOpen }) {
                         </svg>
                     </button>
                 </header>
-
-                <section className="mb-6 md:mb-8">
-                    <div className="relative">
-                        <input
-                            type="text"
-                            placeholder="Найти пользователей или организации..."
-                            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-red-500 text-sm md:text-base"
-                        />
-                        <img
-                            className="absolute left-3 top-3 w-4 h-4 md:w-5 md:h-5"
-                            src={require("../../images/find_grey.svg").default}
-                            alt="icon"
-                        />
-                    </div>
-                </section>
 
                 <section className="bg-white rounded-lg shadow-sm overflow-x-auto">
                     <div className="p-4 md:p-6">
