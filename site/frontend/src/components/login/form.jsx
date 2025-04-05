@@ -26,7 +26,16 @@ function LoginForm() {
             })
             .catch((err) =>{ 
                 // Если сервер возвращает { message: "Текст ошибки" }, используем его
-            const errorMessage = err.message || "Неверный email или пароль";
+            let errorMessage = err.message || "Неверный email или пароль";
+
+            if (errorMessage === "Invalid email or password")
+            {
+                errorMessage = "Неверный email или пароль";
+            }
+            else if (errorMessage === "You are blocked")
+            {
+                errorMessage = "Вы заблокированы";
+            }
             setError(errorMessage);
             
             // Для отладки можно вывести ошибку в консоль
