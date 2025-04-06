@@ -7,7 +7,7 @@ import { AuthContext } from "../../context/AuthProvider";
 
 function Content() {
     const { values, handleChange, resetForm } = useFormWithValidation();
-    const { token, updateProfile } = useContext(AuthContext);
+    const { token, id, updateProfile, updateImage } = useContext(AuthContext);
     const [profileData, setProfileData] = useState(null);
     const [error, setError] = useState("");
     const [avatarFile, setAvatarFile] = useState(null); // Состояние для файла аватара
@@ -17,6 +17,13 @@ function Content() {
 
     useEffect(() => {
         if (token) {
+            userServiceApi.getAvatarByID(id)
+                        .then((blob) => {
+                            const url = URL.createObjectURL(blob);
+                            setAvatarPreview(url);
+                        })
+                        .catch((error) => {
+                            console.error("Ошибка при загрузке аватара:", error);})
             userServiceApi
                 .getMyVolonteerProfile(token)
                 .then((data) => {
@@ -26,22 +33,17 @@ function Content() {
                     };
                     setProfileData(transformedData);
                     resetForm(transformedData, {}, true);
-                    // Устанавливаем превью аватара если он есть
-                    if (data.avatar_url) {
-                        setAvatarPreview(data.avatar_url);
-                    }
                 })
                 .catch((error) => {
                     console.error("Ошибка при загрузке профиля:", error);
                 });
         }
-    }, [token, resetForm]);
+    }, [token, resetForm, id]);
 
     const handleAvatarChange = (e) => {
         const file = e.target.files[0];
         if (file) {
             setAvatarFile(file);
-            // Создаем URL для предпросмотра
             setAvatarPreview(URL.createObjectURL(file));
         }
     };
@@ -75,8 +77,15 @@ function Content() {
             updateProfile({ 
                 ...values, 
                 address: values.registration_address,
-                avatar_url: avatarPreview // Обновляем аватар в контексте
             });
+
+            // Если был загружен новый аватар, обновляем его превью
+            if (avatarFile) {
+                const newAvatarUrl = URL.createObjectURL(avatarFile);
+                setAvatarPreview(newAvatarUrl);
+                // Обновляем imageUrl в контексте
+                updateImage(newAvatarUrl);
+            }
             navigate(ROUTES.ACCOUNT_VOLUNTEER);
         } catch (error) {
             console.error("Ошибка при обновлении профиля:", error);

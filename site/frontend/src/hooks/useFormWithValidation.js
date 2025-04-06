@@ -145,7 +145,7 @@ export default function useFormWithValidation(formType = 'volunteer') {
             );
         } else if (type === 'organization') {
             return (
-                values.name && !errors.name &&
+                values.legal_name && !errors.legal_name &&
                 values.email && !errors.email &&
                 values.phone && !errors.phone &&
                 values.inn && !errors.inn &&

@@ -21,17 +21,17 @@ function Task() {
             .then((data) => {
                 setTask(data);
                 console.log(data);
+                userServiceApi.getAvatarByID(data.organization_id)
+                    .then((blob) => {
+                        const url = URL.createObjectURL(blob);
+                        setImageUrl(url);
+                    })
+                    .catch(() => {
+                        console.log({ message: "Ошибка при загрузке фото пользователя", severity: "error" });
+                    });
             })
             .catch((error) => {
                 console.error("Ошибка при загрузке задания:", error);
-            });
-        userServiceApi.getAvatarByID(data.organization_id)
-            .then((blob) => {
-                const url = URL.createObjectURL(blob);
-                setImageUrl(url);
-            })
-            .catch(() => {
-                console.log({ message: "Ошибка при загрузке фото пользователя", severity: "error" });
             });
     }, [token, taskId]);
 
