@@ -4,6 +4,7 @@ import (
 	pb "backend/proto-functions/task"
 	"backend/user_service/internal/models"
 	"backend/user_service/internal/utils"
+	"encoding/base64"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"io/ioutil"
@@ -229,22 +230,36 @@ func (h *Handler) GetAllUsersAndOrganizations(c *gin.Context) {
 			if organization == nil {
 				continue
 			}
+			avatar, err := h.grpcClient.GetAvatarImage(c.Request.Context(), &pb.DownloadImageRequest{Target: &pb.DownloadImageRequest_OrganizationId{OrganizationId: uint64(organization.ID)}})
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to get avatar"})
+				return
+			}
+			avatarBase64 := base64.StdEncoding.EncodeToString(avatar.ImageData)
 			result = append(result, map[string]interface{}{
-				"type":       "organization",
-				"id":         user.ID,
-				"email":      organization.Email,
-				"name":       organization.Name,
-				"is_blocked": organization.IsBlocked,
+				"type":          "organization",
+				"id":            user.ID,
+				"email":         organization.Email,
+				"name":          organization.Name,
+				"is_blocked":    organization.IsBlocked,
+				"avatar_base64": "data:image/jpeg;base64," + avatarBase64,
 			})
 		} else {
+			avatar, err := h.grpcClient.GetAvatarImage(c.Request.Context(), &pb.DownloadImageRequest{Target: &pb.DownloadImageRequest_UserId{UserId: uint64(user.ID)}})
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to get avatar"})
+				return
+			}
+			avatarBase64 := base64.StdEncoding.EncodeToString(avatar.ImageData)
 			result = append(result, map[string]interface{}{
-				"type":       "user",
-				"id":         user.ID,
-				"email":      user.Email,
-				"surname":    user.Surname,
-				"is_admin":   user.IsAdmin,
-				"name":       user.Name,
-				"is_blocked": user.IsBlocked,
+				"type":          "user",
+				"id":            user.ID,
+				"email":         user.Email,
+				"surname":       user.Surname,
+				"is_admin":      user.IsAdmin,
+				"name":          user.Name,
+				"is_blocked":    user.IsBlocked,
+				"avatar_base64": "data:image/jpeg;base64," + avatarBase64,
 			})
 		}
 	}
