@@ -134,9 +134,14 @@ func (r *ResponseService) Confirm(ctx context.Context, id uint) error {
 	if err != nil {
 		return err
 	}
+	task, err := r.taskQuery.Get(ctx, resp.TaskID)
+	if err != nil {
+		return err
+	}
+	message := fmt.Sprintf("Ваш отклик для задания \"%s\" принят", task.Name)
 	err = r.notificationService.Send(ctx, notificationmodel.Notification{
 		resp.UserID,
-		"Отклик принят",
+		message,
 	})
 	if err != nil {
 		fmt.Println(err)
@@ -154,9 +159,14 @@ func (r *ResponseService) Reject(ctx context.Context, id uint) error {
 	if err != nil {
 		return err
 	}
+	task, err := r.taskQuery.Get(ctx, resp.TaskID)
+	if err != nil {
+		return err
+	}
+	message := fmt.Sprintf("Ваш отклик для задания \"%s\" отклонён", task.Name)
 	err = r.notificationService.Send(ctx, notificationmodel.Notification{
 		resp.UserID,
-		"Отклик отклонен",
+		message,
 	})
 	if err != nil {
 		fmt.Println(err)

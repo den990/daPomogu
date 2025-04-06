@@ -5,6 +5,7 @@ import (
 	"backend/user_service/internal/db"
 	"backend/user_service/internal/models"
 	"backend/user_service/internal/utils"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -102,13 +103,13 @@ func (h *Handler) RegisterUser(c *gin.Context) {
 	if err != nil {
 		h.notificationClient.Send(c.Request.Context(), notificationmodel.Notification{
 			UserId: user.ID,
-			Data:   "User registered failed",
+			Data:   "Ваш запрос на регистрацию профиля был отклонён. Пожалуйста, проверьте введённые данные и попробуйте снова.",
 		})
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Failed register"})
 	} else {
 		h.notificationClient.Send(c.Request.Context(), notificationmodel.Notification{
 			UserId: user.ID,
-			Data:   "User registered successful",
+			Data:   fmt.Sprintf("Добро пожаловать, %s! Вы успешно зарегистрировались! Рады приветствовать вас в нашей системе.", user.Name),
 		})
 		c.JSON(http.StatusOK, gin.H{"message": "Register successful"})
 	}
@@ -146,7 +147,7 @@ func (h *Handler) RegisterOrganization(c *gin.Context) {
 
 	h.notificationClient.Send(c.Request.Context(), notificationmodel.Notification{
 		UserId: user.ID,
-		Data:   "Organization registered successfully",
+		Data:   fmt.Sprintf("Организация %s успешно зарегистрирована", organization.Name),
 	})
 
 	c.JSON(200, gin.H{"message": "Organization registered successfully"})

@@ -126,9 +126,16 @@ func (a *ApproveService) Confirm(ctx context.Context, dto data.ConfirmApprove, u
 		return err
 	}
 
+	task, err := a.taskquery.Get(ctx, approve.TaskID)
+	if err != nil {
+		return err
+	}
+
+	message := fmt.Sprintf("Ваш фотоотчёт для задания \"%s\" подтвержден", task.Name)
+
 	err = a.notificationService.Send(ctx, notificationmodel.Notification{
 		UserId: approve.UserID,
-		Data:   "Ваш фотоотчёт подтвержден",
+		Data:   message,
 	})
 
 	return a.repository.Update(ctx, data.SetStatusApprove{
@@ -155,9 +162,16 @@ func (a *ApproveService) Reject(ctx context.Context, dto data.RejectApprove, use
 		return err
 	}
 
+	task, err := a.taskquery.Get(ctx, approve.TaskID)
+	if err != nil {
+		return err
+	}
+
+	message := fmt.Sprintf("Ваш фотоотчёт для задания \"%s\" отклонён", task.Name)
+
 	err = a.notificationService.Send(ctx, notificationmodel.Notification{
 		UserId: approve.UserID,
-		Data:   "Ваш фотоотчёт отклонён",
+		Data:   message,
 	})
 
 	return a.repository.Update(ctx, data.SetStatusApprove{
