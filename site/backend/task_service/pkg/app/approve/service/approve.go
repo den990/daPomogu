@@ -287,7 +287,7 @@ func (a *ApproveService) Get(ctx context.Context, id uint) (data.ApproveResponse
 }
 
 func (a *ApproveService) GetByParams(ctx context.Context, userID, taskID uint) (*model.ApproveTaskModel, error) {
-	approve, err := a.repository.GetByParams(ctx, userID, taskID)
+	approve, err := a.repository.GetByParams(ctx, taskID, userID)
 	if err != nil {
 		return &model.ApproveTaskModel{}, err
 	}
