@@ -26,6 +26,7 @@ type ApproveServiceInterface interface {
 	Reject(ctx context.Context, dto data.RejectApprove, userID uint) error
 	Show(ctx context.Context, dto data.ShowApproves) (paginate.Pagination, error)
 	Get(ctx context.Context, id uint) (data.ApproveResponse, error)
+	GetByParams(ctx context.Context, userID, taskID uint) (*model.ApproveTaskModel, error)
 }
 
 type ApproveService struct {
@@ -283,4 +284,13 @@ func (a *ApproveService) Get(ctx context.Context, id uint) (data.ApproveResponse
 		TaskID:       approve.TaskID,
 		TaskMaxScore: maxScore,
 	}, nil
+}
+
+func (a *ApproveService) GetByParams(ctx context.Context, userID, taskID uint) (*model.ApproveTaskModel, error) {
+	approve, err := a.repository.GetByParams(ctx, taskID, userID)
+	if err != nil {
+		return &model.ApproveTaskModel{}, err
+	}
+
+	return &approve, nil
 }
