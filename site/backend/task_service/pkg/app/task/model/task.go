@@ -43,7 +43,7 @@ type TaskViewModel struct {
 	IsResponse        bool                  `json:"is_response"`
 	RoleInTask        string                `json:"role_in_task"`
 	RecordedCount     int                   `json:"recorded_count"`
-	Points            uint                  `json:"points"`
+	Points            *uint                 `json:"points"`
 }
 
 type TaskViewCoordinator struct {
