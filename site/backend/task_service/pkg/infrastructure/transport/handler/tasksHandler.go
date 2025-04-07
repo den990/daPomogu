@@ -183,12 +183,12 @@ func (h *Handler) getTask(c *gin.Context) {
 	recordedCount, err := h.taskuserQuery.GetCountUserWithoutCoordinators(c.Request.Context(), task.ID)
 
 	approve, err := h.approveService.GetByParams(c.Request.Context(), userId, uint(taskID))
-	score := uint(0)
+	var score *uint
 	if err != nil {
 		log.Println("Error getting approve for user", userId, ":", err)
-		score = 0
+		score = nil
 	} else {
-		score = approve.Score
+		score = &approve.Score
 	}
 
 	taskViewModel := model.TaskViewModel{
