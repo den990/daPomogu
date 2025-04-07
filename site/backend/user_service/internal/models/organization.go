@@ -91,8 +91,8 @@ type OrganizationList struct {
 
 func FindActualOrganizationById(id string) (*Organization, error) {
 	var organization Organization
-	if err := db.DB.Where("id = ? AND status_id = ?", id, 2).First(&organization).Error; err != nil {
-		return nil, err
+	if res := db.DB.Where("id = ? AND status_id = ?", id, 2).First(&organization); res.Error != nil {
+		return nil, res.Error
 	}
 
 	return &organization, nil
