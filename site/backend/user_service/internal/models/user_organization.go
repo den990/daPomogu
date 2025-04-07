@@ -230,3 +230,16 @@ func UserIsAttachedToOrganization(userId, orgId string) bool {
 
 	return count > 0
 }
+
+func UserIsRequestedToOrganization(userId, orgId string) bool {
+	var count int64
+	err := db.DB.Model(&UserOrganization{}).
+		Where("user_id = ? AND organization_id = ? AND is_accepted = ?", userId, orgId, false).
+		Count(&count).Error
+
+	if err != nil {
+		return false
+	}
+
+	return count > 0
+}
