@@ -64,12 +64,12 @@ function App() {
 
                             {/* Только для организаций и админов */}
                             <Route element={<ProtectedRoute allowedRoles={["organization", "admin"]} />}>
-                                <Route path={ROUTES.CONFIRMATIONS_TASKS} element={<ConfirmationsTasks />} />
                             </Route>
 
                             {/* Только для организаций и волонтеров */}
                             <Route element={<ProtectedRoute allowedRoles={["organization", "volunteer"]} />}>
                                 <Route path={ROUTES.EDIT_PASSWORD} element={<EditPassword />} />
+                                <Route path={ROUTES.CONFIRMATIONS_TASKS} element={<ConfirmationsTasks />} />
                             </Route>
 
                             {/* Только для волонтёров */}
