@@ -23,7 +23,7 @@ function PublicAccountOrganization() {
             .catch((error) => {
                 console.error("Ошибка при загрузке профиля организации:", error);
             });
-        userServiceApi.getAvatarByID(organizationId)
+        userServiceApi.getAvatarByID(1)
                     .then((blob) => {
                         const url = URL.createObjectURL(blob);
                         setImageUrl(url);

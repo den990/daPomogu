@@ -56,6 +56,8 @@ function MainContent({ isSidebarOpen, setIsSidebarOpen }) {
         }
     };
 
+    console.log(usersAndOrganizations);
+
     return (
         <main id="main-content" className="p-4 md:p-8">
             <div>
@@ -103,9 +105,9 @@ function MainContent({ isSidebarOpen, setIsSidebarOpen }) {
                                         <td className="py-3 md:py-4">
                                             <div className="flex items-center gap-2 md:gap-3">
                                                 <img
-                                                    src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg"
+                                                    src={user.avatar_base64}
                                                     alt="User"
-                                                    className="w-8 h-8 md:w-10 md:h-10 rounded-full"
+                                                    className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover"
                                                 />
                                                 <div>
                                                     <p className="text-sm md:text-base font-medium">

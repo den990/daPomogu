@@ -42,6 +42,8 @@ function ListOrganization() {
         setNumberOfPage(page);
     };
 
+    console.log(organizations);
+
     return (
         <div className="min-h-screen flex flex-col">
             <RoleHeader />

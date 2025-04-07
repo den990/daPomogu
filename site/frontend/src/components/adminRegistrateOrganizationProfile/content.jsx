@@ -7,6 +7,7 @@ function Content({ isSidebarOpen, setIsSidebarOpen }) {
     const [organizations, setOrganizations] = useState([]);
     const [selectedOrganization, setSelectedOrganization] = useState(null);
     const [organizationDetails, setOrganizationDetails] = useState(null);
+    const [imageUrl, setImageUrl] = useState(null)
 
     const fetchOrganizations = useCallback(() => {
         if (token) {
@@ -19,6 +20,15 @@ function Content({ isSidebarOpen, setIsSidebarOpen }) {
                     console.error("Ошибка при загрузке организаций:", error);
                     setOrganizations([]);
                 });
+
+            userServiceApi.getAvatarByID(1)
+            .then((blob) => {
+                const url = URL.createObjectURL(blob);
+                setImageUrl(url);
+            })
+            .catch(() => {
+                console.log({ message: "Ошибка при загрузке фото пользователя", severity: "error" });
+            });
         }
     }, [token]);
 
@@ -108,7 +118,7 @@ function Content({ isSidebarOpen, setIsSidebarOpen }) {
                                     >
                                         <div className="flex items-center gap-2 md:gap-3">
                                             <img
-                                                src={`https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=${organization.id}`}
+                                                src={imageUrl}
                                                 className="h-8 w-8 md:h-10 md:w-10 rounded-full flex-shrink-0"
                                                 alt={organization.name}
                                             />
@@ -131,7 +141,7 @@ function Content({ isSidebarOpen, setIsSidebarOpen }) {
                                     <div className="flex flex-col md:flex-row items-start justify-between gap-3 md:gap-4 mb-4 md:mb-6">
                                         <div className="flex items-center gap-3 md:gap-4">
                                             <img
-                                                src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=2"
+                                                src={imageUrl}
                                                 className="h-12 w-12 md:h-16 md:w-16 rounded-full"
                                                 alt="Логотип организации"
                                             />

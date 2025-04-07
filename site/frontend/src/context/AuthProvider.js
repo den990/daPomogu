@@ -48,6 +48,10 @@ export const AuthProvider = ({ children }) => {
         setProfile(newProfile);
     };
 
+    const updateImage = (imageUrl) => {
+        setImageUrl(imageUrl);
+    }
+
     useEffect(() => {
         const storedToken = localStorage.getItem("token");
         if (storedToken) {
@@ -99,7 +103,7 @@ export const AuthProvider = ({ children }) => {
     }, [token, role]);
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, token, profile, role, login, logout, updateProfile, loading, id, imageUrl }}>
+        <AuthContext.Provider value={{ isAuthenticated, token, profile, role, login, logout, updateProfile, loading, id, imageUrl, updateImage }}>
             {children}
         </AuthContext.Provider>
     );

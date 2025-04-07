@@ -1,7 +1,19 @@
 import { Link } from "react-router";
 import ROUTES from "../../constants/routes";
+import { userServiceApi } from "../../utils/api/user_service.js";
+import { useState } from "react";
 
 function Tasks({ tasks }) {
+    const [imageUrl, setImageUrl] = useState(null);
+
+    userServiceApi.getAvatarByID(1)
+                    .then((blob) => {
+                        const url = URL.createObjectURL(blob);
+                        setImageUrl(url);
+                    })
+                    .catch(() => {
+                        console.log({ message: "Ошибка при загрузке фото пользователя", severity: "error" });
+                    });
     return (
         <section id="tasks-grid" className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
             {tasks.map((task, i) => (
@@ -31,7 +43,7 @@ function Tasks({ tasks }) {
                         <div className="mt-auto">
                             <div className="flex items-center mb-3 md:mb-4">
                                 <img
-                                    src={`https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg`}
+                                    src={imageUrl}
                                     className="w-6 h-6 rounded-full mr-2"
                                     alt="Логотип организации"
                                 />

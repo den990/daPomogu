@@ -26,13 +26,17 @@ function Profile({ profile, imageUrl }) {
         setAlert(null);
     };
 
+    if (!profile) {
+        return <div className="bg-white rounded-lg shadow-sm p-6 mb-8">Загрузка профиля...</div>;
+    }
+
     return (
         <section id="org-profile" className="bg-white rounded-lg shadow-sm p-6 mb-8">
             <div className="flex items-start space-x-6">
                 {imageUrl ? (
                         <img
                             src={imageUrl}
-                            className="w-48 h-48 rounded-lg object-cover"
+                            className="w-48 h-48 rounded-full object-cover"
                             alt="humanitarian organization logo with volunteers in red and white colors"
                         />
                     ) : (
@@ -44,7 +48,7 @@ function Profile({ profile, imageUrl }) {
                     )}
                 <div className="flex-1">
                     <h2 className="text-2xl font-bold text-gray-900 mb-4">{profile ? profile.name : "Нет данных"}</h2>
-                    {role === "volunteer" && (
+                    {(profile.is_attached === false) ? role === "volunteer" && (
                         <button
                             onClick={handleAttach}
                             className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 flex items-center"
@@ -56,7 +60,7 @@ function Profile({ profile, imageUrl }) {
                             />
                             <span style={{ paddingLeft: 10 }}>Присоединиться к организации</span>
                         </button>
-                    )}
+                    ) : <></>} 
                 </div>
             </div>
             {alert && (
