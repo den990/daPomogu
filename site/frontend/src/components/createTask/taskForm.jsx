@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import ROUTES from "../../constants/routes";
-import useFormWithValidation from "../../hooks/useFormWithValidation";
+import useCreateTaskFormValidation from "../../hooks/useCreateTaskFormValidation";
 import { useContext, useEffect, useState } from "react";
 import { taskServiceApi } from "../../utils/api/task_service";
 import { AuthContext } from "../../context/AuthProvider";
@@ -11,14 +11,17 @@ import { AddressSuggestions } from "react-dadata";
 import "react-dadata/dist/react-dadata.css";
 
 function TaskForm({ setIsPopUpVisible }) {
-    const { values, errors, isValid, handleChange, setValues } = useFormWithValidation();
+    const { values, errors, isValid, handleChange, setValues } = useCreateTaskFormValidation();
     const { token } = useContext(AuthContext);
     const [error, setError] = useState("");
     const [address, setAddress] = useState("");
 
     useEffect(() => {
         if (!values.task_type) setValues({ ...values, task_type: "1" });
-    }, [values, setValues]);
+        if (address) {
+            setValues({ ...values, address: address.value });
+        }
+    }, [values, setValues, address]);
 
     const handleCategoryChange = (newCategories) => {
         setValues({ ...values, category_ids: newCategories });
@@ -31,6 +34,10 @@ function TaskForm({ setIsPopUpVisible }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
+
+        if (!isValid) {
+            return setError("Пожалуйста, заполните все обязательные поля корректно");
+        }
 
         const {
             name,
@@ -153,8 +160,10 @@ function TaskForm({ setIsPopUpVisible }) {
                             value={values.date || ""}
                             onChange={handleChange}
                             required
+                            min={new Date().toISOString().split('T')[0]}
                             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-200 focus:border-blue-200"
                         />
+                        {errors.date && <span className="text-red-600 text-xs">{errors.date}</span>}
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Время</label>
@@ -166,7 +175,6 @@ function TaskForm({ setIsPopUpVisible }) {
                             required
                             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-200 focus:border-blue-200"
                         />
-                        {errors.time && <span className="text-red-600 text-xs">{errors.time}</span>}
                     </div>
                 </div>
 
