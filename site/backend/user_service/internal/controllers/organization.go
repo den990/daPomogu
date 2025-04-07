@@ -5,6 +5,7 @@ import (
 	"backend/user_service/internal/db"
 	"backend/user_service/internal/models"
 	"backend/user_service/internal/utils"
+	"encoding/base64"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"io/ioutil"
@@ -133,12 +134,14 @@ func (h *Handler) GetOrganizationProfileInfo(c *gin.Context) {
 			CountCoordinator: task.CountCoordinator,
 		})
 	}
-	var isAttached bool
+	var isAttached, isRequested bool
 	userID, err := utils.GetUserIDFromToken(c)
 	if err != nil {
 		isAttached = false
+		isRequested = false
 	} else {
 		isAttached = models.UserIsAttachedToOrganization(strconv.Itoa(int(userID)), strconv.Itoa(int(organizationId)))
+		isRequested = models.UserIsRequestedToOrganization(strconv.Itoa(int(userID)), strconv.Itoa(int(organizationId)))
 	}
 
 	countFinishedTasks, _ := h.grpcClient.GetCountTasksCompleted(c.Request.Context(), &task.Empty{})
@@ -165,6 +168,7 @@ func (h *Handler) GetOrganizationProfileInfo(c *gin.Context) {
 				CountVolunteers:        int(countVolunteers),
 				CountDays:              countDays,
 				IsAttached:             isAttached,
+				IsRequested:            isRequested,
 			}
 			c.JSON(http.StatusOK, response)
 		}
@@ -185,6 +189,7 @@ func (h *Handler) GetOrganizationProfileInfo(c *gin.Context) {
 				TasksInProfileResponse: tasksProfile,
 				CountFinishedTasks:     int(countFinishedTasks.Count),
 				IsAttached:             isAttached,
+				IsRequested:            isRequested,
 			}
 			c.JSON(http.StatusOK, response)
 		}
@@ -348,10 +353,17 @@ func (h *Handler) GetOrganizationAcceptedList(c *gin.Context) {
 
 	var response []models.OrganizationList
 	for _, org := range organizations {
+		avatar, err := h.grpcClient.GetAvatarImage(c.Request.Context(), &task.DownloadImageRequest{Target: &task.DownloadImageRequest_OrganizationId{OrganizationId: uint64(org.ID)}})
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to get avatar"})
+			return
+		}
+		avatarBase64 := base64.StdEncoding.EncodeToString(avatar.ImageData)
 		response = append(response, models.OrganizationList{
 			Id:        strconv.Itoa(int(org.ID)),
 			Name:      org.Name,
 			CreatedAt: org.CreatedAt.Format(time.DateOnly),
+			Avatar:    "data:image/jpeg;base64," + avatarBase64,
 		})
 	}
 
