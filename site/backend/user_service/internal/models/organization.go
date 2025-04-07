@@ -70,6 +70,7 @@ type OrganizationProfileResponse struct {
 	CountVolunteers        int                      `json:"count_volunteers"`
 	CountDays              int                      `json:"count_days"`
 	IsAttached             bool                     `json:"is_attached"`
+	IsRequested            bool                     `json:"is_requested"`
 }
 
 type GetProfilesOrganizationResponse struct {
@@ -87,6 +88,7 @@ type OrganizationList struct {
 	Id        string `json:"id"`
 	Name      string `json:"name"`
 	CreatedAt string `json:"created_at"`
+	Avatar    string `json:"avatar"`
 }
 
 func FindActualOrganizationById(id string) (*Organization, error) {
