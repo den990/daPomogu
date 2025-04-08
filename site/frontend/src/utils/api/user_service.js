@@ -164,6 +164,14 @@ class UserServiceApi {
         });
     }
 
+    putRejectUserAttachment(token, id) {
+        this._updateToken(token);
+        return this._request(`${this._baseUrl}/organization/reject/${id}`, {
+            method: "PUT",
+            headers: this._headers,
+        });
+    }
+
     getAcceptedOrganizations(token, page) {
         this._updateToken(token);
         return this._request(`${this._baseUrlWithoutApi}/organizations-accepted-list/${page}`, {

@@ -9,6 +9,7 @@ function Content() {
     const [selectedRequest, setSelectedRequest] = useState(null);
     const [userDetails, setUserDetails] = useState(null);
     const [alert, setAlert] = useState(null);
+    const [userDetailsAvatar, setUserDetailsAvatar] = useState(null);
 
     const fetchRequests = useCallback(() => {
         if (!token) return;
@@ -17,6 +18,7 @@ function Content() {
             .then((data) => {
                 const list = Array.isArray(data.data) ? data.data : [];
                 setRequests(list);
+                console.log(list);
             })
             .catch(() => {
                 setAlert({ message: "Ошибка при загрузке заявок", severity: "error" });
@@ -35,6 +37,15 @@ function Content() {
             .getVolonteerProfileById(token, id)
             .then(setUserDetails)
             .catch(() => setAlert({ message: "Ошибка загрузки данных заявки", severity: "error" }));
+
+        userServiceApi
+            .getAvatarByID(id)
+            .then(blob => {
+                const url = URL.createObjectURL(blob);
+                setUserDetailsAvatar(url);
+                
+            })
+            .catch(() => setAlert({message: "Ошибка загрузки аватар заявки", severity: "error"}));
     };
 
     const handleAcceptRequest = (id) => {
@@ -51,13 +62,24 @@ function Content() {
     };
 
     const handleRejectRequest = (id) => {
-        setAlert({ message: "Метода нет", severity: "error" });
+        if (!token) return;
+        userServiceApi
+            .putRejectUserAttachment(token, id)
+            .then(() => {
+                fetchRequests();
+                setUserDetails(null);
+                setSelectedRequest(null);
+                setAlert({ message: "Волонтёр успешно отклонён!", severity: "success" });
+            })
+            .catch(() => setAlert({ message: "Ошибка при отклонении заявки", severity: "error" }));
     };
 
     const handleCloseAlert = (event, reason) => {
         if (reason === "clickaway") return;
         setAlert(null);
     };
+
+    console.log(userDetails);
 
     return (
         <>
@@ -76,7 +98,7 @@ function Content() {
                                 >
                                     <div className="flex items-center gap-2 md:gap-3">
                                         <img
-                                            src={`https://api.dicebear.com/7.x/notionists/svg?scale=200&amp;seed=2`}
+                                            src={request.avatar_base64}
                                             className="h-8 w-8 md:h-10 md:w-10 rounded-full"
                                             alt="user-photo"
                                         />
@@ -97,7 +119,7 @@ function Content() {
                                 <div className="mb-4 md:mb-6 flex flex-col md:flex-row md:items-start justify-between gap-4">
                                     <div className="flex items-center gap-3">
                                         <img
-                                            src="https://api.dicebear.com/7.x/notionists/svg?scale=200&amp;seed=2"
+                                            src={userDetailsAvatar}
                                             className="h-12 w-12 md:h-16 md:w-16 rounded-full"
                                             alt="user-photo"
                                         />
