@@ -2,7 +2,6 @@ package models
 
 import (
 	"backend/user_service/internal/db"
-	"errors"
 	"strconv"
 )
 
@@ -210,7 +209,7 @@ func FindUsersByOrganizationId(orgId string, limit, offset int) ([]User, int64, 
 	}
 
 	if len(userOrganizations) == 0 {
-		return nil, 0, errors.New("no users found for this organization")
+		return []User{}, 0, nil
 	}
 
 	var userIDs []uint
