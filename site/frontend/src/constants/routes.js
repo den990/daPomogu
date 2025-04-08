@@ -28,6 +28,7 @@ const ROUTES = {
     ORGANIZATION_TASKS: "/organization-tasks",
 
     LIST_ORGANIZATION: "/organizations",
+    LIST_USERS_IN_ORGANIZATION: "/users-in-organization",
     TEST_AUTH: "/test-auth",
 };
 

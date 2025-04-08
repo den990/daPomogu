@@ -5,6 +5,7 @@ import Content from "../components/photoReport/content";
 import RoleHeader from "../components/RoleHeader/RoleHeader";
 import PopUp from "../layouts/popUp/PopUp";
 import ROUTES from "../constants/routes";
+import { Helmet } from 'react-helmet';
 
 function PhotoReport() {
     const [isPopUpVisible, setIsPopUpVisible] = useState(false);
@@ -12,6 +13,9 @@ function PhotoReport() {
 
     return (
         <>
+            <Helmet>
+                <title>Фотоотчёт</title>
+            </Helmet>
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}

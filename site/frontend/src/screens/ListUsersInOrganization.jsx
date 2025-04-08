@@ -1,5 +1,5 @@
 import Pagination from "../layouts/pagination/pagination.jsx";
-import Organizations from "../components/listOrganization/organizations.jsx";
+import Users from "../components/listUsersInOrganization/users.jsx";
 import RoleHeader from "../components/RoleHeader/RoleHeader.js";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthProvider.js";
@@ -7,64 +7,64 @@ import { userServiceApi } from "../utils/api/user_service.js";
 import { Alert, Snackbar } from "@mui/material";
 import { Helmet } from 'react-helmet';
 
-function ListOrganization() {
+function ListUsersInOrganization() {
     const { token } = useContext(AuthContext);
-    const [organizations, setOrganizations] = useState([]);
-    const [countOfPages, setCountOfPages] = useState(0);
-    const [numberOfPage, setNumberOfPage] = useState(1);
+    const [users, setUsers] = useState([]);
+    //const [countOfPages, setCountOfPages] = useState(0);
+    //const [numberOfPage, setNumberOfPage] = useState(1);
     const [alert, setAlert] = useState(null);
 
-    const fetchOrganizations = useCallback(
-        (page) => {
+    const fetchUsers = useCallback(
+        (/*page*/) => {
             userServiceApi
-                .getAcceptedOrganizations(token, page)
+                .getUsersInOrganization(token, /*page*/)
                 .then((data) => {
-                    setOrganizations(data.data || []);
-                    setCountOfPages(data.totalPages);
+                    setUsers(data.data || []);
+                    //setCountOfPages(data.totalPages);
                 })
                 .catch(() => {
-                    setAlert({ message: "Ошибка при загрузке организаций", severity: "error" });
-                    setOrganizations([]);
+                    setAlert({ message: "Ошибка при загрузке пользователей", severity: "error" });
+                    setUsers([]);
                 });
         },
         [token]
     );
 
     useEffect(() => {
-        fetchOrganizations(numberOfPage);
-    }, [numberOfPage, fetchOrganizations]);
+        fetchUsers(/*numberOfPage*/);
+    }, [/*numberOfPage,*/ fetchUsers]);
 
     const handleCloseAlert = (event, reason) => {
         if (reason === "clickaway") return;
         setAlert(null);
     };
 
-    const handlePageChange = (page) => {
-        setNumberOfPage(page);
-    };
+    // const handlePageChange = (page) => {
+    //     setNumberOfPage(page);
+    // };
 
-    console.log(organizations);
+    console.log(users);
 
     return (
         <div className="min-h-screen flex flex-col">
             <Helmet>
-                <title>Список организаций</title>
+                <title>Список волонтеров</title>
             </Helmet>
             <RoleHeader />
             <main className="flex-grow  bg-gray-50">
                 <div className="container mx-auto px-4">
-                    {organizations.length !== 0 ? (
+                    {users.length !== 0 ? (
                         <>
-                            <Organizations organizations={organizations} />
-                            <Pagination
+                            <Users users={users} />
+                            {/* <Pagination
                                 numberOfPageOut={numberOfPage}
                                 countOfPages={countOfPages}
                                 onPageChange={handlePageChange}
-                            />
+                            /> */}
                         </>
                     ) : (
                         <div className="flex justify-center items-center h-64">
-                            <span className="text-gray-500 text-lg">Нет доступных организаций</span>
+                            <span className="text-gray-500 text-lg">Нет прикрепленных пользователей</span>
                         </div>
                     )}
                 </div>
@@ -86,4 +86,4 @@ function ListOrganization() {
     );
 }
 
-export default ListOrganization;
+export default ListUsersInOrganization;

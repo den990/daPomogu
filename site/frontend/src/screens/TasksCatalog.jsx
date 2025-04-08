@@ -5,6 +5,7 @@ import RoleHeader from "../components/RoleHeader/RoleHeader.js";
 import { taskServiceApi } from "../utils/api/task_service";
 import { useState, useEffect, useContext, useCallback } from "react";
 import { AuthContext } from "../context/AuthProvider";
+import { Helmet } from 'react-helmet';
 
 function TasksCatalog() {
     const { token } = useContext(AuthContext);
@@ -39,6 +40,9 @@ function TasksCatalog() {
 
     return (
         <div className="min-h-screen flex flex-col">
+            <Helmet>
+                <title>Задания</title>
+            </Helmet>
             <RoleHeader />
             <main className="flex-grow pt-20 pb-12 bg-gray-50">
                 <div className="container mx-auto px-4">

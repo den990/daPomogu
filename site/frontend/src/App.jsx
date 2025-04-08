@@ -24,7 +24,6 @@ import TestAuth from "./screens/TestAuth";
 import ROUTES from "./constants/routes";
 import { AuthContext, AuthProvider } from "./context/AuthProvider";
 import { BrowserRouter as Router, Routes, Route } from "react-router";
-import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import EditPassword from "./screens/EditPassword";
 import Tasks from "./screens/Tasks";
 import { useContext } from "react";
@@ -35,9 +34,10 @@ import ConfirmationsResponses from "./screens/ConfirmationsResponses";
 import ListOrganization from "./screens/ListOrganization";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
 import { GuestRoute } from "./routes/GuestRoute";
+import ListUsersInOrganization from "./screens/ListUsersInOrganization";
 
 function App() {
-    const { loading, isAuthenticated } = useContext(AuthContext);
+    const { loading } = useContext(AuthContext);
     if (loading) {
         return <div>Application Loading...</div>;
     }
@@ -55,7 +55,8 @@ function App() {
                             <Route path={ROUTES.PUBLIC_ACCOUNT_ORGANIZATION} element={<PublicAccountOrganization />} />
                             <Route path={ROUTES.TEST_AUTH} element={<TestAuth />} />
                             <Route path={ROUTES.LIST_ORGANIZATION} element={<ListOrganization />} />
-
+                            <Route path={ROUTES.PUBLIC_ACCOUNT_VOLUNTEER} element={<PublicAccountVolonteer />} />
+                            
                             {/* Только для авторизованных */}
                             <Route element={<ProtectedRoute allowedRoles={["volunteer", "organization", "admin"]} />}>
                                 <Route path={ROUTES.TASK} element={<Task />} />
@@ -74,7 +75,6 @@ function App() {
 
                             {/* Только для волонтёров */}
                             <Route element={<ProtectedRoute allowedRoles={["volunteer"]} redirectPath="/" />}>
-                                <Route path={ROUTES.PUBLIC_ACCOUNT_VOLUNTEER} element={<PublicAccountVolonteer />} />
                                 <Route path={ROUTES.MY_TASKS} element={<Tasks />} />
                                 <Route path={ROUTES.ACCOUNT_VOLUNTEER} element={<AccountVolunteer />} />
                                 <Route path={ROUTES.CHAT} element={<Chat />} />
@@ -89,6 +89,7 @@ function App() {
                                 <Route path={ROUTES.ATTACHMENTS_ORGANIZATION} element={<AttachmentsToOrganization />} />
                                 <Route path={ROUTES.EDIT_ORGANIZATION_PROFILE} element={<EditOrganizationProfile />} />
                                 <Route path={ROUTES.ORGANIZATION_TASKS} element={<OrganizationTasks />} />
+                                <Route path={ROUTES.LIST_USERS_IN_ORGANIZATION} element={<ListUsersInOrganization />} />
                             </Route>
 
                             {/* Только для админов */}

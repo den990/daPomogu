@@ -6,8 +6,9 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthProvider.js";
 import { taskServiceApi } from "../utils/api/task_service.js";
 import { useEffect, useState } from "react";
-import { data, useParams } from "react-router";
+import { useParams } from "react-router";
 import { userServiceApi } from "../utils/api/user_service.js";
+import { Helmet } from 'react-helmet';
 
 function Task() {
     const { token } = useContext(AuthContext);
@@ -42,7 +43,9 @@ function Task() {
     return (
         <div className="min-h-screen flex flex-col">
             <RoleHeader />
-
+            <Helmet>
+                <title>{task.name}</title>
+            </Helmet>
             <main className="flex-1">
                 <div className="container mx-auto px-4 py-8">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
