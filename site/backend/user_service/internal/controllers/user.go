@@ -388,13 +388,20 @@ func (h *Handler) GetRequestsToApply(c *gin.Context) {
 	var result []map[string]interface{}
 
 	for _, user := range users {
+		avatar, err := h.grpcClient.GetAvatarImage(c.Request.Context(), &pb.DownloadImageRequest{Target: &pb.DownloadImageRequest_UserId{UserId: uint64(user.ID)}})
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to get avatar"})
+			return
+		}
+		avatarBase64 := base64.StdEncoding.EncodeToString(avatar.ImageData)
 		result = append(result, map[string]interface{}{
-			"id":      user.ID,
-			"email":   user.Email,
-			"phone":   user.Phone,
-			"name":    user.Name,
-			"surname": user.Surname,
-			"address": user.Address,
+			"id":            user.ID,
+			"email":         user.Email,
+			"phone":         user.Phone,
+			"name":          user.Name,
+			"surname":       user.Surname,
+			"address":       user.Address,
+			"avatar_base64": "data:image/jpeg;base64," + avatarBase64,
 		})
 	}
 

@@ -144,6 +144,26 @@ func AcceptAttachment(userID, orgID string) error {
 	return nil
 }
 
+func RejectAttachment(userID, orgID string) error {
+	userIDUint, err := strconv.ParseUint(userID, 10, 32)
+	if err != nil {
+		return err
+	}
+
+	orgIDUint, err := strconv.ParseUint(orgID, 10, 32)
+	if err != nil {
+		return err
+	}
+
+	if err := db.DB.
+		Where("user_id = ? AND organization_id = ?", uint(userIDUint), uint(orgIDUint)).
+		Delete(&UserOrganization{}).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func IsUserOwner(userID string) (bool, error) {
 	var count int64
 	err := db.DB.Model(&UserOrganization{}).
