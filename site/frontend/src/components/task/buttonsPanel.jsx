@@ -69,14 +69,14 @@ function ButtonsPanel({ task: initialTask }) {
         }
     };
 
-    console.log(role);
+    console.log(taskRole);
 
     return (
         <>
             <div className="col-span-1">
                 <div id="task-actions" className="bg-white p-6 rounded-lg border sticky top-4">
                     {
-                        (role !== "admin")
+                        !(role === "admin" || (role === "organization" && taskRole !== "owner"))
                         ?
                             taskRole === "user" || taskRole === "participant"
                             ?
@@ -201,7 +201,7 @@ function ButtonsPanel({ task: initialTask }) {
                         :
                         <></>
                     }
-                    <div className={role !== "admin" ? `pt-6 mt-6 border-t` : ``}>
+                    <div className={!(role === "admin" || (role === "organization" && taskRole !== "owner")) ? `pt-6 mt-6 border-t` : ``}>
                         <div className="flex items-center gap-2 mb-4">
                             <img
                                 style={{ width: 16, height: 16 }}

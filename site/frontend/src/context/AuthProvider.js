@@ -13,15 +13,20 @@ export const AuthContext = createContext({
 });
 
 export const AuthProvider = ({ children }) => {
-    const [token, setToken] = useState(null);
+    // Пытаемся загрузить токен из localStorage при инициализации
+    const [token, setToken] = useState(() => {
+        return localStorage.getItem("token") || null;
+    });
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
     const [profile, setProfile] = useState(null);
     const [role, setRole] = useState(null);
     const [id, setId] = useState(null);
     const [imageUrl, setImageUrl] = useState(null);
+    
 
     const login = (newToken) => {
+        localStorage.setItem("token", newToken); // Сохраняем в localStorage
         setToken(newToken);
         setIsAuthenticated(true);
         localStorage.setItem("token", newToken);
@@ -35,6 +40,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const logout = () => {
+        localStorage.removeItem("token"); // Удаляем из localStorage
         setToken(null);
         setIsAuthenticated(false);
         setProfile(null);
