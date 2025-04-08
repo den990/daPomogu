@@ -53,10 +53,10 @@ function HeaderOrganization() {
                             Мои задания
                         </Link>
                         <Link
-                            to={ROUTES.LIST_ORGANIZATION}
+                            to={ROUTES.LIST_USERS_IN_ORGANIZATION}
                             className="text-gray-600 hover:text-red-600 whitespace-nowrap"
                         >
-                            Организации
+                            Волонтеры
                         </Link>
                     </nav>
                     

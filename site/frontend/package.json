@@ -18,6 +18,7 @@
     "react": "^19.0.0",
     "react-dadata": "^2.27.4",
     "react-dom": "^19.0.0",
+    "react-helmet": "^6.1.0",
     "react-leaflet": "^5.0.0",
     "react-router": "^7.1.5",
     "react-scripts": "5.0.1",

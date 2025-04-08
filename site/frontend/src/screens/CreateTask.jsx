@@ -5,12 +5,16 @@ import RoleHeader from "../components/RoleHeader/RoleHeader";
 import { motion } from "framer-motion";
 import PopUp from "../layouts/popUp/PopUp";
 import ROUTES from "../constants/routes";
+import { Helmet } from 'react-helmet';
 
 function CreateTask() {
     const [isPopUpVisible, setIsPopUpVisible] = useState(false);
 
     return (
         <>
+            <Helmet>
+                <title>Создать задание</title>
+            </Helmet>
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}

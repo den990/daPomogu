@@ -5,6 +5,7 @@ import Pagination from "../layouts/pagination/pagination.jsx";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthProvider.js";
 import { taskServiceApi } from "../utils/api/task_service.js";
+import { Helmet } from 'react-helmet';
 
 function Tasks() {
     const { token } = useContext(AuthContext);
@@ -99,6 +100,9 @@ function Tasks() {
 
     return (
         <div>
+            <Helmet>
+                <title>Мои задания</title>
+            </Helmet>
             <RoleHeader />
             <Content
                 tasks={tasks}

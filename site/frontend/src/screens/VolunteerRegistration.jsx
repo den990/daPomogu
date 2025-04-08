@@ -4,12 +4,16 @@ import RegistrationForm from "../components/volunteerRegistration/registrationFo
 import { useState } from "react";
 import PopUp from "../layouts/popUp/PopUp";
 import ROUTES from "../constants/routes";
+import { Helmet } from 'react-helmet';
 
 function VolunteerRegistration() {
     const [isPopUpVisible, setIsPopUpVisible] = useState(false);
 
     return (
         <>
+            <Helmet>
+                <title>Регистрация волонтера</title>
+            </Helmet>
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}

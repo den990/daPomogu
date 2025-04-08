@@ -69,12 +69,14 @@ function ButtonsPanel({ task: initialTask }) {
         }
     };
 
+    console.log(role);
+
     return (
         <>
             <div className="col-span-1">
                 <div id="task-actions" className="bg-white p-6 rounded-lg border sticky top-4">
                     {
-                        (role !== "admin" && role !== "organization")
+                        (role !== "admin")
                         ?
                             taskRole === "user" || taskRole === "participant"
                             ?
@@ -109,15 +111,19 @@ function ButtonsPanel({ task: initialTask }) {
                                                     >
                                                         Отказаться от участия
                                                     </button>
-                                                : 
-                                                    <Link
-                                                        className="w-full border border-neutral-300 px-6 py-3 rounded-lg hover:bg-red-50 flex items-center justify-center"
-                                                        to={ROUTES.PHOTO_REPORT.replace(":taskId", task.id)}
-                                                        style={{ paddingLeft: 10 }}
-                                                    >
-                                                        <img className="w-4 h-4" src={require("../../images/camera_red.svg").default} alt="camera" />
-                                                        <span style={{paddingLeft: 10}}>Отправить фотоотчёт</span>
-                                                    </Link>
+                                                :
+                                                    (task.points !== null) 
+                                                    ?
+                                                        <span className="text-neutral-700">Баллы: {task.points}/{task.max_score}</span>
+                                                    :
+                                                        <Link
+                                                            className="w-full border border-neutral-300 px-6 py-3 rounded-lg hover:bg-red-50 flex items-center justify-center"
+                                                            to={ROUTES.PHOTO_REPORT.replace(":taskId", task.id)}
+                                                            style={{ paddingLeft: 10 }}
+                                                        >
+                                                            <img className="w-4 h-4" src={require("../../images/camera_red.svg").default} alt="camera" />
+                                                            <span style={{paddingLeft: 10}}>Отправить фотоотчёт</span>
+                                                        </Link>
                                             )
                                 )
                             :
@@ -195,7 +201,7 @@ function ButtonsPanel({ task: initialTask }) {
                         :
                         <></>
                     }
-                    <div className={role !== "admin" && role !== "organization" ? `pt-6 border-t` : ``}>
+                    <div className={role !== "admin" ? `pt-6 mt-6 border-t` : ``}>
                         <div className="flex items-center gap-2 mb-4">
                             <img
                                 style={{ width: 16, height: 16 }}

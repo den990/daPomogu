@@ -5,6 +5,7 @@ import Pagination from "../layouts/pagination/pagination.jsx";
 import { AuthContext } from "../context/AuthProvider.js";
 import { taskServiceApi } from "../utils/api/task_service.js";
 import { Alert, Snackbar } from "@mui/material";
+import { Helmet } from 'react-helmet';
 
 function Tasks() {
     const { token } = useContext(AuthContext);
@@ -82,6 +83,9 @@ function Tasks() {
     return (
         <div>
             <RoleHeader />
+            <Helmet>
+                <title>Мои задания</title>
+            </Helmet>
             <Content
                 tasks={tasks}
                 activeTab={activeTab}
