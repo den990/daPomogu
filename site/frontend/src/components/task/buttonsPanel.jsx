@@ -111,15 +111,19 @@ function ButtonsPanel({ task: initialTask }) {
                                                     >
                                                         Отказаться от участия
                                                     </button>
-                                                : 
-                                                    <Link
-                                                        className="w-full border border-neutral-300 px-6 py-3 rounded-lg hover:bg-red-50 flex items-center justify-center"
-                                                        to={ROUTES.PHOTO_REPORT.replace(":taskId", task.id)}
-                                                        style={{ paddingLeft: 10 }}
-                                                    >
-                                                        <img className="w-4 h-4" src={require("../../images/camera_red.svg").default} alt="camera" />
-                                                        <span style={{paddingLeft: 10}}>Отправить фотоотчёт</span>
-                                                    </Link>
+                                                :
+                                                    (task.points !== null) 
+                                                    ?
+                                                        <span className="text-neutral-700">Баллы: {task.points}/{task.max_score}</span>
+                                                    :
+                                                        <Link
+                                                            className="w-full border border-neutral-300 px-6 py-3 rounded-lg hover:bg-red-50 flex items-center justify-center"
+                                                            to={ROUTES.PHOTO_REPORT.replace(":taskId", task.id)}
+                                                            style={{ paddingLeft: 10 }}
+                                                        >
+                                                            <img className="w-4 h-4" src={require("../../images/camera_red.svg").default} alt="camera" />
+                                                            <span style={{paddingLeft: 10}}>Отправить фотоотчёт</span>
+                                                        </Link>
                                             )
                                 )
                             :
