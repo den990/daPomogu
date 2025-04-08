@@ -51,7 +51,16 @@ function Content() {
     };
 
     const handleRejectRequest = (id) => {
-        setAlert({ message: "Метода нет", severity: "error" });
+        if (!token) return;
+        userServiceApi
+            .putRejectUserAttachment(token, id)
+            .then(() => {
+                fetchRequests();
+                setUserDetails(null);
+                setSelectedRequest(null);
+                setAlert({ message: "Волонтёр успешно отклонён!", severity: "success" });
+            })
+            .catch(() => setAlert({ message: "Ошибка при отклонении заявки", severity: "error" }));
     };
 
     const handleCloseAlert = (event, reason) => {
