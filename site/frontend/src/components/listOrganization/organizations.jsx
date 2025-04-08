@@ -10,7 +10,7 @@ function Organizations({ organizations }) {
                         <div key={organization.id} className="border rounded-lg p-3 md:p-4">
                             <div className="flex items-center gap-4">
                                 <img
-                                    src={`https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg`}
+                                    src={organization.avatar}
                                     className="w-12 h-12 rounded-full"
                                     alt="Логотип организации"
                                 />
