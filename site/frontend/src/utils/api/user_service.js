@@ -47,7 +47,9 @@ class UserServiceApi {
     getOrganizationProfileById(id) {
         return this._request(`${this._baseUrlWithoutApi}/profile-organization/${id}`, {
             method: "GET",
-            headers: this._headers,
+            headers: {
+                "Authorization":  `Bearer ${localStorage.getItem("token")}`,
+            }
         });
     }
 
@@ -97,13 +99,12 @@ class UserServiceApi {
          
         const headers = {
             'Authorization': `Bearer ${token}`
-            // Не устанавливаем Content-Type - браузер сделает это автоматически с правильным boundary
         };
         
         return this._request(`${this._baseUrl}/profile`, {
             method: "PUT",
             headers,
-            body: formData, // FormData передается как есть
+            body: formData,
         });
     }
 
@@ -131,9 +132,9 @@ class UserServiceApi {
         });
     }
 
-    getUsersInOrganization(token) {
+    getUsersInOrganization(token, page) {
         this._updateToken(token);
-        return this._request(`${this._baseUrl}/organization/users`, {
+        return this._request(`${this._baseUrl}/organization/users/${page}`, {
             method: "GET",
             headers: this._headers,
         });
