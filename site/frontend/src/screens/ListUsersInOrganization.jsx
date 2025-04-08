@@ -10,17 +10,18 @@ import { Helmet } from 'react-helmet';
 function ListUsersInOrganization() {
     const { token } = useContext(AuthContext);
     const [users, setUsers] = useState([]);
-    //const [countOfPages, setCountOfPages] = useState(0);
-    //const [numberOfPage, setNumberOfPage] = useState(1);
+    const [countOfPages, setCountOfPages] = useState(0);
+    const [numberOfPage, setNumberOfPage] = useState(1);
     const [alert, setAlert] = useState(null);
 
     const fetchUsers = useCallback(
-        (/*page*/) => {
+        (page) => {
             userServiceApi
-                .getUsersInOrganization(token, /*page*/)
+                .getUsersInOrganization(token, page)
                 .then((data) => {
+                    console.log(data);
                     setUsers(data.data || []);
-                    //setCountOfPages(data.totalPages);
+                    setCountOfPages(data.total_pages);
                 })
                 .catch(() => {
                     setAlert({ message: "Ошибка при загрузке пользователей", severity: "error" });
@@ -31,19 +32,17 @@ function ListUsersInOrganization() {
     );
 
     useEffect(() => {
-        fetchUsers(/*numberOfPage*/);
-    }, [/*numberOfPage,*/ fetchUsers]);
+        fetchUsers(numberOfPage);
+    }, [numberOfPage, fetchUsers]);
 
     const handleCloseAlert = (event, reason) => {
         if (reason === "clickaway") return;
         setAlert(null);
     };
 
-    // const handlePageChange = (page) => {
-    //     setNumberOfPage(page);
-    // };
-
-    console.log(users);
+    const handlePageChange = (page) => {
+        setNumberOfPage(page);
+    };
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -56,11 +55,11 @@ function ListUsersInOrganization() {
                     {users.length !== 0 ? (
                         <>
                             <Users users={users} />
-                            {/* <Pagination
+                            {<Pagination
                                 numberOfPageOut={numberOfPage}
                                 countOfPages={countOfPages}
                                 onPageChange={handlePageChange}
-                            /> */}
+                            />}
                         </>
                     ) : (
                         <div className="flex justify-center items-center h-64">
