@@ -89,6 +89,7 @@ func startHTTPServer() {
 		protected.POST("/attach-organization/:id", h.AttachUserToOrganization)
 		protected.POST("/detach-organization/:id", h.DetachUserToOrganization)
 		protected.PUT("/organization/accept/:user_id", h.AcceptUserAttachment)
+		protected.PUT("/organization/reject/:user_id", h.RejectUserAttachment)
 		protected.GET("/organizations-users-list/:page", h.GetAllUsersAndOrganizations)
 		protected.PUT("/block-user/:id", h.BlockUser)
 		protected.PUT("/unblock-user/:id", h.UnblockUser)

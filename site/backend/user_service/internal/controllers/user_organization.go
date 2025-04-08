@@ -128,6 +128,34 @@ func (h *Handler) AcceptUserAttachment(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "User successfully accepted into organization"})
 }
 
+func (h *Handler) RejectUserAttachment(c *gin.Context) {
+	userID, err := utils.GetUserIDFromToken(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
+		return
+	}
+
+	org, err := models.FindOrganizationByUserIdOwner(strconv.Itoa(int(userID)))
+	if err != nil {
+		c.JSON(http.StatusForbidden, gin.H{"message": "You are not the owner of any organization"})
+		return
+	}
+
+	userIDParam := c.Param("user_id")
+	if userIDParam == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "User ID is required"})
+		return
+	}
+
+	err = models.RejectAttachment(userIDParam, strconv.Itoa(int(org.ID)))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to reject user attachment", "error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "User successfully accepted into organization"})
+}
+
 func (h *Handler) GetUsersInOrganization(c *gin.Context) {
 	userID, err := utils.GetUserIDFromToken(c)
 	if err != nil {
@@ -141,7 +169,7 @@ func (h *Handler) GetUsersInOrganization(c *gin.Context) {
 		page = 1
 	}
 
-	limit := 5
+	limit := 6
 	offset := (page - 1) * limit
 	org, err := models.FindOrganizationByUserIdOwner(strconv.Itoa(int(userID)))
 	if err != nil {
