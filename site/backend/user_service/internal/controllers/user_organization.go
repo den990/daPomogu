@@ -6,6 +6,7 @@ import (
 	"backend/user_service/internal/utils"
 	"encoding/base64"
 	"github.com/gin-gonic/gin"
+	"math"
 	"net/http"
 	"strconv"
 )
@@ -134,22 +135,31 @@ func (h *Handler) GetUsersInOrganization(c *gin.Context) {
 		return
 	}
 
+	pageStr := c.Param("page")
+	page, err := strconv.Atoi(pageStr)
+	if err != nil || page <= 0 {
+		page = 1
+	}
+
+	limit := 5
+	offset := (page - 1) * limit
 	org, err := models.FindOrganizationByUserIdOwner(strconv.Itoa(int(userID)))
 	if err != nil {
 		c.JSON(http.StatusForbidden, gin.H{"message": "You are not the owner of any organization"})
 		return
 	}
 
-	users, err := models.FindUsersByOrganizationId(strconv.Itoa(int(org.ID)))
+	users, total, err := models.FindUsersByOrganizationId(strconv.Itoa(int(org.ID)), limit, offset)
 	if err != nil {
 		c.JSON(http.StatusForbidden, gin.H{"message": err})
 		return
 	}
 
 	var result []map[string]interface{}
-
 	for _, user := range users {
-		avatar, err := h.grpcClient.GetAvatarImage(c.Request.Context(), &pb.DownloadImageRequest{Target: &pb.DownloadImageRequest_UserId{UserId: uint64(user.ID)}})
+		avatar, err := h.grpcClient.GetAvatarImage(c.Request.Context(), &pb.DownloadImageRequest{
+			Target: &pb.DownloadImageRequest_UserId{UserId: uint64(user.ID)},
+		})
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to get avatar"})
 			return
@@ -165,5 +175,10 @@ func (h *Handler) GetUsersInOrganization(c *gin.Context) {
 		})
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": result})
+	totalPages := int(math.Ceil(float64(total) / float64(limit)))
+
+	c.JSON(http.StatusOK, gin.H{
+		"data":        result,
+		"total_pages": totalPages,
+	})
 }

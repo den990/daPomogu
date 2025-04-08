@@ -181,15 +181,16 @@ func FindOrganizationsByUserId(userId string) ([]UserOrganization, error) {
 	return userOrganization, nil
 }
 
-func FindUsersByOrganizationId(orgId string) ([]User, error) {
+func FindUsersByOrganizationId(orgId string, limit, offset int) ([]User, int64, error) {
 	var userOrganizations []UserOrganization
-	if err := db.DB.Where("organization_id = ? AND is_owner = ? AND is_accepted = ?", orgId, false, true).
+	if err := db.DB.
+		Where("organization_id = ? AND is_owner = ? AND is_accepted = ?", orgId, false, true).
 		Find(&userOrganizations).Error; err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	if len(userOrganizations) == 0 {
-		return nil, errors.New("no users found for this organization")
+		return nil, 0, errors.New("no users found for this organization")
 	}
 
 	var userIDs []uint
@@ -197,12 +198,23 @@ func FindUsersByOrganizationId(orgId string) ([]User, error) {
 		userIDs = append(userIDs, userOrganization.UserID)
 	}
 
-	var users []User
-	if err := db.DB.Where("id IN ?", userIDs).Find(&users).Error; err != nil {
-		return nil, err
+	var total int64
+	if err := db.DB.Model(&User{}).
+		Where("id IN ?", userIDs).
+		Count(&total).Error; err != nil {
+		return nil, 0, err
 	}
 
-	return users, nil
+	var users []User
+	if err := db.DB.
+		Where("id IN ?", userIDs).
+		Limit(limit).
+		Offset(offset).
+		Find(&users).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return users, total, nil
 }
 
 func CountVolunteers(orgId string) (int64, error) {
