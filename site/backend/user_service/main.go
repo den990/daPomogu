@@ -93,7 +93,7 @@ func startHTTPServer() {
 		protected.PUT("/block-user/:id", h.BlockUser)
 		protected.PUT("/unblock-user/:id", h.UnblockUser)
 		protected.GET("/organization/requests-to-apply", h.GetRequestsToApply)
-		protected.GET("/organization/users", h.GetUsersInOrganization)
+		protected.GET("/organization/users/:page", h.GetUsersInOrganization)
 		protected.GET("/admin/statistic", h.GetStatisticForAdmin)
 	}
 
