@@ -13,6 +13,10 @@ function PublicAccountOrganization() {
     const [imageUrl, setImageUrl] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
+    const updateProfile = (updatedProfile) => {
+        setProfile(updatedProfile);
+    };
+
     useEffect(() => {
         setIsLoading(true);
         
@@ -56,7 +60,11 @@ function PublicAccountOrganization() {
                 </div>
             ) : (
                 <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                    <Profile profile={profile} imageUrl={imageUrl} />
+                    <Profile 
+                        profile={profile} 
+                        imageUrl={imageUrl} 
+                        updateProfile={updateProfile} 
+                    />
                     <ActiveTasks tasks={tasks} />
                 </main>
             )}
