@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { useNavigate, Link } from "react-router";
 import ROUTES from "../../constants/routes";
 import useCreateTaskFormValidation from "../../hooks/useCreateTaskFormValidation";
 import { useContext, useEffect, useState } from "react";
@@ -15,6 +15,7 @@ function TaskForm({ setIsPopUpVisible }) {
     const { token } = useContext(AuthContext);
     const [error, setError] = useState("");
     const [address, setAddress] = useState("");
+    const navigate = useNavigate(); // Добавлено
 
     useEffect(() => {
         if (!values.task_type) setValues({ ...values, task_type: "1" });
@@ -82,6 +83,26 @@ function TaskForm({ setIsPopUpVisible }) {
         try {
             await taskServiceApi.postCreateTask(token, payload);
             setIsPopUpVisible(true);
+            
+            // Сбрасываем форму
+            setValues({
+                name: "",
+                task_type: "1",
+                description: "",
+                address: "",
+                date: "",
+                time: "",
+                participants_count: "",
+                max_score: "",
+                coordinate_ids: [],
+                category_ids: []
+            });
+            setAddress("");
+
+            // Перенаправляем через 2 секунды (можно убрать, если не нужно)
+            setTimeout(() => {
+                navigate(ROUTES.ACCOUNT_ORGANIZATION); // или другой маршрут
+            }, 2000);
         } catch (error) {
             setError("Произошла ошибка при создании задания. Попробуйте снова");
         }
