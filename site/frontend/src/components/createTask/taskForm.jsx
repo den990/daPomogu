@@ -174,6 +174,17 @@ function TaskForm({ setIsPopUpVisible }) {
 
                 <div id="datetime-field" className="grid grid-cols-2 gap-4">
                     <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Время</label>
+                        <input
+                            type="time"
+                            name="time"
+                            value={values.time || ""}
+                            onChange={handleChange}
+                            required
+                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-200 focus:border-blue-200"
+                        />
+                    </div>
+                    <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Дата</label>
                         <input
                             type="date"
@@ -185,17 +196,6 @@ function TaskForm({ setIsPopUpVisible }) {
                             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-200 focus:border-blue-200"
                         />
                         {errors.date && <span className="text-red-600 text-xs">{errors.date}</span>}
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Время</label>
-                        <input
-                            type="time"
-                            name="time"
-                            value={values.time || ""}
-                            onChange={handleChange}
-                            required
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-200 focus:border-blue-200"
-                        />
                     </div>
                 </div>
 
