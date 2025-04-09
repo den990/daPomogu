@@ -12,6 +12,7 @@ function Content({ taskId }) {
     const [userDetails, setUserDetails] = useState(null);
     const [alert, setAlert] = useState(null);
     const task_id = Number(taskId);
+    const [userDetailsAvatar, setUserDetailsAvatar] = useState(null);
 
     const fetchResponses = useCallback(() => {
         if (!token) return;
@@ -51,6 +52,14 @@ function Content({ taskId }) {
                     severity: "error",
                 });
             }
+            userServiceApi
+                .getAvatarById(userId)
+                .then(blob => {
+                    const url = URL.createObjectURL(blob);
+                    setUserDetailsAvatar(url);
+                    
+                })
+                .catch(() => setAlert({message: "Ошибка загрузки аватар заявки", severity: "error"}));
         } catch (error) {
             setAlert({
                 message: "Ошибка загрузки информации о волонтёре",
@@ -92,6 +101,8 @@ function Content({ taskId }) {
         setAlert(null);
     };
 
+    console.log(responses);
+
     return (
         <main className="container mx-auto px-4 py-4 md:py-6">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6">
@@ -107,7 +118,7 @@ function Content({ taskId }) {
                                 >
                                     <div className="flex items-center gap-2 md:gap-3">
                                         <img
-                                            src={`https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=${response.User.id}`}
+                                            src={response.avatar}
                                             className="h-8 w-8 md:h-10 md:w-10 rounded-full"
                                             alt="Фото пользователя"
                                         />
@@ -127,7 +138,7 @@ function Content({ taskId }) {
                             <div className="flex flex-col md:flex-row items-start justify-between gap-3 md:gap-4 mb-4 md:mb-6">
                                 <div className="flex items-center gap-3 md:gap-4 w-full">
                                     <img
-                                        src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=2"
+                                        src={userDetailsAvatar}
                                         className="h-12 w-12 md:h-16 md:w-16 rounded-full"
                                         alt="Фото пользователя"
                                     />

@@ -2,6 +2,7 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthProvider";
 import { Alert, Snackbar } from "@mui/material";
 import { taskServiceApi } from "../../utils/api/task_service";
+import { userServiceApi } from "../../utils/api/user_service";
 
 function Content({ taskId }) {
     const { token } = useContext(AuthContext);
@@ -13,6 +14,7 @@ function Content({ taskId }) {
     const [score, setScore] = useState("");
     const [alert, setAlert] = useState(null);
     const task_id = Number(taskId);
+    const [userDetailsAvatar, setUserDetailsAvatar] = useState(null);
 
     const fetchApproves = useCallback(() => {
         if (!token) return;
@@ -50,6 +52,15 @@ function Content({ taskId }) {
                 if (data.approve?.file) {
                     fetchImage(data.approve.file);
                 }
+                console.log(data);
+                userServiceApi
+                        .getAvatarByID(data.approve.user.id)
+                        .then(blob => {
+                            const url = URL.createObjectURL(blob);
+                            setUserDetailsAvatar(url);
+                            
+                        })
+                        .catch(() => setAlert({message: "Ошибка загрузки аватар заявки", severity: "error"}));
             })
             .catch(() => {
                 setAlert({ message: "Ошибка при загрузке инфромации о подтверждении", severity: "error" });
@@ -131,7 +142,7 @@ function Content({ taskId }) {
                                 >
                                     <div className="flex items-center gap-2 md:gap-3">
                                         <img
-                                            src={`https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=${approve.User.id}`}
+                                            src={approve.avatar}
                                             className="h-8 w-8 md:h-10 md:w-10 rounded-full"
                                             alt="Фото пользователя"
                                         />
@@ -151,7 +162,7 @@ function Content({ taskId }) {
                             <div className="flex flex-col md:flex-row items-start justify-between gap-3 md:gap-4 mb-4 md:mb-6">
                                 <div className="flex items-center gap-3 md:gap-4 w-full">
                                     <img
-                                        src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=2"
+                                        src={userDetailsAvatar}
                                         className="h-12 w-12 md:h-16 md:w-16 rounded-full"
                                         alt="Фото пользователя"
                                     />
