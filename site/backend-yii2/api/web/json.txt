@@ -1,0 +1,64 @@
+api\models\forms\UserForm Object
+(
+    [password] => 
+    [avatar] => 
+    [_attributes:yii\db\BaseActiveRecord:private] => Array
+        (
+            [id] => 4
+            [email] => white@mail.ru
+            [phone] => 79371134777
+            [surname] => white
+            [name] => white
+            [patronymic] => white
+            [date_of_birthday] => 2000-02-29
+            [address] => null
+            [password_hash] => $2y$13$Cl6p6pEhs9L6aCddKKbLMecNkZJN1iYodyI0Y7tXsXEevmxzzQmvO
+            [is_admin] => 0
+            [is_blocked] => 0
+            [avatar_id] => 12
+            [created_at] => 2025-04-29 14:07:04
+            [updated_at] => 2025-04-29 14:07:04
+        )
+
+    [_oldAttributes:yii\db\BaseActiveRecord:private] => Array
+        (
+            [id] => 4
+            [email] => white@mail.ru
+            [phone] => 79371134777
+            [surname] => white
+            [name] => white
+            [patronymic] => white
+            [date_of_birthday] => 2000-02-29
+            [address] => null
+            [password_hash] => $2y$13$Cl6p6pEhs9L6aCddKKbLMecNkZJN1iYodyI0Y7tXsXEevmxzzQmvO
+            [is_admin] => 0
+            [is_blocked] => 0
+            [avatar_id] => 12
+            [created_at] => 2025-04-29 14:07:04
+            [updated_at] => 2025-04-29 14:07:04
+        )
+
+    [_related:yii\db\BaseActiveRecord:private] => Array
+        (
+        )
+
+    [_relationsDependencies:yii\db\BaseActiveRecord:private] => Array
+        (
+        )
+
+    [_errors:yii\base\Model:private] => 
+    [_validators:yii\base\Model:private] => 
+    [_scenario:yii\base\Model:private] => default
+    [_events:yii\base\Component:private] => Array
+        (
+        )
+
+    [_eventWildcards:yii\base\Component:private] => Array
+        (
+        )
+
+    [_behaviors:yii\base\Component:private] => Array
+        (
+        )
+
+)

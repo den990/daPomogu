@@ -8,10 +8,18 @@ function Comments({ task }) {
     const [comment, setComment] = useState("");
 
     useEffect(() => {
-        const ws = new WebSocket(`wss://task-service.dapomogu.tw1.su/ws?roomID=${task.id}&token=${token}`);
+        const ws = new WebSocket("ws://localhost:8081/ws");
 
         ws.onopen = () => {
             console.log("✅ Соединение установлено");
+
+            const initMessage = {
+                action: "SetUser",
+                token: token,
+                room_id: task.id,
+            };
+            ws.send(JSON.stringify(initMessage));
+
             getMessages(ws);
         };
 
@@ -49,10 +57,11 @@ function Comments({ task }) {
     const sendMessage = () => {
         if (socket && socket.readyState === WebSocket.OPEN) {
             const message = {
-                type: "Create",
-                task_id: Number(task.id),
+                action: "CreateComment",
                 data: comment,
                 user_id: Number(id),
+                token: token,
+                room_id: Number(task.id),
             };
             socket.send(JSON.stringify(message));
             console.log("📤 Сообщение отправлено:", message);
@@ -66,10 +75,14 @@ function Comments({ task }) {
     const getMessages = (ws) => {
         if (ws && ws.readyState === WebSocket.OPEN) {
             const message = {
-                type: "Get",
-                task_id: Number(task.id),
-                // eslint-disable-next-line no-useless-concat
-                data: "{\n" + '  "limit": 100,\n' + '  "page": 1,\n' + '  "rows": []\n' + "}",
+                action: "GetComments",
+                token: token,
+                room_id: Number(task.id),
+                data: JSON.stringify({
+                    limit: 100,
+                    page: 1,
+                    rows: [],
+                }),
                 user_id: Number(id),
             };
             ws.send(JSON.stringify(message));
@@ -88,13 +101,13 @@ function Comments({ task }) {
                         <div key={message.comment.ID} className="bg-white p-4 rounded-lg shadow-md border">
                             <div className="flex items-center gap-3 mb-3">
                                 <img
-                                    src="https://api.dicebear.com/7.x/notionists/svg?scale=200&amp;seed=789"
                                     className="w-8 h-8 rounded-full"
                                     alt="person"
+                                    src={message.user.avatar}
                                 />
                                 <div>
                                     <div className="text-sm md:text-base font-medium">
-                                        {message.user.id === id ? "Вы" : message.user.name + " " + message.user.surname}
+                                        {message.user.id === id ? "Вы" : message.user.name}
                                     </div>
                                     <div className="text-xs md:text-sm text-neutral-500">
                                         {new Date(message.comment.CreatedAt).toLocaleString()}

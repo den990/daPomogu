@@ -2,9 +2,28 @@ import React, { useContext } from "react";
 import ROUTES from "../../constants/routes";
 import { Link } from "react-router";
 import { AuthContext } from "../../context/AuthProvider";
+import { chatServiceApi } from "../../utils/api/chat_service";
+import { useNavigate } from "react-router-dom";
 
 function Profile({ profile, imageUrl }) {
-    const { role } = useContext(AuthContext);
+    const { role, token, id, logout } = useContext(AuthContext);
+    const navigate = useNavigate();
+    if (!token)
+        return
+
+    const handleCreateChat = async () => {
+        try {
+            const payload = {
+                user_id: profile.id,
+            };
+            console.log(payload);
+            await chatServiceApi.postCreateChat(token, payload, logout);
+
+            navigate(`${ROUTES.CHAT}`);
+        } catch (error) {
+            console.error("Ошибка при создании чата:", error);
+        }
+    };
 
     return (
         <div id="profile-section" className="md:col-span-1">
@@ -40,13 +59,14 @@ function Profile({ profile, imageUrl }) {
                         <div className="text-2xl font-bold text-red-600">{profile ? profile.count_tasks : "0"}</div>
                         <div className="text-sm text-gray-600">Выполнено заданий</div>
                     </div>
-                    {role !== "organization" && (
-                        <Link
-                            to={ROUTES.CHAT}
+                    {role !== "organization" && profile?.id !== id && (
+                        <button
+                            onClick={handleCreateChat}
                             className="w-full mt-4 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700"
+
                         >
                             Написать сообщение
-                        </Link>
+                        </button>
                     )}
                 </div>
             </div>

@@ -8,7 +8,7 @@ import { taskServiceApi } from "../utils/api/task_service.js";
 import { Helmet } from 'react-helmet';
 
 function Tasks() {
-    const { token } = useContext(AuthContext);
+    const { token, logout } = useContext(AuthContext);
     const [tasks, setTasks] = useState([]);
     const [countOfPages, setCountOfPages] = useState(0);
     const [numberOfPage, setNumberOfPage] = useState(1);
@@ -19,12 +19,11 @@ function Tasks() {
         (page) => {
             if (token) {
                 taskServiceApi
-                    .getMyOpenedTasks(token, page)
+                    .getMyOpenedTasks(token, page, logout)
                     .then((response) => {
-                        const { rows, totalPages } = response.data;
-                        setTasks(rows || []);
-                        setCountOfPages(totalPages);
-                        console.log(response.data);
+                        const { data, total_pages } = response.data;
+                        setTasks(data || []);
+                        setCountOfPages(total_pages);
                     })
                     .catch(() => {
                         setAlert({ message: "Ошибка при загрузке заданий", severity: "error" });
@@ -39,11 +38,11 @@ function Tasks() {
         (page) => {
             if (token) {
                 taskServiceApi
-                    .getMyClosedTasks(token, page)
+                    .getMyClosedTasks(token, page, logout)
                     .then((response) => {
-                        const { rows, totalPages } = response.data;
-                        setTasks(rows || []);
-                        setCountOfPages(totalPages);
+                        const { data, total_pages } = response.data;
+                        setTasks(data || []);
+                        setCountOfPages(total_pages);
                     })
                     .catch(() => {
                         setAlert({ message: "Ошибка при загрузке заданий", severity: "error" });
@@ -57,7 +56,7 @@ function Tasks() {
     const handleDeleteTask = (id) => {
         if (token) {
             taskServiceApi
-                .deleteTask(token, id)
+                .deleteTask(token, id, logout)
                 .then(() => {
                     if (activeTab === 'opened') {
                         fetchOpenedTasks(numberOfPage);

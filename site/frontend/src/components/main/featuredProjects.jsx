@@ -5,15 +5,15 @@ import { AuthContext } from "../../context/AuthProvider";
 import { taskServiceApi } from "../../utils/api/task_service";
 
 function FeaturedProjects() {
-    const { token } = useContext(AuthContext);
+    const { token, logout } = useContext(AuthContext);
     const [tasks, setTasks] = useState([]);
 
     const fetchTasks = useCallback(
         () => {
             taskServiceApi
-                .getAllTasks(token, 1)
+                .getAllTasks(token, 1, logout)
                 .then((data) => {
-                    setTasks(data.data || []);
+                    setTasks(data.data.data || []);
                     console.log(data);
                 })
                 .catch((error) => {

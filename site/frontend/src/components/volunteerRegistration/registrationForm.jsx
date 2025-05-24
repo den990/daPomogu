@@ -3,6 +3,7 @@ import { registerVolunteer } from "../../utils/auth";
 import { useState } from "react";
 import ROUTES from "../../constants/routes";
 import useFormWithValidation from "../../hooks/useFormWithValidation";
+import RoleHeader from "../RoleHeader/RoleHeader";
 
 function RegistrationForm({ setIsPopUpVisible }) {
     const { values, errors, isValid, handleChange } = useFormWithValidation("volunteer");
@@ -32,7 +33,7 @@ function RegistrationForm({ setIsPopUpVisible }) {
             );
             setIsPopUpVisible(true);
         } catch (error) {
-            setError("Произошла ошибка при регистрации. Попробуйте снова");
+            setError(error.message);
         }
     };
 
@@ -201,6 +202,17 @@ function RegistrationForm({ setIsPopUpVisible }) {
                     >
                         Зарегистрироваться
                     </button>
+                    <div className="mt-4 md:hidden text-center">
+                        <p className="text-sm text-gray-600">
+                            Представляете организацию?
+                            <Link
+                                to={ROUTES.REGISTER_ORGANIZATION}
+                                className="ml-1 font-medium text-red-600 hover:text-red-500"
+                            >
+                                Зарегистрировать организацию
+                            </Link>
+                        </p>
+                    </div>
                 </form>
                 <p className="mt-6 text-center text-sm text-gray-600">
                     Уже есть аккаунт?

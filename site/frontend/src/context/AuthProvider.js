@@ -6,6 +6,7 @@ export const AuthContext = createContext({
     isAuthenticated: false,
     token: null,
     profile: null,
+    role: null,
     login: () => {},
     logout: () => {},
     updateProfile: () => {},
@@ -40,7 +41,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const logout = () => {
-        localStorage.removeItem("token"); // Удаляем из localStorage
+        localStorage.removeItem("token");
         setToken(null);
         setIsAuthenticated(false);
         setProfile(null);
@@ -76,32 +77,48 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         if (!(token && role)) return;
-        userServiceApi.getMyAvatar(token)
-            .then((blob) => {
-                const url = URL.createObjectURL(blob);
-                setImageUrl(url);
-            })
-            .catch(() => {
-                console.log({ message: "Ошибка при загрузке фото пользователя", severity: "error" });
-            });
         if (role === "organization") {
+            userServiceApi.getMyOrganizationAvatar(token, logout)
+                .then((blob) => {
+                    const url = URL.createObjectURL(blob);
+                    setImageUrl(url);
+                })
+                .catch(() => {
+                    console.log({ message: "Ошибка при загрузке фото пользователя", severity: "error" });
+                });
             userServiceApi
-                .getMyOrganizationProfile(token)
-                .then((data) => setProfile(data))
+                .getMyOrganizationProfile(token, logout)
+                .then((data) => setProfile(data.data))
                 .catch((error) => {
                     console.error("Ошибка при получении профиля организации:", error);
                 });
         } else if (role === "volunteer") {
+            userServiceApi.getMyAvatar(token, logout)
+                .then((blob) => {
+                    const url = URL.createObjectURL(blob);
+                    setImageUrl(url);
+                })
+                .catch(() => {
+                    console.log({ message: "Ошибка при загрузке фото пользователя", severity: "error" });
+                });
             userServiceApi
                 .getMyVolonteerProfile(token)
-                .then((data) => setProfile(data))
+                .then((data) => {setProfile(data.data)})
                 .catch((error) => {
                     console.error("Ошибка при получении профиля волонтёра:", error);
                 });
         } else if (role === "admin") {
+            userServiceApi.getMyAvatar(token, logout)
+                .then((blob) => {
+                    const url = URL.createObjectURL(blob);
+                    setImageUrl(url);
+                })
+                .catch(() => {
+                    console.log({ message: "Ошибка при загрузке фото пользователя", severity: "error" });
+                });
             userServiceApi
                 .getMyVolonteerProfile(token)
-                .then((data) => setProfile(data))
+                .then((data) => {setProfile(data.data)})
                 .catch((error) => {
                     console.error("Ошибка при получении профиля админа:", error);
                 });

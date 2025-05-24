@@ -7,13 +7,19 @@ import { AuthContext } from "../../context/AuthProvider";
 import { taskServiceApi } from "../../utils/api/task_service";
 
 export default function CategoryMultiSelect({ value, onChange }) {
-    const { token } = useContext(AuthContext);
+    const { token, logout } = useContext(AuthContext);
     const [options, setOptions] = useState([]);
 
     useEffect(() => {
         taskServiceApi
-            .getAllCategories(token)
-            .then((data) => setOptions(data.data || []))
+            .getAllCategories(token, logout)
+            .then((data) => {
+                const transformedData = Object.entries(data.data || {}).map(([id, name]) => ({
+                    ID: id,
+                    Name: name,
+                }));
+                setOptions(transformedData);
+            })
             .catch((err) => console.error("Ошибка получения всех категорий:", err));
     }, [token]);
 

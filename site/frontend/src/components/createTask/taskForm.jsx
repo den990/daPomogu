@@ -1,166 +1,193 @@
-import { Link } from "react-router";
-import ROUTES from "../../constants/routes";
-import useCreateTaskFormValidation from "../../hooks/useCreateTaskFormValidation";
-import { useContext, useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 import { taskServiceApi } from "../../utils/api/task_service";
+import { useContext } from "react";
 import { AuthContext } from "../../context/AuthProvider";
-import CategoryMultiSelect from "./CategoryMultiSelect";
 import CoordinatorsMultiSelect from "./CoordinatorsMultiSelect";
-import { Alert, Fade } from "@mui/material";
+import CategoryMultiSelect from "./CategoryMultiSelect";
+import useCreateTaskFormValidation from "../../hooks/useCreateTaskFormValidation";
 import { AddressSuggestions } from "react-dadata";
+import { Alert, Fade } from "@mui/material";
+import ROUTES from "../../constants/routes";
 import "react-dadata/dist/react-dadata.css";
 
-function TaskForm({ setIsPopUpVisible }) {
-    const { values, errors, isValid, handleChange, setValues } = useCreateTaskFormValidation();
-    const { token } = useContext(AuthContext);
+const DADATA_TOKEN = "4851105aa090b15531d01ede553fc2339ebd218f";
+
+export default function TaskForm({ initialData = null, isEditMode = false, onSuccess }) {
+    const { values, errors, isValid, handleChange, setValues, validateAll } = useCreateTaskFormValidation();
+    const { token, logout } = useContext(AuthContext);
+    const navigate = useNavigate();
+
+    const [address, setAddress] = useState(null);
     const [error, setError] = useState("");
-    const [address, setAddress] = useState("");
+
 
     useEffect(() => {
-        if (!values.task_type) setValues({ ...values, task_type: "1" });
+        if (!initialData) return;
+        const {
+            name, type_id, description, task_date,
+            participants_count, max_score, coordinators, categories, location
+        } = initialData;
+
+        const utcDate = new Date(task_date.replace(" ", "T") + "Z");
+        const pad = n => String(n).padStart(2, "0");
+        const newValues = {
+            name,
+            task_type: String(type_id),
+            description,
+            date: `${utcDate.getFullYear()}-${pad(utcDate.getMonth()+1)}-${pad(utcDate.getDate())}`,
+            time: `${pad(utcDate.getHours())}:${pad(utcDate.getMinutes())}`,
+            participants_count: String(participants_count),
+            max_score: String(max_score),
+            coordinate_ids: coordinators.map(c => ({ id: c.id, name: c.name, surname: c.surname })),
+            category_ids: categories.map(c => ({ ID: c.id, Name: c.name })),
+        };
+
+        setValues(prev => ({ ...prev, ...newValues }));
+
+        const [lat, lon] = location.split(",").map(s => s.trim());
+        setAddress({ value: location, data: { geo_lat: lat, geo_lon: lon } });
+
+        validateAll({ ...values, ...newValues, address: location });
+
+        fetch("https://suggestions.dadata.ru/suggestions/api/4_1/rs/geolocate/address", {
+            method: "POST",
+            headers: {
+                "Content-Type":  "application/json",
+                "Accept":        "application/json",
+                "Authorization": `Token ${DADATA_TOKEN}`,
+            },
+            body: JSON.stringify({ lat: parseFloat(lat), lon: parseFloat(lon), count: 1 }),
+        })
+            .then(res => res.json())
+            .then(json => {
+                const sug = json?.suggestions[0];
+                if (sug) {
+                    setAddress({
+                        value: sug.value,
+                        data: {
+                            geo_lat: lat,
+                            geo_lon: lon
+                        }
+                    });
+                }
+            })
+            .catch(console.error);
+    }, [initialData, setValues]);
+
+
+
+    useEffect(() => {
         if (address) {
-            setValues({ ...values, address: address.value });
+            setValues(v => ({ ...v, address: address.value }));
         }
-    }, [values, setValues, address]);
+    }, [address, setValues]);
 
-    const handleCategoryChange = (newCategories) => {
-        setValues({ ...values, category_ids: newCategories });
-    };
-
-    const handleCoordinatorsChange = (newCoordinators) => {
-        setValues({ ...values, coordinate_ids: newCoordinators });
-    };
-
-    const handleSubmit = async (e) => {
+    const handleSubmit = async e => {
         e.preventDefault();
         setError("");
-
         if (!isValid) {
-            return setError("Пожалуйста, заполните все обязательные поля корректно");
+            return setError("Заполните все обязательные поля корректно");
         }
 
-        const {
-            name,
-            task_type,
-            description,
-            date,
-            time,
-            participants_count,
-            max_score,
-            coordinate_ids,
-            category_ids,
-        } = values;
 
-        const latitude = address.data.geo_lat;
-        const longitude = address.data.geo_lon;
-        const location = `${latitude}, ${longitude}`;
+        const [y, m, d] = values.date.split("-");
+        const [hh, mm] = values.time.split(":");
+        const local = new Date(y, m-1, d, hh, mm);
+        if (local < new Date()) {
+            return setError("Дата и время не могут быть в прошлом");
+        }
 
-        const task_date = date && time ? new Date(`${date}T${time}`) : null;
-
-        if (task_date && task_date < new Date()) {
-            return setError("Дата и время не могут быть раньше текущего момента");
-        }
-        if (!coordinate_ids || coordinate_ids.length === 0) {
-            return setError("Нужно выбрать хотя бы одного координатора");
-        }
-        if (!category_ids || category_ids.length === 0) {
-            return setError("Нужно выбрать хотя бы одну категорию");
-        }
+        const iso = local.toISOString();
+        const task_date = iso.split(".")[0]
+            .replace("T", " ");
 
         const payload = {
-            name: name || "",
-            task_type: Number(task_type),
-            description: description || "",
-            location: location || "",
+            name: values.name,
+            type_id:            Number(values.task_type),
+            description:        values.description,
+            location:           `${address.data.geo_lat}, ${address.data.geo_lon}`,
             task_date,
-            participants_count: Number(participants_count),
-            max_score: Number(max_score),
-            coordinate_ids: coordinate_ids.map((coord) => coord.id),
-            category_ids: category_ids.map((cat) => cat.ID),
+            participants_count: Number(values.participants_count),
+            max_score:          Number(values.max_score),
+            coordinate_ids:     values.coordinate_ids.map(c => c.id),
+            category_ids:       values.category_ids.map(c => c.ID),
         };
 
         try {
-            await taskServiceApi.postCreateTask(token, payload);
-            setIsPopUpVisible(true);
-        } catch (error) {
-            setError("Произошла ошибка при создании задания. Попробуйте снова");
+            if (isEditMode) {
+                await taskServiceApi.putUpdateTask(token, payload, initialData.id, logout);
+            } else {
+                await taskServiceApi.postCreateTask(token, payload, logout);
+            }
+            onSuccess?.();
+        } catch (err) {
+            setError(isEditMode
+                ? "Ошибка при обновлении задания: "  + err.message
+                : "Ошибка при создании задания: " + err.message
+            );
         }
     };
 
     return (
         <form id="task-form" className="bg-white rounded-lg shadow-md p-6" onSubmit={handleSubmit}>
             <div className="space-y-6">
-                <div id="task-name-field" className="form-group">
+                {/* Название */}
+                <div className="form-group">
                     <label className="block text-sm font-medium text-gray-700 mb-2">Название задания</label>
                     <input
-                        type="text"
-                        name="name"
-                        value={values?.name || ""}
-                        onChange={handleChange}
-                        required
-                        minLength={3}
+                        type="text" name="name" value={values.name||""} onChange={handleChange}
+                        required minLength={3}
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-200 focus:border-blue-200"
                         placeholder="Введите название"
                     />
                     {errors.name && <span className="text-red-600 text-xs">{errors.name}</span>}
                 </div>
 
-                <div id="task-type-field" className="form-group">
+                {/* Тип */}
+                <div className="form-group">
                     <label className="block text-sm font-medium text-gray-700 mb-2">Тип задания</label>
                     <select
-                        name="task_type"
-                        value={values?.task_type || ""}
-                        onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-200 bg-white"
+                        name="task_type" value={values.task_type||""} onChange={handleChange}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-200 focus:border-blue-200 bg-white"
                     >
                         <option value="1">Открытый</option>
                         <option value="2">Закрытый</option>
                     </select>
                 </div>
 
-                <div id="description-field" className="form-group">
+                {/* Описание */}
+                <div className="form-group">
                     <label className="block text-sm font-medium text-gray-700 mb-2">Описание</label>
                     <textarea
-                        rows="4"
-                        name="description"
-                        value={values?.description || ""}
-                        onChange={handleChange}
-                        required
-                        minLength={3}
+                        rows="4" name="description" value={values.description||""} onChange={handleChange}
+                        required minLength={3}
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-200 focus:border-blue-200"
                         placeholder="Введите описание"
-                    ></textarea>
+                    />
                     {errors.description && <span className="text-red-600 text-xs">{errors.description}</span>}
                 </div>
 
-                <div id="location-field" className="form-group">
+                {/* Местоположение */}
+                <div className="form-group">
                     <label className="block text-sm font-medium text-gray-700 mb-2">Местоположение</label>
-                    <div className="w-full space-x-4">
-                        <AddressSuggestions
-                            token="4851105aa090b15531d01ede553fc2339ebd218f"
-                            type="text"
-                            name="location"
-                            required
-                            value={address}
-                            onChange={setAddress}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-200 focus:border-blue-200"
-                            placeholder="Введите адрес"
-                            delay={300}
-                        />
-                    </div>
-                    {errors.location && <span className="text-red-600 text-xs">{errors.location}</span>}
+                    <AddressSuggestions
+                        token={DADATA_TOKEN}
+                        value={address}
+                        onChange={setAddress}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-200 focus:border-blue-200"
+                        placeholder="Введите адрес"
+                        minChars={3}
+                    />
                 </div>
 
-                <div id="datetime-field" className="grid grid-cols-2 gap-4">
+                {/* Дата/Время */}
+                <div className="grid grid-cols-2 gap-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Дата</label>
                         <input
-                            type="date"
-                            name="date"
-                            value={values.date || ""}
-                            onChange={handleChange}
-                            required
-                            min={new Date().toISOString().split('T')[0]}
+                            type="date" name="date" value={values.date||""} onChange={handleChange}
+                            min={new Date().toISOString().split("T")[0]}
                             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-200 focus:border-blue-200"
                         />
                         {errors.date && <span className="text-red-600 text-xs">{errors.date}</span>}
@@ -168,87 +195,77 @@ function TaskForm({ setIsPopUpVisible }) {
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Время</label>
                         <input
-                            type="time"
-                            name="time"
-                            value={values.time || ""}
-                            onChange={handleChange}
-                            required
+                            type="time" name="time" value={values.time||""} onChange={handleChange}
                             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-200 focus:border-blue-200"
                         />
+                        {errors.time && <span className="text-red-600 text-xs">{errors.time}</span>}
                     </div>
                 </div>
 
-                <div id="participants-field" className="form-group">
+                {/* Количество участников */}
+                <div className="form-group">
                     <label className="block text-sm font-medium text-gray-700 mb-2">Количество участников</label>
                     <input
-                        type="number"
-                        min="1"
-                        name="participants_count"
-                        value={values.participants_count || ""}
-                        onChange={handleChange}
+                        type="number" min="1" name="participants_count"
+                        value={values.participants_count||""} onChange={handleChange}
                         required
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-200 focus:border-blue-200"
-                        placeholder="Выберите необходимое количество участников"
                     />
-                    {errors.participants_count && (
-                        <span className="text-red-600 text-xs">{errors.participants_count}</span>
-                    )}
+                    {errors.participants_count && <span className="text-red-600 text-xs">{errors.participants_count}</span>}
                 </div>
 
-                <div>
-                    <CoordinatorsMultiSelect value={values.coordinate_ids || []} onChange={handleCoordinatorsChange} />
-                </div>
+                {/* Координаторы */}
+                <CoordinatorsMultiSelect
+                    value={values.coordinate_ids||[]}
+                    onChange={list => setValues(v => ({ ...v, coordinate_ids: list }))}
+                />
 
-                <div>
-                    <CategoryMultiSelect value={values.category_ids || []} onChange={handleCategoryChange} />
-                </div>
+                {/* Категории */}
+                <CategoryMultiSelect
+                    value={values.category_ids||[]}
+                    onChange={list => setValues(v => ({ ...v, category_ids: list }))}
+                />
 
-                <div id="points-field" className="form-group">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Максимальное количество баллов
-                    </label>
+                {/* Баллы */}
+                <div className="form-group">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Максимальные баллы</label>
                     <input
-                        type="number"
-                        name="max_score"
-                        value={values.max_score || ""}
-                        onChange={handleChange}
-                        min="0"
-                        required
+                        type="number" name="max_score"
+                        value={values.max_score||""} onChange={handleChange}
+                        min="0" required
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-200 focus:border-blue-200"
-                        placeholder="Выберите максимальное количество баллов"
                     />
                     {errors.max_score && <span className="text-red-600 text-xs">{errors.max_score}</span>}
                 </div>
 
                 {error && (
-                    <Fade in={Boolean(error)} timeout={600}>
-                        <Alert severity="error" className="mt-4">
-                            {error}
-                        </Alert>
+                    <Fade in timeout={600}>
+                        <Alert severity="error" className="mt-4">{error}</Alert>
                     </Fade>
                 )}
 
-                <div id="form-actions" className="flex items-center justify-end space-x-4 pt-6">
-                    <Link
-                        to={ROUTES.ACCOUNT_ORGANIZATION}
-                        type="button"
-                        className="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                    >
-                        Отмена
-                    </Link>
+                {/* Кнопки */}
+                <div className="flex justify-end space-x-4 pt-6">
+                    {isEditMode && (
+                        <button
+                            type="button"
+                            onClick={() => navigate(ROUTES.ORGANIZATION_TASKS)}
+                            className="px-6 py-2 border rounded-md text-gray-700 hover:bg-gray-50"
+                        >
+                            Отмена
+                        </button>
+                    )}
                     <button
                         type="submit"
-                        className={`px-6 py-2 rounded-md ${
-                            isValid ? "bg-red-600 text-white hover:bg-red-700" : "bg-gray-300 text-gray-500"
-                        }`}
                         disabled={!isValid}
+                        className={`px-6 py-2 rounded-md text-white ${
+                            isValid ? "bg-red-600 hover:bg-red-700" : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        }`}
                     >
-                        Создать задание
+                        {isEditMode ? "Сохранить" : "Создать"}
                     </button>
                 </div>
             </div>
         </form>
     );
 }
-
-export default TaskForm;

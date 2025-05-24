@@ -29,7 +29,7 @@ function Info({ task, imageUrl }) {
                     </div>
                     <span className="text-neutral-500 hidden md:block">•</span>
                     <span className="text-neutral-600 text-sm md:text-base">
-                        {new Date(task.task_date).toLocaleString("ru-RU", {
+                        {new Date(task.task_date + 'Z').toLocaleString("ru-RU", {
                             day: "2-digit",
                             month: "2-digit",
                             year: "numeric",

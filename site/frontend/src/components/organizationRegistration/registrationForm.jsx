@@ -2,11 +2,13 @@ import { Link } from "react-router";
 import { registerOrganization } from "../../utils/auth";
 import ROUTES from "../../constants/routes";
 import useFormWithValidation from "../../hooks/useFormWithValidation";
-import { useState } from "react";
+import {useContext, useState} from "react";
+import {AuthContext} from "../../context/AuthProvider";
 
 function RegistrationForm({ setIsPopUpVisible }) {
     const { values, errors, isValid, handleChange } = useFormWithValidation("organization");
     const [error, setError] = useState("");
+    const { logout } = useContext(AuthContext);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -15,7 +17,7 @@ function RegistrationForm({ setIsPopUpVisible }) {
         const { email, phone, inn, legal_name, legal_address, actual_address, full_name_owner } = values;
 
         try {
-            await registerOrganization(email, phone, inn, legal_name, legal_address, actual_address, full_name_owner);
+            await registerOrganization(email, phone, inn, legal_name, legal_address, actual_address, full_name_owner, logout);
             setIsPopUpVisible(true);
         } catch {
             setError("Произошла ошибка при регистрации. Попробуйте снова");

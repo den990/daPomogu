@@ -8,7 +8,7 @@ import { AuthContext } from "../context/AuthProvider";
 import { Helmet } from 'react-helmet';
 
 function TasksCatalog() {
-    const { token } = useContext(AuthContext);
+    const { token, logout } = useContext(AuthContext);
     const [tasks, setTasks] = useState([]);
     const [countOfPages, setCountOfPages] = useState(0);
     const [numberOfPage, setNumberOfPage] = useState(1);
@@ -16,10 +16,9 @@ function TasksCatalog() {
     const fetchTasks = useCallback(
         (page) => {
             taskServiceApi
-                .getAllTasks(token, page)
+                .getAllTasks(token, page, logout)
                 .then((data) => {
-                    setTasks(data.data || []);
-                    console.log(data);
+                    setTasks(data.data.data || []);
                     setCountOfPages(data.total_pages);
                 })
                 .catch((error) => {

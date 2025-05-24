@@ -5,7 +5,7 @@ import { taskServiceApi } from "../../utils/api/task_service";
 import { userServiceApi } from "../../utils/api/user_service";
 
 function Content({ taskId }) {
-    const { token } = useContext(AuthContext);
+    const { token, logout } = useContext(AuthContext);
     const [responses, setResponses] = useState([]);
     const [selectedResponse, setSelectedResponse] = useState(null);
     const [selectedVolunteerId, setSelectedVolunteerId] = useState(null);
@@ -16,9 +16,10 @@ function Content({ taskId }) {
     const fetchResponses = useCallback(() => {
         if (!token) return;
         taskServiceApi
-            .getNotConfirmedResponses(token, taskId)
+            .getNotConfirmedResponses(token, taskId, logout)
             .then((response) => {
-                const rows = response?.data?.rows;
+                const rows = response?.data;
+                console.log(rows)
                 if (rows && Array.isArray(rows)) {
                     setResponses(rows);
                 } else {
@@ -39,12 +40,12 @@ function Content({ taskId }) {
         setSelectedResponse(id);
         if (!token) return;
         try {
-            const response = await taskServiceApi.getResponseById(token, id);
-            const userId = response.data.UserID;
+            const response = await taskServiceApi.getResponseById(token, id, logout);
+            const userId = response.data.user_id;
             setSelectedVolunteerId(userId);
             try {
                 const profile = await userServiceApi.getVolonteerProfileById(token, userId);
-                setUserDetails(profile);
+                setUserDetails(profile.data);
             } catch (error) {
                 setAlert({
                     message: "Ошибка загрузки данных волонтёра",
@@ -62,7 +63,7 @@ function Content({ taskId }) {
     const handleConfirmResponse = async () => {
         if (!token || !selectedResponse) return;
         try {
-            await taskServiceApi.putConfirmResponse(token, selectedResponse);
+            await taskServiceApi.putConfirmResponse(token, selectedResponse, logout);
             fetchResponses();
             setUserDetails(null);
             setSelectedResponse(null);
@@ -76,7 +77,7 @@ function Content({ taskId }) {
     const handleRejectResponse = async () => {
         if (!token || !selectedVolunteerId) return;
         try {
-            await taskServiceApi.deleteResponse(token, task_id, selectedVolunteerId);
+            await taskServiceApi.deleteResponse(token, task_id, selectedVolunteerId, logout);
             fetchResponses();
             setUserDetails(null);
             setSelectedResponse(null);
@@ -103,16 +104,16 @@ function Content({ taskId }) {
                                 <div
                                     key={response.ID}
                                     className="rounded-lg border p-2 md:p-3 hover:bg-neutral-50 cursor-pointer"
-                                    onClick={() => handleResponseSelect(response.ID)}
+                                    onClick={() => handleResponseSelect(response.id)}
                                 >
                                     <div className="flex items-center gap-2 md:gap-3">
                                         <img
-                                            src={`https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=${response.User.id}`}
+                                            src={`https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=${response.user.id}`}
                                             className="h-8 w-8 md:h-10 md:w-10 rounded-full"
                                             alt="Фото пользователя"
                                         />
                                         <p className="text-sm md:text-base">
-                                            {response.User.name + " " + response.User.surname}
+                                            {response.user.name + " " + response.user.surname}
                                         </p>
                                     </div>
                                 </div>

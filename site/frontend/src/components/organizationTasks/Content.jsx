@@ -82,6 +82,15 @@ function Content({ tasks, activeTab, onOpenedTabClick, onClosedTabClick, handleD
                                         alt="delete"
                                     />
                                 </button>
+                                <Link
+                                    to={`${ROUTES.EDIT_TASK.replace(":taskId", task.id)}`}
+                                >
+                                    <img
+                                        className="w-4 h-4"
+                                        src={require("../../images/edit_red.svg").default}
+                                        alt="edit"
+                                    />
+                                </Link>
                             </div>
                         </div>
                     )) : <div className="flex justify-center items-center h-64">

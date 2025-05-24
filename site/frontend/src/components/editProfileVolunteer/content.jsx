@@ -1,46 +1,45 @@
 import { useNavigate } from "react-router";
 import ROUTES from "../../constants/routes";
 import { userServiceApi } from "../../utils/api/user_service";
-import { useContext, useEffect, useState, useRef } from "react"; // Добавили useRef
+import { useContext, useEffect, useState, useRef } from "react";
 import useFormWithValidation from "../../hooks/useFormWithValidation";
 import { AuthContext } from "../../context/AuthProvider";
 
-function Content() {
-    const { values, handleChange, resetForm } = useFormWithValidation();
-    const { token, id, updateProfile, updateImage } = useContext(AuthContext);
+export default function Content() {
+    const { values, errors, isValid, handleChange, resetForm } = useFormWithValidation("volunteerUpdate");
+    const { token, id, updateProfile, updateImage, logout } = useContext(AuthContext);
     const [profileData, setProfileData] = useState(null);
     const [error, setError] = useState("");
-    const [avatarFile, setAvatarFile] = useState(null); // Состояние для файла аватара
-    const [avatarPreview, setAvatarPreview] = useState(null); // Для предпросмотра
-    const fileInputRef = useRef(null); // Реф для input type="file"
+    const [avatarFile, setAvatarFile] = useState(null);
+    const [avatarPreview, setAvatarPreview] = useState(null);
+    const fileInputRef = useRef(null);
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (token) {
-            userServiceApi.getAvatarByID(id)
-                        .then((blob) => {
-                            const url = URL.createObjectURL(blob);
-                            setAvatarPreview(url);
-                        })
-                        .catch((error) => {
-                            console.error("Ошибка при загрузке аватара:", error);})
-            userServiceApi
-                .getMyVolonteerProfile(token)
-                .then((data) => {
-                    const transformedData = {
-                        ...data,
-                        registration_address: data.address,
-                    };
-                    setProfileData(transformedData);
-                    resetForm(transformedData, {}, true);
-                })
-                .catch((error) => {
-                    console.error("Ошибка при загрузке профиля:", error);
-                });
-        }
-    }, [token, resetForm, id]);
+        if (!token) return;
+        console.log(token);
+        userServiceApi.getAvatarByID(token, id, logout)
+            .then(blob => setAvatarPreview(URL.createObjectURL(blob)))
+            .catch(console.error);
 
-    const handleAvatarChange = (e) => {
+        userServiceApi.getMyVolonteerProfile(token)
+            .then(({ data }) => {
+                const transformed = {
+                    surname: data.surname,
+                    name: data.name,
+                    patronymic: data.patronymic,
+                    email: data.email,
+                    phone: data.phone,
+                    date_of_birthday: data.date_of_birthday,
+                    registration_address: data.address,
+                };
+                setProfileData(transformed);
+                resetForm(transformed, {}, true);
+            })
+            .catch(console.error);
+    }, [token, id, logout, resetForm]);
+
+    const handleAvatarChange = e => {
         const file = e.target.files[0];
         if (file) {
             setAvatarFile(file);
@@ -48,76 +47,59 @@ function Content() {
         }
     };
 
-    const triggerFileInput = () => {
-        fileInputRef.current.click();
-    };
+    const triggerFileInput = () => fileInputRef.current.click();
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async e => {
         e.preventDefault();
         setError("");
 
         const formData = new FormData();
-        
-        // Добавляем текстовые данные
-        formData.append('name', values.name);
-        formData.append('surname', values.surname);
-        formData.append('patronymic', values.patronymic);
-        formData.append('date_of_birthday', values.date_of_birthday);
-        formData.append('registration_address', values.registration_address);
-        formData.append('email', values.email);
-        formData.append('phone', values.phone);
-        
-        // Добавляем файл аватара, если он был выбран
-        if (avatarFile) {
-            formData.append('avatar', avatarFile);
-        }
+        formData.append('surname', values.surname || "");
+        formData.append('name', values.name || "");
+        formData.append('patronymic', values.patronymic || "");
+        formData.append('email', values.email || "");
+        formData.append('phone', values.phone || "");
+        formData.append('date_of_birthday', values.date_of_birthday || "");
+        formData.append('address', values.registration_address || "");
+        if (avatarFile) formData.append('avatar', avatarFile);
 
         try {
-            const response = await userServiceApi.putEditVolonteer(token, formData);
-            updateProfile({ 
-                ...values, 
-                address: values.registration_address,
-            });
-
-            // Если был загружен новый аватар, обновляем его превью
+            await userServiceApi.putEditVolonteer(token, formData);
+            updateProfile({ ...values, address: values.registration_address });
             if (avatarFile) {
-                const newAvatarUrl = URL.createObjectURL(avatarFile);
-                setAvatarPreview(newAvatarUrl);
-                // Обновляем imageUrl в контексте
-                updateImage(newAvatarUrl);
+                const url = URL.createObjectURL(avatarFile);
+                setAvatarPreview(url);
+                updateImage(url);
             }
             navigate(ROUTES.ACCOUNT_VOLUNTEER);
-        } catch (error) {
-            console.error("Ошибка при обновлении профиля:", error);
+        } catch {
             setError("Произошла ошибка при обновлении профиля");
         }
     };
 
-    if (!profileData) {
-        return <div>Загрузка...</div>;
-    }
+    if (!profileData) return <div>Загрузка...</div>;
 
     return (
         <main className="container mx-auto px-4 py-8">
             <div className="max-w-3xl mx-auto">
-                <h1 className="text-2xl font-bold text-gray-900 mb-8">Редактирование профиля</h1>
-                <form id="profile-form" onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm p-6">
-                    <div className="mb-8 flex items-center justify-center flex-col">
+                <h1 className="text-2xl font-bold mb-8">Редактирование профиля</h1>
+                <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm p-6 space-y-6">
+                    <div className="flex justify-center mb-6">
                         <div className="relative">
                             <img
-                                src={avatarPreview || "https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg"}
-                                alt="Profile"
+                                src={avatarPreview || "/images/default-avatar.png"}
+                                alt="Avatar"
                                 className="w-32 h-32 rounded-full object-cover"
                             />
-                            <button 
+                            <button
                                 type="button"
                                 onClick={triggerFileInput}
-                                className="absolute bottom-0 right-0 bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition"
+                                className="absolute bottom-0 right-0 bg-red-600 text-white p-2 rounded-full hover:bg-red-700"
                             >
                                 <img
-                                    style={{ width: 16, height: 16 }}
                                     src={require("../../images/camera_white.svg").default}
                                     alt="icon"
+                                    className="w-4 h-4"
                                 />
                             </button>
                             <input
@@ -129,93 +111,55 @@ function Content() {
                             />
                         </div>
                     </div>
-                    <div className="space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="space-y-2">
-                                <label className="block text-sm font-medium text-gray-700">Фамилия</label>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {[
+                            ["surname","Фамилия"],
+                            ["name","Имя"],
+                            ["patronymic","Отчество"],
+                            ["email","Email"],
+                            ["phone","Телефон"],
+                            ["date_of_birthday","Дата рождения"]
+                        ].map(([field,label]) => (
+                            <div key={field} className="space-y-1">
+                                <label className="block text-sm font-medium text-gray-700">{label}</label>
                                 <input
-                                    type="text"
-                                    name="surname"
-                                    value={values.surname || ""}
+                                    type={field==="email"?"email": field==="date_of_birthday"?"date":"text"}
+                                    name={field}
+                                    value={values[field]||""}
                                     onChange={handleChange}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
                                 />
+                                {errors[field] && <p className="text-red-500 text-sm">{errors[field]}</p>}
                             </div>
-                            <div className="space-y-2">
-                                <label className="block text-sm font-medium text-gray-700">Имя</label>
-                                <input
-                                    type="text"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                                    name="name"
-                                    value={values.name || ""}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label className="block text-sm font-medium text-gray-700">Отчество</label>
-                                <input
-                                    type="text"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                                    name="patronymic"
-                                    value={values.patronymic || ""}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label className="block text-sm font-medium text-gray-700">Email</label>
-                                <input
-                                    type="email"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                                    name="email"
-                                    value={values.email || ""}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label className="block text-sm font-medium text-gray-700">Телефон</label>
-                                <input
-                                    type="tel"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                                    name="phone"
-                                    value={values.phone || ""}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label className="block text-sm font-medium text-gray-700">Дата рождения</label>
-                                <input
-                                    type="date"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                                    name="date_of_birthday"
-                                    value={values.date_of_birthday || ""}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </div>
-                        <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700">Адрес регистрации</label>
-                            <input
-                                type="text"
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                                name="registration_address"
-                                value={values.registration_address || ""}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        {error && <p className="text-red-500">{error}</p>}
-                        <div className="pt-4">
-                            <button
-                                type="submit"
-                                className="block w-full text-center bg-red-600 text-white py-3 px-4 rounded-md hover:bg-red-700 transition font-medium"
-                            >
-                                Сохранить изменения
-                            </button>
-                        </div>
+                        ))}
                     </div>
+
+                    <div className="space-y-1">
+                        <label className="block text-sm font-medium text-gray-700">Адрес регистрации</label>
+                        <input
+                            type="text"
+                            name="registration_address"
+                            value={values.registration_address||""}
+                            onChange={handleChange}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                        />
+                        {errors.registration_address && <p className="text-red-500 text-sm">{errors.registration_address}</p>}
+                    </div>
+
+                    {error && <p className="text-red-500">{error}</p>}
+
+                    <button
+                        type="submit"
+                        disabled={!isValid}
+                        className={`w-full py-3 rounded-md text-white font-medium ${
+                            isValid ? "bg-red-600 hover:bg-red-700" : "bg-gray-400 cursor-not-allowed"
+                        }`}
+                    >
+                        Сохранить изменения
+                    </button>
                 </form>
             </div>
         </main>
     );
 }
-
-export default Content;

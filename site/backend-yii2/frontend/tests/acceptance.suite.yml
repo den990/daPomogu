@@ -1,0 +1,10 @@
+actor: AcceptanceTester
+modules:
+    enabled:
+        - WebDriver:
+            url: http://localhost:20080/frontend/web/index-test.php/
+            browser: chrome
+        - Yii2:
+            part: [orm, fixtures] # allow to use AR methods
+            cleanup: false # don't wrap test in transaction
+            entryScript: index-test.php

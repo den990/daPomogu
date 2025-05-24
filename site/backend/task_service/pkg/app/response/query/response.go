@@ -128,6 +128,7 @@ func (r *ResponseQuery) ShowNotConfirmed(
 		ID     uint
 		TaskID uint
 		User   usermodel.UserModel
+		Avatar string
 	}, len(responses))
 	for i, response := range responses {
 		user, err := userlib.FindUser(users, response.UserID)
@@ -139,6 +140,7 @@ func (r *ResponseQuery) ShowNotConfirmed(
 			ID     uint
 			TaskID uint
 			User   usermodel.UserModel
+			Avatar string
 		}{
 			ID:     response.ID,
 			TaskID: response.TaskID,

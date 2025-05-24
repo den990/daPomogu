@@ -5,7 +5,7 @@ import { Alert, Snackbar } from "@mui/material";
 import { Link } from "react-router";
 
 function Content({ taskId, setIsPopUpVisible }) {
-    const { token, id } = useContext(AuthContext);
+    const { token, id, logout } = useContext(AuthContext);
     const [infoAboutTask, setInfoAboutTask] = useState([]);
     const [, setHasPermission] = useState(false);
     const [showCamera, setShowCamera] = useState(false);
@@ -18,9 +18,9 @@ function Content({ taskId, setIsPopUpVisible }) {
     useEffect(() => {
         if (!token) return;
         taskServiceApi
-            .getTaskById(token, task_id)
+            .getTaskById(token, task_id, logout)
             .then((data) => {
-                setInfoAboutTask(data);
+                setInfoAboutTask(data.data);
             })
             .catch(() => {
                 setAlert({ message: "Ошибка при загрузке информации о задании", severity: "error" });
@@ -88,7 +88,7 @@ function Content({ taskId, setIsPopUpVisible }) {
         if (capturedImage) {
             try {
                 const imageBlob = dataURLtoBlob(capturedImage);
-                const response = await taskServiceApi.postSendPhotoReport(token, task_id, id, imageBlob);
+                const response = await taskServiceApi.postSendPhotoReport(token, task_id, id, imageBlob, logout);
 
                 console.log("Фотоотчет успешно отправлен:", response);
                 setIsPopUpVisible(true);

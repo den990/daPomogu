@@ -88,8 +88,8 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 	}))
 
 	router.Use(auth.UserMayIdentity(jwtSecret))
-	router.GET("/api/tasks/page/:page", h.getTasks)
-	router.GET("/api/tasks/:id", h.getTask)
+	router.GET("/api/tasks/page/:page", h.getTasks) // +
+	router.GET("/api/tasks/:id", h.getTask)         // +
 	httphands := router.Group("/api")
 	{
 		httphands.Use(auth.UserIdentity(jwtSecret))
@@ -104,28 +104,28 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 
 		tasks := httphands.Group("/tasks")
 		{
-			tasks.GET("/my-opened-tasks/:page/:limit", h.getOpenedTasks)
-			tasks.GET("/my-closed-tasks/:page/:limit", h.getClosedTasks)
-			tasks.POST("/", h.createTask)
+			tasks.GET("/my-opened-tasks/:page/:limit", h.getOpenedTasks) // +
+			tasks.GET("/my-closed-tasks/:page/:limit", h.getClosedTasks) // +
+			tasks.POST("/", h.createTask)                                // +
 			tasks.PUT("/:id", h.updateTask)
-			tasks.DELETE("/:id", h.deleteTask)
-			tasks.PUT("/complete/:id", h.completeTask)
+			tasks.DELETE("/:id", h.deleteTask)         // +
+			tasks.PUT("/complete/:id", h.completeTask) // +
 		}
 
 		responses := httphands.Group("/responses")
 		{
-			responses.GET("/all/:page/:limit/:task_id", h.getResponses)
-			responses.GET("/notconfirmed/:page/:limit/:task_id", h.getNotConfirmedResponses)
-			responses.GET("/:id", h.getResponse)
-			responses.POST("/create", h.createResponse) // баг создание дупликейт валуе
+			responses.GET("/all/:page/:limit/:task_id", h.getResponses)                      // +
+			responses.GET("/notconfirmed/:page/:limit/:task_id", h.getNotConfirmedResponses) // +
+			responses.GET("/:id", h.getResponse)                                             //+
+			responses.POST("/create", h.createResponse)                                      // баг создание дупликейт валуе // +
 			//responses.PUT("/reject", h.rejectResponse)  //
-			responses.PUT("/confirm", h.confirmResponse)
-			responses.DELETE("/delete", h.deleteResponse)
+			responses.PUT("/confirm", h.confirmResponse)  // +
+			responses.DELETE("/delete", h.deleteResponse) //+
 		}
 
 		categories := httphands.Group("/category")
 		{
-			categories.GET("/", h.getCategories)
+			categories.GET("/", h.getCategories) // +
 			categories.GET("/search", h.searchCategoriesByName)
 			categories.POST("/", h.createCategory)
 			categories.PUT("/:id", h.updateCategory)
@@ -133,9 +133,9 @@ func (h *Handler) Init(jwtSecret string) *gin.Engine {
 
 		approves := httphands.Group("/approves")
 		{
-			approves.GET("/all-by-task-id/:id/:page/:limit", h.getAllByTaskID)
-			approves.GET("by-id/:id", h.getResponseById)
-			approves.POST("/create", h.addApproves)
+			approves.GET("/all-by-task-id/:id/:page/:limit", h.getAllByTaskID) // +
+			approves.GET("by-id/:id", h.getResponseById)                       // +
+			approves.POST("/create", h.addApproves)                            // +
 			approves.PUT("/reject", h.rejectApproves)
 			approves.PUT("/confirm", h.confirmApproves)
 		}

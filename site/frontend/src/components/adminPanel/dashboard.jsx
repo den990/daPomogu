@@ -4,14 +4,14 @@ import { userServiceApi } from "../../utils/api/user_service";
 import { Alert, Snackbar } from "@mui/material";
 
 function Dashboard({ isSidebarOpen, setIsSidebarOpen }) {
-    const { token } = useContext(AuthContext);
+    const { token, logout } = useContext(AuthContext);
     const [statistics, setStatistics] = useState([]);
     const [alert, setAlert] = useState(null);
 
     useEffect(() => {
         if (!token) return;
         userServiceApi
-            .getAdminStatistics(token)
+            .getAdminStatistics(token, logout)
             .then((data) => {
                 setStatistics(data);
             })

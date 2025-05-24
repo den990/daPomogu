@@ -10,6 +10,7 @@ function LoginForm() {
     const { login } = useContext(AuthContext);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+    const { logout } = useContext(AuthContext);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -17,7 +18,7 @@ function LoginForm() {
 
         const { email, password } = values;
 
-        authorizeUser(email, password)
+        authorizeUser(email, password, logout)
             .then((token) => {
                 if (token) {
                     login(token);

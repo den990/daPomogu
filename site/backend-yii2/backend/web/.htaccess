@@ -1,0 +1,15 @@
+Options +FollowSymLinks
+IndexIgnore */*
+RewriteEngine On
+
+RewriteRule ^assets/(.*)$ assets/$1 [L]
+RewriteRule ^favicon.(.*)$ favicon.$1 [L]
+RewriteRule ^css/(.*)$ css/$1 [L]
+RewriteRule ^js/(.*)$ js/$1 [L]
+RewriteRule ^images/(.*)$ images/$1 [L]
+RewriteRule ^robots.txt robots.txt [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . index.php
+

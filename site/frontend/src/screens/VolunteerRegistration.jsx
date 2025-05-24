@@ -5,6 +5,7 @@ import { useState } from "react";
 import PopUp from "../layouts/popUp/PopUp";
 import ROUTES from "../constants/routes";
 import { Helmet } from 'react-helmet';
+import RoleHeader from "../components/RoleHeader/RoleHeader";
 
 function VolunteerRegistration() {
     const [isPopUpVisible, setIsPopUpVisible] = useState(false);
@@ -14,6 +15,7 @@ function VolunteerRegistration() {
             <Helmet>
                 <title>Регистрация волонтера</title>
             </Helmet>
+            <RoleHeader/>
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}

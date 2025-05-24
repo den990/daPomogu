@@ -1,12 +1,27 @@
-const BASE_URL = "https://user-service.dapomogu.tw1.su";
+import {useContext} from "react";
+import {AuthContext} from "../context/AuthProvider";
 
-function checkResponse(res) {
-    if (res.ok) {
-        return res.json();
-    }
+const BASE_URL = "http://localhost:8080";
+function checkResponse(res, logout) {
+    return res.json().then(body => {
+        if (body.success) {
+            return body;
+        }
 
-    return res.json().then(err => {
-        throw new Error(err.message || 'Что-то пошло не так');
+        let message = 'Что-то пошло не так';
+
+        if (body.error?.message) {
+            if (body.error.status === 401) {
+                logout?.()
+            }
+            if (typeof body.error.message === 'string') {
+                message = body.error.message;
+            } else if (typeof body.error.message === 'object') {
+                message = Object.values(body.error.message).flat().join(', ');
+            }
+        }
+
+        throw new Error(message);
     });
 }
 
@@ -57,20 +72,20 @@ export function registerVolunteer(
 // 	FullNameOwner string `json:"full_name_owner" binding:"required"`
 // }
 
-export function registerOrganization(email, phone, inn, name, legal_address, actual_address, full_name_owner) {
+export function registerOrganization(email, phone, inn, name, legal_address, actual_address, full_name_owner, logout) {
     return fetch(`${BASE_URL}/register-organization`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, phone, inn, name, legal_address, actual_address, full_name_owner }),
-    }).then((res) => checkResponse(res));
+    }).then((res) => checkResponse(res, logout));
 }
 
 // Email    string `json:"email" binding:"required,email"`
 // Password string `json:"password" binding:"required"`
 
-export function authorizeUser(email, password) {
+export function authorizeUser(email, password, logout) {
     return fetch(`${BASE_URL}/login`, {
         method: "POST",
         headers: {
@@ -78,7 +93,7 @@ export function authorizeUser(email, password) {
         },
         body: JSON.stringify({ email, password }),
     })
-        .then((res) => checkResponse(res))
+        .then((res) => checkResponse(res, logout))
         .then((data) => {
             if (data.token) {
                 const token = data.token;

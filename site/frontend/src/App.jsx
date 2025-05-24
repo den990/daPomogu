@@ -32,9 +32,12 @@ import PublicAccountVolonteer from "./screens/PublicAccountVolunteer";
 import OrganizationTasks from "./screens/OrganizationTasks";
 import ConfirmationsResponses from "./screens/ConfirmationsResponses";
 import ListOrganization from "./screens/ListOrganization";
+import Statistic from "./screens/Statistic";
+import Calendar from "./screens/Calendar";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
 import { GuestRoute } from "./routes/GuestRoute";
 import ListUsersInOrganization from "./screens/ListUsersInOrganization";
+import EditTask from "./screens/EditTask";
 
 function App() {
     const { loading } = useContext(AuthContext);
@@ -71,6 +74,8 @@ function App() {
                             <Route element={<ProtectedRoute allowedRoles={["organization", "volunteer"]} />}>
                                 <Route path={ROUTES.EDIT_PASSWORD} element={<EditPassword />} />
                                 <Route path={ROUTES.CONFIRMATIONS_TASKS} element={<ConfirmationsTasks />} />
+                                <Route path={ROUTES.STATISTIC} element={<Statistic />} />
+                                <Route path={ROUTES.CALENDAR} element={<Calendar />} />
                             </Route>
 
                             {/* Только для волонтёров */}
@@ -90,6 +95,7 @@ function App() {
                                 <Route path={ROUTES.EDIT_ORGANIZATION_PROFILE} element={<EditOrganizationProfile />} />
                                 <Route path={ROUTES.ORGANIZATION_TASKS} element={<OrganizationTasks />} />
                                 <Route path={ROUTES.LIST_USERS_IN_ORGANIZATION} element={<ListUsersInOrganization />} />
+                                <Route path={ROUTES.EDIT_TASK} element={<EditTask />} />
                             </Route>
 
                             {/* Только для админов */}

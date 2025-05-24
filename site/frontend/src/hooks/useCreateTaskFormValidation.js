@@ -27,6 +27,7 @@ export default function useCreateTaskFormValidation() {
     
     const selectedDate = new Date(`${date}T${time}`);
     const now = new Date();
+    now.setSeconds(0, 0)
     
     if (selectedDate < now) return "Дата не может быть в прошлом";
     return "";
@@ -103,5 +104,25 @@ export default function useCreateTaskFormValidation() {
     [setValues, setErrors, setIsValid]
   );
 
-  return { values, errors, isValid, handleChange, setValues, resetForm };
+  const validateAll = (vals) => {
+    const newErrors = {
+      name: validateName(vals.name),
+      description: validateDescription(vals.description),
+      date: validateDate(vals.date, vals.time),
+      participants_count: validateParticipants(vals.participants_count),
+      max_score: validateScore(vals.max_score),
+    };
+
+    const formIsValid = Object.values(newErrors).every(err => !err) &&
+        vals.coordinate_ids?.length > 0 &&
+        vals.category_ids?.length > 0 &&
+        !!vals.address;
+
+    setErrors(newErrors);
+    setIsValid(formIsValid);
+  };
+
+
+  return { values, errors, isValid, handleChange, setValues, resetForm, validateAll };
+
 }
