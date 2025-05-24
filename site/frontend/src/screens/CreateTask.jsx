@@ -26,7 +26,7 @@ function CreateTask() {
                     <RoleHeader />
                     <main id="main-content" className="container mx-auto px-4 py-6 md:py-8">
                         <div className="max-w-full md:max-w-3xl mx-auto">
-                            <FormHeader />
+                            <FormHeader isNew={true}/>
                             <TaskForm setIsPopUpVisible={setIsPopUpVisible} />
                         </div>
                     </main>

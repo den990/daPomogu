@@ -1,4 +1,4 @@
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import Profile from "../components/publicAccountOrganization/profile";
 import { useEffect, useState } from "react";
 import { userServiceApi } from "../utils/api/user_service";
@@ -12,6 +12,7 @@ function PublicAccountOrganization() {
     const [tasks, setTasks] = useState(null);
     const [imageUrl, setImageUrl] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const navigate = useNavigate();
 
     const updateProfile = (updatedProfile) => {
         setProfile(updatedProfile);
@@ -19,18 +20,18 @@ function PublicAccountOrganization() {
 
     useEffect(() => {
         setIsLoading(true);
-        
+
         const fetchData = async () => {
             try {
                 const profileData = await userServiceApi.getOrganizationProfileById(organizationId);
-                setProfile(profileData);
+                setProfile(profileData.data);
                 
-                if (profileData?.tasks) {
-                    setTasks(profileData.tasks);
+                if (profileData?.data.tasks) {
+                    setTasks(profileData.data.tasks);
                 }
 
                 try {
-                    const blob = await userServiceApi.getAvatarByID(1);
+                    const blob = await userServiceApi.getAvatarOrganizationByID(organizationId);
                     const url = URL.createObjectURL(blob);
                     setImageUrl(url);
                 } catch (avatarError) {
@@ -38,6 +39,12 @@ function PublicAccountOrganization() {
                 }
             } catch (error) {
                 console.error("Ошибка при загрузке профиля организации:", error);
+                navigate("/error", {
+                    state: {
+                        errorCode: 404,
+                        errorMessage: "Организация не найдена или была удалена."
+                    }
+                });
             } finally {
                 setIsLoading(false);
             }
@@ -60,7 +67,7 @@ function PublicAccountOrganization() {
                 </div>
             ) : (
                 <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                    <Profile 
+                    <Profile
                         profile={profile} 
                         imageUrl={imageUrl} 
                         updateProfile={updateProfile} 

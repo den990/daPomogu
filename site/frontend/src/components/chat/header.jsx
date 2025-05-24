@@ -1,4 +1,4 @@
-function Header({ onMenuClick }) {
+function Header({ onMenuClick, chat }) {
     return (
         <header className="border-b border-neutral-200">
             <div className="flex items-center justify-between px-3 sm:px-4 py-2 sm:py-3">
@@ -15,11 +15,13 @@ function Header({ onMenuClick }) {
                     <div className="flex items-center gap-2">
                         <img
                             className="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-full"
-                            src="https://api.dicebear.com/7.x/notionists/svg?seed=123"
+                            src={chat?.avatar || "https://api.dicebear.com/7.x/notionists/svg?seed=123"}
                             alt="avatar"
                         />
                         <div>
-                            <h1 className="text-xs sm:text-sm md:text-base">Анна Волкова</h1>
+                            <h1 className="text-xs sm:text-sm md:text-base">
+                                {chat?.name + ' ' + chat?.patronymic || "Имя не указано"}
+                            </h1>
                             <p className="text-[10px] sm:text-xs flex items-center gap-1 text-neutral-600">
                                 <span className="w-2 h-2 bg-green-500 rounded-full" />В сети
                             </p>

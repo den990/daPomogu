@@ -4,16 +4,15 @@ import { AuthContext } from "../../context/AuthProvider";
 import { Snackbar, Alert } from "@mui/material";
 
 function Profile({ profile, imageUrl, updateProfile }) {
-    const { token, role } = useContext(AuthContext);
+    const { token, role, logout } = useContext(AuthContext);
     const [alert, setAlert] = useState(null);
 
     const handleAttach = () => {
         if (!token || !profile) return;
         userServiceApi
-            .postAttachUserToOrganization(token, profile.id)
+            .postAttachUserToOrganization(token, profile.id, logout)
             .then(() => {
                 setAlert({ message: "Заявка успешно отправлена!", severity: "success" });
-                // Обновляем профиль после успешной отправки
                 updateProfile({
                     ...profile,
                     is_requested: true

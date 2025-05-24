@@ -1,19 +1,31 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import ROUTES from "../../constants/routes";
 import { userServiceApi } from "../../utils/api/user_service.js";
-import { useState } from "react";
 
 function Tasks({ tasks }) {
-    const [imageUrl, setImageUrl] = useState(null);
+    const [avatars, setAvatars] = useState({});
 
-    userServiceApi.getAvatarByID(1)
+    useEffect(() => {
+        const orgIds = [...new Set(tasks.map((task) => task.tasks.organization_id))];
+
+        orgIds.forEach((orgId) => {
+            if (!avatars[orgId]) {
+                userServiceApi.getAvatarOrganizationByID(orgId)
                     .then((blob) => {
                         const url = URL.createObjectURL(blob);
-                        setImageUrl(url);
+                        setAvatars((prev) => ({
+                            ...prev,
+                            [orgId]: url,
+                        }));
                     })
                     .catch(() => {
-                        console.log({ message: "Ошибка при загрузке фото пользователя", severity: "error" });
+                        console.log({ message: `Ошибка при загрузке фото организации ${orgId}`, severity: "error" });
                     });
+            }
+        });
+    }, [tasks]);
+
     return (
         <section id="tasks-grid" className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
             {tasks.map((task, i) => (
@@ -21,10 +33,10 @@ function Tasks({ tasks }) {
                     key={i}
                     className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow"
                 >
-                    <div key={i} className="p-4 md:p-6 flex flex-col h-full">
+                    <div className="p-4 md:p-6 flex flex-col h-full">
                         <div className="flex flex-wrap gap-2 mb-3 md:mb-4">
-                            {task.categories.map((category) => (
-                                <span className="px-2 py-1 bg-red-500 text-white rounded-full text-xs md:text-sm whitespace-nowrap">
+                            {task.categories.map((category, idx) => (
+                                <span key={idx} className="px-2 py-1 bg-red-500 text-white rounded-full text-xs md:text-sm whitespace-nowrap">
                                     {category.name}
                                 </span>
                             ))}
@@ -43,7 +55,7 @@ function Tasks({ tasks }) {
                         <div className="mt-auto">
                             <div className="flex items-center mb-3 md:mb-4">
                                 <img
-                                    src={imageUrl}
+                                    src={avatars[task.tasks.organization_id] || "/default-avatar.png"}
                                     className="w-6 h-6 rounded-full mr-2"
                                     alt="Логотип организации"
                                 />
@@ -59,9 +71,9 @@ function Tasks({ tasks }) {
                                     />
                                     <span>
                                         {new Date(task.tasks.task_date).toLocaleDateString("ru-RU", {
-                                        day: "2-digit",
-                                        month: "2-digit",
-                                        year: "numeric",
+                                            day: "2-digit",
+                                            month: "2-digit",
+                                            year: "numeric",
                                         })}
                                     </span>
                                 </div>

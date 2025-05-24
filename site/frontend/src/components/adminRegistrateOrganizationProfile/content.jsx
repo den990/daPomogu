@@ -3,7 +3,7 @@ import { AuthContext } from "../../context/AuthProvider";
 import { userServiceApi } from "../../utils/api/user_service";
 
 function Content({ isSidebarOpen, setIsSidebarOpen }) {
-    const { token } = useContext(AuthContext);
+    const { token, logout } = useContext(AuthContext);
     const [organizations, setOrganizations] = useState([]);
     const [selectedOrganization, setSelectedOrganization] = useState(null);
     const [organizationDetails, setOrganizationDetails] = useState(null);
@@ -12,16 +12,16 @@ function Content({ isSidebarOpen, setIsSidebarOpen }) {
     const fetchOrganizations = useCallback(() => {
         if (token) {
             userServiceApi
-                .getOrganizationRequests(token)
+                .getOrganizationRequests(token, logout)
                 .then((data) => {
-                    setOrganizations(data || []);
+                    setOrganizations(data.data || []);
                 })
                 .catch((error) => {
                     console.error("Ошибка при загрузке организаций:", error);
                     setOrganizations([]);
                 });
 
-            userServiceApi.getAvatarByID(1)
+            userServiceApi.getAvatarByID(token,1, logout)
             .then((blob) => {
                 const url = URL.createObjectURL(blob);
                 setImageUrl(url);
@@ -43,8 +43,7 @@ function Content({ isSidebarOpen, setIsSidebarOpen }) {
             userServiceApi
                 .getOrganizationProfileById(id)
                 .then((data) => {
-                    setOrganizationDetails(data);
-                    console.log(data);
+                    setOrganizationDetails(data.data);
                 })
                 .catch((error) => {
                     console.error("Ошибка при загрузке данных организации:", error);

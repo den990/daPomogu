@@ -14,8 +14,8 @@ function MainContent({ isSidebarOpen, setIsSidebarOpen }) {
                 userServiceApi
                     .getUsersAndOrganizationsWithPagination(token, page)
                     .then((data) => {
-                        setUsersAndOrganizations(data.data || []);
-                        setCountOfPages(data.total_pages);
+                        setUsersAndOrganizations(data.data.data || []);
+                        setCountOfPages(data.data.total_pages);
                     })
                     .catch((error) => {
                         console.error("Ошибка при загрузке всех пользователей и организаций: ", error);
@@ -158,7 +158,7 @@ function MainContent({ isSidebarOpen, setIsSidebarOpen }) {
                                             )}
                                         </td>
                                         <td className="py-3 md:py-4">
-                                            {user.is_blocked === true ? (
+                                            {user.is_blocked === 1 ? (
                                                 <button
                                                     onClick={() => handleUnblockUser(user.id)}
                                                     className="px-2 md:px-3 py-1 text-green-600 hover:bg-green-50 rounded-md flex items-center text-sm md:text-base"

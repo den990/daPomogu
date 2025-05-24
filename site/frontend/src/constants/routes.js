@@ -26,6 +26,9 @@ const ROUTES = {
     PUBLIC_ACCOUNT_VOLUNTEER: "/account-volunteer/:volonteerId",
     PUBLIC_ACCOUNT_ORGANIZATION: "/account-organization/:organizationId",
     ORGANIZATION_TASKS: "/organization-tasks",
+    STATISTIC: "/organization-statistic",
+    CALENDAR: "/my-calendar",
+    EDIT_TASK: "/edit-task/:taskId",
 
     LIST_ORGANIZATION: "/organizations",
     LIST_USERS_IN_ORGANIZATION: "/users-in-organization",

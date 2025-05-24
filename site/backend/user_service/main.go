@@ -61,41 +61,41 @@ func startHTTPServer() {
 		AllowCredentials: true,
 	}))
 
-	r.POST("/register", h.RegisterUser)
-	r.POST("/register-organization", h.RegisterOrganization)
-	r.POST("/login", h.Login)
-	r.GET("/profile-organization/:id", h.GetOrganizationProfileInfo)
-	r.GET("/organizations-accepted-list/:page", h.GetOrganizationAcceptedList)
-	r.GET("/user/avatar", h.GetUserAvatar)
-	r.GET("/user/avatar/:id", h.GetUserAvatar)
-	r.GET("/organization/avatar", h.GetOrganizationAvatar)
-	r.GET("/organization/avatar/:id", h.GetOrganizationAvatar)
+	r.POST("/register", h.RegisterUser)                                        //+
+	r.POST("/register-organization", h.RegisterOrganization)                   //+
+	r.POST("/login", h.Login)                                                  //+
+	r.GET("/profile-organization/:id", h.GetOrganizationProfileInfo)           //+
+	r.GET("/organizations-accepted-list/:page", h.GetOrganizationAcceptedList) // +
+	r.GET("/user/avatar", h.GetUserAvatar)                                     // +
+	r.GET("/user/avatar/:id", h.GetUserAvatar)                                 // +
+	r.GET("/organization/avatar", h.GetOrganizationAvatar)                     // +
+	r.GET("/organization/avatar/:id", h.GetOrganizationAvatar)                 // +
 
 	protected := r.Group("/api")
 	protected.Use(middleware.AuthMiddleware())
 	{
-		protected.GET("/profile", h.GetUserProfileInfo)
-		protected.GET("/profile/:id", h.GetUserProfileInfo)
-		protected.GET("/profile-organization", h.GetOrganizationProfileInfo)
-		protected.PUT("/organizations/:id/apply", h.ApplyOrganization)
-		protected.PUT("/organizations/:id/reject", h.RejectOrganization)
+		protected.GET("/profile", h.GetUserProfileInfo)                      // +
+		protected.GET("/profile/:id", h.GetUserProfileInfo)                  // +
+		protected.GET("/profile-organization", h.GetOrganizationProfileInfo) // +
+		protected.PUT("/organizations/:id/apply", h.ApplyOrganization)       // +
+		protected.PUT("/organizations/:id/reject", h.RejectOrganization)     // +
 		protected.POST("/profile-organization", h.UpdateOrganization)
 		protected.POST("/profile-organization/:id", h.UpdateOrganization)
-		protected.PUT("/profile", h.UpdateUser)
-		protected.PUT("/profile/:id", h.UpdateUser)
-		protected.GET("/organization-requests", h.GetPendingOrganizations)
-		protected.PUT("/change-password", h.ChangePassword)
+		protected.PUT("/profile", h.UpdateUser)                            // +
+		protected.PUT("/profile/:id", h.UpdateUser)                        // +
+		protected.GET("/organization-requests", h.GetPendingOrganizations) // +
+		protected.PUT("/change-password", h.ChangePassword)                // +
 		protected.GET("/organizations-list", h.GetAllOrganizationList)
-		protected.POST("/attach-organization/:id", h.AttachUserToOrganization)
-		protected.POST("/detach-organization/:id", h.DetachUserToOrganization)
-		protected.PUT("/organization/accept/:user_id", h.AcceptUserAttachment)
-		protected.PUT("/organization/reject/:user_id", h.RejectUserAttachment)
-		protected.GET("/organizations-users-list/:page", h.GetAllUsersAndOrganizations)
-		protected.PUT("/block-user/:id", h.BlockUser)
-		protected.PUT("/unblock-user/:id", h.UnblockUser)
-		protected.GET("/organization/requests-to-apply", h.GetRequestsToApply)
-		protected.GET("/organization/users/:page", h.GetUsersInOrganization)
-		protected.GET("/admin/statistic", h.GetStatisticForAdmin)
+		protected.POST("/attach-organization/:id", h.AttachUserToOrganization)          // +
+		protected.POST("/detach-organization/:id", h.DetachUserToOrganization)          // +
+		protected.PUT("/organization/accept/:user_id", h.AcceptUserAttachment)          // +
+		protected.PUT("/organization/reject/:user_id", h.RejectUserAttachment)          // +
+		protected.GET("/organizations-users-list/:page", h.GetAllUsersAndOrganizations) // +
+		protected.PUT("/block-user/:id", h.BlockUser)                                   // +
+		protected.PUT("/unblock-user/:id", h.UnblockUser)                               // +
+		protected.GET("/organization/requests-to-apply", h.GetRequestsToApply)          // +
+		protected.GET("/organization/users/:page", h.GetUsersInOrganization)            // +
+		protected.GET("/admin/statistic", h.GetStatisticForAdmin)                       // +
 	}
 
 	log.Println("HTTP Server running on port 8080...")

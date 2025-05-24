@@ -6,7 +6,7 @@ import ROUTES from "../../constants/routes";
 import { Alert, Snackbar } from "@mui/material";
 
 function Tasks() {
-    const { token } = useContext(AuthContext);
+    const { token, logout } = useContext(AuthContext);
     const [tasks, setTasks] = useState([]);
     const [alert, setAlert] = useState(null);
     const [activeTab, setActiveTab] = useState('opened');
@@ -36,11 +36,10 @@ function Tasks() {
         (page) => {
             if (token) {
                 taskServiceApi
-                    .getMyOpenedTasks(token, page)
+                    .getMyOpenedTasks(token, page, logout)
                     .then((response) => {
-                        const { rows } = response.data;
-                        setTasks(rows || []);
-                        console.log(response.data);
+                        const { data, total_pages } = response.data;
+                        setTasks(data || []);
                     })
                     .catch(() => {
                         setAlert({ message: "Ошибка при загрузке заданий", severity: "error" });
@@ -55,10 +54,10 @@ function Tasks() {
         (page) => {
             if (token) {
                 taskServiceApi
-                    .getMyClosedTasks(token, page)
+                    .getMyClosedTasks(token, page, logout)
                     .then((response) => {
-                        const { rows } = response.data;
-                        setTasks(rows || []);
+                        const { data, total_pages } = response.data;
+                        setTasks(data || []);
                     })
                     .catch(() => {
                         setAlert({ message: "Ошибка при загрузке заданий", severity: "error" });

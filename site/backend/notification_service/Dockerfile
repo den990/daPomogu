@@ -25,7 +25,7 @@ RUN wget -O migrate.tar.gz https://github.com/golang-migrate/migrate/releases/do
 FROM alpine:latest
 
 # Устанавливаем необходимые библиотеки для работы с PostgreSQL
-RUN apk --no-cache add ca-certificates
+RUN apk --no-cache add ca-certificates busybox-extras
 
 # Устанавливаем рабочую директорию
 WORKDIR /app

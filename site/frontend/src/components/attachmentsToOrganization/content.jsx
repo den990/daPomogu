@@ -4,7 +4,7 @@ import { userServiceApi } from "../../utils/api/user_service";
 import { Alert, Snackbar } from "@mui/material";
 
 function Content() {
-    const { token } = useContext(AuthContext);
+    const { token, logout } = useContext(AuthContext);
     const [requests, setRequests] = useState([]);
     const [selectedRequest, setSelectedRequest] = useState(null);
     const [userDetails, setUserDetails] = useState(null);
@@ -14,7 +14,7 @@ function Content() {
     const fetchRequests = useCallback(() => {
         if (!token) return;
         userServiceApi
-            .getRequestsToApply(token)
+            .getRequestsToApply(token, logout)
             .then((data) => {
                 const list = Array.isArray(data.data) ? data.data : [];
                 setRequests(list);
@@ -35,11 +35,11 @@ function Content() {
         if (!token) return;
         userServiceApi
             .getVolonteerProfileById(token, id)
-            .then(setUserDetails)
+            .then(data => {setUserDetails(data.data)})
             .catch(() => setAlert({ message: "Ошибка загрузки данных заявки", severity: "error" }));
 
         userServiceApi
-            .getAvatarByID(id)
+            .getAvatarByID(token, id, logout)
             .then(blob => {
                 const url = URL.createObjectURL(blob);
                 setUserDetailsAvatar(url);
@@ -51,7 +51,7 @@ function Content() {
     const handleAcceptRequest = (id) => {
         if (!token) return;
         userServiceApi
-            .putAcceptUserAttachment(token, id)
+            .putAcceptUserAttachment(token, id, logout)
             .then(() => {
                 fetchRequests();
                 setUserDetails(null);
@@ -64,7 +64,7 @@ function Content() {
     const handleRejectRequest = (id) => {
         if (!token) return;
         userServiceApi
-            .putRejectUserAttachment(token, id)
+            .putRejectUserAttachment(token, id, logout)
             .then(() => {
                 fetchRequests();
                 setUserDetails(null);

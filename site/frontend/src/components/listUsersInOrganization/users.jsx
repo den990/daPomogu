@@ -1,7 +1,7 @@
 import ROUTES from "../../constants/routes";
 import { Link } from "react-router";
 
-function Users({ users }) {
+function Users({ users, handleDetachUser }) {
     return (
         <div id="tasks-section" className="md:col-span-2 mx-2 md:mx-0 md:p-8">
             <div className="bg-white rounded-lg shadow p-4 md:p-6">
@@ -35,6 +35,13 @@ function Users({ users }) {
                                 >
                                     Открыть
                                 </Link>
+                                <button onClick={() => handleDetachUser(user.id)}>
+                                    <img
+                                        className="w-4 h-4"
+                                        src={require("../../images/delete_red.svg").default}
+                                        alt="detach"
+                                    />
+                                </button>
                             </div>
                         </div>
                     ))}

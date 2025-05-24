@@ -6,7 +6,7 @@ import { taskServiceApi } from "../../utils/api/task_service";
 import { useState } from "react";
 
 function ButtonsPanel({ task: initialTask }) {
-    const { token, id, role } = useContext(AuthContext);
+    const { token, id, role, logout } = useContext(AuthContext);
     const [task, setTask] = useState(initialTask);
 
     if (!task) {
@@ -21,7 +21,7 @@ function ButtonsPanel({ task: initialTask }) {
 
     const handleResponse = async (e) => {
         try {
-            await taskServiceApi.postCreateResponse(token, task.id);
+            await taskServiceApi.postCreateResponse(token, task.id, logout);
             setTask((prevTask) => ({
                 ...prevTask,
                 is_response: true,
@@ -33,7 +33,7 @@ function ButtonsPanel({ task: initialTask }) {
 
     const handleReject = async (e) => {
         try {
-            await taskServiceApi.deleteResponse(token, task.id, id);
+            await taskServiceApi.deleteResponse(token, task.id, id, logout);
             setTask((prevTask) => ({
                 ...prevTask,
                 is_response: false,
@@ -46,7 +46,7 @@ function ButtonsPanel({ task: initialTask }) {
     const handleCancel = async (e) => {
         try {
             console.log(id);
-            await taskServiceApi.deleteResponse(token, task.id, id);
+            await taskServiceApi.deleteResponse(token, task.id, id, logout);
             setTask((prevTask) => ({
                 ...prevTask,
                 is_recorded: false,
@@ -59,7 +59,7 @@ function ButtonsPanel({ task: initialTask }) {
     const handleCompleteTask = async (e) => {
         try {
             console.log(id);
-            await taskServiceApi.putCompleteTask(token, task.id);
+            await taskServiceApi.putCompleteTask(token, task.id, logout);
             setTask((prevTask) => ({
                 ...prevTask,
                 status_id: 1,

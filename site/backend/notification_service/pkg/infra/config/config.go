@@ -29,11 +29,11 @@ func NewConfig() *Config {
 	}
 	return &Config{
 		HandlerPort: getEnv("APP_PORT", "8082"),
-		ServerPort:  getEnv("SERVER_ADDRESS", "50503"),
+		ServerPort:  getEnv("SERVER_ADDRESS", "50501"),
 		JWTSecret:   getEnv("JWT_SECRET", "verysecret"),
 		DBConfig: DataBaseConfig{
 			Port:     getEnv("DB_PORT", "5432"),
-			Host:     getEnv("DB_HOST", "dapomogu_postgres"),
+			Host:     getEnv("DB_HOST", "postgres-service"),
 			Username: getEnv("DB_USERNAME", "postgres"),
 			DBName:   getEnv("DB_NAME", "dapomogu_notification_db"),
 			SSLMode:  getEnv("DB_SSL_MODE", "disable"),

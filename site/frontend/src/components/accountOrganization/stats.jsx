@@ -3,7 +3,9 @@ import { AuthContext } from "../../context/AuthProvider";
 
 function Stats() {
     const { profile } = useContext(AuthContext);
-
+    if (!profile) {
+        return <div>Загрузка статистики...</div>;
+    }
     return (
         <section id="statistics" className="bg-white rounded-lg shadow-sm p-6">
             <h3 className="text-xl font-bold text-gray-900 mb-6">Статистика и отчеты</h3>

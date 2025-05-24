@@ -1,0 +1,78 @@
+variables:
+  INIT_CONTAINER_NAME: "yii2_itr_template-app-1"
+  BETA_USER: "root"
+  BETA_HOST: "5.63.159.153"
+  BETA_POJECT_FOLDER: "~/yii2_itr_template"
+
+default:
+  before_script:
+    # Installing ssh agent
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - mkdir -p ~/.ssh
+    - eval $(ssh-agent -s)
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+
+
+test:
+  stage: test
+  script:
+  - echo "Testing needs to be done"
+
+
+deploy-beta:
+  tags:
+    - docker
+  image: composer:latest
+  stage: deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
+  script:
+    # Build project
+    - composer install --verbose --prefer-dist --no-progress --no-interaction --no-dev --optimize-autoloader
+    - php init --env=production --overwrite=all
+    # Configuration environment variables
+    - sed -i -e "s|{DB_NAME}|$BETA_DBMS_DATABASE|g" common/config/params-local.php
+    - sed -i -e "s|{DB_USER}|$BETA_DBMS_USER|g" common/config/params-local.php
+    - sed -i -e "s|{DB_PASSWORD}|$BETA_DBMS_PASSWORD|g" common/config/params-local.php
+    - sed -i -e "s|{UNISENDER_API_KEY}|$BETA_UNISENDER_API_KEY|g" common/config/params-local.php
+    - sed -i -e "s|{YANDEX_TRANSLATE_API_KEY}|$BETA_YANDEX_TRANSLATE_API_KEY|g" common/config/params-local.php
+    - sed -i -e "s|{YANDEX_S3_ACCESS_KEY_ID}|$BETA_YANDEX_S3_ACCESS_KEY_ID|g" common/config/params-local.php
+    - sed -i -e "s|{YANDEX_S3_SECRET_KEY}|$BETA_YANDEX_S3_SECRET_KEY|g" common/config/params-local.php
+    - sed -i -e "s|{YANDEX_S3_BUCKET_NAME}|$BETA_YANDEX_S3_BUCKET_NAME|g" common/config/params-local.php
+    # Copy files to remote host
+    - ssh-add <(echo "$BETA_PRIVATE_KEY")
+    - ssh -p22 $BETA_USER@$BETA_HOST "mkdir -p $BETA_POJECT_FOLDER"
+    - ssh -p22 $BETA_USER@$BETA_HOST "cd $BETA_POJECT_FOLDER && docker compose down || true"
+    - scp -P22 -r ./api/* ./.htaccess $BETA_USER@$BETA_HOST:$BETA_POJECT_FOLDER/api
+    - scp -P22 -r ./backend/* ./.htaccess $BETA_USER@$BETA_HOST:$BETA_POJECT_FOLDER/backend
+    - scp -P22 -r ./common/* ./.htaccess $BETA_USER@$BETA_HOST:$BETA_POJECT_FOLDER/common
+    - scp -P22 -r ./console/* ./.htaccess $BETA_USER@$BETA_HOST:$BETA_POJECT_FOLDER/console
+    - scp -P22 -r ./frontend/* ./.htaccess $BETA_USER@$BETA_HOST:$BETA_POJECT_FOLDER/frontend
+    - scp -P22 -r ./vendor/* ./.htaccess $BETA_USER@$BETA_HOST:$BETA_POJECT_FOLDER/vendor
+    - scp -P22 -r ./.htaccess $BETA_USER@$BETA_HOST:$BETA_POJECT_FOLDER
+    - scp -P22 -r ./yii $BETA_USER@$BETA_HOST:$BETA_POJECT_FOLDER
+    - scp -P22 -r ./yii.bat $BETA_USER@$BETA_HOST:$BETA_POJECT_FOLDER
+    - scp -P22 -r ./Dockerfile $BETA_USER@$BETA_HOST:$BETA_POJECT_FOLDER
+    - scp -P22 -r ./docker-compose.yml $BETA_USER@$BETA_HOST:$BETA_POJECT_FOLDER
+    - scp -P22 -r ./api/web/.htaccess $BETA_USER@$BETA_HOST:$BETA_POJECT_FOLDER/api/web
+    - scp -P22 -r ./frontend/web/.htaccess $BETA_USER@$BETA_HOST:$BETA_POJECT_FOLDER/frontend/web
+    - scp -P22 -r ./backend/web/.htaccess $BETA_USER@$BETA_HOST:$BETA_POJECT_FOLDER/backend/web
+    # Grant permissions to files
+    - ssh -p22 $BETA_USER@$BETA_HOST "chmod -R 777 $BETA_POJECT_FOLDER"
+    # Removing cache and assets
+    - ssh -p22 $BETA_USER@$BETA_HOST "rm -r $BETA_POJECT_FOLDER/api/runtime/cache/* || true"
+    - ssh -p22 $BETA_USER@$BETA_HOST "rm -r $BETA_POJECT_FOLDER/backend/runtime/cache/* || true"
+    - ssh -p22 $BETA_USER@$BETA_HOST "rm -r $BETA_POJECT_FOLDER/backend/web/assets/* || true"
+    - ssh -p22 $BETA_USER@$BETA_HOST "rm -r $BETA_POJECT_FOLDER/frontend/runtime/cache/* || true"
+    - ssh -p22 $BETA_USER@$BETA_HOST "rm -r $BETA_POJECT_FOLDER/frontend/web/assets/* || true"
+    # Starting Docker and migrate database
+    - ssh -p22 $BETA_USER@$BETA_HOST "cd $BETA_POJECT_FOLDER && docker compose up -d"
+    - ssh -p22 $BETA_USER@$BETA_HOST "sleep 10 && docker exec -i $INIT_CONTAINER_NAME sh -c \"php yii migrate --interactive=0\""
+
+deploy-prod:
+  stage: deploy
+  when: manual
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
+  script:
+    - echo "Prod deploy needs to be done"

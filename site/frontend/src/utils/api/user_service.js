@@ -1,6 +1,6 @@
 const apiSettings = {
-    baseUrl: "https://user-service.dapomogu.tw1.su/api",
-    baseUrlWithoutApi: "https://user-service.dapomogu.tw1.su",
+    baseUrl: "http://localhost:8080/api",
+    baseUrlWithoutApi: "http://localhost:8080",
 };
 
 class UserServiceApi {
@@ -9,16 +9,32 @@ class UserServiceApi {
         this._baseUrlWithoutApi = baseUrlWithoutApi;
     }
 
-    _request(url, options) {
-        return fetch(url, options).then(this._checkResponse);
+    _request(url, options, logout) {
+        return fetch(url, options).then(res => this._checkResponse(res, logout));
     }
 
-    _checkResponse(response) {
-        if (response.ok) {
-            return response.json();
-        } else {
-            return Promise.reject(`Ошибка: ${response.status}/${response.statusText}`);
-        }
+    _checkResponse(res, logout) {
+        return res.json().then(body => {
+            if (body.success) {
+                return body;
+            }
+
+            let message = 'Что-то пошло не так';
+
+            if (body.error?.message) {
+                if (body.error.status === 401) {
+                    logout()?.()
+                }
+
+                if (typeof body.error.message === 'string') {
+                    message = body.error.message;
+                } else if (typeof body.error.message === 'object') {
+                    message = Object.values(body.error.message).flat().join(', ');
+                }
+            }
+
+            throw new Error(message);
+        });
     }
 
     _updateToken(token) {
@@ -28,20 +44,20 @@ class UserServiceApi {
         };
     }
 
-    getOrganizationRequests(token) {
+    getOrganizationRequests(token, logout) {
         this._updateToken(token);
-        return this._request(`${this._baseUrl}/organization-requests`, {
+        return this._request(`${this._baseUrl}/admin/organization/requests`, {
             method: "GET",
             headers: this._headers,
-        });
+        }, logout);
     }
 
-    getMyOrganizationProfile(token) {
+    getMyOrganizationProfile(token, logout) {
         this._updateToken(token);
         return this._request(`${this._baseUrl}/profile-organization`, {
             method: "GET",
             headers: this._headers,
-        });
+        }, logout);
     }
 
     getOrganizationProfileById(id) {
@@ -69,12 +85,12 @@ class UserServiceApi {
         });
     }
 
-    putChangePassword(token, old_password, new_password) {
+    putChangePassword(token, old_password, password) {
         this._updateToken(token);
         return this._request(`${this._baseUrl}/change-password`, {
             method: "PUT",
             headers: this._headers,
-            body: JSON.stringify({ old_password, new_password }),
+            body: JSON.stringify({ old_password, password }),
         });
     }
 
@@ -108,9 +124,23 @@ class UserServiceApi {
         });
     }
 
+    putEditOrganization(token, formData) {
+        this._updateToken(token);
+
+        const headers = {
+            'Authorization': `Bearer ${token}`
+        };
+
+        return this._request(`${this._baseUrl}/organization`, {
+            method: "PUT",
+            headers,
+            body: formData,
+        });
+    }
+
     getUsersAndOrganizationsWithPagination(token, id) {
         this._updateToken(token);
-        return this._request(`${this._baseUrl}/organizations-users-list/${id}`, {
+        return this._request(`${this._baseUrl}/admin/users/${id}`, {
             method: "GET",
             headers: this._headers,
         });
@@ -118,7 +148,7 @@ class UserServiceApi {
 
     putBlockUser(token, id) {
         this._updateToken(token);
-        return this._request(`${this._baseUrl}/block-user/${id}`, {
+        return this._request(`${this._baseUrl}/admin/block-user/${id}`, {
             method: "PUT",
             headers: this._headers,
         });
@@ -126,74 +156,93 @@ class UserServiceApi {
 
     putUnblockUser(token, id) {
         this._updateToken(token);
-        return this._request(`${this._baseUrl}/unblock-user/${id}`, {
+        return this._request(`${this._baseUrl}/admin/unblock-user/${id}`, {
             method: "PUT",
             headers: this._headers,
         });
     }
 
     getUsersInOrganization(token, page) {
-        this._updateToken(token);
-        return this._request(`${this._baseUrl}/organization/users/${page}`, {
-            method: "GET",
-            headers: this._headers,
-        });
+        if (page ===  undefined) {
+            this._updateToken(token);
+            return this._request(`${this._baseUrl}/organization/users`, {
+                method: "GET",
+                headers: this._headers,
+            });
+        } else {
+            this._updateToken(token);
+            return this._request(`${this._baseUrl}/organization/users/${page}`, {
+                method: "GET",
+                headers: this._headers,
+            });
+        }
     }
 
-    postAttachUserToOrganization(token, organization_id) {
+    postAttachUserToOrganization(token, organization_id, logout) {
         this._updateToken(token);
         return this._request(`${this._baseUrl}/attach-organization/${organization_id}`, {
             method: "POST",
             headers: this._headers,
-        });
+        }, logout);
     }
 
-    getRequestsToApply(token) {
+    getRequestsToApply(token, logout) {
         this._updateToken(token);
-        return this._request(`${this._baseUrl}/organization/requests-to-apply`, {
+        return this._request(`${this._baseUrl}/organization/requests`, {
             method: "GET",
             headers: this._headers,
-        });
+        }, logout);
     }
 
-    putAcceptUserAttachment(token, id) {
+    putAcceptUserAttachment(token, id, logout) {
         this._updateToken(token);
-        return this._request(`${this._baseUrl}/organization/accept/${id}`, {
+        return this._request(`${this._baseUrl}/organization/requests/accept/${id}`, {
             method: "PUT",
             headers: this._headers,
-        });
+        }, logout);
     }
 
-    putRejectUserAttachment(token, id) {
+    putRejectUserAttachment(token, id, logout) {
         this._updateToken(token);
-        return this._request(`${this._baseUrl}/organization/reject/${id}`, {
+        return this._request(`${this._baseUrl}/organization/requests/reject/${id}`, {
             method: "PUT",
             headers: this._headers,
-        });
+        }, logout);
     }
 
-    getAcceptedOrganizations(token, page) {
+    putDetachUser(token, id, logout) {
         this._updateToken(token);
-        return this._request(`${this._baseUrlWithoutApi}/organizations-accepted-list/${page}`, {
+        return this._request(`${this._baseUrl}/organization/detach/${id}`, {
+            method: "PUT",
+            headers: this._headers,
+        }, logout);
+    }
+
+    getAcceptedOrganizations(token, page, logout) {
+        this._updateToken(token);
+        return this._request(`${this._baseUrlWithoutApi}/organization/accepted-list/${page}`, {
             method: "GET",
             headers: this._headers,
-        });
+        }, logout);
     }
 
-    getAdminStatistics(token) {
+    getAdminStatistics(token, logout) {
         this._updateToken(token);
         return this._request(`${this._baseUrl}/admin/statistic`, {
             method: "GET",
             headers: this._headers,
-        });
+        }, logout);
     }
 
-    getMyAvatar(token) {
+    getMyAvatar(token, logout) {
         this._updateToken(token);
         return fetch(`${this._baseUrlWithoutApi}/user/avatar`, {
             method: "GET",
             headers: this._headers,
         }).then((response) => {
+            if (response.status === 401) {
+                logout?.();
+            }
             if (response.ok) {
                 return response.blob();
             } else {
@@ -202,15 +251,52 @@ class UserServiceApi {
         });
     }
 
-    getAvatarByID(id) {
+    getAvatarByID(token, id, logout) {
+        this._updateToken(token);
         return fetch(`${this._baseUrlWithoutApi}/user/avatar/${id}`, {
             method: "GET",
             headers: this._headers,
         }).then((response) => {
+            if (response.status === 401) {
+                logout?.();
+            }
             if (response.ok) {
                 return response.blob();
             } else {
                 return Promise.reject(`Ошибка: ${response.status}/${response.statusText}`);
+            }
+        });
+    }
+
+    getMyOrganizationAvatar(token, logout) {
+        this._updateToken(token);
+        return fetch(`${this._baseUrlWithoutApi}/organization/avatar`, {
+            method: "GET",
+            headers: this._headers,
+        }).then(response => {
+            if (response.status === 401) {
+                logout?.();
+            }
+            if (response.ok) {
+                return response.blob();
+            } else {
+                return Promise.reject(`Ошибка: ${response.status}/${response.statusText}`);
+            }
+        });
+    }
+
+    getAvatarOrganizationByID(id, logout) {
+        return fetch(`${this._baseUrlWithoutApi}/organization/avatar/${id}`, {
+            method: "GET",
+            headers: this._headers,
+        }).then((res) => {
+            if (res.status === 401) {
+                logout?.();
+            }
+            if (res.ok) {
+                return res.blob();
+            } else {
+                return Promise.reject(`Ошибка: ${res.status}/${res.statusText}`);
             }
         });
     }

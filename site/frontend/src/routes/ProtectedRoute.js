@@ -7,7 +7,7 @@ export const ProtectedRoute = ({ allowedRoles, redirectPath = "/login", children
     const { isAuthenticated, role, loading } = useContext(AuthContext);
 
     if (loading) {
-        return <div>Загрузка...</div>; // Можно добавить спиннер
+        return <div>Загрузка...</div>;
     }
 
     console.log(role);

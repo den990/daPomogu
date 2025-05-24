@@ -5,17 +5,16 @@ import { AuthContext } from "../../context/AuthProvider";
 import { taskServiceApi } from "../../utils/api/task_service.js";
 
 function ActiveTasks() {
-    const { profile, token } = useContext(AuthContext);
+    const { profile, token, logout } = useContext(AuthContext);
     const [tasks, setTasks] = useState([]);
     useEffect(() => {
         if (!profile) return;
         if (token) {
             taskServiceApi
-                .getMyOpenedTasks(token, 1)
+                .getMyOpenedTasks(token, 1, logout)
                 .then((response) => {
-                    const { rows } = response.data;
-                    setTasks(rows || []);
-                    console.log(response.data);
+                    const { data } = response.data;
+                    setTasks(data || []);
                 })
                 .catch(() => {
                   setTasks([]);
@@ -26,14 +25,13 @@ function ActiveTasks() {
     const handleDeleteTask = (id) => {
         if (token) {
             taskServiceApi
-                .deleteTask(token, id)
+                .deleteTask(token, id, logout)
                 .then(() => {
                     taskServiceApi
-                        .getMyOpenedTasks(token, 1)
+                        .getMyOpenedTasks(token, 1, logout)
                         .then((response) => {
-                            const { rows } = response.data;
-                            setTasks(rows || []);
-                            console.log(response.data);
+                            const { data } = response.data;
+                            setTasks(data || []);
                         })
                         .catch(() => {
                             setTasks([]);

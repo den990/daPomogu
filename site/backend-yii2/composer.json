@@ -1,0 +1,41 @@
+{
+    "require": {
+        "php": ">=7.3.0",
+        "yiisoft/yii2": "~2.0.14",
+        "yiisoft/yii2-httpclient": "^2.0",
+        "yiisoft/yii2-bootstrap5": "^2.0",
+        "mobiledetect/mobiledetectlib": "^2.8",
+        "aws/aws-sdk-php": "^3.275",
+        "sizeg/yii2-jwt": "2.0",
+        "consik/yii2-websocket": "^1.0"
+    },
+    "require-dev": {
+        "yiisoft/yii2-debug": "~2.1.0",
+        "yiisoft/yii2-gii": "~2.2.0",
+        "yiisoft/yii2-swiftmailer": "~2.0.0 || ~2.1.0",
+        "codeception/codeception": "^4.0",
+        "codeception/module-asserts": "^1.0",
+        "codeception/module-yii2": "^1.0",
+        "codeception/module-filesystem": "^1.0",
+        "codeception/verify": "~0.5.0 || ~1.1.0",
+        "symfony/browser-kit": ">=2.7 <=4.2.4",
+        "codeception/module-rest": "^1.4",
+        "codeception/module-phpbrowser": "^1.0",
+        "codeception/module-webdriver": "^1.4"
+    },
+    "config": {
+        "process-timeout": 1800,
+        "fxp-asset": {
+            "enabled": false
+        },
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true
+        }
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ]
+}

@@ -1,0 +1,71 @@
+common\models\User Object
+(
+    [_attributes:yii\db\BaseActiveRecord:private] => Array
+        (
+            [id] => 2
+            [email] => organization@mail.ru
+            [phone] => 89877136727
+            [surname] => 
+            [name] => organization
+            [patronymic] => 
+            [date_of_birthday] => 
+            [address] => 
+            [password_hash] => $2y$13$3pV9sesemDf/jr17VlDWaumZ1of9pKgtPy8zLJ3OLls6eo7mDS/BG
+            [is_admin] => 0
+            [is_blocked] => 0
+            [avatar_id] => 
+            [created_at] => 2025-04-20 12:27:49
+            [updated_at] => 2025-04-20 12:27:49
+        )
+
+    [_oldAttributes:yii\db\BaseActiveRecord:private] => Array
+        (
+            [id] => 2
+            [email] => organization@mail.ru
+            [phone] => 89877136727
+            [surname] => 
+            [name] => organization
+            [patronymic] => 
+            [date_of_birthday] => 
+            [address] => 
+            [password_hash] => $2y$13$3pV9sesemDf/jr17VlDWaumZ1of9pKgtPy8zLJ3OLls6eo7mDS/BG
+            [is_admin] => 0
+            [is_blocked] => 0
+            [avatar_id] => 
+            [created_at] => 2025-04-20 12:27:49
+            [updated_at] => 2025-04-20 12:27:49
+        )
+
+    [_related:yii\db\BaseActiveRecord:private] => Array
+        (
+            [organizations] => Array
+                (
+                )
+
+        )
+
+    [_relationsDependencies:yii\db\BaseActiveRecord:private] => Array
+        (
+            [id] => Array
+                (
+                    [organizations] => organizations
+                )
+
+        )
+
+    [_errors:yii\base\Model:private] => 
+    [_validators:yii\base\Model:private] => 
+    [_scenario:yii\base\Model:private] => default
+    [_events:yii\base\Component:private] => Array
+        (
+        )
+
+    [_eventWildcards:yii\base\Component:private] => Array
+        (
+        )
+
+    [_behaviors:yii\base\Component:private] => Array
+        (
+        )
+
+)

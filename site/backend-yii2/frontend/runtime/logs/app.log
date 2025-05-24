@@ -1,0 +1,105 @@
+2024-03-26 14:31:46 [::1][-][mcr4p427i3ja07rep9k78t4i88][error][yii\web\HttpException:404] yii\base\InvalidRouteException: Unable to resolve the request: site/logout in D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\Controller.php:149
+Stack trace:
+#0 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\Module.php(552): yii\base\Controller->runAction()
+#1 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\web\Application.php(103): yii\base\Module->runAction()
+#2 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\Application.php(384): yii\web\Application->handleRequest()
+#3 D:\source\repos\workonyii\yii2-template\frontend\web\index.php(18): yii\base\Application->run()
+#4 {main}
+
+Next yii\web\NotFoundHttpException: Страница не найдена. in D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\web\Application.php:115
+Stack trace:
+#0 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\Application.php(384): yii\web\Application->handleRequest()
+#1 D:\source\repos\workonyii\yii2-template\frontend\web\index.php(18): yii\base\Application->run()
+#2 {main}
+2024-03-26 14:38:42 [::1][-][mcr4p427i3ja07rep9k78t4i88][error][yii\base\ErrorException:8] yii\base\ErrorException: Undefined variable: fileUploadForm in D:\source\repos\workonyii\yii2-template\frontend\templates\mobile\site\index.php:38
+Stack trace:
+#0 D:\source\repos\workonyii\yii2-template\frontend\templates\mobile\site\index.php(38): yii\base\ErrorHandler->handleError()
+#1 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\View.php(347): require('D:\\source\\repos...')
+#2 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\View.php(257): yii\base\View->renderPhpFile()
+#3 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\View.php(156): yii\base\View->renderFile()
+#4 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\Controller.php(407): yii\base\View->render()
+#5 D:\source\repos\workonyii\yii2-template\frontend\controllers\SiteController.php(66): yii\base\Controller->render()
+#6 [internal function]: frontend\controllers\SiteController->actionIndex()
+#7 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\InlineAction.php(57): call_user_func_array()
+#8 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\Controller.php(178): yii\base\InlineAction->runWithParams()
+#9 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\Module.php(552): yii\base\Controller->runAction()
+#10 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\web\Application.php(103): yii\base\Module->runAction()
+#11 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\Application.php(384): yii\web\Application->handleRequest()
+#12 D:\source\repos\workonyii\yii2-template\frontend\web\index.php(18): yii\base\Application->run()
+#13 {main}
+2024-03-26 14:38:47 [::1][-][mcr4p427i3ja07rep9k78t4i88][error][yii\base\ErrorException:8] yii\base\ErrorException: Undefined variable: fileUploadForm in D:\source\repos\workonyii\yii2-template\frontend\templates\mobile\site\index.php:38
+Stack trace:
+#0 D:\source\repos\workonyii\yii2-template\frontend\templates\mobile\site\index.php(38): yii\base\ErrorHandler->handleError()
+#1 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\View.php(347): require('D:\\source\\repos...')
+#2 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\View.php(257): yii\base\View->renderPhpFile()
+#3 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\View.php(156): yii\base\View->renderFile()
+#4 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\Controller.php(407): yii\base\View->render()
+#5 D:\source\repos\workonyii\yii2-template\frontend\controllers\SiteController.php(66): yii\base\Controller->render()
+#6 [internal function]: frontend\controllers\SiteController->actionIndex()
+#7 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\InlineAction.php(57): call_user_func_array()
+#8 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\Controller.php(178): yii\base\InlineAction->runWithParams()
+#9 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\Module.php(552): yii\base\Controller->runAction()
+#10 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\web\Application.php(103): yii\base\Module->runAction()
+#11 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\Application.php(384): yii\web\Application->handleRequest()
+#12 D:\source\repos\workonyii\yii2-template\frontend\web\index.php(18): yii\base\Application->run()
+#13 {main}
+2024-03-26 14:38:54 [::1][-][mcr4p427i3ja07rep9k78t4i88][error][yii\base\ErrorException:8] yii\base\ErrorException: Undefined variable: fileUploadForm in D:\source\repos\workonyii\yii2-template\frontend\templates\mobile\site\index.php:38
+Stack trace:
+#0 D:\source\repos\workonyii\yii2-template\frontend\templates\mobile\site\index.php(38): yii\base\ErrorHandler->handleError()
+#1 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\View.php(347): require('D:\\source\\repos...')
+#2 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\View.php(257): yii\base\View->renderPhpFile()
+#3 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\View.php(156): yii\base\View->renderFile()
+#4 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\Controller.php(407): yii\base\View->render()
+#5 D:\source\repos\workonyii\yii2-template\frontend\controllers\SiteController.php(66): yii\base\Controller->render()
+#6 [internal function]: frontend\controllers\SiteController->actionIndex()
+#7 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\InlineAction.php(57): call_user_func_array()
+#8 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\Controller.php(178): yii\base\InlineAction->runWithParams()
+#9 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\Module.php(552): yii\base\Controller->runAction()
+#10 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\web\Application.php(103): yii\base\Module->runAction()
+#11 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\Application.php(384): yii\web\Application->handleRequest()
+#12 D:\source\repos\workonyii\yii2-template\frontend\web\index.php(18): yii\base\Application->run()
+#13 {main}
+2024-03-26 14:39:07 [::1][-][mcr4p427i3ja07rep9k78t4i88][error][yii\base\ErrorException:8] yii\base\ErrorException: Undefined variable: fileUploadForm in D:\source\repos\workonyii\yii2-template\frontend\templates\mobile\site\index.php:38
+Stack trace:
+#0 D:\source\repos\workonyii\yii2-template\frontend\templates\mobile\site\index.php(38): yii\base\ErrorHandler->handleError()
+#1 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\View.php(347): require('D:\\source\\repos...')
+#2 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\View.php(257): yii\base\View->renderPhpFile()
+#3 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\View.php(156): yii\base\View->renderFile()
+#4 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\Controller.php(407): yii\base\View->render()
+#5 D:\source\repos\workonyii\yii2-template\frontend\controllers\SiteController.php(66): yii\base\Controller->render()
+#6 [internal function]: frontend\controllers\SiteController->actionIndex()
+#7 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\InlineAction.php(57): call_user_func_array()
+#8 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\Controller.php(178): yii\base\InlineAction->runWithParams()
+#9 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\Module.php(552): yii\base\Controller->runAction()
+#10 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\web\Application.php(103): yii\base\Module->runAction()
+#11 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\Application.php(384): yii\web\Application->handleRequest()
+#12 D:\source\repos\workonyii\yii2-template\frontend\web\index.php(18): yii\base\Application->run()
+#13 {main}
+2024-03-26 14:43:20 [::1][-][mcr4p427i3ja07rep9k78t4i88][error][yii\web\HttpException:404] yii\base\InvalidRouteException: Unable to resolve the request "backend/site/index". in D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\Module.php:561
+Stack trace:
+#0 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\web\Application.php(103): yii\base\Module->runAction()
+#1 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\Application.php(384): yii\web\Application->handleRequest()
+#2 D:\source\repos\workonyii\yii2-template\frontend\web\index.php(18): yii\base\Application->run()
+#3 {main}
+
+Next yii\web\NotFoundHttpException: Страница не найдена. in D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\web\Application.php:115
+Stack trace:
+#0 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\Application.php(384): yii\web\Application->handleRequest()
+#1 D:\source\repos\workonyii\yii2-template\frontend\web\index.php(18): yii\base\Application->run()
+#2 {main}
+2024-03-26 14:43:20 [::1][-][mcr4p427i3ja07rep9k78t4i88][error][yii\base\ErrorException:64] yii\base\ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script in D:\source\repos\workonyii\yii2-template\backend\assets\AppAsset.php:3
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2024-03-26 20:59:35 [::1][-][s11b7p3m57vk07aub0mu2sshan][error][yii\web\HttpException:404] yii\base\InvalidRouteException: Unable to resolve the request "backend/site/index". in D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\Module.php:561
+Stack trace:
+#0 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\web\Application.php(103): yii\base\Module->runAction()
+#1 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\Application.php(384): yii\web\Application->handleRequest()
+#2 D:\source\repos\workonyii\yii2-template\frontend\web\index.php(18): yii\base\Application->run()
+#3 {main}
+
+Next yii\web\NotFoundHttpException: Страница не найдена. in D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\web\Application.php:115
+Stack trace:
+#0 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\Application.php(384): yii\web\Application->handleRequest()
+#1 D:\source\repos\workonyii\yii2-template\frontend\web\index.php(18): yii\base\Application->run()
+#2 {main}

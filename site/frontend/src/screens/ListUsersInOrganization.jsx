@@ -6,9 +6,10 @@ import { AuthContext } from "../context/AuthProvider.js";
 import { userServiceApi } from "../utils/api/user_service.js";
 import { Alert, Snackbar } from "@mui/material";
 import { Helmet } from 'react-helmet';
+import {taskServiceApi} from "../utils/api/task_service";
 
 function ListUsersInOrganization() {
-    const { token } = useContext(AuthContext);
+    const { token, logout } = useContext(AuthContext);
     const [users, setUsers] = useState([]);
     const [countOfPages, setCountOfPages] = useState(0);
     const [numberOfPage, setNumberOfPage] = useState(1);
@@ -19,9 +20,8 @@ function ListUsersInOrganization() {
             userServiceApi
                 .getUsersInOrganization(token, page)
                 .then((data) => {
-                    console.log(data);
-                    setUsers(data.data || []);
-                    setCountOfPages(data.total_pages);
+                    setUsers(data.data.data || []);
+                    setCountOfPages(data.data.total_pages);
                 })
                 .catch(() => {
                     setAlert({ message: "Ошибка при загрузке пользователей", severity: "error" });
@@ -44,6 +44,19 @@ function ListUsersInOrganization() {
         setNumberOfPage(page);
     };
 
+    const handleDetachUser = (id) => {
+        if (token) {
+            userServiceApi
+                .putDetachUser(token, id, logout)
+                .then(() => {
+                    fetchUsers(numberOfPage);
+                })
+                .catch((error) => {
+                    console.error("Ошибка при отреплении юзера", error);
+                });
+        }
+    }
+
     return (
         <div className="min-h-screen flex flex-col">
             <Helmet>
@@ -54,7 +67,8 @@ function ListUsersInOrganization() {
                 <div className="container mx-auto px-4">
                     {users.length !== 0 ? (
                         <>
-                            <Users users={users} />
+                            <Users users={users}
+                                   handleDetachUser={handleDetachUser} />
                             {<Pagination
                                 numberOfPageOut={numberOfPage}
                                 countOfPages={countOfPages}

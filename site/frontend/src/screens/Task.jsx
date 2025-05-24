@@ -6,33 +6,35 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthProvider.js";
 import { taskServiceApi } from "../utils/api/task_service.js";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import {useNavigate, useParams} from "react-router";
 import { userServiceApi } from "../utils/api/user_service.js";
 import { Helmet } from 'react-helmet';
+import ROUTES from "../constants/routes";
 
 function Task() {
-    const { token } = useContext(AuthContext);
+    const { token, logout } = useContext(AuthContext);
     const [task, setTask] = useState(null);
     const { taskId } = useParams();
     const [imageUrl, setImageUrl] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         taskServiceApi
-            .getTaskById(token, taskId)
+            .getTaskById(token, taskId, logout)
             .then((data) => {
-                setTask(data);
-                console.log(data);
-                userServiceApi.getAvatarByID(data.organization_id)
+                setTask(data.data);
+                console.log(data.data);
+                userServiceApi.getAvatarOrganizationByID(data.data.organization_id, logout)
                     .then((blob) => {
                         const url = URL.createObjectURL(blob);
                         setImageUrl(url);
                     })
                     .catch(() => {
-                        console.log({ message: "Ошибка при загрузке фото пользователя", severity: "error" });
+                        console.log({ message: "Ошибка при загрузке фото организации", severity: "error" });
                     });
             })
             .catch((error) => {
-                console.error("Ошибка при загрузке задания:", error);
+                navigate(ROUTES.ERROR);
             });
     }, [token, taskId]);
 

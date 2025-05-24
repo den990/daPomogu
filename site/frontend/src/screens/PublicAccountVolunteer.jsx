@@ -1,17 +1,19 @@
-import { useParams } from "react-router";
+import {Navigate, useNavigate, useParams} from "react-router";
 import { useContext, useEffect, useState } from "react";
 import { userServiceApi } from "../utils/api/user_service";
 import RoleHeader from "../components/RoleHeader/RoleHeader";
 import { AuthContext } from "../context/AuthProvider";
 import Profile from "../components/publicAccountVolunteer/profile";
 import { Helmet } from 'react-helmet';
+import ROUTES from "../constants/routes";
 
 function PublicAccountVolonteer() {
     const { volonteerId } = useParams();
-    const { token } = useContext(AuthContext);
+    const { token, logout } = useContext(AuthContext);
     const [profile, setProfile] = useState(null);
     const [imageUrl, setImageUrl] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         setIsLoading(true);
@@ -19,13 +21,13 @@ function PublicAccountVolonteer() {
             userServiceApi
                 .getVolonteerProfileById(token, volonteerId)
                 .then((data) => {
-                    setProfile(data);
+                    setProfile(data.data);
                 })
                 .catch((error) => {
-                    console.error("Ошибка при загрузке профиля волонтёра:", error);
+                    navigate(ROUTES.ERROR);
                 });
         }
-        userServiceApi.getAvatarByID(volonteerId)
+        userServiceApi.getAvatarByID(token, volonteerId, logout)
                     .then((blob) => {
                         const url = URL.createObjectURL(blob);
                         setImageUrl(url);

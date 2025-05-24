@@ -4,7 +4,7 @@ import { Alert, Snackbar } from "@mui/material";
 import { taskServiceApi } from "../../utils/api/task_service";
 
 function Content({ taskId }) {
-    const { token } = useContext(AuthContext);
+    const { token, logout } = useContext(AuthContext);
     const [approves, setApproves] = useState([]);
     const [selectedApprove, setSelectedApprove] = useState(null);
     const [approveDetails, setApproveDetails] = useState(null);
@@ -17,13 +17,14 @@ function Content({ taskId }) {
     const fetchApproves = useCallback(() => {
         if (!token) return;
         taskServiceApi
-            .getAllApproves(token, task_id)
+            .getAllApproves(token, task_id, logout)
             .then((response) => {
-                const rows = response?.pagination?.rows;
+                const rows = response?.data?.data;
                 if (rows && Array.isArray(rows)) {
                     setApproves(rows);
-                    taskServiceApi.getTaskById(token, task_id).then((data) => {
-                        setMaxScore(data.max_score);
+                    taskServiceApi.getTaskById(token, task_id, logout).then((data) => {
+                        console.log(data);
+                        setMaxScore(data.data.max_score);
                     });
                 } else {
                     setApproves([]);
@@ -43,12 +44,12 @@ function Content({ taskId }) {
         setSelectedApprove(id);
         if (!token) return;
         taskServiceApi
-            .getApproveById(token, id)
+            .getApproveById(token, id, logout)
             .then((data) => {
-                setApproveDetails(data.approve);
+                setApproveDetails(data.data);
                 setScore("");
-                if (data.approve?.file) {
-                    fetchImage(data.approve.file);
+                if (data.data?.file) {
+                    setImageUrl(data.data.file);
                 }
             })
             .catch(() => {
@@ -57,18 +58,6 @@ function Content({ taskId }) {
             });
     };
 
-    const fetchImage = (filePath) => {
-        if (!token || !filePath) return;
-        taskServiceApi
-            .getImageForConfirmation(token, filePath)
-            .then((blob) => {
-                const url = URL.createObjectURL(blob);
-                setImageUrl(url);
-            })
-            .catch(() => {
-                setAlert({ message: "Ошибка при загрузке фото подтверждения", severity: "error" });
-            });
-    };
 
     const handleConfirmApprove = async () => {
         if (!token || !selectedApprove) return;
@@ -82,7 +71,7 @@ function Content({ taskId }) {
             return;
         }
         try {
-            await taskServiceApi.putConfirmApprove(token, selectedApprove, numericScore, task_id);
+            await taskServiceApi.putConfirmApprove(token, selectedApprove, numericScore, task_id, logout);
             fetchApproves();
             setApproveDetails(null);
             setSelectedApprove(null);
@@ -97,7 +86,7 @@ function Content({ taskId }) {
     const handleRejectApprove = async () => {
         if (!token || !selectedApprove) return;
         try {
-            await taskServiceApi.putRejectApprove(token, selectedApprove);
+            await taskServiceApi.putRejectApprove(token, selectedApprove, logout);
             fetchApproves();
             setApproveDetails(null);
             setSelectedApprove(null);
@@ -125,18 +114,18 @@ function Content({ taskId }) {
                         <div className="space-y-2 md:space-y-3">
                             {approves.map((approve) => (
                                 <div
-                                    key={approve.ID}
+                                    key={approve.id}
                                     className="rounded-lg border p-2 md:p-3 hover:bg-neutral-50 cursor-pointer"
-                                    onClick={() => handleApproveSelect(approve.ID)}
+                                    onClick={() => handleApproveSelect(approve.id)}
                                 >
                                     <div className="flex items-center gap-2 md:gap-3">
                                         <img
-                                            src={`https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=${approve.User.id}`}
+                                            src={approve.user.avatar}
                                             className="h-8 w-8 md:h-10 md:w-10 rounded-full"
                                             alt="Фото пользователя"
                                         />
                                         <p className="text-sm md:text-base">
-                                            {approve.User.name + " " + approve.User.surname}
+                                            {approve.user.name + " " + approve.user.surname}
                                         </p>
                                     </div>
                                 </div>
@@ -151,7 +140,7 @@ function Content({ taskId }) {
                             <div className="flex flex-col md:flex-row items-start justify-between gap-3 md:gap-4 mb-4 md:mb-6">
                                 <div className="flex items-center gap-3 md:gap-4 w-full">
                                     <img
-                                        src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=2"
+                                        src={`${approveDetails?.user.avatar || ""}`}
                                         className="h-12 w-12 md:h-16 md:w-16 rounded-full"
                                         alt="Фото пользователя"
                                     />
@@ -176,7 +165,7 @@ function Content({ taskId }) {
                                                         className="mt-4 rounded-lg shadow-md mx-auto"
                                                     />
                                                 ) : (
-                                                    <p>Загрузка фото...</p>
+                                                    <p>Нет фото</p>
                                                 )}
                                             </div>
                                             {maxScore !== null && (

@@ -1,5 +1,5 @@
 const apiSettings = {
-    baseUrl: "https://task-service.dapomogu.tw1.su/api",
+    baseUrl: "http://localhost:8080/api",
 };
 
 class TaskServiceApi {
@@ -7,16 +7,31 @@ class TaskServiceApi {
         this._baseUrl = baseUrl;
     }
 
-    _request(url, options) {
-        return fetch(url, options).then(this._checkResponse);
+    _request(url, options, logout) {
+        return fetch(url, options).then(res => this._checkResponse(res, logout));
     }
 
-    _checkResponse(response) {
-        if (response.ok) {
-            return response.json();
-        } else {
-            return Promise.reject(`Ошибка: ${response.status}/${response.statusText}`);
-        }
+    _checkResponse(res, logout) {
+        return res.json().then(body => {
+            if (body.success) {
+                return body;
+            }
+
+            let message = 'Что-то пошло не так';
+
+            if (body.error?.message) {
+                if (body.error.status === 401) {
+                    logout()?.()
+                }
+                if (typeof body.error.message === 'string') {
+                    message = body.error.message;
+                } else if (typeof body.error.message === 'object') {
+                    message = Object.values(body.error.message).flat().join(', ');
+                }
+            }
+
+            throw new Error(message);
+        });
     }
 
     _updateToken(token) {
@@ -26,125 +41,132 @@ class TaskServiceApi {
         };
     }
 
-    postCreateTask(token, payload) {
+    postCreateTask(token, payload, logout) {
         this._updateToken(token);
-        return this._request(`${this._baseUrl}/tasks/`, {
+        return this._request(`${this._baseUrl}/tasks`, {
             method: "POST",
             headers: this._headers,
             body: JSON.stringify(payload),
-        });
+        }, logout);
     }
 
-    getCategoriesByName(token, name) {
+    putUpdateTask(token, payload, id, logout) {
+        this._updateToken(token);
+        return this._request(`${this._baseUrl}/task/${id}`, {
+            method: "PUT",
+            headers: this._headers,
+            body: JSON.stringify(payload),
+        }, logout);
+    }
+
+    getCategoriesByName(token, name, logout) {
         this._updateToken(token);
         return this._request(`${this._baseUrl}/category/search?name=${encodeURIComponent(name)}`, {
             method: "GET",
             headers: this._headers,
-        });
+        }, logout);
     }
 
-    getAllCategories(token) {
+    getAllCategories(token, logout) {
         this._updateToken(token);
-        return this._request(`${this._baseUrl}/category/`, {
+        return this._request(`${this._baseUrl}/category`, {
             method: "GET",
             headers: this._headers,
-        });
+        }, logout);
     }
 
-    getAllTasks(token, page) {
+    getAllTasks(token, page, logout) {
         this._updateToken(token);
-        return this._request(`${this._baseUrl}/tasks/page/${page}`, {
+        return this._request(`${this._baseUrl}/tasks/${page}`, {
             method: "GET",
             headers: this._headers,
-        });
+        }, logout);
     }
 
-    getTaskById(token, id) {
+    getTaskById(token, id, logout) {
         this._updateToken(token);
-        return this._request(`${this._baseUrl}/tasks/${id}`, {
+        return this._request(`${this._baseUrl}/task/${id}`, {
             method: "GET",
             headers: this._headers,
-        });
+        }, logout);
     }
 
-    postCreateResponse(token, task_id) {
+    postCreateResponse(token, task_id, logout) {
         this._updateToken(token);
         return this._request(`${this._baseUrl}/responses/create`, {
             method: "POST",
             headers: this._headers,
             body: JSON.stringify({ task_id }),
-        });
+        }, logout);
     }
 
-    getAllResponses(token, task_id, page = 1, limit = 100) {
+    getAllResponses(token, task_id, page = 1, limit = 100, logout) {
         this._updateToken(token);
         const url = `${this._baseUrl}/responses/all/${page}/${limit}/${task_id}`;
         return this._request(url, {
             method: "GET",
             headers: this._headers,
-        });
+        }, logout);
     }
 
-    putConfirmResponse(token, response_id) {
+    putConfirmResponse(token, response_id, logout) {
         this._updateToken(token);
-        return this._request(`${this._baseUrl}/responses/confirm`, {
+        return this._request(`${this._baseUrl}/responses/confirm/${response_id}`, {
             method: "PUT",
             headers: this._headers,
-            body: JSON.stringify({ response_id }),
-        });
+        }, logout);
     }
 
-    deleteResponse(token, task_id, user_id) {
+    deleteResponse(token, task_id, user_id, logout) {
         this._updateToken(token);
-        return this._request(`${this._baseUrl}/responses/delete`, {
+        return this._request(`${this._baseUrl}/responses/delete/${task_id}/${user_id}`, {
             method: "DELETE",
             headers: this._headers,
-            body: JSON.stringify({ task_id, user_id }),
-        });
+        }, logout);
     }
 
     // http://localhost:8081/api/tasks/my-opened-tasks/1/100
-    getMyOpenedTasks(token, page, limit = 5) {
+    getMyOpenedTasks(token, page, logout) {
         this._updateToken(token);
-        const url = `${this._baseUrl}/tasks/my-opened-tasks/${page}/${limit}`;
+        const url = `${this._baseUrl}/tasks/my-opened-tasks/${page}`;
         return this._request(url, {
             method: "GET",
             headers: this._headers,
-        });
+        }, logout);
     }
 
-    getMyClosedTasks(token, page, limit = 5) {
+    getMyClosedTasks(token, page, logout) {
         this._updateToken(token);
-        const url = `${this._baseUrl}/tasks/my-closed-tasks/${page}/${limit}`;
+        const url = `${this._baseUrl}/tasks/my-closed-tasks/${page}`;
         return this._request(url, {
             method: "GET",
             headers: this._headers,
-        });
+        }, logout);
     }
 
-    getResponseById(token, response_id) {
+    getResponseById(token, response_id, logout) {
         this._updateToken(token);
         const url = `${this._baseUrl}/responses/${response_id}`;
         return this._request(url, {
             method: "GET",
             headers: this._headers,
-        });
+        }, logout);
     }
 
-    getNotConfirmedResponses(token, task_id, page = 1, limit = 100) {
+    getNotConfirmedResponses(token, task_id, logout, page = 1, limit = 100) {
         this._updateToken(token);
-        const url = `${this._baseUrl}/responses/notconfirmed/${page}/${limit}/${task_id}`;
+        const url = `${this._baseUrl}/responses/notconfirmed/${page}/${task_id}`;
         return this._request(url, {
             method: "GET",
             headers: this._headers,
-        });
+        }, logout);
     }
 
     // TaskID uint           `json:"task_id"`
     // UserID uint           `json:"user_id"`
     // File   multipart.File `json:"FilePath"`
 
-    postSendPhotoReport(token, task_id, user_id, image) {
+    postSendPhotoReport(token, task_id, user_id, image, logout) {
         this._updateToken(token);
         const formData = new FormData();
         formData.append("image", image, "photo.png");
@@ -157,51 +179,54 @@ class TaskServiceApi {
                 Authorization: this._headers.Authorization,
             },
             body: formData,
-        });
+        }, logout);
     }
 
-    getAllApproves(token, task_id, page = 1, limit = 100) {
+    getAllApproves(token, task_id, page = 1, logout) {
         this._updateToken(token);
-        const url = `${this._baseUrl}/approves/all-by-task-id/${task_id}/${page}/${limit}`;
+        const url = `${this._baseUrl}/approves/show/${task_id}/${page}`;
         return this._request(url, {
             method: "GET",
             headers: this._headers,
-        });
+        }, logout);
     }
 
-    getApproveById(token, approve_id) {
+    getApproveById(token, approve_id, logout) {
         this._updateToken(token);
-        const url = `${this._baseUrl}/approves/by-id/${approve_id}`;
+        const url = `${this._baseUrl}/approves/show/${approve_id}`;
         return this._request(url, {
             method: "GET",
             headers: this._headers,
-        });
+        }, logout);
     }
 
-    putConfirmApprove(token, approve_id, score, task_id) {
+    putConfirmApprove(token, approve_id, score, logout) {
         this._updateToken(token);
-        return this._request(`${this._baseUrl}/approves/confirm`, {
+        return this._request(`${this._baseUrl}/approves/confirm/${approve_id}`, {
             method: "PUT",
             headers: this._headers,
-            body: JSON.stringify({ id: approve_id, score: score, task_id: task_id }),
-        });
+            body: JSON.stringify({score: score}),
+        }, logout);
     }
 
-    putRejectApprove(token, approve_id) {
+    putRejectApprove(token, approve_id, logout) {
         this._updateToken(token);
         return this._request(`${this._baseUrl}/approves/reject`, {
             method: "PUT",
             headers: this._headers,
             body: JSON.stringify({ id: approve_id }),
-        });
+        }, logout);
     }
 
-    getImageForConfirmation(token, file_url) {
+    getImageForConfirmation(token, file_url, logout) {
         this._updateToken(token);
         return fetch(`${this._baseUrl}/${file_url}`, {
             method: "GET",
             headers: this._headers,
         }).then((response) => {
+            if (response.status === 401) {
+                logout?.();
+            }
             if (response.ok) {
                 return response.blob();
             } else {
@@ -210,20 +235,20 @@ class TaskServiceApi {
         });
     }
 
-    putCompleteTask(token, task_id) {
+    putCompleteTask(token, task_id, logout) {
         this._updateToken(token);
-        return fetch(`${this._baseUrl}/tasks/complete/${task_id}`, {
+        return this._request(`${this._baseUrl}/tasks/complete/${task_id}`, {
             method: "PUT",
             headers: this._headers,
-        });
+        }, logout);
     }
-    
-    deleteTask(token, task_id) {
+
+    deleteTask(token, task_id, logout) {
         this._updateToken(token);
-        return fetch(`${this._baseUrl}/tasks/${task_id}`, {
+        return this._request(`${this._baseUrl}/tasks/${task_id}`, {
             method: "DELETE",
             headers: this._headers,
-        });
+        }, logout);
     }
 }
 

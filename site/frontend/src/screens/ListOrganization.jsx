@@ -8,7 +8,7 @@ import { Alert, Snackbar } from "@mui/material";
 import { Helmet } from 'react-helmet';
 
 function ListOrganization() {
-    const { token } = useContext(AuthContext);
+    const { token, logout } = useContext(AuthContext);
     const [organizations, setOrganizations] = useState([]);
     const [countOfPages, setCountOfPages] = useState(0);
     const [numberOfPage, setNumberOfPage] = useState(1);
@@ -17,10 +17,10 @@ function ListOrganization() {
     const fetchOrganizations = useCallback(
         (page) => {
             userServiceApi
-                .getAcceptedOrganizations(token, page)
+                .getAcceptedOrganizations(token, page, logout)
                 .then((data) => {
-                    setOrganizations(data.data || []);
-                    setCountOfPages(data.totalPages);
+                    setOrganizations(data.data.data || []);
+                    setCountOfPages(data.data.total_pages);
                 })
                 .catch(() => {
                     setAlert({ message: "Ошибка при загрузке организаций", severity: "error" });
