@@ -10,11 +10,16 @@ return [
             'charset' => 'utf8',
         ],
         'mailer' => [
-            'class' => 'common\components\apimailer\Unisender',
-            'apiKey' => $params['unisenderApiKey'],
-            'useFileTransport' => true,
-            'messageConfig' => [
-                'from' => ['noreply@site.ru' => 'Email Sender'],
+            'class' => 'yii\swiftmailer\Mailer',
+            'viewPath' => '@common/mail',
+            'useFileTransport' => false,
+            'transport' => [
+                'class' => 'Swift_SmtpTransport',
+                'host' => 'smtp.gmail.com',
+                'username' => 'koldyrev03@gmail.com',
+                'password' => 'lpkhhnmyyywnakbl',
+                'port' => '587',
+                'encryption' => 'tls',
             ],
         ],
     ],
