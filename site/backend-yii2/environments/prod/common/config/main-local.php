@@ -13,11 +13,16 @@ return [
             'schemaCache' => 'cache',
         ],
         'mailer' => [
-            'class' => 'common\components\apimailer\Unisender',
-            'apiKey' => $params['unisenderApiKey'],
+            'class' => 'yii\swiftmailer\Mailer',
+            'viewPath' => '@common/mail',
             'useFileTransport' => false,
-            'messageConfig' => [
-                'from' => ['noreply@site.ru' => 'Email Sender'],
+            'transport' => [
+                'class' => 'Swift_SmtpTransport',
+                'host' => 'smtp.gmail.com',
+                'username' => 'koldyrev03@gmail.com',
+                'password' => 'lpkhhnmyyywnakbl',
+                'port' => '587',
+                'encryption' => 'tls',
             ],
         ],
     ],
