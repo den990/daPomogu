@@ -1,7 +1,7 @@
 import {useContext} from "react";
 import {AuthContext} from "../context/AuthProvider";
 
-const BASE_URL = "http://localhost:8080";
+const BASE_URL = "https://api.dapomogu.ru/";
 function checkResponse(res, logout) {
     return res.json().then(body => {
         if (body.success) {

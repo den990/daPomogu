@@ -103,3 +103,75 @@ Stack trace:
 #0 D:\source\repos\workonyii\yii2-template\vendor\yiisoft\yii2\base\Application.php(384): yii\web\Application->handleRequest()
 #1 D:\source\repos\workonyii\yii2-template\frontend\web\index.php(18): yii\base\Application->run()
 #2 {main}
+2025-05-24 10:57:52 [[::1]][-][-][error][yii\web\HttpException:404] yii\base\InvalidRouteException: Unable to resolve the request "api/admin/organization/requests". in D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\base\Module.php:561
+Stack trace:
+#0 D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\web\Application.php(103): yii\base\Module->runAction('api/admin/organ...', Array)
+#1 D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\base\Application.php(384): yii\web\Application->handleRequest(Object(yii\web\Request))
+#2 D:\source\repos\daPomogu\site\backend-yii2\frontend\web\index.php(18): yii\base\Application->run()
+#3 {main}
+
+Next yii\web\NotFoundHttpException: Страница не найдена. in D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\web\Application.php:115
+Stack trace:
+#0 D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\base\Application.php(384): yii\web\Application->handleRequest(Object(yii\web\Request))
+#1 D:\source\repos\daPomogu\site\backend-yii2\frontend\web\index.php(18): yii\base\Application->run()
+#2 {main}
+2025-05-24 10:57:52 [[::1]][-][-][error][yii\web\HttpException:404] yii\base\InvalidRouteException: Unable to resolve the request "user/avatar/1". in D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\base\Module.php:561
+Stack trace:
+#0 D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\web\Application.php(103): yii\base\Module->runAction('user/avatar/1', Array)
+#1 D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\base\Application.php(384): yii\web\Application->handleRequest(Object(yii\web\Request))
+#2 D:\source\repos\daPomogu\site\backend-yii2\frontend\web\index.php(18): yii\base\Application->run()
+#3 {main}
+
+Next yii\web\NotFoundHttpException: Страница не найдена. in D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\web\Application.php:115
+Stack trace:
+#0 D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\base\Application.php(384): yii\web\Application->handleRequest(Object(yii\web\Request))
+#1 D:\source\repos\daPomogu\site\backend-yii2\frontend\web\index.php(18): yii\base\Application->run()
+#2 {main}
+2025-05-24 10:57:52 [[::1]][-][-][error][yii\web\HttpException:404] yii\base\InvalidRouteException: Unable to resolve the request "api/admin/users/1". in D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\base\Module.php:561
+Stack trace:
+#0 D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\web\Application.php(103): yii\base\Module->runAction('api/admin/users...', Array)
+#1 D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\base\Application.php(384): yii\web\Application->handleRequest(Object(yii\web\Request))
+#2 D:\source\repos\daPomogu\site\backend-yii2\frontend\web\index.php(18): yii\base\Application->run()
+#3 {main}
+
+Next yii\web\NotFoundHttpException: Страница не найдена. in D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\web\Application.php:115
+Stack trace:
+#0 D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\base\Application.php(384): yii\web\Application->handleRequest(Object(yii\web\Request))
+#1 D:\source\repos\daPomogu\site\backend-yii2\frontend\web\index.php(18): yii\base\Application->run()
+#2 {main}
+2025-05-24 10:58:06 [[::1]][-][-][error][yii\web\HttpException:404] yii\base\InvalidRouteException: Unable to resolve the request "api/tasks/1". in D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\base\Module.php:561
+Stack trace:
+#0 D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\web\Application.php(103): yii\base\Module->runAction('api/tasks/1', Array)
+#1 D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\base\Application.php(384): yii\web\Application->handleRequest(Object(yii\web\Request))
+#2 D:\source\repos\daPomogu\site\backend-yii2\frontend\web\index.php(18): yii\base\Application->run()
+#3 {main}
+
+Next yii\web\NotFoundHttpException: Страница не найдена. in D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\web\Application.php:115
+Stack trace:
+#0 D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\base\Application.php(384): yii\web\Application->handleRequest(Object(yii\web\Request))
+#1 D:\source\repos\daPomogu\site\backend-yii2\frontend\web\index.php(18): yii\base\Application->run()
+#2 {main}
+2025-05-24 10:58:06 [[::1]][-][-][error][yii\web\HttpException:404] yii\base\InvalidRouteException: Unable to resolve the request "user/avatar". in D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\base\Module.php:561
+Stack trace:
+#0 D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\web\Application.php(103): yii\base\Module->runAction('user/avatar', Array)
+#1 D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\base\Application.php(384): yii\web\Application->handleRequest(Object(yii\web\Request))
+#2 D:\source\repos\daPomogu\site\backend-yii2\frontend\web\index.php(18): yii\base\Application->run()
+#3 {main}
+
+Next yii\web\NotFoundHttpException: Страница не найдена. in D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\web\Application.php:115
+Stack trace:
+#0 D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\base\Application.php(384): yii\web\Application->handleRequest(Object(yii\web\Request))
+#1 D:\source\repos\daPomogu\site\backend-yii2\frontend\web\index.php(18): yii\base\Application->run()
+#2 {main}
+2025-05-24 10:58:07 [[::1]][-][-][error][yii\web\HttpException:404] yii\base\InvalidRouteException: Unable to resolve the request "api/profile". in D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\base\Module.php:561
+Stack trace:
+#0 D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\web\Application.php(103): yii\base\Module->runAction('api/profile', Array)
+#1 D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\base\Application.php(384): yii\web\Application->handleRequest(Object(yii\web\Request))
+#2 D:\source\repos\daPomogu\site\backend-yii2\frontend\web\index.php(18): yii\base\Application->run()
+#3 {main}
+
+Next yii\web\NotFoundHttpException: Страница не найдена. in D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\web\Application.php:115
+Stack trace:
+#0 D:\source\repos\daPomogu\site\backend-yii2\vendor\yiisoft\yii2\base\Application.php(384): yii\web\Application->handleRequest(Object(yii\web\Request))
+#1 D:\source\repos\daPomogu\site\backend-yii2\frontend\web\index.php(18): yii\base\Application->run()
+#2 {main}
