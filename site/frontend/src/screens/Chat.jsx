@@ -137,7 +137,7 @@ function Chat() {
     }
 
     useEffect(() => {
-        const ws = new WebSocket("ws://localhost:8081/ws");
+        const ws = new WebSocket("wss://api.dapomogu.ru/ws");
 
         ws.onopen = () => {
             console.log("✅ Соединение установлено");
