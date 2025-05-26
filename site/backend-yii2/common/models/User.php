@@ -165,6 +165,6 @@ class User extends ActiveRecord implements IdentityInterface
         if ($this->avatar_id && $this->avatar) {
             return Yii::getAlias('@api') . '/web/' . $this->avatar->src;
         }
-        return Yii::getAlias('@api') . '\web\images\no-avatar.jpg';
+        return Yii::getAlias('@api') . '/web/images/no-avatar.jpg';
     }
 }
