@@ -64,8 +64,8 @@ return [
                 'host' => 'smtp.gmail.com',
                 'username' => 'koldyrev03@gmail.com',
                 'password' => 'lpkhhnmyyywnakbl',
-                'port' => '587',
-                'encryption' => 'tls',
+                'port' => '465',
+                'encryption' => 'ssl',
             ],
         ],
         'emailService' => [
