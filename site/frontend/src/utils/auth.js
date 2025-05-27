@@ -41,7 +41,7 @@ export function registerVolunteer(
     surname,
     patronymic,
     date_of_birthday,
-    registration_address,
+    address,
     password
 ) {
     return fetch(`${BASE_URL}/register`, {
@@ -56,7 +56,7 @@ export function registerVolunteer(
             surname,
             patronymic,
             date_of_birthday,
-            registration_address,
+            address,
             password,
         }),
     }).then((res) => checkResponse(res));

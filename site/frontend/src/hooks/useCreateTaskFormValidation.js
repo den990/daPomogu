@@ -55,45 +55,52 @@ export default function useCreateTaskFormValidation() {
     const newValues = { ...values, [name]: newValue };
     setValues(newValues);
 
+    const newErrors = { ...errors };
+
     let errorMessage = "";
-    
+
     switch (name) {
       case 'name':
         errorMessage = validateName(newValue);
+        newErrors[name] = errorMessage;
         break;
       case 'description':
         errorMessage = validateDescription(newValue);
+        newErrors[name] = errorMessage;
         break;
       case 'date':
       case 'time':
         errorMessage = validateDate(newValues.date, newValues.time);
+        newErrors.date = errorMessage;
         break;
       case 'participants_count':
         errorMessage = validateParticipants(newValue);
+        newErrors[name] = errorMessage;
         break;
       case 'max_score':
         errorMessage = validateScore(newValue);
+        newErrors[name] = errorMessage;
         break;
       default:
         errorMessage = "";
+        newErrors[name] = errorMessage;
     }
 
-    const newErrors = { ...errors, [name]: errorMessage };
     setErrors(newErrors);
 
-    // Проверка валидности всей формы
-    const formIsValid = 
-      !validateName(newValues.name) &&
-      !validateDescription(newValues.description) &&
-      !validateDate(newValues.date, newValues.time) &&
-      !validateParticipants(newValues.participants_count) &&
-      !validateScore(newValues.max_score) &&
-      newValues.coordinate_ids?.length > 0 &&
-      newValues.category_ids?.length > 0 &&
-      newValues.address;
+    const formIsValid =
+        !validateName(newValues.name) &&
+        !validateDescription(newValues.description) &&
+        !validateDate(newValues.date, newValues.time) &&
+        !validateParticipants(newValues.participants_count) &&
+        !validateScore(newValues.max_score) &&
+        newValues.coordinate_ids?.length > 0 &&
+        newValues.category_ids?.length > 0 &&
+        newValues.address;
 
     setIsValid(formIsValid);
   };
+
 
   const resetForm = useCallback(
     (newValues = {}, newErrors = {}, newIsValid = false) => {

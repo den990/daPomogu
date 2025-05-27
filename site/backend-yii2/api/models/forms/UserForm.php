@@ -16,7 +16,7 @@ class UserForm extends User
     {
         return ArrayHelper::merge(parent::rules(), [
             [['password'], 'required'],
-            [['avatar'], 'file', 'skipOnEmpty' => true, 'extensions' => ['png', 'jpg', 'jpeg', 'webp'], 'maxSize' => 1024 * 1024 * 5],
+            [['avatar'], 'file', 'skipOnEmpty' => true, 'extensions' => ['png', 'jpg', 'jpeg', 'webp', 'heic'], 'maxSize' => 1024 * 1024 * 5],
         ]);
     }
 
@@ -90,6 +90,13 @@ class UserForm extends User
 
             } catch (\Throwable $e) {
                 $transaction->rollBack();
+                Yii::error([
+                    'name' => $this->avatar->name,
+                    'tempName' => $this->avatar->tempName,
+                    'type' => $this->avatar->type,
+                    'extension' => $this->avatar->extension,
+                    'hasError' => $this->avatar->size,
+                ],__METHOD__);
                 Yii::error($e->getMessage(), __METHOD__);
                 return false;
             }

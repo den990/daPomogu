@@ -104,7 +104,7 @@ export default function TaskForm({ initialData = null, isEditMode = false, onSuc
 
         const payload = {
             name: values.name,
-            type_id:            Number(values.task_type),
+            type_id:            Number(values.task_type) ? Number(values.task_type) : 1,
             description:        values.description,
             location:           `${address.data.geo_lat}, ${address.data.geo_lon}`,
             task_date,
@@ -148,7 +148,7 @@ export default function TaskForm({ initialData = null, isEditMode = false, onSuc
                 <div className="form-group">
                     <label className="block text-sm font-medium text-gray-700 mb-2">Тип задания</label>
                     <select
-                        name="task_type" value={values.task_type||""} onChange={handleChange}
+                        name="task_type" value={values.task_type || 1} onChange={handleChange}
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-200 focus:border-blue-200 bg-white"
                     >
                         <option value="1">Открытый</option>

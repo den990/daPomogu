@@ -18,7 +18,7 @@ function RegistrationForm({ setIsPopUpVisible }) {
             return;
         }
 
-        const { surname, name, patronymic, email, phone, date_of_birthday, registration_address, password } = values;
+        const { surname, name, patronymic, email, phone, date_of_birthday, address, password } = values;
 
         try {
             await registerVolunteer(
@@ -28,7 +28,7 @@ function RegistrationForm({ setIsPopUpVisible }) {
                 surname,
                 patronymic,
                 date_of_birthday,
-                registration_address,
+                address,
                 password
             );
             setIsPopUpVisible(true);
@@ -131,18 +131,18 @@ function RegistrationForm({ setIsPopUpVisible }) {
                             {errors.date_of_birthday && <span className="text-red-600 text-xs">{errors.date_of_birthday}</span>}
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700" htmlFor="registration_address">
+                            <label className="block text-sm font-medium text-gray-700" htmlFor="address">
                                 Адрес регистрации*
                             </label>
                             <textarea
-                                name="registration_address"
-                                value={values?.registration_address || ""}
+                                name="address"
+                                value={values?.address || ""}
                                 onChange={handleChange}
                                 rows="3"
                                 required
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500"
                             ></textarea>
-                            {errors.registration_address && <span className="text-red-600 text-xs">{errors.registration_address}</span>}
+                            {errors.address && <span className="text-red-600 text-xs">{errors.address}</span>}
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700" htmlFor="password">
