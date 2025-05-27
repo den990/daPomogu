@@ -113,7 +113,6 @@ class WebSocketHandler extends WebSocketServer
 
         return array_map(function ($comment) {
             $organization = $comment->user->organizationOwner;
-            file_put_contents('allo.txt', print_r($organization ? $organization->avatarUrl : $comment->user->avatarUrl, true));
             $imageData = file_get_contents($organization ? $organization->avatarUrl : $comment->user->avatarUrl);
             $avatarBase64 = 'data:image/jpeg;base64,' . base64_encode($imageData);
             return [

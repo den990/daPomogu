@@ -188,7 +188,7 @@ export default function useFormWithValidation(formType = 'volunteer') {
                 values.email && !errors.email &&
                 values.phone && !errors.phone &&
                 values.date_of_birthday && !errors.date_of_birthday &&
-                values.registration_address && !errors.registration_address &&
+                values.address && !errors.address &&
                 values.password && !errors.password &&
                 values.password_confirmation && !errors.password_confirmation &&
                 values.terms
@@ -220,7 +220,7 @@ export default function useFormWithValidation(formType = 'volunteer') {
                 values.email && !errors.email &&
                 values.phone && !errors.phone &&
                 values.date_of_birthday && !errors.date_of_birthday &&
-                values.registration_address && !errors.registration_address
+                values.address && !errors.address
             );
         }
         else {

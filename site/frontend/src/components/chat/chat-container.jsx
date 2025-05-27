@@ -76,7 +76,7 @@ function ChatContainer({ messages, id }) {
                                             </div>
                                             <p className="ms-1 text-xs sm:text-sm md:text-base">{msg.message}</p>
                                             <div className={`mt-0.5 ${msg.from === 'user' ? 'flex justify-end gap-1 items-center' : ''}`}>
-                                                <span className={`text-[9px] sm:text-[10px] md:text-xs ${msg.from === 'user' ? 'text-red-200' : 'text-neutral-500'}`}>
+                                                <span className={`text-[9px] sm:text-[10px] md:text-xs ${id === msg.user.id ? 'text-red-200' : 'text-neutral-500'}`}>
                                                     {format(parseISO(msg.created_at), "HH:mm")}
                                                 </span>
                                                 {msg.from === 'user' && (

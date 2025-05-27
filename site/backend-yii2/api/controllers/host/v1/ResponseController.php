@@ -5,6 +5,8 @@ namespace api\controllers\host\v1;
 use api\components\ApiResponse;
 use common\models\Response;
 use common\models\ResponseStatus;
+use common\models\Task;
+use common\models\TaskStatus;
 use common\models\User;
 use Yii;
 use yii\data\Pagination;
@@ -146,7 +148,10 @@ class ResponseController extends AppController
 
         if ($exist = Response::findOne(['user_id' => $userId, 'task_id' => $taskId]))
             return ApiResponse::error(400, null, Yii::t('app', 'Response are exist'));
+        $task = Task::findOne(['id' => $taskId]);
 
+        if ($task->status_id != TaskStatus::STATUS_NOT_STARTING)
+            return ApiResponse::error(400, null, Yii::t('app', 'Task are started'));
         $response = new Response();
         $response->user_id = $userId;
         $response->task_id = $taskId;

@@ -8,6 +8,8 @@ import { useState } from "react";
 function ButtonsPanel({ task: initialTask }) {
     const { token, id, role, logout } = useContext(AuthContext);
     const [task, setTask] = useState(initialTask);
+    const [isRequestError, setisRequestError] = useState(false);
+    const [requestError, setRequestError] = useState("");
 
     if (!task) {
         return <div>Загрузка...</div>;
@@ -27,7 +29,9 @@ function ButtonsPanel({ task: initialTask }) {
                 is_response: true,
             }));
         } catch (error) {
-            console.error("Ошибка в создании отклика");
+            console.log(error);
+            setRequestError(error.toString);
+            setisRequestError(true);
         }
     };
 
@@ -84,12 +88,15 @@ function ButtonsPanel({ task: initialTask }) {
                                     task.is_response !== true && task.is_recorded !== true 
                                     ? 
                                         (
-                                            <button
-                                                onClick={handleResponse}
-                                                className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 mb-4"
-                                            >
-                                                Принять участие
-                                            </button>
+                                            <div>
+                                                <button
+                                                    onClick={handleResponse}
+                                                    className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 mb-4"
+                                                >
+                                                    Принять участие
+                                                </button>
+                                                <div id="error-response" className="text-red-600">{isRequestError ? requestError : ''}</div>
+                                            </div>
                                         ) 
                                     :   task.is_recorded !== true
                                         ?

@@ -110,6 +110,7 @@ return [
 
                 //task
                 'POST api/tasks' => 'host/v1/task/create',
+                'OPTIONS api/tasks' => 'host/v1/task/create',
                 'GET api/tasks/<page:\d+>' => 'host/v1/task/show-all',
                 'OPTIONS api/tasks/<page:\d+>' => 'host/v1/task/show-all',
                 'GET api/task/<id:\d+>' => 'host/v1/task/show',

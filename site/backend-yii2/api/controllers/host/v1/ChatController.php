@@ -51,8 +51,11 @@ class ChatController extends AppController
     public function actionShow()
     {
         $userId = Yii::$app->params['user.id'];
-        $chats = Chat::find()->where(['OR', 'user1_id' => $userId, 'user2_id' => $userId])->all();
-
+        $chats = Chat::find()->where(['or',
+            ['user1_id' => $userId],
+            ['user2_id' => $userId]
+        ])->all();
+        file_put_contents('test', print_r($chats, true));
         $res = [];
         foreach ($chats as $chat) {
             $isMatch = $chat->user1_id == $userId;

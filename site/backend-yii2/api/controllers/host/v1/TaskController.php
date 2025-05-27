@@ -123,10 +123,10 @@ class TaskController extends Controller
             $orgIds = ArrayHelper::getColumn($user->organizations, 'id');
             $query->andWhere([
                 'or',
-                ['type_id' => TaskType::TYPE_OPENED],
+                ['type_id' => TaskType::TYPE_OPENED, 'status_id' => TaskStatus::STATUS_NOT_STARTING],
                 [
                     'and',
-                    ['type_id' => TaskType::TYPE_CLOSED],
+                    ['type_id' => TaskType::TYPE_CLOSED,],
                     ['organization_id' => $orgIds],
                 ]
             ]);

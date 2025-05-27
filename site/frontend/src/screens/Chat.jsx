@@ -207,8 +207,10 @@ function Chat() {
                             <div
                                 key={chat.id}
                                 onClick={() => {
-                                    setActiveChat(chat);
-                                    setIsApplicationsOpen(false);
+                                    if (!isLoadingMessage){
+                                        setActiveChat(chat);
+                                        setIsApplicationsOpen(false);
+                                    }
                                 }}
                                 className={`cursor-pointer rounded-lg border p-2 mb-2 hover:bg-neutral-100 ${
                                     activeChat?.id === chat.id ? "bg-neutral-200" : ""
@@ -234,14 +236,13 @@ function Chat() {
                     </Dialog.Panel>
                 </Dialog>
 
-                {/* Десктопная версия списка чатов */}
                 <div className="hidden sm:block sm:w-1/3 md:w-[30%] lg:w-1/4 rounded-lg border bg-white p-4 overflow-auto">
                     <h2 className="text-base font-semibold mb-3">Сообщения</h2>
                     {chats.length === 0 && !isLoading && <p>Нет активных чатов</p>}
                     {chats.map((chat) => (
                         <div
                             key={chat.id}
-                            onClick={() => setActiveChat(chat)}
+                            onClick={() => {if (!isLoadingMessage) setActiveChat(chat)}}
                             className={`cursor-pointer rounded-lg border p-3 mb-2 hover:bg-neutral-100 ${
                                 activeChat?.id === chat.id ? "bg-neutral-200" : ""
                             }`}
@@ -265,7 +266,6 @@ function Chat() {
                     ))}
                 </div>
 
-                {/* Контейнер чата */}
                 <div className="flex-1 bg-white rounded-lg shadow-md flex flex-col">
                     {activeChat ? (
                         <>
