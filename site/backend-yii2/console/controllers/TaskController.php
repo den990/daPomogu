@@ -10,7 +10,8 @@ class TaskController extends Controller
 {
     public function actionUpdateStatus()
     {
-        $now = date('Y-m-d H:i:s');
+        $now = (new \DateTime('now', new \DateTimeZone('UTC')))->format('Y-m-d H:i:s');
+
         $tasks = Task::find()
             ->where(['<', 'task_date', $now])
             ->all();
