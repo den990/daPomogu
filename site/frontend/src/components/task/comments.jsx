@@ -8,7 +8,7 @@ function Comments({ task }) {
     const [comment, setComment] = useState("");
 
     useEffect(() => {
-        const ws = new WebSocket("wss://api.dapomogu.ru");
+        const ws = new WebSocket("wss://api.dapomogu.ru/ws");
 
         ws.onopen = () => {
             console.log("✅ Соединение установлено");
