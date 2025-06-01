@@ -61,7 +61,7 @@ function Comments({ task }) {
                 data: comment,
                 user_id: Number(id),
                 token: token,
-                room_id: Number(task.id),
+                room_id: "comment" + Number(task.id),
             };
             socket.send(JSON.stringify(message));
             console.log("📤 Сообщение отправлено:", message);
