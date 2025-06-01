@@ -1,6 +1,6 @@
 const apiSettings = {
-    baseUrl: "https://api.dapomogu.ru/api",
-    baseUrlWithoutApi: "https://api.dapomogu.ru",
+    baseUrl: "http://192.168.31.157:8080/api",
+    baseUrlWithoutApi: "http://192.168.31.157:8080",
 };
 
 class UserServiceApi {

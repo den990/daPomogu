@@ -1,5 +1,5 @@
 const apiSettings = {
-    baseUrl: "https://api.dapomogu.ru/api",
+    baseUrl: "http://192.168.31.157:8080/api",
 };
 
 class StatisticServiceApi {

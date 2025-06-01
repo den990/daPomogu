@@ -169,7 +169,7 @@ export default function useFormWithValidation(formType = 'volunteer') {
         else if (name === 'phone') errorMessage = validatePhone(newValue);
         // Специфичные валидации
         else if (formType === 'volunteer') errorMessage = validateVolunteerField(name, newValue);
-        else if (formType === 'volunteerUpdate') errorMessage = validateVolunteerField(name, newValue);
+        else if (formType === 'volunteerUpdate') errorMessage = validateUpdateVolunteerField(name, newValue);
         else if (formType === 'organization') errorMessage = validateOrganizationField(name, newValue);
         else if (formType === 'organizationUpdate') errorMessage = validateUpdateOrganizationField(name, newValue);
 
@@ -220,7 +220,7 @@ export default function useFormWithValidation(formType = 'volunteer') {
                 values.email && !errors.email &&
                 values.phone && !errors.phone &&
                 values.date_of_birthday && !errors.date_of_birthday &&
-                values.address && !errors.address
+                values.registration_address && !errors.registration_address
             );
         }
         else {
