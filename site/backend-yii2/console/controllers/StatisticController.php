@@ -10,14 +10,10 @@ class StatisticController extends Controller
     public function actionUpdateUser()
     {
         $year = date('Y');
-        $month = date('n') - 1;
-        if ($month === 0) {
-            $month = 12;
-            $year -= 1;
-        }
+        $month = date('n');
 
         $start = "$year-" . str_pad($month, 2, '0', STR_PAD_LEFT) . "-01 00:00:00";
-        $end = date('Y-m-01 00:00:00');
+        $end = date('Y-m-d H:i:s'); // текущее время
 
         $users = (new \yii\db\Query())
             ->select('user_id')
@@ -54,10 +50,12 @@ class StatisticController extends Controller
         usort($stats, function ($a, $b) {
             return $b['score'] <=> $a['score'];
         });
+
         foreach ($stats as $i => &$row) {
             $row['rank'] = $i + 1;
         }
         unset($row);
+
         foreach ($stats as $row) {
             Yii::$app->db->createCommand()->upsert('user_monthly_statistics', $row)->execute();
         }
@@ -68,14 +66,10 @@ class StatisticController extends Controller
     public function actionUpdateOrganization()
     {
         $year = date('Y');
-        $month = date('n') - 1;
-        if ($month === 0) {
-            $month = 12;
-            $year -= 1;
-        }
+        $month = date('n');
 
         $start = "$year-" . str_pad($month, 2, '0', STR_PAD_LEFT) . "-01 00:00:00";
-        $end = date('Y-m-01 00:00:00');
+        $end = date('Y-m-d H:i:s'); // текущее время
 
         $organizationIds = (new \yii\db\Query())
             ->select('id')
@@ -131,5 +125,6 @@ class StatisticController extends Controller
 
         echo "Done.\n";
     }
+
 
 }

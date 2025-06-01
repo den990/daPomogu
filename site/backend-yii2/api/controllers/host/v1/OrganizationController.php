@@ -113,7 +113,7 @@ class OrganizationController extends Controller
             'full_name_owner' => $organization->full_name_owner,
             'tasks' => $organization->getTasksInProfile(),
             'count_finished_tasks' => Task::find()->where(['organization_id' => $organization->id, 'status_id' => TaskStatus::STATUS_COMPLETE])->count(),
-            'count_volunteers' => UserOrganization::find()->where(['organization_id' => $organization->id])->count(),
+            'count_volunteers' => UserOrganization::find()->where(['organization_id' => $organization->id, 'is_accepted' => 1])->count(), //TODO только подтвержденные
             'count_days' => $organization->getDaysSinceRegistration(),
             'is_attached' => $userOrganization && $userOrganization->is_accepted,
             'is_requested' => $userOrganization && $userOrganization->is_accepted == 0,

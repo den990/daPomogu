@@ -14,6 +14,7 @@ class TaskController extends Controller
 
         $tasks = Task::find()
             ->where(['<', 'task_date', $now])
+            ->andWhere(['status_id' => TaskStatus::STATUS_NOT_STARTING])
             ->all();
 
         foreach ($tasks as $task) {

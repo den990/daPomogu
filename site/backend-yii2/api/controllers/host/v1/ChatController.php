@@ -55,7 +55,6 @@ class ChatController extends AppController
             ['user1_id' => $userId],
             ['user2_id' => $userId]
         ])->all();
-        file_put_contents('test', print_r($chats, true));
         $res = [];
         foreach ($chats as $chat) {
             $isMatch = $chat->user1_id == $userId;
