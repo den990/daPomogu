@@ -77,7 +77,7 @@ function Comments({ task }) {
             const message = {
                 action: "GetComments",
                 token: token,
-                room_id: Number(task.id),
+                room_id: "comment" + Number(task.id),
                 data: JSON.stringify({
                     limit: 100,
                     page: 1,
