@@ -100,7 +100,10 @@ class TaskController extends Controller
             return ApiResponse::error(400, null, Yii::t('app', 'Id must required'));
         }
 
-        $model = TaskForm::findOne(['id' => $id]);
+        $model = TaskForm::findOne(['id' => $id, 'status_id' => TaskStatus::STATUS_NOT_STARTING]);
+        if (!$model)
+            return ApiResponse::error(400, null, Yii::t('app', 'Task not found or started'));
+
         $user = User::findOne(['id' => Yii::$app->params['user.id']]);
         if (!$user->organizationOwner || $model->organization_id != $user->organizationOwner->id)
             return ApiResponse::error(403, null, Yii::t('app', 'Access denied'));
@@ -207,7 +210,8 @@ class TaskController extends Controller
             $response = Response::findOne(['user_id' => Yii::$app->params['user.id'], 'task_id' => $id, 'status_id' => ResponseStatus::STATUS_PENDING]);
             $recorded = TaskUser::findOne(['user_id' => Yii::$app->params['user.id'], 'task_id' => $id]);
             $user = User::findOne(['id' => Yii::$app->params['user.id']]);
-            if ($user->organizationOwner && $id == $user->organizationOwner->id)
+
+            if ($user->organizationOwner && $task->organization_id == $user->organizationOwner->id)
                 $role = 'owner';
             else {
                 $role = $recorded ? $recorded->is_coordinator == 1 ? 'coordinator' : 'participant' : 'user';
@@ -217,7 +221,6 @@ class TaskController extends Controller
             $recorded = null;
             $role = 'user';
         }
-
         return ApiResponse::success([
             'id' => $task->id,
             'organization_id' => $task->organization_id,

@@ -105,6 +105,24 @@ class TaskForm extends Task
                         $transaction->rollBack();
                         return false;
                     }
+
+                    foreach ($this->coordinate_ids as $coordinate_id)
+                    {
+                        $model = new TaskUser(['task_id' => $this->id, 'user_id' => $coordinate_id, 'is_coordinator' => 1]);
+                        if (!$model->save()) {
+                            $transaction->rollBack();
+                            return false;
+                        }
+                    }
+
+                    foreach ($this->category_ids as $category_id)
+                    {
+                        $model = new TaskCategory(['task_id' => $this->id, 'category_id' => $category_id]);
+                        if (!$model->save()) {
+                            $transaction->rollBack();
+                            return false;
+                        }
+                    }
             }
 
             $transaction->commit();

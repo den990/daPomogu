@@ -207,6 +207,8 @@ class AdminController extends AppController
 
     public function actionBlockUser($id) {
         $user = $this->findUser($id);
+        if ($user->is_admin)
+            return ApiResponse::error(400, null, Yii::t('app', 'User is admin'));
         $user->is_blocked = 1;
         if (!$user->save(false, ['is_blocked']))
             return ApiResponse::error(422, null, $user->errors);
