@@ -49,7 +49,7 @@ class WebSocketHandler extends WebSocketServer
             }
 
             $client->user_id = $token->getClaim('user_id');
-            $client->room_id = (int)$request['room_id'];
+            $client->room_id = $request['room_id'];
         } catch (\Exception $e) {
             $result['message'] = 'Auth failed: ' . $e->getMessage();
         }
@@ -86,7 +86,6 @@ class WebSocketHandler extends WebSocketServer
             $client->send(json_encode(['error' => 'Empty comment']));
             return;
         }
-
         $this->createComment($client->room_id, $client->user_id, $text);
 
         $comments = $this->getComments($client->room_id);
