@@ -178,7 +178,7 @@ function Chat() {
                 data: message,
                 user_id: Number(id),
                 token,
-                room_id: activeChat?.id,
+                room_id: "chat" + activeChat?.id,
             };
             isNewMessageRef.current = true;
             socket.send(JSON.stringify(msg));
