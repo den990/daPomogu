@@ -1,5 +1,5 @@
 const apiSettings = {
-    baseUrl: "http://192.168.31.157:8080/api",
+    baseUrl: "https://api.dapomogu.ru/api",
 };
 
 class ChatServiceApi {
