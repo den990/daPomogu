@@ -104,7 +104,7 @@ class WebSocketHandler extends WebSocketServer
     private function getComments($taskId)
     {
         $comments = \common\models\Comment::find()
-            ->where(['task_id' => $taskId])
+            ->where(['task_id' => (int) str_replace('comment', '', $taskId)])
             ->with(['user', 'user.organizationOwner'])
             ->orderBy(['created_at' => SORT_DESC])
             ->limit(100)
@@ -134,7 +134,7 @@ class WebSocketHandler extends WebSocketServer
     private function createComment($taskId, $userId, $text)
     {
         $comment = new \common\models\Comment();
-        $comment->task_id = $taskId;
+        $comment->task_id = (int) str_replace('comment', '', $taskId);
         $comment->user_id = $userId;
         $comment->comment = $text;
 
@@ -194,7 +194,7 @@ class WebSocketHandler extends WebSocketServer
     private function getMessages($chatId)
     {
         $messages = \common\models\Message::find()
-            ->where(['chat_id' => $chatId])
+            ->where(['chat_id' => (int) str_replace('chat', '', $chatId)])
             ->with('user')
             ->orderBy(['created_at' => SORT_DESC])
             ->limit(100)
@@ -217,7 +217,7 @@ class WebSocketHandler extends WebSocketServer
     private function createMessage($chatId, $userId, $text)
     {
         $message = new \common\models\Message();
-        $message->chat_id = $chatId;
+        $message->chat_id = (int) str_replace('chat', '', $chatId);
         $message->user_id = $userId;
         $message->message = $text;
 
