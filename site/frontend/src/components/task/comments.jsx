@@ -16,7 +16,7 @@ function Comments({ task }) {
             const initMessage = {
                 action: "SetUser",
                 token: token,
-                room_id: task.id,
+                room_id: "comment" + task.id,
             };
             ws.send(JSON.stringify(initMessage));
 
@@ -51,7 +51,7 @@ function Comments({ task }) {
                 ws.close();
             }
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+
     }, []);
 
     const sendMessage = () => {

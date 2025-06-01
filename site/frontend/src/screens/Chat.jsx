@@ -144,7 +144,7 @@ function Chat() {
             const initMessage = {
                 action: "SetUser",
                 token,
-                room_id: activeChat?.id,
+                room_id: "chat" + activeChat?.id,
             };
             ws.send(JSON.stringify(initMessage));
         };
