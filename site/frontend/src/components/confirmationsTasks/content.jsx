@@ -9,7 +9,7 @@ function Content({ taskId }) {
     const [selectedApprove, setSelectedApprove] = useState(null);
     const [approveDetails, setApproveDetails] = useState(null);
     const [maxScore, setMaxScore] = useState(null);
-    const [imageUrl, setImageUrl] = useState(null);
+    const [imagesUrl, setImagesUrl] = useState([]);
     const [score, setScore] = useState("");
     const [alert, setAlert] = useState(null);
     const task_id = Number(taskId);
@@ -17,7 +17,7 @@ function Content({ taskId }) {
     const fetchApproves = useCallback(() => {
         if (!token) return;
         taskServiceApi
-            .getAllApproves(token, task_id, logout)
+            .getAllApproves(token, task_id, 1,logout)
             .then((response) => {
                 const rows = response?.data?.data;
                 if (rows && Array.isArray(rows)) {
@@ -48,8 +48,8 @@ function Content({ taskId }) {
             .then((data) => {
                 setApproveDetails(data.data);
                 setScore("");
-                if (data.data?.file) {
-                    setImageUrl(data.data.file);
+                if (data.data?.files) {
+                    setImagesUrl(data.data.files);
                 }
             })
             .catch(() => {
@@ -75,7 +75,7 @@ function Content({ taskId }) {
             fetchApproves();
             setApproveDetails(null);
             setSelectedApprove(null);
-            setImageUrl(null);
+            setImagesUrl([]);
             setScore("");
             setAlert({ message: "Фотоотчёт успешно принят!", severity: "success" });
         } catch (error) {
@@ -90,7 +90,7 @@ function Content({ taskId }) {
             fetchApproves();
             setApproveDetails(null);
             setSelectedApprove(null);
-            setImageUrl(null);
+            setImagesUrl([]);
             setScore("");
             setAlert({ message: "Фотоотчёт успешно отклонён!", severity: "success" });
         } catch (error) {
@@ -158,12 +158,15 @@ function Content({ taskId }) {
                                         <h3 className="mb-3 text-center text-xl">Фото для подтверждения участия</h3>
                                         <div className="grid grid-cols-1 gap-4 w-full">
                                             <div className="text-center">
-                                                {imageUrl ? (
-                                                    <img
-                                                        src={imageUrl}
-                                                        alt="Фото подтверждения"
-                                                        className="mt-4 rounded-lg shadow-md mx-auto"
-                                                    />
+                                                {imagesUrl && imagesUrl.length > 0 ? (
+                                                    imagesUrl.map((url, index) => (
+                                                        <img
+                                                            key={index}
+                                                            src={url}
+                                                            alt={`Фото подтверждения ${index + 1}`}
+                                                            className="mt-4 rounded-lg shadow-md mx-auto"
+                                                        />
+                                                    ))
                                                 ) : (
                                                     <p>Нет фото</p>
                                                 )}

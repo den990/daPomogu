@@ -67,6 +67,11 @@ function Content({ taskId, setIsPopUpVisible }) {
             const imageDataUrl = canvas.toDataURL("image/png");
             setCapturedImage(imageDataUrl);
             setShowCamera(false);
+            const stream = video.srcObject;
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+            video.srcObject = null;
         } else {
             setAlert({ message: "Видео не готово для захвата. Попробуйте позже.", severity: "error" });
         }

@@ -43,7 +43,7 @@ class ApproveController extends AppController
     public function actionCreate()
     {
         $model = ApproveTaskForm::findOne(['user_id' => Yii::$app->params['user.id']]);
-
+        file_put_contents('json.txt', print_r(Yii::$app->request->post(), true));
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return ApiResponse::success();
         }
@@ -74,11 +74,6 @@ class ApproveController extends AppController
             if (in_array($model->user->id, $coordinatorsIds))
                 continue;
 
-            $approveBase64 = null;
-            if (!empty($model->approveFiles)) {
-                $imageData = file_get_contents($model->approveFiles[0]->file->url) ?? null;
-                $approveBase64 = 'data:image/jpeg;base64,' . base64_encode($imageData);
-            }
             $imageData = file_get_contents($model->user->avatarUrl);
             $avatarBase64 = 'data:image/jpeg;base64,' . base64_encode($imageData);
             $res[] = [
@@ -90,7 +85,6 @@ class ApproveController extends AppController
                     'surname' => $model->user->surname ?? null,
                     'avatar' => $avatarBase64,
                 ],
-                'file' => $approveBase64,
             ];
         }
 
@@ -107,10 +101,12 @@ class ApproveController extends AppController
         $imageData = file_get_contents($model->user->avatarUrl);
         $avatarBase64 = 'data:image/jpeg;base64,' . base64_encode($imageData);
 
-        $approveBase64 = null;
-        if (count($model->approveFiles) > 0) {
-            $imageData = file_get_contents($model->approveFiles[0]->file->url) ?? null;
+        $images = [];
+        foreach ($model->approveFiles as $approveFile)
+        {
+            $imageData = file_get_contents($approveFile->file->url) ?? null;
             $approveBase64 = 'data:image/jpeg;base64,' . base64_encode($imageData);
+            $images[] = $approveBase64;
         }
 
         return ApiResponse::success([
@@ -121,7 +117,7 @@ class ApproveController extends AppController
                 'surname' => $model->user->surname ?? null,
                 'avatar' => $avatarBase64,
             ],
-            'file' => $approveBase64 ?: null,
+            'files' => $images,
             'task_id' => $model->task_id,
             'task_max_score' => $model->task->max_score,
         ]);
