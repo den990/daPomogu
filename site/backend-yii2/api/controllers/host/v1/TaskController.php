@@ -368,7 +368,7 @@ class TaskController extends Controller
 
     public function actionDelete($id) {
         $userId = Yii::$app->params['user.id'];
-        $user = User::findOne(['id' => $id]);
+        $user = User::findOne(['id' => $userId]);
         $task = Task::findOne(['id' => $id]);
 
         if (!$task)
